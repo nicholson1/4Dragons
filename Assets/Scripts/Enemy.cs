@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] public GameObject player;
     
 
-    private bool _frozen;
+    public bool _frozen;
     private float _frozenTimer = 5f;
 
     [SerializeField] private Material frozenMaterial;
@@ -45,5 +45,27 @@ public class Enemy : MonoBehaviour
         _frozen = false;
         navMeshAgent.isStopped = false;
         _meshRenderer.material = enemyMaterial;
+    }
+
+    public void Eaten()
+    {
+        transform.position = GetRandomPoint(Vector3.zero, 30f);
+        UnFreeze();
+        Vector3 spawnPos = GetRandomPoint(Vector3.zero, 30f);
+        GameObject spawn = Instantiate(this.gameObject);
+        spawn.transform.position = spawnPos;
+
+    }
+    
+    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance) {
+        // Get Random Point inside Sphere which position is center, radius is maxDistance
+        Vector3 randomPos = Random.insideUnitSphere * maxDistance + center;
+
+        NavMeshHit hit; // NavMesh Sampling Info Container
+
+        // from randomPos find a nearest point on NavMesh surface in range of maxDistance
+        NavMesh.SamplePosition(randomPos, out hit, maxDistance, NavMesh.AllAreas);
+
+        return hit.position;
     }
 }
