@@ -1,14 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour
 {
     
     [SerializeField] public NavMeshAgent navMeshAgent;
-    [SerializeField] public GameObject player;
-    
+    [SerializeField] public CharacterMovement player;
+    public GameObject prefab;
+    private EnemyPooler thePool;
+
+
 
     public bool _frozen;
     private float _frozenTimer = 5f;
@@ -16,11 +21,42 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Material frozenMaterial;
     [SerializeField] private Material enemyMaterial;
     [SerializeField] private MeshRenderer _meshRenderer;
+
+    
+
+    private void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
+        thePool = FindObjectOfType<EnemyPooler>();
+    }
+
     void Update()
     {
+
+
+
         if (!_frozen)
         {
+            if (navMeshAgent.isActiveAndEnabled)
+            {
+
+            
+
             navMeshAgent.SetDestination(player.transform.position);
+
+            if (player.feared)
+            {
+                Vector3 toPlayer = player.transform.position - transform.position;
+                if (Vector3.Distance(player.transform.position, transform.position) < 3)
+                {
+                    Vector3 targetPosition = toPlayer.normalized * -7f;
+                    navMeshAgent.destination = targetPosition;
+                    navMeshAgent.isStopped = false;
+                }
+            }
+        }
+
+        //navMeshAgent.
         }
         else
         {
@@ -45,27 +81,38 @@ public class Enemy : MonoBehaviour
         _frozen = false;
         navMeshAgent.isStopped = false;
         _meshRenderer.material = enemyMaterial;
+        
     }
 
     public void Eaten()
     {
-        transform.position = GetRandomPoint(Vector3.zero, 30f);
-        UnFreeze();
-        Vector3 spawnPos = GetRandomPoint(Vector3.zero, 30f);
-        GameObject spawn = Instantiate(this.gameObject);
-        spawn.transform.position = spawnPos;
+        
+       thePool.SpawnEnemy();
+       thePool.SpawnEnemy();
+       
+       thePool.KillEnemy(this);
+        
+        
+        
+        GameObject.FindObjectOfType<GameManager>().GainPoints();
+
+        gameObject.SetActive(false);
+
 
     }
-    
-    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance) {
-        // Get Random Point inside Sphere which position is center, radius is maxDistance
-        Vector3 randomPos = Random.insideUnitSphere * maxDistance + center;
 
-        NavMeshHit hit; // NavMesh Sampling Info Container
+    public void Damage()
+    {
+        GameObject.FindObjectOfType<GameManager>().lives -= 1;
+        thePool.KillEnemy(this);
 
-        // from randomPos find a nearest point on NavMesh surface in range of maxDistance
-        NavMesh.SamplePosition(randomPos, out hit, maxDistance, NavMesh.AllAreas);
+    }
 
-        return hit.position;
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("fire"))
+        {
+            Eaten();
+        }
     }
 }

@@ -1,12 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 public class Pickup : MonoBehaviour
 {
 
     public PickupType type;
+
+    
 
     public void PickupAction()
     {
@@ -17,6 +24,18 @@ public class Pickup : MonoBehaviour
                 break;
             case PickupType.Speed:
                 StartCoroutine(SpeedBoost());
+                break;
+            case PickupType.Fire:
+                StartCoroutine(Fire());
+                break;
+            case PickupType.DoublePoints:
+                StartCoroutine(DoublePoints());
+                break;
+            case PickupType.Health:
+                Health();
+                break;
+            default:
+                Debug.LogWarning("No Case Found");
                 break;
         }
 
@@ -34,13 +53,33 @@ public class Pickup : MonoBehaviour
         }
     }
 
+    private void Health()
+    {
+        GameObject.FindObjectOfType<GameManager>().lives += 1;
+    }
+
     public IEnumerator SpeedBoost()
     {
         CharacterMovement player = GameObject.FindWithTag("Player").GetComponent<CharacterMovement>();
         player.speed += 5;
         yield return new WaitForSeconds(5);
         player.speed -= 5;
-        
+    }
+    public IEnumerator DoublePoints()
+    {
+        GameManager gm = GameObject.FindObjectOfType<GameManager>();
+        gm.doublePoints = true;
+        yield return new WaitForSeconds(10);
+        gm.doublePoints = false;
+    }
+    public IEnumerator Fire()
+    {
+        CharacterMovement player = GameObject.FindWithTag("Player").GetComponent<CharacterMovement>();
+        player.Fire.SetActive(true);
+        player.feared = true;
+        yield return new WaitForSeconds(5);
+        player.Fire.SetActive(false);
+        player.feared = false;
 
     }
     
@@ -49,7 +88,9 @@ public class Pickup : MonoBehaviour
     {
         Freeze,
         Speed,
-        
+        Fire,
+        Health,
+        DoublePoints
     }
     
     

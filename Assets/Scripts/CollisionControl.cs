@@ -18,11 +18,10 @@ public class CollisionControl : MonoBehaviour
             if (E._frozen)
             {
                 E.Eaten();
-                // add points etc
             }
             else
             {
-                //not frozen, so character lose?
+                E.Damage();
             }
         }
     }
