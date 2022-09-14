@@ -8,80 +8,80 @@ using UnityEngine.AI;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
-public class Pickup : MonoBehaviour
+public abstract class Pickup : MonoBehaviour
 {
 
-    public PickupType type;
+    //public PickupType type;
 
     
 
-    public void PickupAction()
+    public virtual void PickupAction()
     {
-        switch (type)
-        {
-            case PickupType.Freeze:
-                Freeze();
-                break;
-            case PickupType.Speed:
-                StartCoroutine(SpeedBoost());
-                break;
-            case PickupType.Fire:
-                StartCoroutine(Fire());
-                break;
-            case PickupType.DoublePoints:
-                StartCoroutine(DoublePoints());
-                break;
-            case PickupType.Health:
-                Health();
-                break;
-            default:
-                Debug.LogWarning("No Case Found");
-                break;
-        }
+        //switch (type)
+        //{
+        //    case PickupType.Freeze:
+        //        Freeze();
+        //        break;
+        //    case PickupType.Speed:
+        //        StartCoroutine(SpeedBoost());
+        //        break;
+        //    case PickupType.Fire:
+        //        StartCoroutine(Fire());
+        //        break;
+        //    case PickupType.DoublePoints:
+        //        StartCoroutine(DoublePoints());
+        //        break;
+        //    case PickupType.Health:
+        //        Health();
+        //        break;
+        //    default:
+        //        Debug.LogWarning("No Case Found");
+        //        break;
+        //}
 
         transform.position = GetRandomPoint(Vector3.zero, 20f); 
         transform.position = new Vector3(transform.position.x, 1, transform.position.z);
         
     }
 
-    private void Freeze()
-    {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (var enemy in enemies)
-        {
-            enemy.GetComponent<Enemy>().Freeze();
-        }
-    }
+    //private void Freeze()
+    //{
+    //    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+    //    foreach (var enemy in enemies)
+    //    {
+    //        enemy.GetComponent<Enemy>().Freeze();
+    //    }
+    //}
 
-    private void Health()
-    {
-        GameObject.FindObjectOfType<GameManager>().lives += 1;
-    }
+    //private void Health()
+    //{
+    //    GameObject.FindObjectOfType<GameManager>().lives += 1;
+    //}
 
-    public IEnumerator SpeedBoost()
-    {
-        CharacterMovement player = GameObject.FindWithTag("Player").GetComponent<CharacterMovement>();
-        player.speed += 5;
-        yield return new WaitForSeconds(5);
-        player.speed -= 5;
-    }
-    public IEnumerator DoublePoints()
-    {
-        GameManager gm = GameObject.FindObjectOfType<GameManager>();
-        gm.doublePoints = true;
-        yield return new WaitForSeconds(10);
-        gm.doublePoints = false;
-    }
-    public IEnumerator Fire()
-    {
-        CharacterMovement player = GameObject.FindWithTag("Player").GetComponent<CharacterMovement>();
-        player.Fire.SetActive(true);
-        player.feared = true;
-        yield return new WaitForSeconds(5);
-        player.Fire.SetActive(false);
-        player.feared = false;
+    //public IEnumerator SpeedBoost()
+    //{
+    //    CharacterMovement player = GameObject.FindWithTag("Player").GetComponent<CharacterMovement>();
+    //    player.speed += 5;
+    //    yield return new WaitForSeconds(5);
+    //    player.speed -= 5;
+    //}
+    //public IEnumerator DoublePoints()
+    //{
+    //    GameManager gm = GameObject.FindObjectOfType<GameManager>();
+    //    gm.doublePoints = true;
+    //    yield return new WaitForSeconds(10);
+    //    gm.doublePoints = false;
+    //}
+    //public IEnumerator Fire()
+    //{
+    //    CharacterMovement player = GameObject.FindWithTag("Player").GetComponent<CharacterMovement>();
+    //    player.Fire.SetActive(true);
+    //    player.feared = true;
+    //    yield return new WaitForSeconds(5);
+    //    player.Fire.SetActive(false);
+    //    player.feared = false;
 
-    }
+    //}
     
     
     public enum PickupType
