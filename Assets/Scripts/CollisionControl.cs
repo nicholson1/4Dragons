@@ -9,7 +9,9 @@ public class CollisionControl : MonoBehaviour
     {
         if (other.CompareTag("Pickup"))
         {
+         
             other.GetComponent<Pickup>().PickupAction();
+
         }
 
         if (other.CompareTag("Enemy"))

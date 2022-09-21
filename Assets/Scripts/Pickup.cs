@@ -8,12 +8,12 @@ using UnityEngine.AI;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
-public abstract class Pickup : MonoBehaviour
+public abstract class Pickup : SubjectBeingObserved
 {
 
     //public PickupType type;
 
-    
+  
 
     public virtual void PickupAction()
     {
@@ -92,13 +92,14 @@ public abstract class Pickup : MonoBehaviour
         Health,
         DoublePoints
     }
-    
-    
-    
-    
-    
-    
-    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance) {
+
+
+
+
+
+
+    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
+    {
         // Get Random Point inside Sphere which position is center, radius is maxDistance
         Vector3 randomPos = Random.insideUnitSphere * maxDistance + center;
 
