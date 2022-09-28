@@ -15,10 +15,13 @@ public class CharacterMovement : MonoBehaviour
 
     public GameObject Fire;
     public bool feared = false;
+    private SoundObserver SO;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         originalStepOffset = characterController.stepOffset;
+        SO = FindObjectOfType<SoundObserver>();
+
     }
 
     void Update()
@@ -41,6 +44,7 @@ public class CharacterMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ySpeed = jumpSpeed;
+                SO.playJump();
             }
         }
         else

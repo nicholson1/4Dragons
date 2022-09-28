@@ -22,12 +22,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Material enemyMaterial;
     [SerializeField] private MeshRenderer _meshRenderer;
 
-    
 
+    private SoundObserver SO;
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMovement>();
         thePool = FindObjectOfType<EnemyPooler>();
+        SO = FindObjectOfType<SoundObserver>();
     }
 
     void Update()
@@ -89,6 +90,15 @@ public class Enemy : MonoBehaviour
         
        thePool.SpawnEnemy();
        thePool.SpawnEnemy();
+
+       if (_frozen)
+       {
+           SO.playEnemyDeath();
+       }
+       else
+       {
+           SO.playEnemyDeathFire();
+       }
        
        thePool.KillEnemy(this);
         
@@ -104,7 +114,9 @@ public class Enemy : MonoBehaviour
     public void Damage()
     {
         GameObject.FindObjectOfType<GameManager>().lives -= 1;
+        SO.playPlayerHit();
         thePool.KillEnemy(this);
+        
 
     }
 

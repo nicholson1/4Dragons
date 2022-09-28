@@ -23,5 +23,21 @@ public class SubjectBeingObserved : MonoBehaviour
             observer.OnNotify(obj, notificationType);
         }
     }
+    
+    public void NotifyUI(int i, NotificationType notificationType)
+    {
+        foreach(Observer observer in _observers)
+        {
+            observer.OnNotifyUI(i, notificationType);
+        }
+    }
+    
+    public void NotifyButtonClick(NotificationType notificationType)
+    {
+        foreach(Observer observer in _observers)
+        {
+            observer.OnNotifyButtonClick(notificationType);
+        }
+    }
 
 }
