@@ -28,7 +28,7 @@ public class UseAbilityObserver : MonoBehaviour, Observer
 
     public void OnNotifyButtonClick(NotificationType notificationType)
     {
-        Debug.Log("im ");
+        //Debug.Log("im ");
         switch (notificationType)
         {
             case NotificationType.FirePickup:

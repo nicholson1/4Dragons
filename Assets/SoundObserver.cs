@@ -17,12 +17,12 @@ public class SoundObserver : MonoBehaviour, Observer
     [SerializeField] private AudioClip jump;
     
     
-     private AudioSource soundEffects;
+     [SerializeField]private AudioSource soundEffects;
 
             
     void Awake()
     {
-        soundEffects = GetComponent<AudioSource>();
+        //soundEffects = GetComponent<AudioSource>();
         foreach (PickupObserved subject in FindObjectsOfType<PickupObserved>())
         {
             //Debug.Log(subject.name);
@@ -34,9 +34,27 @@ public class SoundObserver : MonoBehaviour, Observer
             subject.AddObserver(this);
 
         }
+        //playJump();
+
     }
 
-    
+    void Start()
+    {
+        CharacterMovement.playerJumpEvent += playJump;
+        Enemy.enemyFireDeath += playEnemyDeathFire;
+        Enemy.hitPlayer += playPlayerHit;
+        Enemy.enemyFreezeDeath += playEnemyDeath;
+    }
+
+    private void OnDestroy()
+    {
+        CharacterMovement.playerJumpEvent -= playJump;
+        Enemy.enemyFireDeath -= playEnemyDeathFire;
+        Enemy.hitPlayer -= playPlayerHit;
+        Enemy.enemyFreezeDeath -= playEnemyDeath;
+    }
+
+
 
     public void OnNotify(Collectible obj, NotificationType notificationType)
     {
@@ -73,6 +91,7 @@ public class SoundObserver : MonoBehaviour, Observer
 
     public void playJump()
     {
+        //Debug.Log("jump");
         soundEffects.PlayOneShot(jump, .50f);
     }
     

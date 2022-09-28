@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+
 public class CharacterMovement : MonoBehaviour
 {
     public float speed;
@@ -15,12 +16,14 @@ public class CharacterMovement : MonoBehaviour
 
     public GameObject Fire;
     public bool feared = false;
-    private SoundObserver SO;
+    //private SoundObserver SO;
+    public static event Action playerJumpEvent;
+
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         originalStepOffset = characterController.stepOffset;
-        SO = FindObjectOfType<SoundObserver>();
 
     }
 
@@ -44,7 +47,7 @@ public class CharacterMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ySpeed = jumpSpeed;
-                SO.playJump();
+                playerJumpEvent();
             }
         }
         else
