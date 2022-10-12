@@ -47,7 +47,7 @@ public class CharacterMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ySpeed = jumpSpeed;
-                playerJumpEvent();
+                if(playerJumpEvent!= null) playerJumpEvent();
             }
         }
         else
