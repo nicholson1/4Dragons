@@ -1,0 +1,154 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+public class TreePoolerBasic : MonoBehaviour
+{
+    [SerializeField] private Transform PlayerPos;
+    public GameObject TreePrefab;
+
+     public int TreeCountMin;
+    public int PlacementRadiusMax;
+    public int PlacementRadiusMin;
+
+    private List<GameObject> HiddenTrees = new List<GameObject>();
+    private List<GameObject> ActiveTrees = new List<GameObject>();
+
+    public float timeBetweenchecks;
+    
+
+    private void HideTree(GameObject tree)
+    {
+        ActiveTrees.Remove(tree);
+        HiddenTrees.Add(tree);
+        tree.SetActive(false);
+  
+    }
+
+    private void ActivateTree(GameObject tree)
+    {
+        HiddenTrees.Remove(tree);
+        ActiveTrees.Add(tree);
+        tree.SetActive(true);
+
+    }
+
+    private void PlaceRandomTree()
+    {
+        //get random pos inside max rad, but not in inner rad;
+        Vector2 point = Random.insideUnitCircle.normalized * Random.Range(PlacementRadiusMin, PlacementRadiusMax);
+        Vector3 pos = new Vector3(point.x, 0, point.y) + new Vector3(PlayerPos.position.x, 0, PlayerPos.position.z);
+
+        GameObject t;
+        if (HiddenTrees.Count > 0)
+        {
+            t = HiddenTrees[0];
+            ActivateTree(t);
+            t.transform.position = pos;
+        }
+        else
+        {
+            t = Instantiate(TreePrefab, pos, TreePrefab.transform.rotation);
+            ActiveTrees.Add(t);
+            t.transform.SetParent(this.transform);
+        }
+        
+        t.transform.eulerAngles = new Vector3(Random.Range(-10, 10), Random.Range(0, 180), Random.Range(-10, 10));
+        float scale = Random.Range(.25f, 3);
+        t.transform.localScale = new Vector3(scale, scale, scale);
+
+        
+    }
+
+    private void PlaceTreeInitial()
+    {
+        for(int i = 0; i < TreeCountMin; i++)
+        {
+            
+            Vector2 point = Random.insideUnitCircle.normalized * Random.Range(5, PlacementRadiusMax);;
+
+
+            Vector3 pos = new Vector3(point.x, 0, point.y) + new Vector3(PlayerPos.position.x, 0, PlayerPos.position.z);
+            //Vector3 pos = new Vector3(Random.Range(PlayerPos.position.x - PlacementRadiusMax -1, PlayerPos.position.x + PlacementRadiusMax -1), 0, Random.Range(PlayerPos.position.z - PlacementRadiusMax -1, PlayerPos.position.z + PlacementRadiusMax -1));
+            GameObject t = Instantiate(TreePrefab, pos, TreePrefab.transform.rotation);
+            t.transform.SetParent(this.transform);
+            t.transform.eulerAngles = new Vector3(Random.Range(-10, 10), Random.Range(0, 180), Random.Range(-10, 10));
+            float scale = Random.Range(.25f, 3);
+            t.transform.localScale = new Vector3(scale, scale, scale);
+
+            ActiveTrees.Add(t);
+        }
+    }
+
+    private void Start()
+    {
+        PlaceTreeInitial();
+    }
+
+    private float timer = 0;
+
+    private void Update()
+    {
+        // timer += Time.deltaTime;
+        //
+        // if(timer > timeBetweenchecks)
+        // {
+        Debug.Log("Active: "+ActiveTrees.Count + " inactive: " + HiddenTrees.Count);
+        
+        for(int i = 0; i < ActiveTrees.Count; i++ )
+        {
+            GameObject tree = ActiveTrees[i];
+            if (Vector3.Distance(tree.transform.position, PlayerPos.position) > PlacementRadiusMax + 10)
+            {
+                //Debug.Log(Vector3.Distance(tree.transform.position, PlayerPos.position));
+                HideTree(tree);
+                i--;
+                
+                //PlaceRandomTree();
+            }
+        }
+
+        if (ActiveTrees.Count < TreeCountMin)
+        {
+            PlaceRandomTree();
+        }
+            
+            
+
+            // if (ActiveTrees.Count < TreeCountMax)
+            // {
+            //     // foreach (GameObject tree in HiddenTrees)
+            //     // {
+            //     //     if (Vector3.Distance(tree.transform.position, PlayerPos.position) < PlacementRadiusMax)
+            //     //     {
+            //     //         ActivateTree(tree);
+            //     //     }
+            //     // }
+            //
+            //     while (ActiveTrees.Count < TreeCountMax)
+            //     {
+            //         Debug.Log(ActiveTrees.Count - TreeCountMax);
+            //         PlaceRandomTree();
+            //     }
+            //
+            // }
+            //}
+        
+        
+
+
+
+        
+    }
+    public Vector2 RandomPointInAnnulus(Vector2 origin, float minRadius, float maxRadius){
+ 
+        var randomDirection = (Random.insideUnitCircle * origin).normalized;
+ 
+        var randomDistance = Random.Range(minRadius, maxRadius);
+ 
+        var point = origin + randomDirection * randomDistance;
+ 
+        return point;
+    }
+}

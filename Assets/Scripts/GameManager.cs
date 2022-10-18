@@ -42,6 +42,11 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void OnEnable()
+    {
+        
+    }
+
     public void GainPoints()
     {
         if (doublePoints)
