@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class TreePoolerBasic : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class TreePoolerBasic : MonoBehaviour
      public int TreeCountMin;
     public int PlacementRadiusMax;
     public int PlacementRadiusMin;
+    public Slider slider;
 
     private List<GameObject> HiddenTrees = new List<GameObject>();
     private List<GameObject> ActiveTrees = new List<GameObject>();
@@ -84,6 +86,7 @@ public class TreePoolerBasic : MonoBehaviour
     private void Start()
     {
         PlaceTreeInitial();
+        slider.value = TreeCountMin;
     }
 
     private float timer = 0;
@@ -109,37 +112,31 @@ public class TreePoolerBasic : MonoBehaviour
             }
         }
 
-        if (ActiveTrees.Count < TreeCountMin)
+        if (ActiveTrees.Count < slider.value)
         {
             PlaceRandomTree();
         }
+
+        if (ActiveTrees.Count > slider.value)
+        {
+            CullTrees();
+        }
             
-            
-
-            // if (ActiveTrees.Count < TreeCountMax)
-            // {
-            //     // foreach (GameObject tree in HiddenTrees)
-            //     // {
-            //     //     if (Vector3.Distance(tree.transform.position, PlayerPos.position) < PlacementRadiusMax)
-            //     //     {
-            //     //         ActivateTree(tree);
-            //     //     }
-            //     // }
-            //
-            //     while (ActiveTrees.Count < TreeCountMax)
-            //     {
-            //         Debug.Log(ActiveTrees.Count - TreeCountMax);
-            //         PlaceRandomTree();
-            //     }
-            //
-            // }
-            //}
+        
         
         
 
 
 
         
+    }
+
+    public void CullTrees()
+    {
+        while (ActiveTrees.Count > slider.value)
+        {
+            HideTree(ActiveTrees[^1]);
+        }
     }
     public Vector2 RandomPointInAnnulus(Vector2 origin, float minRadius, float maxRadius){
  
