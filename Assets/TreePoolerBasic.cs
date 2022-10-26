@@ -93,23 +93,25 @@ public class TreePoolerBasic : MonoBehaviour
 
     private void Update()
     {
-        // timer += Time.deltaTime;
+       timer += Time.deltaTime;
         //
-        // if(timer > timeBetweenchecks)
-        // {
-        Debug.Log("Active: "+ActiveTrees.Count + " inactive: " + HiddenTrees.Count);
-        
-        for(int i = 0; i < ActiveTrees.Count; i++ )
+        if (timer > timeBetweenchecks)
         {
-            GameObject tree = ActiveTrees[i];
-            if (Vector3.Distance(tree.transform.position, PlayerPos.position) > PlacementRadiusMax + 10)
+            Debug.Log("Active: " + ActiveTrees.Count + " inactive: " + HiddenTrees.Count);
+
+            for (int i = 0; i < ActiveTrees.Count; i++)
             {
-                //Debug.Log(Vector3.Distance(tree.transform.position, PlayerPos.position));
-                HideTree(tree);
-                i--;
-                
-                //PlaceRandomTree();
+                GameObject tree = ActiveTrees[i];
+                if (Vector3.Distance(tree.transform.position, PlayerPos.position) > PlacementRadiusMax + 10)
+                {
+                    //Debug.Log(Vector3.Distance(tree.transform.position, PlayerPos.position));
+                    HideTree(tree);
+                    i--;
+
+                    //PlaceRandomTree();
+                }
             }
+            timer = 0;
         }
 
         if (ActiveTrees.Count < slider.value)
