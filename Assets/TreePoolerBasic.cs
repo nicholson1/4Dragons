@@ -40,7 +40,7 @@ public class TreePoolerBasic : MonoBehaviour
     {
         //get random pos inside max rad, but not in inner rad;
         Vector2 point = Random.insideUnitCircle.normalized * Random.Range(PlacementRadiusMin, PlacementRadiusMax);
-        Vector3 pos = new Vector3(point.x, 0, point.y) + new Vector3(PlayerPos.position.x, 0, PlayerPos.position.z);
+        Vector3 pos = new Vector3(point.x, -.25f, point.y) + new Vector3(PlayerPos.position.x, 0, PlayerPos.position.z);
 
         GameObject t;
         if (HiddenTrees.Count > 0)
@@ -56,9 +56,7 @@ public class TreePoolerBasic : MonoBehaviour
             t.transform.SetParent(this.transform);
         }
         
-        t.transform.eulerAngles = new Vector3(Random.Range(-10, 10), Random.Range(0, 180), Random.Range(-10, 10));
-        float scale = Random.Range(.25f, 3);
-        t.transform.localScale = new Vector3(scale, scale, scale);
+        t.GetComponent<TreeManger>().RandomizeTree();
 
         
     }
@@ -71,13 +69,11 @@ public class TreePoolerBasic : MonoBehaviour
             Vector2 point = Random.insideUnitCircle.normalized * Random.Range(5, PlacementRadiusMax);;
 
 
-            Vector3 pos = new Vector3(point.x, 0, point.y) + new Vector3(PlayerPos.position.x, 0, PlayerPos.position.z);
+            Vector3 pos = new Vector3(point.x, -.25f, point.y) + new Vector3(PlayerPos.position.x, 0, PlayerPos.position.z);
             //Vector3 pos = new Vector3(Random.Range(PlayerPos.position.x - PlacementRadiusMax -1, PlayerPos.position.x + PlacementRadiusMax -1), 0, Random.Range(PlayerPos.position.z - PlacementRadiusMax -1, PlayerPos.position.z + PlacementRadiusMax -1));
             GameObject t = Instantiate(TreePrefab, pos, TreePrefab.transform.rotation);
             t.transform.SetParent(this.transform);
-            t.transform.eulerAngles = new Vector3(Random.Range(-10, 10), Random.Range(0, 180), Random.Range(-10, 10));
-            float scale = Random.Range(.25f, 3);
-            t.transform.localScale = new Vector3(scale, scale, scale);
+            t.GetComponent<TreeManger>().RandomizeTree();
 
             ActiveTrees.Add(t);
         }
@@ -97,12 +93,15 @@ public class TreePoolerBasic : MonoBehaviour
         //
         // if(timer > timeBetweenchecks)
         // {
-        Debug.Log("Active: "+ActiveTrees.Count + " inactive: " + HiddenTrees.Count);
+        //Debug.Log("Active: "+ActiveTrees.Count + " inactive: " + HiddenTrees.Count);
         
         for(int i = 0; i < ActiveTrees.Count; i++ )
         {
             GameObject tree = ActiveTrees[i];
-            if (Vector3.Distance(tree.transform.position, PlayerPos.position) > PlacementRadiusMax + 10)
+            Vector3 temp = tree.transform.position - PlayerPos.position;
+            temp.y = 0;
+            
+            if (temp.magnitude > PlacementRadiusMax + 10)
             {
                 //Debug.Log(Vector3.Distance(tree.transform.position, PlayerPos.position));
                 HideTree(tree);

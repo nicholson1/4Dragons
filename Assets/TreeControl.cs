@@ -45,11 +45,10 @@ public class TreeControl : MonoBehaviour
 
         GameObject t = Instantiate(TreePrefab, pos, TreePrefab.transform.rotation);
         t.transform.SetParent(this.transform);
-        t.transform.eulerAngles = new Vector3(Random.Range(-10, 10), Random.Range(0, 180), Random.Range(-10, 10));
-        float scale = Random.Range(.25f, 3);
-        t.transform.localScale = new Vector3(scale, scale, scale);
+        t.GetComponent<TreeManger>().RandomizeTree();
 
     }
+    
 
     private void PlaceTreeInitial()
     {
@@ -58,9 +57,8 @@ public class TreeControl : MonoBehaviour
             Vector3 pos = new Vector3(Random.Range(PlayerPos.position.x - PlacementRadiusMax, PlayerPos.position.x + PlacementRadiusMax), 0, Random.Range(PlayerPos.position.z - PlacementRadiusMax, PlayerPos.position.z + PlacementRadiusMax));
             GameObject t = Instantiate(TreePrefab, pos, TreePrefab.transform.rotation);
             t.transform.SetParent(this.transform);
-            t.transform.eulerAngles = new Vector3(Random.Range(-10, 10), Random.Range(0, 180), Random.Range(-10, 10));
-            float scale = Random.Range(.25f, 3);
-            t.transform.localScale = new Vector3(scale, scale, scale);
+            t.GetComponent<TreeManger>().RandomizeTree();
+
 
             ActiveTrees.Add(t);
         }
