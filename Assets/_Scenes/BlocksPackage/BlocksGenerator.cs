@@ -8,7 +8,8 @@ using Random = UnityEngine.Random;
 
 public class BlocksGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject[] TerrainBlocks;
+    public float ActivationDistance;
+    public GameObject Player;
 
     public int totalSize = 100;
     
@@ -22,15 +23,65 @@ public class BlocksGenerator : MonoBehaviour
     private GameObject[,] blocks;
 
     private float blockWidth;
+    [SerializeField] private TreeSpawnerBlocks TreeSpawner;
+
+    private GameObject TreeHolder;
+
+    private bool PlayerInRange = false;
 
     
 
     void Start()
     {
-        
-        
+        TreeSpawner = GetComponent<TreeSpawnerBlocks>();
+        TreeHolder = TreeSpawner.TreeHolder;
         PlaceBlocks();
+        GenerateWholeBlock();
+    }
+
+    private void ActivateTheObjects(bool active)
+    {
+        TreeHolder.SetActive(active);
+    }
+    
+    private void Update()
+    {
+        if (!PlayerInRange)
+        {
+            if (Vector3.Distance(Player.transform.position, transform.position) < ActivationDistance)
+            {
+                PlayerInRange = true;
+                ActivateTheObjects(PlayerInRange);
+            }
+        }
+        else
+        {
+            if (Vector3.Distance(Player.transform.position, transform.position) > ActivationDistance)
+            {
+                PlayerInRange = false;
+                ActivateTheObjects(PlayerInRange);
+
+            }
+        }
+        
+        
+
+        
+        
+       
+        
+    }
+
+    public void GenerateWholeBlock()
+    {
+        //todo  determien type of block here
+        
+        
+        
         GenerateBlockValues();
+        TreeSpawner.SpawnTrees();
+        //Debug.Log("spawn tree");
+
     }
 
     private void PlaceBlocks()
@@ -52,7 +103,7 @@ public class BlocksGenerator : MonoBehaviour
         }
     }
 
-    public void GenerateBlockValues()
+    private void GenerateBlockValues()
     {
         valueMap = new float[width,width];
         

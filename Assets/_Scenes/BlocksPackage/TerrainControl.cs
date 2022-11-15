@@ -15,7 +15,14 @@ public class TerrainControl : MonoBehaviour
     public float timeBetweenChecks = 0;
 
 
-    
+    private void Start()
+    {
+        foreach (BlocksGenerator b in terrains)
+        {
+            b.Player = Player;
+        }
+    }
+
 
     private void FindClosestTerrain()
     {
@@ -43,6 +50,7 @@ public class TerrainControl : MonoBehaviour
                 //Debug.Log(t.name + " : " + d);
 
             }
+            Debug.Log("Player changed Terrain");
             PlayerChangedTerrain();
 
         }
@@ -143,7 +151,7 @@ public class TerrainControl : MonoBehaviour
                 t.transform.position += new Vector3(0, 0, info.Item1);
 
             }
-            t.GenerateBlockValues();
+            t.GenerateWholeBlock();
         }
         
         //get furthest
