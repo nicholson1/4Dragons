@@ -37,6 +37,19 @@ public class CharacterMovement1 : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         originalStepOffset = characterController.stepOffset;
 
+        CombatTrigger.TriggerCombat += DisableMovement;
+        CombatTrigger.EndCombat += EnableMovement;
+
+
+    }
+
+    private void DisableMovement(Character p, Character e)
+    {
+        
+    }
+    private void EnableMovement()
+    {
+        
     }
 
     void Update()
