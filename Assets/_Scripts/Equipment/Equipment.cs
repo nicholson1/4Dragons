@@ -2,15 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Equipment: MonoBehaviour
+public class Equipment
 {
 
-    
-    private string _name;
+    private string _name; 
+    public string name    // the Name property
+    {
+        get => _name;
+        set => _name = value;
+    }
 
     private Dictionary<Stats, int> _stats;
+    public Dictionary<Stats, int> stats
+    {
+        get => _stats;
+        set => _stats = value;
+    }
 
     private Slot _slot;
+    public Slot slot 
+    {
+        get => _slot;
+        set => _slot = value;
+    }
+    
+    
     // private int _level;
     // private int _health;
     // private int _armor;
@@ -19,12 +35,17 @@ public class Equipment: MonoBehaviour
     // private int _spellDamage;
     // private int _criticalStrikeChance;
 
-    public Dictionary<Stats, int> GetStats()
+    
+    
+
+    public Equipment()
     {
-        return _stats;
+        
     }
 
-    public void InitializeEquipment(string name, Slot slot,Dictionary<Stats,int> stats)
+   
+
+    public Equipment(string name, Slot slot,Dictionary<Stats,int> stats)
     {
         _name = name;
         _stats = stats;
@@ -41,7 +62,16 @@ public class Equipment: MonoBehaviour
         //Belt,
         Legs,
         Boots,
+        
+        // weapons
+        OneHander,
+        TwoHander,
+        Scroll,
+        Book
     }
+    
+
+    
 
     public enum Stats
     {

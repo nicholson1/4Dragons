@@ -18,11 +18,14 @@ public class CharacterMovement1 : MonoBehaviour
     public Vector3 Drag;
 
     private CharacterController characterController;
+    private Character _character;
     private float ySpeed;
     private float originalStepOffset;
     private bool _isDashing = false;
     private bool _airActionTaken = false;
 
+    private bool inCombat = false;
+    
     [SerializeField] Animator _animator;
     
     
@@ -36,6 +39,7 @@ public class CharacterMovement1 : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         originalStepOffset = characterController.stepOffset;
+        _character = GetComponent<Character>();
 
         CombatTrigger.TriggerCombat += DisableMovement;
         CombatTrigger.EndCombat += EnableMovement;
@@ -45,15 +49,23 @@ public class CharacterMovement1 : MonoBehaviour
 
     private void DisableMovement(Character p, Character e)
     {
-        
+        if (p = _character)
+        {
+            inCombat = true;
+        }
     }
     private void EnableMovement()
     {
-        
+        inCombat = false;
     }
 
     void Update()
     {
+        if (inCombat)
+        {
+            return;
+        }
+        
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
