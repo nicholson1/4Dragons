@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ImportantStuff;
 using UnityEngine;
 
 public class CombatEntity : MonoBehaviour
@@ -43,7 +44,13 @@ public class CombatEntity : MonoBehaviour
 
     public void AttackWithStat(int enumIndex)
     {
+        
         Attack((Equipment.Stats) enumIndex);
+    }
+
+    public void AttackWithSpellType(Weapon.SpellTypes spell, Weapon weapon)
+    {
+        Debug.Log(DataReader.Instance.GetWeaponScalingTable()[0]);
     }
 
     public void Attack(Equipment.Stats attackType)
@@ -100,13 +107,20 @@ public class CombatEntity : MonoBehaviour
     public float FigureOutHowMuchCrit(Equipment.Stats attackType)
     {
         //get base
-        // deal with specials
-        return 0;
-    }
-    private void OnEnable()
-    {
+        float critBase = 0;
+        int tempValue;
+        if (currentStats.TryGetValue(attackType, out tempValue))
+        {
+            critBase += tempValue;
+        }
+
+        // deal with specials to adjust base
+
+        float critPercent = .20f + (critBase / (critBase + 300)); //* 1.5f;
         
+        return critPercent;
     }
+   
     public DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)
     {
         switch (attackType)

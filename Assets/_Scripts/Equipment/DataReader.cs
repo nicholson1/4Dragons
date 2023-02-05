@@ -16,6 +16,24 @@ public class DataReader : MonoBehaviour
     //Weapon Scaling table is "Ability", Base damage, Level Scaling, type scaling, .... could include more data...
     private List<List<object>> WeaponScalingTable;
 
+    
+    private static DataReader instance = null;
+
+    private DataReader()
+    {
+    }
+
+    public static DataReader Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new DataReader();
+            }
+            return instance;
+        }
+    }
     public void Awake()
     {
         EquipmentNamingTable = ReadCSV(EquipmentNamings);
@@ -95,6 +113,7 @@ public class DataReader : MonoBehaviour
                     temp.Add(int.Parse(num));
                 }
             }
+            temp.Add(dataTable[i][2]);
             
             // string debug = "";
             // foreach (var o in temp)

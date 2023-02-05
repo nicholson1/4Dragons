@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ImportantStuff;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,9 +24,10 @@ public class Character : MonoBehaviour
 
     [SerializeField] public CombatEntity _combatEntity;
 
-    public (Weapon.SpellTypes, Weapon.SpellTypes) GetWeaponSpells()
+    public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetWeaponSpells()
     {
-        (Weapon.SpellTypes, Weapon.SpellTypes) spells = (Weapon.SpellTypes.None, Weapon.SpellTypes.None);
+        //spell 1, spell2, weapon1, weapon2
+        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spells = (Weapon.SpellTypes.None, Weapon.SpellTypes.None, null, null);
 
 
         switch (_weapons.Count)
@@ -35,16 +37,23 @@ public class Character : MonoBehaviour
             case 1:
                 if (_weapons[0].slot == Equipment.Slot.TwoHander)
                 {
-                    spells = _weapons[0].GetSpellTypes();
+                    spells.Item1 = _weapons[0].GetSpellTypes().Item1;
+                    spells.Item2 = _weapons[0].GetSpellTypes().Item2;
+                    spells.Item3 = _weapons[0];
+                    spells.Item4 = _weapons[0];
                 }
                 else
                 {
                     spells.Item1 = _weapons[0].GetSpellTypes().Item1;
+                    spells.Item3 = _weapons[0];
                 }
                 break;
             case 2:
                 spells.Item1 = _weapons[0].GetSpellTypes().Item1;
+                spells.Item3 = _weapons[0];
                 spells.Item2 = _weapons[1].GetSpellTypes().Item1;
+                spells.Item4 = _weapons[1];
+
                 break;
                 
                 

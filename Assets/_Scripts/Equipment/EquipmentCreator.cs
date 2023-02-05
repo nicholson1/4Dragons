@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using ImportantStuff;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SubsystemsImplementation;
@@ -20,6 +22,7 @@ public class EquipmentCreator : MonoBehaviour
 
     private void Start()
     {
+        CreateSpellScroll(1, 1, Weapon.SpellTypes.Axe2);
         //debug stuff make some weapons
         // for (int i = 0; i < 30; i++)
         // {
@@ -269,12 +272,54 @@ public class EquipmentCreator : MonoBehaviour
         // maybe swap order and do it based off if it starts with a space or not
         
         Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2);
+        //w.spellDescription1 = GetSpellDescription(weaponType);
+        //w.spellDescription2 = GetSpellDescription(spell2);
+       
+        AddWeaponScaling(w,weaponType, spell2 );
         
         //w.InitializeWeapon();
         
         PrettyPrintWeapon(w);
         
         return w;
+    }
+    
+    private Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType)
+    {
+        name = "";
+        
+        equipmentStats = new Dictionary<Equipment.Stats, int>();
+        equipmentStats.Add(Equipment.Stats.ItemLevel, level);
+        equipmentStats.Add(Equipment.Stats.Rarity, rarity);
+        
+        AddSlotName(Equipment.Slot.Scroll);
+        name += SpellNameAddition(spellType, false);
+        name = name.Substring(1);
+        
+
+
+
+
+        // maybe swap order and do it based off if it starts with a space or not
+        
+        Weapon scroll = new Weapon(name, Equipment.Slot.Scroll, equipmentStats, spellType);
+        
+       
+        //todo spell scaling
+        //AddWeaponScaling(w,weaponType);
+        
+        //w.InitializeWeapon();
+        
+        PrettyPrintWeapon(scroll);
+        
+        return scroll;
+    }
+
+    private string GetSpellDescription(Weapon.SpellTypes spell)
+    {
+        //Debug.Log(dataReader.GetWeaponScalingTable()[spell.GetHashCode()].Last());
+        return "";
+        //return dataReader.GetWeaponScalingTable()[spell.GetHashCode()].Last().ToString();
     }
     
     private void PrettyPrintWeapon( Weapon w)
@@ -336,8 +381,8 @@ public class EquipmentCreator : MonoBehaviour
         }
     
         var v = Enum.GetValues (typeof (Equipment.Stats));
-        Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(5, v.Length));
-        Equipment.Stats b = (Equipment.Stats) v.GetValue (Random.Range(5, v.Length));
+        Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length));
+        Equipment.Stats b = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length));
 
         
         //todo: two handers might want to exclude states for other weapons, ie a long sword shouldnt have axe stats on it.
@@ -370,6 +415,22 @@ public class EquipmentCreator : MonoBehaviour
         
     }
         
+    private void AddWeaponScaling(Weapon weapon, Weapon.SpellTypes spell1, Weapon.SpellTypes spell2 = Weapon.SpellTypes.None)
+    {
+
+        List<List<object>> scaling = dataReader.GetWeaponScalingTable();
+        List<object> scaling1 = scaling[spell1.GetHashCode()];
+        weapon.scalingInfo1 = scaling1;
+        
+        if (spell2 != Weapon.SpellTypes.None)
+        {
+            List<object> scaling2 = scaling[spell2.GetHashCode()];
+            
+            weapon.scalingInfo2 = scaling2;
+
+        }
+
+    }
         
         
 
@@ -466,6 +527,8 @@ public class EquipmentCreator : MonoBehaviour
 
     private string SpellNameAddition(Weapon.SpellTypes spell, bool wepBefore)
     {
+        nameTable = dataReader.GetWeaponScalingTable();
+
         // basically we have to adjust the values stab -> stabbing but whirlwind !-> whirlwinding
         // then we take that and add it to the name on the right side of the naming
         
@@ -715,6 +778,9 @@ public class EquipmentCreator : MonoBehaviour
             case Equipment.Slot.Boots:
                 name += " " +BootsSlot[Random.Range(0, BootsSlot.Count)];
                 break;
+            case Equipment.Slot.Scroll:
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
         }
     }
 
@@ -886,12 +952,7 @@ public class EquipmentCreator : MonoBehaviour
         "Manuscript",
         "Parchment",
         "Leaflet",
-        "Script"
-        
-        
-    };
-    private List<string> BookSlot = new List<string>()
-    {
+        "Script",
         "Book",
         "Tome",
         "Spellbook",
@@ -899,9 +960,10 @@ public class EquipmentCreator : MonoBehaviour
         "Grimoire",
         "Codex",
         "Manuel",
-
+        
+        
     };
-    
+
     private List<string> HeadSlot = new List<string>()
     {
         "Helm",

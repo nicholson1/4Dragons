@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ImportantStuff;
 using UnityEngine;
 
 public class Weapon : Equipment
@@ -21,11 +22,33 @@ public class Weapon : Equipment
         set => _spellType2 = value;
     }
 
-    private string spellDescription1;
-    private string spellDescription2;
+    private string _spellDescription1;
+    private string _spellDescription2;
+    
+    // public string spellDescription1 
+    // {
+    //     get => _spellDescription1;
+    //     set => _spellDescription1 = value;
+    // }
+    // public string spellDescription2 
+    // {
+    //     get => _spellDescription2;
+    //     set => _spellDescription2 = value;
+    // }
 
-    private List<object> scalingInfo1;
-    private List<object> scalingInfo2;
+    private List<object> _scalingInfo1;
+    public List<object> scalingInfo1
+    {
+        get => _scalingInfo1;
+        set => _scalingInfo1 = value;
+    }
+    
+    private List<object> _scalingInfo2;
+    public List<object> scalingInfo2
+    {
+        get => _scalingInfo2;
+        set => _scalingInfo2 = value;
+    }
 
 
     public Weapon(string name, Slot slot,Dictionary<Stats,int> stats, Weapon.SpellTypes spell1, Weapon.SpellTypes spell2 = Weapon.SpellTypes.None)
@@ -35,7 +58,12 @@ public class Weapon : Equipment
         this.stats = stats;
         _spellType1 = spell1;
         _spellType2 = spell2;
+        
+        
+        
     }
+
+    
     
 
     public (SpellTypes,SpellTypes) GetSpellTypes()
