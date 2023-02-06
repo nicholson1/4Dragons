@@ -102,18 +102,27 @@ public class DataReader : MonoBehaviour
             temp.Add(dataTable[i][0]);
             //add the data
             string[] scalingData = dataTable[i][1].ToString().Split(",");
+            List<object> scaling = new List<object>();
             foreach (var num in scalingData)
             {
                 if (num.Contains("."))
                 {
-                    temp.Add(float.Parse(num));
+                    scaling.Add(float.Parse(num));
                 }
                 else
                 {
-                    temp.Add(int.Parse(num));
+                    scaling.Add(int.Parse(num));
                 }
             }
+            
+            temp.Add(scaling);
+            
+            //energy cost
             temp.Add(dataTable[i][2]);
+            
+            //description
+            temp.Add(dataTable[i][3]);
+            
             
             // string debug = "";
             // foreach (var o in temp)

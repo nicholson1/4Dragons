@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatEntity : MonoBehaviour
 {
     [SerializeField] private Character myCharacter;
     public CombatEntity Target;
+    [SerializeField] private Slider healthBar;
 
     private Dictionary<Equipment.Stats, int> currentStats;
     

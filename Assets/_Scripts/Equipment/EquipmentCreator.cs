@@ -22,7 +22,7 @@ public class EquipmentCreator : MonoBehaviour
 
     private void Start()
     {
-        CreateSpellScroll(1, 1, Weapon.SpellTypes.Axe2);
+        //CreateSpellScroll(1, 1, Weapon.SpellTypes.Axe2);
         //debug stuff make some weapons
         // for (int i = 0; i < 30; i++)
         // {
@@ -133,6 +133,26 @@ public class EquipmentCreator : MonoBehaviour
         //w =
         
     }
+    public List<Weapon> CreateAllSpellScrolls(int level)
+    {
+        List<Weapon> generatedWeapons = new List<Weapon>();
+
+        //first spell
+        Weapon w = CreateRandomSpellScroll(level);
+        generatedWeapons.Add(w);
+        
+        //second Spell
+        w = CreateRandomSpellScroll(level);
+        generatedWeapons.Add(w);
+
+        
+        return generatedWeapons;
+
+        
+        // create 1 weap, if it is a two hander move on, else create a 1 hander
+        //w =
+        
+    }
 
     public List<Equipment> CreateAllEquipment(int level)
     {
@@ -231,6 +251,15 @@ public class EquipmentCreator : MonoBehaviour
         
         return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
 
+    }
+
+    private Weapon CreateRandomSpellScroll(int level)
+    {
+        int rarity = GetRarity(level);
+        int spellIndex;
+        spellIndex = Random.Range(10, 29);
+        return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
+        
     }
     
     

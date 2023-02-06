@@ -35,12 +35,17 @@ public class CombatButtonController : MonoBehaviour
 
     private void UpdateSpellButtons(Character player)
     {
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spells = player.GetWeaponSpells();
-        // refence the datatable with these spells as int
-        Debug.Log(spells.Item1 + "    " + spells.Item2);
+        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = player.GetWeaponSpells();
+        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
 
-        weapon1.UpdateSpell(spells.Item1, spells.Item3);
-        weapon2.UpdateSpell(spells.Item2, spells.Item4);
+        // refence the datatable with these spells as int
+        Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
+
+        weapon1.UpdateSpell(weaponSpells.Item1, weaponSpells.Item3);
+        weapon2.UpdateSpell(weaponSpells.Item2, weaponSpells.Item4);
+        scroll1.UpdateSpell(spellScolls.Item1, spellScolls.Item3);
+        scroll2.UpdateSpell(spellScolls.Item2, spellScolls.Item4);
+        
 
         
 

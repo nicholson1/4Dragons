@@ -13,8 +13,13 @@ public class SpellButton : MonoBehaviour
     public Sprite SpellSprite;
     public TextMeshProUGUI SpellText;
     List<List<object>> DataTable;
+    private ToolTip _toolTip;
     public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
-    
+
+    private void Start()
+    {
+        _toolTip = GetComponent<ToolTip>();
+    }
 
     //[SerializeField] private DataReader dataReader;
     public void SetDataTable(List<List<object>> WeaponScalingTable )
@@ -36,7 +41,17 @@ public class SpellButton : MonoBehaviour
         weapon = w;
         
         Debug.Log(weapon.name);
-        
+
+        string t = "";
+        foreach (var i in DataTable[(int)spell])
+        {
+            t += i.ToString() + ", ";
+        }
+        Debug.Log(t);
+
+        _toolTip.Title = DataTable[(int)spell][0].ToString();;
+        _toolTip.Message = SpellText.text = DataTable[(int)spell][3].ToString();
+        _toolTip.Cost = DataTable[(int)spell][2].ToString();
         
         
         Debug.Log(SpellText.text = DataTable[(int)spell][0].ToString());
@@ -52,7 +67,7 @@ public class SpellButton : MonoBehaviour
 
         Debug.Log(weapon.name + "--------------");
 
-        //Debug.Log(GetSpellDescription(spell));
+        Debug.Log(GetSpellDescription(spell));
     }
 
     public void DoSpell(CombatEntity target)

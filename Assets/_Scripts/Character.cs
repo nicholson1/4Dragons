@@ -16,6 +16,8 @@ public class Character : MonoBehaviour
     
     private List<Equipment> _equipment;
     private List<Weapon> _weapons = new List<Weapon>();
+    private List<Weapon> _spellScrolls = new List<Weapon>();
+
 
     Dictionary<Equipment.Stats, int> _stats;
     private List<Equipment> _inventory;
@@ -62,6 +64,30 @@ public class Character : MonoBehaviour
         return spells;
     }
 
+    public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetScollSpells()
+    {
+        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spells = (Weapon.SpellTypes.None, Weapon.SpellTypes.None, null, null);
+        switch (_spellScrolls.Count)
+        {
+            case 0:
+                break;
+            case 1:
+                spells.Item1 = _spellScrolls[0].GetSpellTypes().Item1;
+                break;
+            case 2:
+                spells.Item1 = _spellScrolls[0].GetSpellTypes().Item1;
+                spells.Item3 = _spellScrolls[0];
+                spells.Item2 = _spellScrolls[1].GetSpellTypes().Item1;
+                spells.Item4 = _spellScrolls[1];
+
+                break;
+                
+                
+        }
+
+        return spells;
+    }
+
     public Dictionary<Equipment.Stats, int> GetStats()
     {
         return _stats;
@@ -75,6 +101,7 @@ public class Character : MonoBehaviour
         //todo base it off of level
         _equipment = EC.CreateAllEquipment(10);
         _weapons = EC.CreateAllWeapons(10);
+        _spellScrolls = EC.CreateAllSpellScrolls(10);
         UpdateStats();
         
 
