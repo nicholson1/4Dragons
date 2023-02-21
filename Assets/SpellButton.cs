@@ -8,6 +8,7 @@ using ImportantStuff;
 
 public class SpellButton : MonoBehaviour
 {
+    [SerializeField] private CombatEntity myCharacter;
     public Weapon.SpellTypes spell;
     public Weapon weapon;
     public Sprite SpellSprite;
@@ -40,21 +41,30 @@ public class SpellButton : MonoBehaviour
 
         weapon = w;
         
-        Debug.Log(weapon.name);
+        //Debug.Log(weapon.name);
 
         string t = "";
         foreach (var i in DataTable[(int)spell])
         {
             t += i.ToString() + ", ";
         }
-        Debug.Log(t);
+        //Debug.Log(t);
 
         _toolTip.Title = DataTable[(int)spell][0].ToString();;
-        _toolTip.Message = SpellText.text = DataTable[(int)spell][3].ToString();
+        _toolTip.Message = DataTable[(int)spell][3].ToString();
         _toolTip.Cost = DataTable[(int)spell][2].ToString();
         
+        //iLVL
+        int a;
+        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+        _toolTip.iLvl = a.ToString();
+        //Rarity
+        int r;
+        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        _toolTip.rarity = r;
         
-        Debug.Log(SpellText.text = DataTable[(int)spell][0].ToString());
+        
+        //Debug.Log(SpellText.text = DataTable[(int)spell][0].ToString());
         
         
         // get name and scaling from the type of spell, and the table, adjust the description via..... idk
@@ -65,9 +75,9 @@ public class SpellButton : MonoBehaviour
     public void ShowSpell()
     {
 
-        Debug.Log(weapon.name + "--------------");
+        //Debug.Log(weapon.name + "--------------");
 
-        Debug.Log(GetSpellDescription(spell));
+        //Debug.Log(GetSpellDescription(spell));
     }
 
     public void DoSpell(CombatEntity target)

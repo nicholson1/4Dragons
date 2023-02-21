@@ -116,7 +116,7 @@ public class EquipmentCreator : MonoBehaviour
 
         if (w.slot == Equipment.Slot.TwoHander)
         {
-            Debug.Log("first weapon two hander");
+            //Debug.Log("first weapon two hander");
             return generatedWeapons;
         }
         else
@@ -248,8 +248,9 @@ public class EquipmentCreator : MonoBehaviour
             spellIndex = Random.Range(0, 10);
 
         }
-        
-        return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
+        //return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
+
+        return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Sword1);
 
     }
 
@@ -258,7 +259,9 @@ public class EquipmentCreator : MonoBehaviour
         int rarity = GetRarity(level);
         int spellIndex;
         spellIndex = Random.Range(10, 29);
-        return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
+        //return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
+        return CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2);
+
         
     }
     
@@ -378,7 +381,7 @@ public class EquipmentCreator : MonoBehaviour
 
         }
         
-        Debug.Log(Output);
+        //Debug.Log(Output);
     }
     
 
@@ -393,7 +396,7 @@ public class EquipmentCreator : MonoBehaviour
 
         }
         
-        Debug.Log(Output);
+        //Debug.Log(Output);
     }
 
     private int GetPowerBudget(int level, int rarity)

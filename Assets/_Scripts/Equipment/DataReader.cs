@@ -88,7 +88,7 @@ public class DataReader : MonoBehaviour
         
         foreach (var line in data)
         {
-            Debug.Log(line);
+            //Debug.Log(line);
             dataTable.Add(line.Split("\t"));
         }
 
@@ -148,8 +148,12 @@ public class DataReader : MonoBehaviour
         //     debug += "\n";
         // }
         
-        
-        
+        // Debug.Log("******************************");
+        // Debug.Log(WeaponTable[1].GetType());
+        // foreach (var VARIABLE in WeaponTable[1][1])
+        // {
+        //     Debug.Log(VARIABLE);
+        // }
 
         return WeaponTable;
 

@@ -2,34 +2,54 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class CombatEntity : MonoBehaviour
 {
-    [SerializeField] private Character myCharacter;
+    [SerializeField] public Character myCharacter;
     public CombatEntity Target;
     [SerializeField] private Slider healthBar;
 
-    private Dictionary<Equipment.Stats, int> currentStats;
+    private Dictionary<Equipment.Stats, int> currentEquipmentStats;
     
     //target, type of damage, how much, crit chance
-    public static event Action<CombatEntity, DamageTypes, int, float> AttackEvent;
+    public static event Action<CombatEntity, AbilityTypes, int, float> AttackEvent;
+    
+    // who got hit, type of hit, amount, reduction?
+    public static event Action<Character, AbilityTypes, int, int> GetHitWithAttack;
+    public static event Action<Character, int> GetHealed;
+
+    public List<(Weapon.SpellTypes, Weapon)> Spells;
 
     private void Start()
     {
         CombatEntity.AttackEvent += GetAttacked;
+        
+        //CombatTrigger.TriggerCombat += GetMySpells;
+
+
 
     }
 
     private void OnDestroy()
     {
         CombatEntity.AttackEvent -= GetAttacked;
+        //CombatTrigger.TriggerCombat -= GetMySpells;
+
+
+    }
+
+    public void GetAttacked(int amount)
+    {
+        GetHitWithAttack(myCharacter, AbilityTypes.PhysicalAttack, amount, 0);
 
     }
 
 
-    private void GetAttacked(CombatEntity thingGettingAttacked, DamageTypes dt, int damage, float crit)
+    private void GetAttacked(CombatEntity thingGettingAttacked, AbilityTypes dt, int damage, float crit)
     {
         //check if im being attack, if not leave
         if (thingGettingAttacked != this)
@@ -40,128 +60,221 @@ public class CombatEntity : MonoBehaviour
                   "Damage: " + damage + "\n" +
                   "Crit: " + crit
         );
+
+        int damagePreReduction = damage;
+        float critModifier = 1.5f;
+        //todo adjust crit mod via buff or title
         
-       
+        //figure if it is a crit
+        if (CriticalHit(crit))
+        {
+            damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
+            Debug.Log("CRITICAL HIT");
+        }
+        
+        //figure out damage reduction
+        int reductionAmount = 0;
+        if (dt == AbilityTypes.PhysicalAttack)
+        {
+            reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
+        }
+        else if (dt == AbilityTypes.SpellAttack)
+        {
+            reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
+
+        }
+        Debug.Log(reductionAmount + " :reduction");
+        Debug.Log(damagePreReduction - reductionAmount + " :damage");
+
+
+
+        GetHitWithAttack(myCharacter, dt, damagePreReduction - reductionAmount, reductionAmount);
+
+
+
+
+
+
+
     }
 
     public void AttackWithStat(int enumIndex)
     {
-        
-        Attack((Equipment.Stats) enumIndex);
     }
-
-    public void AttackWithSpellType(Weapon.SpellTypes spell, Weapon weapon)
-    {
-        Debug.Log(DataReader.Instance.GetWeaponScalingTable()[0]);
-    }
-
-    public void Attack(Equipment.Stats attackType)
-    {
-        Debug.Log(attackType);
-        currentStats = myCharacter.GetStats();
-        
-        DamageTypes dt = FigureOutWhatDamageType(attackType);
-        int damage = FigureOutHowMuchDamage(attackType, dt);
-        float crit = FigureOutHowMuchCrit(attackType);
-        
-
-        AttackEvent(Target, dt, damage, crit);
-
-    }
-
     
-    private int FigureOutHowMuchDamage(Equipment.Stats attackType, DamageTypes dt)
+    // get spells from wep slots, get spells from spell slots
+    // get them in an array, have the spell buttons look at a specific one
+    // if spell is none, be not interactable
+    // on click, attack target with spell
+    public void GetMySpells()
     {
-        //get base
-
-        int damage = 0;
+        //Debug.Log(" spells gooten **************");
+        Spells = new List<(Weapon.SpellTypes, Weapon)>();
         
-        int tempValue;
-        if (currentStats.TryGetValue(attackType, out tempValue))
-        {
-            damage += tempValue;
-        } 
-        else 
-        {
-            //no stat that is related
-        }
+        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = myCharacter.GetWeaponSpells();
+        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScrolls = myCharacter.GetScollSpells();
 
-        if (dt == DamageTypes.Physical)
-        {
-            if (currentStats.TryGetValue(Equipment.Stats.AttackDamage, out tempValue))
-            {
-                damage += tempValue;
-            } 
-            
-        }
-        else if (dt == DamageTypes.Spell)
-        {
-            if (currentStats.TryGetValue(Equipment.Stats.SpellPower, out tempValue))
-            {
-                damage += tempValue;
-            }
-        }
-
-        return damage;
-        // deal with specials
-        
-    }
-    public float FigureOutHowMuchCrit(Equipment.Stats attackType)
-    {
-        //get base
-        float critBase = 0;
-        int tempValue;
-        if (currentStats.TryGetValue(attackType, out tempValue))
-        {
-            critBase += tempValue;
-        }
-
-        // deal with specials to adjust base
-
-        float critPercent = .20f + (critBase / (critBase + 300)); //* 1.5f;
-        
-        return critPercent;
-    }
-   
-    public DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)
-    {
-        switch (attackType)
-        {
-            case Equipment.Stats.AttackDamage:
-                return DamageTypes.Physical;
-            case Equipment.Stats.Swords:
-                return DamageTypes.Physical;
-            case Equipment.Stats.Axes:
-                return DamageTypes.Physical;
-            case Equipment.Stats.Hammers:
-                return DamageTypes.Physical;
-            case Equipment.Stats.Daggers:
-                return DamageTypes.Physical;
-            case Equipment.Stats.Shields:
-                return DamageTypes.Physical;
-            
-            case Equipment.Stats.SpellPower:
-                return DamageTypes.Spell;
-            case Equipment.Stats.NaturePower:
-                return DamageTypes.Spell;
-            case Equipment.Stats.FirePower:
-                return DamageTypes.Spell;
-            case Equipment.Stats.IcePower:
-                return DamageTypes.Spell;
-            case Equipment.Stats.ShadowPower:
-                return DamageTypes.Spell;
-            case Equipment.Stats.BloodPower:
-                return DamageTypes.Spell;
-        }
-
-        Debug.LogWarning("DamageType Incorrect");
-        return DamageTypes.Physical;
+        Spells.Add((weaponSpells.Item1, weaponSpells.Item3));
+        Spells.Add((weaponSpells.Item2, weaponSpells.Item4));
+        Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
+        Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
     }
 
-    public enum DamageTypes
+    public void CastAbility(int index)
     {
-        Physical,
-        Spell
+        GetMySpells();
+        
+        CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
+        
+        //Debug.Log(Spells[index].Item1);
+        
+        // maybe we need like a spell library to determine effect on target?
+
+        //Debug.Log(Spells[index].Item1.ToString() + " "+ Spells[index].Item2.name);
+    }
+    
+    
+    
+
+    public void CastTheAbility(Weapon.SpellTypes spell, Weapon weapon)
+    {
+
+        // use spell book to determine targets, effect, and quantity
+        TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
+        
+        
+        
+    }
+    
+    public void Heal(CombatEntity target, int amount, float crit)
+    {
+        //Debug.Log("HEAL");
+        // do we crit
+        int heal = amount;
+        float critModifier = 1.5f;
+        //todo adjust crit mod via buff or title
+        
+        //figure if it is a crit
+        if (CriticalHit(crit))
+        {
+            heal = Mathf.RoundToInt(heal * critModifier);
+            Debug.Log("CRITICAL HEAL");
+        }
+        
+        GetHealed(target.myCharacter, heal);
+    }
+
+    public void AttackBasic(CombatEntity target,  AbilityTypes attackType, int damage, float crit)
+    {
+        AttackEvent(target, attackType, damage, crit);
+    }
+    
+    
+
+    public bool CriticalHit(float chance)
+    {
+        //maybe have reduction based on armor of this
+        int crit = Mathf.RoundToInt(chance * 100);
+
+        int theRoll = Random.Range(0, 100);
+        if (theRoll <= crit)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public int CalculateDamageReduction(int damage, Equipment.Stats armOrMagicResit )
+    {
+        //get percent reduction
+
+        int tempValue = 0;
+        myCharacter.GetStats().TryGetValue(armOrMagicResit, out tempValue);
+        float reductionPercent = DamageReductionPercent(tempValue);
+        Debug.Log(reductionPercent + " :reductionPercent");
+
+        // find the int of the input damage at that percent
+        int reductionAmount = Mathf.RoundToInt(damage * reductionPercent);
+
+        //Debug.Log(reductionAmount + " :reduction");
+        return reductionAmount;
+
+    }
+
+    public float DamageReductionPercent(int armorOrMagicResistAmount)
+    {
+        
+        //cannot go above .75% REDUCTION
+        float reductionMax = .75f;
+        
+        //todo augment reduction max
+        
+        float reductionPercent = ((float)armorOrMagicResistAmount / (armorOrMagicResistAmount + 100)) * reductionMax;
+        return reductionPercent;
+    }
+    
+    
+    // private int FigureOutHowMuchDamage(Equipment.Stats attackType, AbilityTypes dt)
+    // {
+    //     //get base
+    //     //spell type from data table Scaling[0] + level of item  * Scaling[1]
+    //     int damage = 0;
+    //     
+    //     
+    //     
+    //     
+    //     //deal with equipment modifiers
+    //
+    //     
+    //     
+    //     int tempValue;
+    //     if (currentEquipmentStats.TryGetValue(attackType, out tempValue))
+    //     {
+    //         damage += tempValue;
+    //     } 
+    //     else 
+    //     {
+    //         //no stat that is related
+    //     }
+    //
+    //     if (dt == AbilityTypes.PhysicalAttack)
+    //     {
+    //         if (currentEquipmentStats.TryGetValue(Equipment.Stats.AttackDamage, out tempValue))
+    //         {
+    //             damage += tempValue;
+    //         } 
+    //         
+    //     }
+    //     else if (dt == AbilityTypes.SpellAttack)
+    //     {
+    //         if (currentEquipmentStats.TryGetValue(Equipment.Stats.SpellPower, out tempValue))
+    //         {
+    //             damage += tempValue;
+    //         }
+    //     }
+    //     
+    //     // temp value times Scaling[2]
+    //     
+    //     // adjust for tier level of attack
+    //
+    //     return damage;
+    //     // deal with specials
+    //     
+    // }
+
+
+
+    public enum AbilityTypes
+    {
+        PhysicalAttack,
+        SpellAttack,
+        Buff,
+        DeBuff,
+        Heal
     }
     
     

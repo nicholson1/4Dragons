@@ -13,6 +13,8 @@ public class CombatController : MonoBehaviour
     [SerializeField] private Camera MainCamera;
     [SerializeField] private LayerMask Ground;
 
+    [SerializeField] private GameObject _healthBarPrefab;
+
 
     public Vector3 playerOffset = new Vector3();
 
@@ -100,6 +102,8 @@ public class CombatController : MonoBehaviour
         CombatCamera.gameObject.SetActive(true);
 
         CombatUI.SetActive(true);
+        ActivateHealthBars();
+        // activate health bars
         
         
 
@@ -109,6 +113,21 @@ public class CombatController : MonoBehaviour
         // move transition camera to combat cam rotation
         // deactivate transition camera
         // activate combat cam
+
+    }
+
+    private void ActivateHealthBars()
+    {
+        //get all characters
+        Character[] _chars = FindObjectsOfType<Character>();
+
+        foreach (var c in _chars)
+        {
+            HealthBar hb = Instantiate(_healthBarPrefab, CombatUI.transform).GetComponent<HealthBar>();
+            hb.Initialize(c, CombatCamera);
+            
+        }
+
 
     }
 

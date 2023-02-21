@@ -8,9 +8,10 @@ using Random = UnityEngine.Random;
 public class Character : MonoBehaviour
 {
     private string _name;
-    private int _level;
-    private int _experience;
-    private int _currentHealth;
+    public int _level;
+    public int _experience;
+    public int _currentHealth;
+    public int _maxHealth;
     private int _currentEnergy;
     private int _maxEnergy;
     
@@ -98,12 +99,18 @@ public class Character : MonoBehaviour
         CombatTrigger.TriggerCombat += ActivateCombatEntity;
         CombatTrigger.EndCombat += DeactivateCombatEntity;
         
+        CombatEntity.GetHitWithAttack += GetHitWithAttack;
+        CombatEntity.GetHealed += GetHealed;
+
+        
         //todo base it off of level
         _equipment = EC.CreateAllEquipment(10);
         _weapons = EC.CreateAllWeapons(10);
         _spellScrolls = EC.CreateAllSpellScrolls(10);
         UpdateStats();
-        
+        _currentHealth = _maxHealth;
+
+
 
     }
     
@@ -113,7 +120,40 @@ public class Character : MonoBehaviour
     {
         CombatTrigger.TriggerCombat -= ActivateCombatEntity;
         CombatTrigger.EndCombat -= DeactivateCombatEntity;
+        CombatEntity.GetHitWithAttack -= GetHitWithAttack;
+        CombatEntity.GetHealed -= GetHealed;
 
+
+
+
+    }
+
+    private void GetHealed(Character c, int healAmount)
+    {
+        if(c != this)
+            return;
+
+        _currentHealth += healAmount;
+        if (_currentHealth > _maxHealth)
+        {
+            _currentHealth = _maxHealth;
+        }
+    }
+
+    private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
+    {
+        if(c != this)
+            return;
+        // take damage
+        // possibly die
+        _currentHealth -= amount;
+        if (_currentHealth <= 0)
+        {
+            // die
+            _currentHealth = 0;
+            Debug.Log("DEFEAT");
+        }
+        
 
     }
 
@@ -161,9 +201,23 @@ public class Character : MonoBehaviour
                 }
             }
         }
+        
+        // max health = 50 * level + 50 + hp from stats
+        SetMaxHealth();
+        
+        
         PrettyPrintStats();
     }
-    
+
+    private void SetMaxHealth()
+    {
+        int hp = 50 * _level + 50;
+        int hpFromStats = 0;
+        _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
+        hp += hpFromStats;
+        _maxHealth = hp;
+        
+    }
     
     private void PrettyPrintStats()
     {

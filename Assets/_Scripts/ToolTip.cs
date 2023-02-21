@@ -10,11 +10,13 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public string Title;
     public string Message;
     public string Cost;
+    public string iLvl;
+    public int rarity;
 
 
     private void OnMouseEnter()
     {
-        ToolTipManager._instance.SetAndShowToolTip(Title,Message, Cost);
+        ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
     }
 
     private void OnMouseExit()
@@ -24,7 +26,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     public void OnPointerEnter(PointerEventData pointer)
     {
-        ToolTipManager._instance.SetAndShowToolTip(Title,Message, Cost);
+        ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
     }
 
     public void OnPointerExit(PointerEventData pointer)
