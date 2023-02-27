@@ -14,39 +14,90 @@ public class StatusText : MonoBehaviour
     //have colors for each abilitytypes
     [SerializeField] private Color[] abilityColors;
 
+    public Sprite blockIcon;
+    public Sprite physicalAttackIcon;
+    public Sprite healIcon;
+    public Sprite spellAttackIcon;
+    
+    
+    
 
     public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, int reduction = 0)
     {
+        Icon.sprite = null;
+        Icon.color = Color.white;
+
         switch (abilityTypes)
         {
             case CombatEntity.AbilityTypes.PhysicalAttack:
                 AmountText.text = amount.ToString();
-                AmountText.color = abilityColors[abilityTypes.GetHashCode()];
-                //Set Icon to attack damage icon
+                AmountText.color = abilityColors[(int)abilityTypes];
                 ReductionText.text = "(" + reduction + ")";
                 ReductionText.color = Color.gray;
+                Icon.sprite = physicalAttackIcon;
                 break;
             case CombatEntity.AbilityTypes.SpellAttack:
                 AmountText.text = amount.ToString();
-                AmountText.color = abilityColors[abilityTypes.GetHashCode()];
-                //Set Icon to spell damage icon
-                
+                AmountText.color = abilityColors[(int)abilityTypes];
+                Icon.sprite = spellAttackIcon;
+                //Icon.color = abilityColors[abilityTypes.GetHashCode()];
+
                 ReductionText.text = "(" + reduction + ")";
                 ReductionText.color = Color.gray;
                 break;
                 
             case CombatEntity.AbilityTypes.Heal:
                 AmountText.text = amount.ToString();
-                AmountText.color = abilityColors[abilityTypes.GetHashCode()];
+                AmountText.color = abilityColors[(int)abilityTypes];
                 ReductionText.text = "";
+                Icon.sprite = healIcon;
                 
                 break;
         }
     }
+    
+    public void InitializeStatusText(int turns, int amount, CombatEntity.BuffTypes buffTypes)
+    {
+        Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
+        if(buffTypes == CombatEntity.BuffTypes.Block){
+            AmountText.text = amount.ToString();
+            AmountText.color = Color.blue;//abilityColors[buffTypes.GetHashCode()];
+            ReductionText.text = "";
+        }
+        else
+        {
+            AmountText.text = buffTypes.ToString();
+            AmountText.color = abilityColors[2];
+            ReductionText.text = "(" + turns +")";
+
+
+
+        }
+    }
+    public void InitializeStatusText(int turns, int amount, CombatEntity.DeBuffTypes debuffTypes)
+    {
+        Icon.sprite = TheSpellBook._instance.GetSprite(debuffTypes);
+        AmountText.text = debuffTypes.ToString();
+        AmountText.color = abilityColors[3];
+        ReductionText.text = "(" + turns +")";
+
+        // switch (debuffTypes)
+        // {
+        //     case CombatEntity.DeBuffTypes.Bleed:
+        //         AmountText.text = debuffTypes.ToString();
+        //         AmountText.color = abilityColors[3];
+        //         ReductionText.text = "";
+        //
+        //         
+        //        
+        //         
+        //         break;
+        // }
+    }
 
     private void Start()
     {
-        StartCoroutine(LerpPos(transform.position, transform.position + new Vector3(0, 100, 0), 2f));
+        StartCoroutine(LerpPos(transform.position, transform.position + new Vector3(0, 200, 0), 4f));
         StartCoroutine(Fade(1f, 1f, AmountText));
         StartCoroutine(Fade(1f, 1f, ReductionText));
         StartCoroutine(Fade(1f, 1f, Icon));

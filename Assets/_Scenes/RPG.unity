@@ -448,7 +448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EquipmentNamings: {fileID: 4900000, guid: ce4dceca4519d5144aeccbbd312188be, type: 3}
-  WeaponScaling: {fileID: 4900000, guid: 863eb07c53321444ab2b1c6f779a6c8d, type: 3}
+  WeaponScaling: {fileID: 4900000, guid: 3c16eb3ea2395bf40b74a31d39f1a12e, type: 3}
 --- !u!114 &112750798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,6 +511,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85500c25893d9914aaab0a40ad864de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AbilityTypeSprites:
+  - {fileID: 21300000, guid: 3cb5846afaa42464f859735f72047fc9, type: 3}
+  - {fileID: 21300000, guid: 6b5368b2e46a7bd42b3c3fdc6128c49b, type: 3}
+  - {fileID: 21300000, guid: a90b488d3c117db40a255177366a5804, type: 3}
+  - {fileID: 21300000, guid: 7d0f73aed89f4e146b939c2b5afbcb89, type: 3}
+  - {fileID: 21300000, guid: 806c2f4e4121bd443a535f7551d4fa7c, type: 3}
+  SpellSprites: []
+  BuffSprites:
+  - {fileID: 21300000, guid: 8caad29c9cd2ab54d841023f5ba66b7c, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  BuffDescriptions: []
+  DeBuffSprites:
+  - {fileID: 21300000, guid: c1d35b40e3fb0f9438f23087432d9765, type: 3}
+  - {fileID: 21300000, guid: 9725fb87facc42a4984598500f76e0fb, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  DeBuffDescriptions:
+  - At the end of the next $ turns deal @ physical damage.
+  - At the end of the next $ turns deal @ spell damage.
 --- !u!1 &140669253
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,7 +640,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 3e-45, y: 0, z: 0, w: -2.0000002}
+  m_BoundingSphereOverride: {x: 4.5905e-41, y: NaN, z: 6.82e-43, w: 0.000000004853952}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -968,9 +991,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1304012427}
-        m_TargetAssemblyTypeName: CombatTrigger, Assembly-CSharp
-        m_MethodName: EndTheCombat
+      - m_Target: {fileID: 1887791476}
+        m_TargetAssemblyTypeName: CombatEntity, Assembly-CSharp
+        m_MethodName: EndTurn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1673,6 +1696,9 @@ MonoBehaviour:
   _experience: 0
   _currentHealth: 0
   _maxHealth: 0
+  _maxEnergy: 4
+  _currentEnergy: 0
+  isPlayerCharacter: 0
   _combatEntity: {fileID: 537379316}
 --- !u!4 &537379315
 Transform:
@@ -1705,6 +1731,7 @@ MonoBehaviour:
   myCharacter: {fileID: 537379314}
   Target: {fileID: 0}
   healthBar: {fileID: 0}
+  isMyTurn: 0
 --- !u!1 &554881610 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3946359818725569880, guid: 2e5701230b5f141439d3e44366f577a1, type: 3}
@@ -1866,7 +1893,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1887791476}
         m_TargetAssemblyTypeName: CombatEntity, Assembly-CSharp
-        m_MethodName: GetAttacked
+        m_MethodName: GetAttackedTest
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5331,10 +5358,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0508ff8a8342b24693638ffdb56295c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _level: 0
+  _level: 4
   _experience: 0
   _currentHealth: 0
   _maxHealth: 0
+  _maxEnergy: 4
+  _currentEnergy: 0
+  isPlayerCharacter: 1
   _combatEntity: {fileID: 1887791476}
 --- !u!114 &1887791476
 MonoBehaviour:
@@ -5351,6 +5381,7 @@ MonoBehaviour:
   myCharacter: {fileID: 1887791475}
   Target: {fileID: 0}
   healthBar: {fileID: 0}
+  isMyTurn: 0
 --- !u!1 &1891014883
 GameObject:
   m_ObjectHideFlags: 0

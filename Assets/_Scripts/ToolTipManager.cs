@@ -45,7 +45,11 @@ public class ToolTipManager : MonoBehaviour
       tiptext.text = message;
       spellCost.text = cost;
       tiptitle.text = title;
-      iLvl.text = "Lvl. " + itemLvl;
+      if (itemLvl != "")
+      {
+         iLvl.text = "Lvl. " + itemLvl;
+
+      }
       //Debug.Log(itemRarity);
       SetRarityText(itemRarity);
       

@@ -248,9 +248,9 @@ public class EquipmentCreator : MonoBehaviour
             spellIndex = Random.Range(0, 10);
 
         }
-        //return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
+        return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
 
-        return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Sword1);
+        //return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Shield2);
 
     }
 
@@ -259,14 +259,14 @@ public class EquipmentCreator : MonoBehaviour
         int rarity = GetRarity(level);
         int spellIndex;
         spellIndex = Random.Range(10, 29);
-        //return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
-        return CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2);
+        return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
+        //return CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2);
 
         
     }
     
     
-    private Weapon CreateWeapon(int level, int rarity,  Equipment.Slot slot, Weapon.SpellTypes weaponType)
+    public Weapon CreateWeapon(int level, int rarity,  Equipment.Slot slot, Weapon.SpellTypes weaponType)
     {
         name = "";
         
@@ -316,7 +316,7 @@ public class EquipmentCreator : MonoBehaviour
         return w;
     }
     
-    private Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType)
+    public Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType)
     {
         name = "";
         

@@ -8,6 +8,8 @@ using Object = UnityEngine.Object;
 
 public class DataReader : MonoBehaviour
 {
+    public static DataReader _instance;
+
     public TextAsset EquipmentNamings;
     public TextAsset WeaponScaling;
 
@@ -17,28 +19,21 @@ public class DataReader : MonoBehaviour
     private List<List<object>> WeaponScalingTable;
 
     
-    private static DataReader instance = null;
 
-    private DataReader()
+    private void Awake()
     {
-    }
-
-    public static DataReader Instance
-    {
-        get
+        if (_instance != null && _instance != this)
         {
-            if (instance == null)
-            {
-                instance = new DataReader();
-            }
-            return instance;
+            Destroy(this.gameObject);
         }
-    }
-    public void Awake()
-    {
+        else
+        {
+            _instance = this;
+        }
         EquipmentNamingTable = ReadCSV(EquipmentNamings);
         WeaponScalingTable = ReadTSVWeaponTable(WeaponScaling);
     }
+    
 
     public List<string[]> GetEquipmentNamingTable()
     {
@@ -93,7 +88,6 @@ public class DataReader : MonoBehaviour
         }
 
         //List<object> temp = new List<object>();
-        
         for (int i = 0; i < dataTable.Count; i++)
         {
             List<object> temp = new List<object>();
@@ -123,7 +117,16 @@ public class DataReader : MonoBehaviour
             //description
             temp.Add(dataTable[i][3]);
             
-            
+            //abilitytype
+            string[] abilitytype = dataTable[i][4].ToString().Split(",");
+            List<int> abilities = new List<int>();
+            foreach (string num in abilitytype)
+            {
+                abilities.Add(int.Parse(num));
+            }
+            temp.Add(abilities);
+
+
             // string debug = "";
             // foreach (var o in temp)
             // {

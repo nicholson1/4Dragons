@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,34 +22,114 @@ public class CombatEntity : MonoBehaviour
     // who got hit, type of hit, amount, reduction?
     public static event Action<Character, AbilityTypes, int, int> GetHitWithAttack;
     public static event Action<Character, int> GetHealed;
+    public static event Action<Character, BuffTypes, int, float> GetHitWithBuff;
+    public static event Action<Character, DeBuffTypes, int, float> GetHitWithDeBuff;
 
+    public static event Action<CombatEntity, BuffTypes, int, float> BuffEvent;
+    public static event Action<CombatEntity, DeBuffTypes, int, float> DeBuffEvent;
+    
+    public static event Action<Character, Weapon.SpellTypes> AddIntent;
+    public static event Action<Character> RemoveIntent;
+
+
+    
     public List<(Weapon.SpellTypes, Weapon)> Spells;
+    
+    public bool isMyTurn = false;
+
+    public List<(Weapon.SpellTypes, Weapon)> Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+    
 
     private void Start()
     {
         CombatEntity.AttackEvent += GetAttacked;
-        
+        CombatEntity.BuffEvent += GetBuffed;
+        CombatEntity.DeBuffEvent += GetDeBuffed;
         //CombatTrigger.TriggerCombat += GetMySpells;
-
-
-
     }
 
     private void OnDestroy()
     {
-        CombatEntity.AttackEvent -= GetAttacked;
-        //CombatTrigger.TriggerCombat -= GetMySpells;
-
-
+       CombatEntity.AttackEvent -= GetAttacked;
+       CombatEntity.BuffEvent -= GetBuffed;
+       CombatEntity.DeBuffEvent -= GetDeBuffed;
+       //CombatTrigger.TriggerCombat -= GetMySpells;
     }
 
-    public void GetAttacked(int amount)
+    private IEnumerator CastAllIntentions()
     {
-        GetHitWithAttack(myCharacter, AbilityTypes.PhysicalAttack, amount, 0);
+        yield return new WaitForSeconds(1f);
+        while (Intentions.Count > 0)
+        {
+            CastTheAbility(Intentions.Last().Item1,Intentions.Last().Item2 );
+            RemoveIntent(myCharacter);
+            Intentions.RemoveAt(Intentions.Count -1);
+            yield return new WaitForSeconds(1f);
+            
+        }
+        EndTurn();
+    }
+
+    public void StartTurn()
+    {
+        isMyTurn = true;
+        
+        //todo trigger buffs
+
+        if (myCharacter.isPlayerCharacter)
+        {
+            // activate end turn button
+        }
+        else
+        {
+            // co-routine to do attacks in order
+            StartCoroutine(CastAllIntentions());
+        }
+    }
+
+    public void EndTurn()
+    {
+        //todo trigger debuffs
+        
+        
+
+        if (myCharacter.isPlayerCharacter)
+        {
+            // disable end turn 
+        }
+        else
+        {
+            SetMyIntentions();
+        }
+        
+        isMyTurn = false;
+        CombatController._instance.EndCurrentTurn();
+
+
+        
+        
+    }
+
+    public void GetAttackedTest(int amount)
+    {
+        GetAttacked(this, AbilityTypes.PhysicalAttack, amount, 0);
 
     }
 
+    private void GetBuffed(CombatEntity target, BuffTypes buff, int turns, float amount)
+    {
+        if (target != this)
+            return;
+        GetHitWithBuff(myCharacter, buff, turns, amount);
+    }
+    private void GetDeBuffed(CombatEntity target, DeBuffTypes deBuff, int turns, float amount)
+    {
+        if (target != this)
+            return;
+        GetHitWithDeBuff(myCharacter, deBuff, turns, amount);
 
+    }
+    
     private void GetAttacked(CombatEntity thingGettingAttacked, AbilityTypes dt, int damage, float crit)
     {
         //check if im being attack, if not leave
@@ -83,23 +164,52 @@ public class CombatEntity : MonoBehaviour
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
 
         }
-        Debug.Log(reductionAmount + " :reduction");
-        Debug.Log(damagePreReduction - reductionAmount + " :damage");
+        //Debug.Log(reductionAmount + " :reduction");
+        //Debug.Log(damagePreReduction - reductionAmount + " :damage");
+        
+        int attackDamage = damagePreReduction - reductionAmount;
+        //check for block
+        int blockCheck = myCharacter.GetIndexOfBuff(BuffTypes.Block);
+        if (blockCheck != -1)
+        {
+            //if we have block  reduce block before attack
+            float blockAmount = myCharacter.Buffs[blockCheck].Item3;
+
+            float blockAfterDamage = blockAmount - attackDamage;
+            Debug.Log(attackDamage + " AD, " + blockAmount + " Block = " + blockAfterDamage );
+
+            if (blockAfterDamage <= 0)
+            {
+                Debug.Log("issue");
+                //Debug.Log(blockAmount - attackDamage + " block after damage");
+
+                GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -blockAmount);
+                attackDamage -= Mathf.RoundToInt(blockAmount);
+                
 
 
 
-        GetHitWithAttack(myCharacter, dt, damagePreReduction - reductionAmount, reductionAmount);
+            }
+            else
+            {
+                //Debug.Log(blockAmount - attackDamage + " block after damage");
+                GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -attackDamage);
+                attackDamage -= Mathf.RoundToInt(blockAmount);
 
 
 
+            }
+        }
+
+        if (attackDamage < 0)
+        {
+            attackDamage = 0;
+        }
+        //Debug.Log(attackDamage);
 
 
+        GetHitWithAttack(myCharacter, dt, attackDamage, reductionAmount);
 
-
-    }
-
-    public void AttackWithStat(int enumIndex)
-    {
     }
     
     // get spells from wep slots, get spells from spell slots
@@ -119,18 +229,63 @@ public class CombatEntity : MonoBehaviour
         Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
         Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
     }
+    
+    
+
+    public List<(Weapon.SpellTypes spell, Weapon weapon)> SetMyIntentions()
+    {
+        GetMySpells();
+        List<(Weapon.SpellTypes, Weapon)> intent = new List<(Weapon.SpellTypes, Weapon)>();
+        //get max energy
+        int energy = myCharacter._maxEnergy;
+        //todo modify it with buff / titles
+
+        int infiniteStop = 0;
+        while (energy > 0 || infiniteStop > 100)
+        {
+            // roll random 0-3
+            //make sure energy is <= energy
+            // add spell + wep to intention
+            // subtract energy
+            int roll = Random.Range(0, 3);
+            
+            // we need spell energy;
+            int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
+            if ( spellE <= energy)
+            {
+                Debug.Log(roll + " " + Spells[roll].Item1);
+                intent.Add((Spells[roll].Item1, Spells[roll].Item2));
+                energy -= spellE;
+            }
+
+            
+            infiniteStop += 1;
+        }
+
+        StartCoroutine(AddIntents());
+        Intentions = intent;
+        return intent;
+
+    }
+
+    private IEnumerator AddIntents()
+    {
+        yield return new WaitForSeconds(1);
+        for (int i = 0; i < Intentions.Count; i++)
+        {
+            AddIntent(myCharacter, Intentions[i].Item1);
+            yield return new WaitForSeconds(.25f);
+
+        }
+    }
 
     public void CastAbility(int index)
     {
-        GetMySpells();
-        
-        CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
-        
-        //Debug.Log(Spells[index].Item1);
-        
-        // maybe we need like a spell library to determine effect on target?
-
-        //Debug.Log(Spells[index].Item1.ToString() + " "+ Spells[index].Item2.name);
+        if (isMyTurn)
+        {
+            GetMySpells();
+            CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
+        }
     }
     
     
@@ -138,12 +293,8 @@ public class CombatEntity : MonoBehaviour
 
     public void CastTheAbility(Weapon.SpellTypes spell, Weapon weapon)
     {
-
         // use spell book to determine targets, effect, and quantity
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
-        
-        
-        
     }
     
     public void Heal(CombatEntity target, int amount, float crit)
@@ -167,6 +318,33 @@ public class CombatEntity : MonoBehaviour
     public void AttackBasic(CombatEntity target,  AbilityTypes attackType, int damage, float crit)
     {
         AttackEvent(target, attackType, damage, crit);
+    }
+
+    public void Buff(CombatEntity target, BuffTypes buff, int turns, float amount)
+    {
+
+        
+        BuffEvent(target, buff, turns, amount);
+    }
+    
+    
+
+    public void DeBuff(CombatEntity target, DeBuffTypes deBuff, int turns, float amount, float crit = 0)
+    {
+        // for certain debuffs check if they crit, bleed/burn
+
+        // we dont need to do this? dots dont crit
+        // if (deBuff == DeBuffTypes.Bleed || deBuff == DeBuffTypes.Burn)
+        // {
+        //     if (CriticalHit(crit))
+        //     {
+        //         float critModifier = 1.5f;
+        //         amount = Mathf.RoundToInt(amount * critModifier);
+        //         Debug.Log("CRITICAL HIT");
+        //     }
+        // }
+        
+        DeBuffEvent(target, deBuff, turns, amount);
     }
     
     
@@ -195,7 +373,7 @@ public class CombatEntity : MonoBehaviour
         int tempValue = 0;
         myCharacter.GetStats().TryGetValue(armOrMagicResit, out tempValue);
         float reductionPercent = DamageReductionPercent(tempValue);
-        Debug.Log(reductionPercent + " :reductionPercent");
+        //Debug.Log(reductionPercent + " :reductionPercent");
 
         // find the int of the input damage at that percent
         int reductionAmount = Mathf.RoundToInt(damage * reductionPercent);
@@ -217,56 +395,6 @@ public class CombatEntity : MonoBehaviour
         return reductionPercent;
     }
     
-    
-    // private int FigureOutHowMuchDamage(Equipment.Stats attackType, AbilityTypes dt)
-    // {
-    //     //get base
-    //     //spell type from data table Scaling[0] + level of item  * Scaling[1]
-    //     int damage = 0;
-    //     
-    //     
-    //     
-    //     
-    //     //deal with equipment modifiers
-    //
-    //     
-    //     
-    //     int tempValue;
-    //     if (currentEquipmentStats.TryGetValue(attackType, out tempValue))
-    //     {
-    //         damage += tempValue;
-    //     } 
-    //     else 
-    //     {
-    //         //no stat that is related
-    //     }
-    //
-    //     if (dt == AbilityTypes.PhysicalAttack)
-    //     {
-    //         if (currentEquipmentStats.TryGetValue(Equipment.Stats.AttackDamage, out tempValue))
-    //         {
-    //             damage += tempValue;
-    //         } 
-    //         
-    //     }
-    //     else if (dt == AbilityTypes.SpellAttack)
-    //     {
-    //         if (currentEquipmentStats.TryGetValue(Equipment.Stats.SpellPower, out tempValue))
-    //         {
-    //             damage += tempValue;
-    //         }
-    //     }
-    //     
-    //     // temp value times Scaling[2]
-    //     
-    //     // adjust for tier level of attack
-    //
-    //     return damage;
-    //     // deal with specials
-    //     
-    // }
-
-
 
     public enum AbilityTypes
     {
@@ -276,10 +404,34 @@ public class CombatEntity : MonoBehaviour
         DeBuff,
         Heal
     }
-    
-    
-    
-    
 
+    public enum BuffTypes
+    {
+        Block,
+        Invulnerable,
+        Rejuvenation,
+        Thorns,
+        
+        
+    }
     
+    public enum DeBuffTypes
+    {
+        Bleed,
+        Burn,
+        Wound,
+        Weakened,
+        Chill,
+        
+
+
+
+    }
+
+
+
+
+
+
+
 }

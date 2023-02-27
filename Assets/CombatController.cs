@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
+    public static CombatController _instance;
     [SerializeField] private GameObject CombatUI;
     
     [SerializeField] private Camera TransitionCamera;
@@ -15,11 +17,25 @@ public class CombatController : MonoBehaviour
 
     [SerializeField] private GameObject _healthBarPrefab;
 
+    private List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
 
     public Vector3 playerOffset = new Vector3();
 
     private Character Player;
 
+    private int CurrentTurnIndex = 0;
+    
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
     private void TransitionToCombat(Vector3 DirVect)
     {
         //set transition camera to starting point
@@ -102,18 +118,54 @@ public class CombatController : MonoBehaviour
         CombatCamera.gameObject.SetActive(true);
 
         CombatUI.SetActive(true);
-        ActivateHealthBars();
+        
         // activate health bars
+        ActivateHealthBars();
+        
+        // get all combat entities, put the player at position 1
+        GetAllCombatEntities();
+        // start the turn
+        entitiesInCombat[0].isMyTurn = true;
+
+
+    }
+
+    public void EndCurrentTurn()
+    {
+        CurrentTurnIndex += 1;
+        if (CurrentTurnIndex >= entitiesInCombat.Count)
+        {
+            CurrentTurnIndex = 0;
+        }
+        
+        Debug.Log(entitiesInCombat[CurrentTurnIndex] + " now their turn");
+        entitiesInCombat[CurrentTurnIndex].StartTurn();
+        
+    }
+
+    private void GetAllCombatEntities()
+    {
+        entitiesInCombat = new List<CombatEntity>();
+        List<CombatEntity> OutOfOrderCe = FindObjectsOfType<CombatEntity>().ToList();
+
+        // put the player character at the front
+        foreach (var ce in OutOfOrderCe)
+        {
+            if (ce.myCharacter.isPlayerCharacter)
+            {
+                entitiesInCombat.Add(ce);
+                OutOfOrderCe.Remove(ce);
+                break;
+            }
+        }
+        entitiesInCombat.AddRange(OutOfOrderCe);
+
+        foreach (var npc in OutOfOrderCe)
+        {
+            npc.SetMyIntentions();
+        }
         
         
-
-
-        
-
-        // move transition camera to combat cam rotation
-        // deactivate transition camera
-        // activate combat cam
-
     }
 
     private void ActivateHealthBars()

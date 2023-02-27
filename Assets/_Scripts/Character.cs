@@ -12,12 +12,18 @@ public class Character : MonoBehaviour
     public int _experience;
     public int _currentHealth;
     public int _maxHealth;
-    private int _currentEnergy;
-    private int _maxEnergy;
+    public int _maxEnergy;
+    public int _currentEnergy;
+
+    public bool isPlayerCharacter;
     
     private List<Equipment> _equipment;
     private List<Weapon> _weapons = new List<Weapon>();
     private List<Weapon> _spellScrolls = new List<Weapon>();
+
+    public List<(CombatEntity.BuffTypes, int, float)> Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
+    public List<(CombatEntity.DeBuffTypes, int, float)> DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
+
 
 
     Dictionary<Equipment.Stats, int> _stats;
@@ -27,6 +33,7 @@ public class Character : MonoBehaviour
 
     [SerializeField] public CombatEntity _combatEntity;
 
+    public static event Action<Character,int, int> UpdateBlock; 
     public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetWeaponSpells()
     {
         //spell 1, spell2, weapon1, weapon2
@@ -93,6 +100,7 @@ public class Character : MonoBehaviour
     {
         return _stats;
     }
+    
     private void Start()
     {
         EC = FindObjectOfType<EquipmentCreator>();
@@ -100,15 +108,35 @@ public class Character : MonoBehaviour
         CombatTrigger.EndCombat += DeactivateCombatEntity;
         
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
+        CombatEntity.GetHitWithBuff += GetHitWithBuff;
+        CombatEntity.GetHitWithDeBuff += GetHitWithDeBuff;
+
+
         CombatEntity.GetHealed += GetHealed;
 
         
         //todo base it off of level
         _equipment = EC.CreateAllEquipment(10);
-        _weapons = EC.CreateAllWeapons(10);
-        _spellScrolls = EC.CreateAllSpellScrolls(10);
+        //_weapons = EC.CreateAllWeapons(10);
+        //_spellScrolls = EC.CreateAllSpellScrolls(10);
         UpdateStats();
         _currentHealth = _maxHealth;
+
+        if (isPlayerCharacter)
+        {
+            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Sword1));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Fire2));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
+        }
+        else
+        {
+            _weapons = EC.CreateAllWeapons(1);
+            _spellScrolls = EC.CreateAllSpellScrolls(1);
+        }
+        
+
+
 
 
 
@@ -122,10 +150,77 @@ public class Character : MonoBehaviour
         CombatTrigger.EndCombat -= DeactivateCombatEntity;
         CombatEntity.GetHitWithAttack -= GetHitWithAttack;
         CombatEntity.GetHealed -= GetHealed;
+        
+        CombatEntity.GetHitWithBuff -= GetHitWithBuff;
+        CombatEntity.GetHitWithDeBuff -= GetHitWithDeBuff;
 
 
 
 
+    }
+
+    private void GetHitWithBuff(Character c, CombatEntity.BuffTypes buff, int turns, float amount)
+    {
+        if(c != this)
+            return;
+
+        if (buff == CombatEntity.BuffTypes.Block)
+        {
+            // if we already have block
+            int i = GetIndexOfBuff(buff);
+            if (i == -1)
+            {
+                Buffs.Add((buff,turns,amount));
+                UpdateBlock(this, Mathf.RoundToInt(amount), Mathf.RoundToInt(amount));
+
+            }
+            else
+            {
+                Buffs[i] = (buff,turns, amount + Buffs[i].Item3);
+                UpdateBlock(this, Mathf.RoundToInt(Buffs[i].Item3), Mathf.RoundToInt(amount));
+                
+                if (Buffs[i].Item3 <=0)
+                {
+                    Buffs.RemoveAt(i);
+                }
+                
+
+            }
+
+
+
+        }
+        else
+        {
+            Buffs.Add((buff,turns,amount));
+
+        }
+        
+    }
+
+   
+
+    public int GetIndexOfBuff(CombatEntity.BuffTypes buff)
+    {
+        int i = -1;
+        for (int j = 0; j < Buffs.Count; j++)
+        {
+            if (Buffs[j].Item1 == buff)
+            {
+                i = j;
+                break;
+            }
+        }
+
+        return i;
+    }
+    
+    private void GetHitWithDeBuff(Character c, CombatEntity.DeBuffTypes deBuff, int turns, float amount)
+    {
+        if(c != this)
+            return;
+        
+        DeBuffs.Add((deBuff,turns,amount));
     }
 
     private void GetHealed(Character c, int healAmount)
@@ -153,9 +248,20 @@ public class Character : MonoBehaviour
             _currentHealth = 0;
             Debug.Log("DEFEAT");
         }
-        
-
     }
+
+    // private void GetBuff(Character c, CombatEntity.BuffTypes buff, int turnCount, float amount)
+    // {
+    //     if(c != this)
+    //         return;
+    //     Buffs.Add((buff, turnCount, amount));
+    // }
+    // private void GetDeBuff(Character c, CombatEntity.DeBuffTypes deBuff, int turnCount, float amount)
+    // {
+    //     if(c != this)
+    //         return;
+    //     DeBuffs.Add((deBuff, turnCount, amount));
+    // }
 
     private void ActivateCombatEntity(Character player, Character enemy)
     {
