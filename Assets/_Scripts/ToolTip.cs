@@ -13,24 +13,56 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public string iLvl;
     public int rarity;
 
+    private bool count;
+    private bool count1;
+
+    private float timer = .5f;
 
     private void OnMouseEnter()
     {
-        ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
+        //start counting for 3 sec
+        count = true;
     }
 
     private void OnMouseExit()
     {
+        count = false;
+        timer = .5f;
         ToolTipManager._instance.HideToolTip();
     }
     
     public void OnPointerEnter(PointerEventData pointer)
     {
-        ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
+        count1 = true;
     }
 
     public void OnPointerExit(PointerEventData pointer)
     {
+        count1 = false;
+        timer = .5f;
         ToolTipManager._instance.HideToolTip();
+    }
+
+    private void LateUpdate()
+    {
+        if (count)
+        {
+            timer -= Time.deltaTime;
+            if (timer <= 0)
+            {
+                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
+
+            }
+        }
+        if (count1)
+        {
+            timer -= Time.deltaTime;
+            if (timer <= 0)
+            {
+                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
+
+
+            }
+        }
     }
 }

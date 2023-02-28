@@ -43,6 +43,8 @@ public class HealthBar : MonoBehaviour
 
         CombatEntity.AddIntent += AddIntent;
         CombatEntity.RemoveIntent += RemoveIntent;
+        CombatEntity.ReduceDebuffCount += ReduceDebuffCount;
+        CombatEntity.ReduceBuffCount += ReduceBuffCount;
 
 
     }
@@ -58,9 +60,58 @@ public class HealthBar : MonoBehaviour
         
         CombatEntity.AddIntent -= AddIntent;
         CombatEntity.RemoveIntent -= RemoveIntent;
+        CombatEntity.ReduceDebuffCount -= ReduceDebuffCount;
+        CombatEntity.ReduceBuffCount -= ReduceBuffCount;
 
 
 
+
+
+    }
+
+    private void ReduceDebuffCount(Character c)
+    {
+        if (c != displayCharacter)
+            return;
+        for (int i = buffDebuffLayoutGroup.childCount-1; i >= 0; i--)
+        {
+            BuffDebuffElement debuff = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+
+            if (debuff.isDebuff)
+            {
+                debuff.UpdateValues();
+
+                if (debuff._turns <= 0)
+                {
+                    Destroy(debuff.gameObject);
+                    
+                }
+            }
+            
+            
+        }
+    }
+    private void ReduceBuffCount(Character c)
+    {
+        if (c != displayCharacter)
+            return;
+        for (int i = buffDebuffLayoutGroup.childCount-1; i >= 0; i--)
+        {
+            BuffDebuffElement buff = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+
+            if (!buff.isDebuff)
+            {
+                buff.UpdateValues();
+
+                if (buff._turns <= 0)
+                {
+                    Destroy(buff.gameObject);
+                    
+                }
+            }
+            
+            
+        }
     }
 
     private void AddIntent(Character c, Weapon.SpellTypes spell)
@@ -122,7 +173,7 @@ public class HealthBar : MonoBehaviour
             .GetComponent<BuffDebuffElement>();
         icon.InitializeDisplay(buff, turns, amount);
         StatusText st = Instantiate(statusTextPrefab, this.transform);
-        st.transform.localPosition += new Vector3(0, 450, 0);
+        st.transform.localPosition += new Vector3(0, 350, 0);
         st.InitializeStatusText(turns,Mathf.RoundToInt(amount), buff);
     }
     private void GetHitWithDeBuff(Character c, CombatEntity.DeBuffTypes debuff, int turns, float amount)
@@ -136,7 +187,7 @@ public class HealthBar : MonoBehaviour
             .GetComponent<BuffDebuffElement>();
         icon.InitializeDisplay(debuff, turns, amount);
         StatusText st = Instantiate(statusTextPrefab, this.transform);
-        st.transform.localPosition += new Vector3(0, 450, 0);
+        st.transform.localPosition += new Vector3(0, 350, 0);
         st.InitializeStatusText(turns,Mathf.RoundToInt(amount), debuff);
     }
 

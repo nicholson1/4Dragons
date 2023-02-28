@@ -17,7 +17,7 @@ public class CombatController : MonoBehaviour
 
     [SerializeField] private GameObject _healthBarPrefab;
 
-    private List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
+    public List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
 
     public Vector3 playerOffset = new Vector3();
 

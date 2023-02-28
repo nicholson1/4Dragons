@@ -41,6 +41,7 @@ public class ToolTipManager : MonoBehaviour
 
    public void SetAndShowToolTip(string title, string message, string cost = "", string itemLvl = "", int itemRarity = -1)
    {
+      transform.position = Input.mousePosition;
       gameObject.SetActive(true);
       tiptext.text = message;
       spellCost.text = cost;

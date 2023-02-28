@@ -69,6 +69,7 @@ public class StatusText : MonoBehaviour
             AmountText.text = buffTypes.ToString();
             AmountText.color = abilityColors[2];
             ReductionText.text = "(" + turns +")";
+            ReductionText.color = abilityColors[2];
 
 
 
@@ -80,6 +81,8 @@ public class StatusText : MonoBehaviour
         AmountText.text = debuffTypes.ToString();
         AmountText.color = abilityColors[3];
         ReductionText.text = "(" + turns +")";
+        ReductionText.color = abilityColors[3];
+
 
         // switch (debuffTypes)
         // {

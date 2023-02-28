@@ -31,6 +31,9 @@ public class CombatEntity : MonoBehaviour
     public static event Action<Character, Weapon.SpellTypes> AddIntent;
     public static event Action<Character> RemoveIntent;
 
+    public static event Action<Character> ReduceDebuffCount;
+    public static event Action<Character> ReduceBuffCount;
+
 
     
     public List<(Weapon.SpellTypes, Weapon)> Spells;
@@ -56,6 +59,61 @@ public class CombatEntity : MonoBehaviour
        //CombatTrigger.TriggerCombat -= GetMySpells;
     }
 
+    private IEnumerator TriggerDebuffs()
+    {
+        for (int i = myCharacter.DeBuffs.Count-1; i >= 0; i--)
+        {
+            
+            TheSpellBook._instance.DoDebuffEffect( myCharacter.DeBuffs[i], this);
+            myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - 1, myCharacter.DeBuffs[i].Item3);
+            yield return new WaitForSeconds(1);
+
+            if (myCharacter.DeBuffs[i].Item2 <= 0)
+            {
+                //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
+                // remove the debuff
+                myCharacter.DeBuffs.RemoveAt(i);
+                
+            }
+            
+        }
+        ReduceDebuffCount(myCharacter);
+
+    }
+    private IEnumerator TriggerBuffs()
+    {
+        for (int i = myCharacter.Buffs.Count-1; i >= 0; i--)
+        {
+            
+            TheSpellBook._instance.DoBuffEffect( myCharacter.Buffs[i], this);
+            myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - 1, myCharacter.Buffs[i].Item3);
+            yield return new WaitForSeconds(1);
+
+            if (myCharacter.Buffs[i].Item2 <= 0)
+            {
+                //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
+                // remove the debuff
+                myCharacter.Buffs.RemoveAt(i);
+                
+            }
+            
+        }
+        ReduceBuffCount(myCharacter);
+
+    }
+
+    private void TriggerAllDebuffs()
+    {
+        StartCoroutine(TriggerDebuffs());
+        
+        
+    }
+    private void TriggerAllBuffs()
+    {
+        StartCoroutine(TriggerBuffs());
+        
+        
+    }
     private IEnumerator CastAllIntentions()
     {
         yield return new WaitForSeconds(1f);
@@ -74,7 +132,8 @@ public class CombatEntity : MonoBehaviour
     {
         isMyTurn = true;
         
-        //todo trigger buffs
+        TriggerAllBuffs();
+
 
         if (myCharacter.isPlayerCharacter)
         {
@@ -89,23 +148,22 @@ public class CombatEntity : MonoBehaviour
 
     public void EndTurn()
     {
-        //todo trigger debuffs
-        
-        
+        TriggerAllDebuffs();
 
         if (myCharacter.isPlayerCharacter)
         {
             // disable end turn 
+            isMyTurn = false;
+            CombatController._instance.EndCurrentTurn();
         }
         else
         {
+            isMyTurn = false;
+
             SetMyIntentions();
+            CombatController._instance.EndCurrentTurn();
+
         }
-        
-        isMyTurn = false;
-        CombatController._instance.EndCurrentTurn();
-
-
         
         
     }
@@ -264,6 +322,10 @@ public class CombatEntity : MonoBehaviour
 
         StartCoroutine(AddIntents());
         Intentions = intent;
+        if (isMyTurn)
+        {
+            CombatController._instance.EndCurrentTurn();
+        }
         return intent;
 
     }
@@ -408,10 +470,12 @@ public class CombatEntity : MonoBehaviour
     public enum BuffTypes
     {
         Block,
-        Invulnerable,
-        Rejuvenation,
+        Rejuvenate,
         Thorns,
-        
+        Invulnerable,
+        Empowered,
+        Momentum,
+        None,
         
     }
     
@@ -421,7 +485,9 @@ public class CombatEntity : MonoBehaviour
         Burn,
         Wound,
         Weakened,
-        Chill,
+        Chilled,
+        Vulnerable,
+        None,
         
 
 

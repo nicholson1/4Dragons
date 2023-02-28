@@ -124,15 +124,19 @@ public class Character : MonoBehaviour
 
         if (isPlayerCharacter)
         {
-            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
-            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Sword1));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Fire2));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
+            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood3));
+            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood4));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Ice1));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
         }
         else
         {
-            _weapons = EC.CreateAllWeapons(1);
-            _spellScrolls = EC.CreateAllSpellScrolls(1);
+            //_weapons = EC.CreateAllWeapons(1);
+            //_spellScrolls = EC.CreateAllSpellScrolls(1);
+            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
+            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice2));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Ice1));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
         }
         
 
@@ -249,19 +253,6 @@ public class Character : MonoBehaviour
             Debug.Log("DEFEAT");
         }
     }
-
-    // private void GetBuff(Character c, CombatEntity.BuffTypes buff, int turnCount, float amount)
-    // {
-    //     if(c != this)
-    //         return;
-    //     Buffs.Add((buff, turnCount, amount));
-    // }
-    // private void GetDeBuff(Character c, CombatEntity.DeBuffTypes deBuff, int turnCount, float amount)
-    // {
-    //     if(c != this)
-    //         return;
-    //     DeBuffs.Add((deBuff, turnCount, amount));
-    // }
 
     private void ActivateCombatEntity(Character player, Character enemy)
     {
