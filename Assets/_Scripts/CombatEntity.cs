@@ -78,6 +78,9 @@ public class CombatEntity : MonoBehaviour
             
         }
         ReduceDebuffCount(myCharacter);
+        isMyTurn = false;
+        CombatController._instance.EndCurrentTurn();
+
 
     }
     private IEnumerator TriggerBuffs()
@@ -92,7 +95,7 @@ public class CombatEntity : MonoBehaviour
             if (myCharacter.Buffs[i].Item2 <= 0)
             {
                 //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
-                // remove the debuff
+                // remove the buff
                 myCharacter.Buffs.RemoveAt(i);
                 
             }
@@ -130,14 +133,15 @@ public class CombatEntity : MonoBehaviour
 
     public void StartTurn()
     {
-        isMyTurn = true;
-        
+        //Debug.Log(myCharacter.name + "------- It is the start of my turn");
         TriggerAllBuffs();
+        isMyTurn = true;
 
 
         if (myCharacter.isPlayerCharacter)
         {
             // activate end turn button
+            //Debug.Log("Why are you starting turn when you are ending turn");
         }
         else
         {
@@ -148,22 +152,21 @@ public class CombatEntity : MonoBehaviour
 
     public void EndTurn()
     {
-        TriggerAllDebuffs();
+        
 
         if (myCharacter.isPlayerCharacter)
         {
             // disable end turn 
             isMyTurn = false;
-            CombatController._instance.EndCurrentTurn();
+            TriggerAllDebuffs();
         }
         else
         {
-            isMyTurn = false;
 
             SetMyIntentions();
-            CombatController._instance.EndCurrentTurn();
 
         }
+        
         
         
     }
@@ -311,7 +314,7 @@ public class CombatEntity : MonoBehaviour
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
             if ( spellE <= energy)
             {
-                Debug.Log(roll + " " + Spells[roll].Item1);
+                //Debug.Log(roll + " " + Spells[roll].Item1);
                 intent.Add((Spells[roll].Item1, Spells[roll].Item2));
                 energy -= spellE;
             }
@@ -324,8 +327,10 @@ public class CombatEntity : MonoBehaviour
         Intentions = intent;
         if (isMyTurn)
         {
-            CombatController._instance.EndCurrentTurn();
+            TriggerAllDebuffs();
+
         }
+        
         return intent;
 
     }
@@ -464,7 +469,8 @@ public class CombatEntity : MonoBehaviour
         SpellAttack,
         Buff,
         DeBuff,
-        Heal
+        Heal,
+        Defensive
     }
 
     public enum BuffTypes
@@ -475,18 +481,19 @@ public class CombatEntity : MonoBehaviour
         Invulnerable,
         Empowered,
         Momentum,
+        Immortal,
         None,
         
     }
     
     public enum DeBuffTypes
     {
-        Bleed,
-        Burn,
-        Wound,
-        Weakened,
-        Chilled,
-        Vulnerable,
+        Bleed, // dot physical
+        Burn, // dot spell
+        Wound, // anti healing
+        Weakened, // anti power
+        Chilled, // reduce energy
+        Exposed, // increase damage taken
         None,
         
 

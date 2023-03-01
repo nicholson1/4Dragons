@@ -13,11 +13,16 @@ public class TheSpellBook : MonoBehaviour
     private Dictionary<Equipment.Stats, int> casterStats;
 
     [SerializeField] private Sprite[] AbilityTypeSprites;
+    [SerializeField] private String[] IntentDescriptions;
+
     [SerializeField] private Sprite[] SpellSprites;
     [SerializeField] private Sprite[] BuffSprites;
     [SerializeField] private String[] BuffDescriptions;
     [SerializeField] private Sprite[] DeBuffSprites;
     [SerializeField] private String[] DeBuffDescriptions;
+    
+    public Color[] abilityColors;
+    
     
 
 
@@ -64,6 +69,21 @@ public class TheSpellBook : MonoBehaviour
             return (AbilityTypeSprites[(int)abilities[0]], AbilityTypeSprites[(int)abilities[1]]);
         }
     }
+
+    public (string,string, string, string) GetIntentTitleAndDescription(Weapon.SpellTypes spell)
+    {
+        List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
+        IList abilities = (IList)scaling[(int)spell][4];
+        if (abilities.Count == 1)
+        {
+            return (((CombatEntity.AbilityTypes)((int)abilities[0])).ToString(),IntentDescriptions[(int)abilities[0]], String.Empty, String.Empty);
+        }
+        else
+        {
+            return (((CombatEntity.AbilityTypes)((int)abilities[0])).ToString(),IntentDescriptions[(int)abilities[0]],((CombatEntity.AbilityTypes)((int)abilities[1])).ToString(), IntentDescriptions[(int)abilities[1]]);
+        }
+
+    }
     public int GetEnergy(Weapon.SpellTypes spell)
     {
         //get scaling table
@@ -100,6 +120,8 @@ public class TheSpellBook : MonoBehaviour
                     BasicPhysicalAttack(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Dagger2:
+                    BasicPhysicalAttack(spell, w, caster, target, scaling);
+                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Shield1:
                     BasicPhysicalAttack(spell, w, caster, target, scaling);
@@ -112,7 +134,7 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Sword2:
                     BasicAOEAttack(spell, w, caster, target, scaling);
-                    //remove all debuffs
+                    //todo remove all debuffs
                     break;
                 case Weapon.SpellTypes.Axe1:
                     BasicPhysicalAttack(spell, w, caster, target, scaling);
@@ -125,6 +147,8 @@ public class TheSpellBook : MonoBehaviour
                     BasicPhysicalAttack(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Hammer2:
+                    BasicPhysicalAttack(spell, w, caster, target, scaling);
+                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Nature1:
                     BasicHeal(spell, w, caster, caster, scaling);
@@ -140,6 +164,8 @@ public class TheSpellBook : MonoBehaviour
                     BasicSpellAttack(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Fire1:
+                    //todo remove any current block
+                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Fire2:
                     BasicSpellAttack(spell, w, caster, target, scaling);
@@ -159,32 +185,39 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Ice3:
                     BasicAOEAttack(spell, w, caster, target, scaling);
-                    //add chill debuff to all
                     break;
                 case Weapon.SpellTypes.Ice4:
                     BasicSpellAttack(spell, w, caster, target, scaling);
+                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
+
                     break;
                 case Weapon.SpellTypes.Blood1:
+                    BasicSpellAttack(spell, w, caster, target, scaling);
+                    // todo heal based damage delt
                     break;
                 case Weapon.SpellTypes.Blood2:
                     BasicAOEAttack(spell, w, caster, target, scaling);
-                    //heal based on how many hit
+                    // todo heal based damage delt
                     break;
                 case Weapon.SpellTypes.Blood3:
                     BasicNonDamageBuff(spell, w, caster, caster, scaling);
-                    // take direct damage
+                    //todo take direct damage
+                    //todo remove all debuffs
                     break;
                 case Weapon.SpellTypes.Blood4:
                     BasicNonDamageBuff(spell, w, caster, caster, scaling);
                     break;
                 case Weapon.SpellTypes.Shadow1:
+                    //todo increase energy and take damage
                     break;
                 case Weapon.SpellTypes.Shadow2:
+                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Shadow3:
                     BasicSpellAttack(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Shadow4:
+                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.None:
                     break;
@@ -218,6 +251,106 @@ public class TheSpellBook : MonoBehaviour
                 break;
             
         }
+    }
+    public void BasicNonDamageDebuff(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target,
+        IList scaling)
+    {
+        int turns = 4;
+        casterStats = caster.myCharacter.GetStats();
+        int Amount = 0;
+        Amount += (int) scaling[0];
+        int lvl;
+        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
+        Amount += (int)scaling[1] * lvl ;
+        int ADorSP = 0;
+        int d;
+        // some buffs and buffs dont need amount
+        CombatEntity.DeBuffTypes Debuff = CombatEntity.DeBuffTypes.None;
+        switch (spell)
+        {
+            case Weapon.SpellTypes.Ice3:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.IcePower, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Chilled;
+                turns = 1;
+                break;
+            case Weapon.SpellTypes.Ice4:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.IcePower, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Chilled;
+                turns = 1;
+                break;
+            case Weapon.SpellTypes.Dagger2:
+                casterStats.TryGetValue(Equipment.Stats.AttackDamage, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.Daggers, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Wound;
+                turns = 1;
+                break;
+            case Weapon.SpellTypes.Shadow2:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Weakened;
+                turns = 1;
+                break;
+            case Weapon.SpellTypes.Shadow4:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Wound;
+                turns = 1;
+                break;
+            case Weapon.SpellTypes.Fire1:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.FirePower, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Exposed;
+                turns = 2;
+                break;
+            case Weapon.SpellTypes.Hammer2:
+                casterStats.TryGetValue(Equipment.Stats.AttackDamage, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.Hammers, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Exposed;
+                turns = 2;
+                break;
+        }
+        //todo check for buffs/debuffs
+
+        Amount += Mathf.RoundToInt(ADorSP * (float)scaling[2]);
+        
+        //scale down Damage for Non-Epic Items
+        //    -40% : common
+        //    -30% : uncommon
+        //    -20% : rare
+        int r;
+        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        switch (r)
+        {
+            case 0:
+                //common
+                Amount -= Mathf.RoundToInt(Amount * .40f);
+                break;
+            case 1:
+                //uncommon
+                Amount -= Mathf.RoundToInt(Amount * .30f);
+                break;
+            case 2:
+                //rare
+                Amount -= Mathf.RoundToInt(Amount * .20f);
+                break;
+            case 3:
+                //Epic
+                //no damage reduction
+                break;
+        }
+
+        
+        caster.DeBuff(target, Debuff,turns, Mathf.RoundToInt(Amount));
+
     }
 
     public void BasicNonDamageBuff(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target,
@@ -629,6 +762,10 @@ public class TheSpellBook : MonoBehaviour
             if (t != caster)
             {
                 caster.AttackBasic(t, abilityType, Damage, crit);
+                if (spell == Weapon.SpellTypes.Ice3)
+                {
+                    BasicNonDamageDebuff(spell, w, caster, t, scaling);
+                }
             }
         }
         

@@ -14,11 +14,12 @@ public class BuffDebuffElement : MonoBehaviour
     public bool isDebuff = false;
     public int _turns = 0;
     private float _amount = 0;
-    private CombatEntity.DeBuffTypes _debuff;
-    private CombatEntity.BuffTypes _buff;
+    public CombatEntity.DeBuffTypes _debuff;
+    public CombatEntity.BuffTypes _buff;
 
     public void InitializeDisplay(CombatEntity.DeBuffTypes deBuff, int turns, float amount)
     {
+        _debuff = deBuff;
         _turns = turns;
         _amount = amount;
         turnCounter.text = turns.ToString();
@@ -33,15 +34,24 @@ public class BuffDebuffElement : MonoBehaviour
 
     public void InitializeDisplay(CombatEntity.BuffTypes buff, int turns, float amount)
     {
+        _buff = buff;
+        _turns = turns;
+        _amount = amount;
         turnCounter.text = turns.ToString();
         icon.sprite =TheSpellBook._instance.GetSprite(buff);
+        toolTip.iLvl = "";
+        toolTip.Title = buff.ToString();
+        toolTip.Message = TheSpellBook._instance.GetDesc(buff);
+        toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(buff), turns, amount);
+        toolTip.rarity = -1;
+        isDebuff = false;
 
 
     }
 
     public void UpdateValues()
     {
-        _turns -= 1;
+        
         if (isDebuff)
         {
             toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(_debuff), _turns, _amount);

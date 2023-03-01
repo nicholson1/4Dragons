@@ -12,7 +12,7 @@ public class StatusText : MonoBehaviour
     public Image Icon;
     
     //have colors for each abilitytypes
-    [SerializeField] private Color[] abilityColors;
+    
 
     public Sprite blockIcon;
     public Sprite physicalAttackIcon;
@@ -31,14 +31,14 @@ public class StatusText : MonoBehaviour
         {
             case CombatEntity.AbilityTypes.PhysicalAttack:
                 AmountText.text = amount.ToString();
-                AmountText.color = abilityColors[(int)abilityTypes];
+                AmountText.color = TheSpellBook._instance.abilityColors[(int)abilityTypes];
                 ReductionText.text = "(" + reduction + ")";
                 ReductionText.color = Color.gray;
                 Icon.sprite = physicalAttackIcon;
                 break;
             case CombatEntity.AbilityTypes.SpellAttack:
                 AmountText.text = amount.ToString();
-                AmountText.color = abilityColors[(int)abilityTypes];
+                AmountText.color = TheSpellBook._instance.abilityColors[(int)abilityTypes];
                 Icon.sprite = spellAttackIcon;
                 //Icon.color = abilityColors[abilityTypes.GetHashCode()];
 
@@ -48,7 +48,7 @@ public class StatusText : MonoBehaviour
                 
             case CombatEntity.AbilityTypes.Heal:
                 AmountText.text = amount.ToString();
-                AmountText.color = abilityColors[(int)abilityTypes];
+                AmountText.color = TheSpellBook._instance.abilityColors[(int)abilityTypes];
                 ReductionText.text = "";
                 Icon.sprite = healIcon;
                 
@@ -61,15 +61,15 @@ public class StatusText : MonoBehaviour
         Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
         if(buffTypes == CombatEntity.BuffTypes.Block){
             AmountText.text = amount.ToString();
-            AmountText.color = Color.blue;//abilityColors[buffTypes.GetHashCode()];
+            AmountText.color = TheSpellBook._instance.abilityColors[4];
             ReductionText.text = "";
         }
         else
         {
             AmountText.text = buffTypes.ToString();
-            AmountText.color = abilityColors[2];
+            AmountText.color = TheSpellBook._instance.abilityColors[2];
             ReductionText.text = "(" + turns +")";
-            ReductionText.color = abilityColors[2];
+            ReductionText.color = TheSpellBook._instance.abilityColors[2];
 
 
 
@@ -79,9 +79,9 @@ public class StatusText : MonoBehaviour
     {
         Icon.sprite = TheSpellBook._instance.GetSprite(debuffTypes);
         AmountText.text = debuffTypes.ToString();
-        AmountText.color = abilityColors[3];
+        AmountText.color = TheSpellBook._instance.abilityColors[3];
         ReductionText.text = "(" + turns +")";
-        ReductionText.color = abilityColors[3];
+        ReductionText.color = TheSpellBook._instance.abilityColors[3];
 
 
         // switch (debuffTypes)

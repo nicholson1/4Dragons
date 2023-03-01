@@ -515,9 +515,17 @@ MonoBehaviour:
   AbilityTypeSprites:
   - {fileID: 21300000, guid: 3cb5846afaa42464f859735f72047fc9, type: 3}
   - {fileID: 21300000, guid: 6b5368b2e46a7bd42b3c3fdc6128c49b, type: 3}
-  - {fileID: 21300000, guid: a90b488d3c117db40a255177366a5804, type: 3}
+  - {fileID: 21300000, guid: 59cc4fdc61db2e046ad1cd4e7dc70f9b, type: 3}
   - {fileID: 21300000, guid: 7d0f73aed89f4e146b939c2b5afbcb89, type: 3}
   - {fileID: 21300000, guid: 806c2f4e4121bd443a535f7551d4fa7c, type: 3}
+  - {fileID: 21300000, guid: a90b488d3c117db40a255177366a5804, type: 3}
+  IntentDescriptions:
+  - This enemy intends to Attack with Physical Damage
+  - This enemy intends to Attack with Spell Damage
+  - This enemy intends to Buff itself
+  - This enemy intends to inflict a Debuff on you
+  - This enemy intends to Heal
+  - This enemy intends to use a Defensive ability
   SpellSprites: []
   BuffSprites:
   - {fileID: 21300000, guid: 8caad29c9cd2ab54d841023f5ba66b7c, type: 3}
@@ -526,7 +534,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 62ce59ce09148c847b198159a3abc9f6, type: 3}
   - {fileID: 21300000, guid: 448d600b6b959074d94c8933775142fc, type: 3}
   - {fileID: 21300000, guid: 4184495d79c523148bd19006e6e88b2d, type: 3}
-  BuffDescriptions: []
+  - {fileID: 21300000, guid: 31af4c11b0228d142b71af2d3940bbcb, type: 3}
+  BuffDescriptions:
+  - Block @ damage on the next turn
+  - At the begining of the next $ turns heal @ HP
+  - 'Deal @ physical damage when struck with physical damage over the next $ turns '
+  - You take no damage from enemies for the next $ turns
+  - 'Increase Attack Damage and Spellpower by @% for the next $ turns '
+  - If an ability Crits cast it again for free for the next $ turns
+  - You cannot go below 1 HP for the next $ turns
   DeBuffSprites:
   - {fileID: 21300000, guid: c1d35b40e3fb0f9438f23087432d9765, type: 3}
   - {fileID: 21300000, guid: 9725fb87facc42a4984598500f76e0fb, type: 3}
@@ -537,6 +553,17 @@ MonoBehaviour:
   DeBuffDescriptions:
   - At the end of the next $ turns deal @ physical damage.
   - At the end of the next $ turns deal @ spell damage.
+  - Reduce healing received by 50% for the next $ turns
+  - Reduce damage done by @% for the next $ turns
+  - Start your turn with 1 less Energy for the next $ turns
+  - Increase damage received by 50% for the next $ turns
+  abilityColors:
+  - {r: 0.5019608, g: 0, b: 0, a: 1}
+  - {r: 0, g: 0.5019608, b: 0.5019608, a: 1}
+  - {r: 0.5019608, g: 0, b: 0.5019608, a: 1}
+  - {r: 0.5019608, g: 0.5019608, b: 0, a: 1}
+  - {r: 0, g: 0.5019608, b: 0, a: 1}
+  - {r: 0, g: 0, b: 0.5019608, a: 1}
 --- !u!1 &140669253
 GameObject:
   m_ObjectHideFlags: 0

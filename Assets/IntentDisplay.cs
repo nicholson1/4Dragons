@@ -9,6 +9,7 @@ public class IntentDisplay : MonoBehaviour
     [SerializeField]private Image intent1;
 
     [SerializeField] private ToolTip _toolTip;
+     
 
     public void UpdateInfo(Weapon.SpellTypes spell)
     {
@@ -27,8 +28,26 @@ public class IntentDisplay : MonoBehaviour
             
 
         }
+
+        (string, string, string, string) strings = TheSpellBook._instance.GetIntentTitleAndDescription(spell);
+
+        _toolTip.iLvl = "";
+        _toolTip.Cost = "";
+        _toolTip.rarity = -1;
+
+        if (strings.Item3 == "")
+        {
+            _toolTip.Title = strings.Item1;
+            _toolTip.Message = strings.Item2;
+            
+        }
+        else
+        {
+            _toolTip.Title = strings.Item1 + " and " + strings.Item3;
+            _toolTip.iLvl = "";
+            _toolTip.Message = strings.Item2 +" and " + strings.Item4;
+        }
         
-        //todo change the tool tip in switch statement
     }
 
 }

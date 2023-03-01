@@ -126,28 +126,20 @@ public class Character : MonoBehaviour
         {
             _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood3));
             _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood4));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Ice1));
             _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
         }
         else
         {
-            //_weapons = EC.CreateAllWeapons(1);
-            //_spellScrolls = EC.CreateAllSpellScrolls(1);
-            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
-            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice2));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Ice1));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
+            _weapons = EC.CreateAllWeapons(1);
+            _spellScrolls = EC.CreateAllSpellScrolls(1);
+            // _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
+            // _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice2));
+            // _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
+            // _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Fire2));
         }
-        
-
-
-
-
-
     }
     
-    
-
     private void OnDestroy()
     {
         CombatTrigger.TriggerCombat -= ActivateCombatEntity;
@@ -157,10 +149,6 @@ public class Character : MonoBehaviour
         
         CombatEntity.GetHitWithBuff -= GetHitWithBuff;
         CombatEntity.GetHitWithDeBuff -= GetHitWithDeBuff;
-
-
-
-
     }
 
     private void GetHitWithBuff(Character c, CombatEntity.BuffTypes buff, int turns, float amount)
@@ -168,38 +156,79 @@ public class Character : MonoBehaviour
         if(c != this)
             return;
 
-        if (buff == CombatEntity.BuffTypes.Block)
+        int i = GetIndexOfBuff(buff);
+        switch (buff)
         {
-            // if we already have block
-            int i = GetIndexOfBuff(buff);
-            if (i == -1)
-            {
-                Buffs.Add((buff,turns,amount));
-                UpdateBlock(this, Mathf.RoundToInt(amount), Mathf.RoundToInt(amount));
-
-            }
-            else
-            {
-                Buffs[i] = (buff,turns, amount + Buffs[i].Item3);
-                UpdateBlock(this, Mathf.RoundToInt(Buffs[i].Item3), Mathf.RoundToInt(amount));
-                
-                if (Buffs[i].Item3 <=0)
+            case CombatEntity.BuffTypes.Block:
+                if (i == -1)
                 {
-                    Buffs.RemoveAt(i);
+                    Buffs.Add((buff,turns,amount));
+                    UpdateBlock(this, Mathf.RoundToInt(amount), Mathf.RoundToInt(amount));
+
                 }
+                else
+                {
+                    Buffs[i] = (buff,turns, amount + Buffs[i].Item3);
+                    UpdateBlock(this, Mathf.RoundToInt(Buffs[i].Item3), Mathf.RoundToInt(amount));
+                
+                    if (Buffs[i].Item3 <=0)
+                    {
+                        Buffs.RemoveAt(i);
+                    }
                 
 
-            }
+                }
+                break;
+            case CombatEntity.BuffTypes.Rejuvenate:
+                Buffs.Add((buff,turns,amount));
+                break;
+            case CombatEntity.BuffTypes.Thorns:
+                Buffs.Add((buff,turns,amount));
+                break;
+            case CombatEntity.BuffTypes.Immortal:
+                if (i == -1)
+                {
+                    Buffs.Add((buff,turns,amount));
+                }
+                else
+                {
+                    Buffs[i] = (buff,turns + Buffs[i].Item2, amount);
+                }
+                break;
+            case CombatEntity.BuffTypes.Invulnerable:
+                if (i == -1)
+                {
+                    Buffs.Add((buff,turns,amount));
+                }
+                else
+                {
+                    Buffs[i] = (buff,turns + Buffs[i].Item2, amount);
+                }
+                break;
+            case CombatEntity.BuffTypes.Momentum:
+                if (i == -1)
+                {
+                    Buffs.Add((buff,turns,amount));
+                }
+                else
+                {
+                    if (amount > Buffs[i].Item3)
+                    {
+                        Buffs[i] = (buff,turns + Buffs[i].Item2, amount);
+                    }
+                    else
+                    {
+                        Buffs[i] = (buff,turns + Buffs[i].Item2, Buffs[i].Item3);
 
-
-
-        }
-        else
-        {
-            Buffs.Add((buff,turns,amount));
-
+                    }
+                }
+                break;
         }
         
+        
+        
+
+
     }
 
    
@@ -218,13 +247,88 @@ public class Character : MonoBehaviour
 
         return i;
     }
+    public int GetIndexOfDebuff(CombatEntity.DeBuffTypes debuff)
+    {
+        int i = -1;
+        for (int j = 0; j < DeBuffs.Count; j++)
+        {
+            if (DeBuffs[j].Item1 == debuff)
+            {
+                i = j;
+                break;
+            }
+        }
+
+        return i;
+    }
     
     private void GetHitWithDeBuff(Character c, CombatEntity.DeBuffTypes deBuff, int turns, float amount)
     {
         if(c != this)
             return;
+
+        int i = GetIndexOfDebuff(deBuff);
+        switch (deBuff)
+        {
+            case CombatEntity.DeBuffTypes.Bleed:
+                DeBuffs.Add((deBuff,turns,amount));
+                break;
+            case CombatEntity.DeBuffTypes.Burn:
+                DeBuffs.Add((deBuff,turns,amount));
+                break;
+            case CombatEntity.DeBuffTypes.Chilled:
+                //check if we already have it
+                if (i != -1)
+                {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount);
+                }
+                else
+                {
+                    DeBuffs.Add((deBuff,turns,amount));
+
+                }
+                break;
+            case CombatEntity.DeBuffTypes.Weakened:
+                //check if we already have it
+                if (i != -1)
+                {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, amount);
+                }
+                else
+                {
+                    DeBuffs.Add((deBuff,turns,amount));
+
+                }
+                break;
+            case CombatEntity.DeBuffTypes.Exposed:
+                //check if we already have it
+                if (i != -1)
+                {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, amount);
+                }
+                else
+                {
+                    DeBuffs.Add((deBuff,turns,amount));
+
+                }
+                break;
+            case CombatEntity.DeBuffTypes.Wound:
+                //check if we already have it
+                if (i != -1)
+                {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, amount);
+                }
+                else
+                {
+                    DeBuffs.Add((deBuff,turns,amount));
+
+                }
+                break;
+
+        }
         
-        DeBuffs.Add((deBuff,turns,amount));
+        
+        
     }
 
     private void GetHealed(Character c, int healAmount)

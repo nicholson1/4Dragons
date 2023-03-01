@@ -18,17 +18,17 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Color HealColor;
 
     public Camera cam;
-    [SerializeField]public Character displayCharacter;
+    [SerializeField] public Character displayCharacter;
     [SerializeField] private StatusText statusTextPrefab;
     [SerializeField] private BuffDebuffElement buffDebuffElementPrefab;
     [SerializeField] private Transform buffDebuffLayoutGroup;
-    
+
     [SerializeField] private GameObject BlockIcon;
     [SerializeField] private TextMeshProUGUI BlockText;
-    
+
 
     private Dictionary<Equipment.Stats, int> stats = new Dictionary<Equipment.Stats, int>();
-    
+
     [SerializeField] private IntentDisplay intentPrefab;
     [SerializeField] private Transform intentDisplay;
 
@@ -57,7 +57,7 @@ public class HealthBar : MonoBehaviour
 
         CombatEntity.GetHealed -= GetHealed;
         Character.UpdateBlock -= UpdateBlock;
-        
+
         CombatEntity.AddIntent -= AddIntent;
         CombatEntity.RemoveIntent -= RemoveIntent;
         CombatEntity.ReduceDebuffCount -= ReduceDebuffCount;
@@ -73,44 +73,48 @@ public class HealthBar : MonoBehaviour
     {
         if (c != displayCharacter)
             return;
-        for (int i = buffDebuffLayoutGroup.childCount-1; i >= 0; i--)
+        for (int i = buffDebuffLayoutGroup.childCount - 1; i >= 0; i--)
         {
             BuffDebuffElement debuff = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
 
             if (debuff.isDebuff)
             {
+                debuff._turns -= 1;
                 debuff.UpdateValues();
 
                 if (debuff._turns <= 0)
                 {
                     Destroy(debuff.gameObject);
-                    
+
                 }
             }
-            
-            
+
+
         }
     }
+
     private void ReduceBuffCount(Character c)
     {
         if (c != displayCharacter)
             return;
-        for (int i = buffDebuffLayoutGroup.childCount-1; i >= 0; i--)
+
+        for (int i = buffDebuffLayoutGroup.childCount - 1; i >= 0; i--)
         {
             BuffDebuffElement buff = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
 
             if (!buff.isDebuff)
             {
+                buff._turns -= 1;
                 buff.UpdateValues();
 
                 if (buff._turns <= 0)
                 {
                     Destroy(buff.gameObject);
-                    
+
                 }
             }
-            
-            
+
+
         }
     }
 
@@ -127,11 +131,11 @@ public class HealthBar : MonoBehaviour
     {
         if (c != displayCharacter)
             return;
-        
+
         //todo prolly object pool these
-        Destroy(intentDisplay.GetChild(intentDisplay.childCount -1).gameObject);
+        Destroy(intentDisplay.GetChild(intentDisplay.childCount - 1).gameObject);
     }
-    
+
 
     private void UpdateBlock(Character c, int amount, int change)
     {
@@ -149,12 +153,13 @@ public class HealthBar : MonoBehaviour
             BlockIcon.SetActive(true);
             BlockText.text = amount.ToString();
         }
+
         StatusText st = Instantiate(statusTextPrefab, this.transform);
         st.transform.localPosition += new Vector3(0, 450, 0);
         // we really want the change
-        st.InitializeStatusText(1,change, CombatEntity.BuffTypes.Block);
+        st.InitializeStatusText(1, change, CombatEntity.BuffTypes.Block);
 
-        
+
     }
 
     private void GetHitWithBuff(Character c, CombatEntity.BuffTypes buff, int turns, float amount)
@@ -164,31 +169,91 @@ public class HealthBar : MonoBehaviour
 
         if (buff == CombatEntity.BuffTypes.Block)
         {
-           //do nothing, covered elsewhere
-           return;
+            //do nothing, covered elsewhere
+            return;
+        }
+
+        //decide if we make new or add to existing
+        // make the icon
+        if (MakeNewOne(buff, CombatEntity.DeBuffTypes.None))
+        {
+            BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
+                .GetComponent<BuffDebuffElement>();
+            icon.InitializeDisplay(buff, turns, amount);
+        }
+        else
+        {
+            bool found = false;
+            // find the instance, add 1 to the turns
+            for (int i = 0; i < buffDebuffLayoutGroup.childCount; i++)
+            {
+                BuffDebuffElement b = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+                if (b._buff == buff)
+                {
+                    b._turns += turns;
+                    b.UpdateValues();
+                    found = true;
+
+                }
+            }
+
+            if (!found)
+            {
+                BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
+                    .GetComponent<BuffDebuffElement>();
+                icon.InitializeDisplay(buff, turns, amount);
+            }
         }
         
-        // make the icon
-        BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-            .GetComponent<BuffDebuffElement>();
-        icon.InitializeDisplay(buff, turns, amount);
         StatusText st = Instantiate(statusTextPrefab, this.transform);
         st.transform.localPosition += new Vector3(0, 350, 0);
-        st.InitializeStatusText(turns,Mathf.RoundToInt(amount), buff);
+        st.InitializeStatusText(turns, Mathf.RoundToInt(amount), buff);
     }
+
     private void GetHitWithDeBuff(Character c, CombatEntity.DeBuffTypes debuff, int turns, float amount)
     {
         if (c != displayCharacter)
             return;
-        
-        
+
+
         // make the icon
-        BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-            .GetComponent<BuffDebuffElement>();
-        icon.InitializeDisplay(debuff, turns, amount);
+        if (MakeNewOne(CombatEntity.BuffTypes.None,debuff ))
+        {
+            BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
+                .GetComponent<BuffDebuffElement>();
+            icon.InitializeDisplay(debuff, turns, amount);
+        }
+        else
+        {
+            bool found = false;
+            // find the instance, add 1 to the turns
+            for (int i = 0; i < buffDebuffLayoutGroup.childCount; i++)
+            {
+                BuffDebuffElement b = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+                if (b._debuff == debuff)
+                {
+                    b._turns += turns;
+                    b.UpdateValues();
+                    found = true;
+                }
+                // if we dont have it already 
+                BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
+                    .GetComponent<BuffDebuffElement>();
+                icon.InitializeDisplay(debuff, turns, amount);
+                
+            }
+
+            if (!found)
+            {
+                BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
+                    .GetComponent<BuffDebuffElement>();
+                icon.InitializeDisplay(debuff, turns, amount);
+            }
+        }
+        
         StatusText st = Instantiate(statusTextPrefab, this.transform);
         st.transform.localPosition += new Vector3(0, 350, 0);
-        st.InitializeStatusText(turns,Mathf.RoundToInt(amount), debuff);
+        st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff);
     }
 
     private void GetHealed(Character c, int heal)
@@ -197,18 +262,18 @@ public class HealthBar : MonoBehaviour
         StopAllCoroutines();
         if (c != displayCharacter)
             return;
-        
+
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = HealColor;
 
-        tempBar.value =  c._currentHealth;
+        tempBar.value = c._currentHealth;
         StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
-        
+
         StatusText st = Instantiate(statusTextPrefab, this.transform);
         st.transform.localPosition += new Vector3(0, 400, 0);
         st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal);
 
-        
+
     }
 
     private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
@@ -220,7 +285,7 @@ public class HealthBar : MonoBehaviour
         bar.value = bar.value - amount;
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = DamageColor;
 
-        
+
         //start of coroutine to reduce the temp bar
         StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
@@ -229,56 +294,108 @@ public class HealthBar : MonoBehaviour
         st.transform.localPosition += new Vector3(0, 400, 0);
         st.InitializeStatusText(amount, abilityTypes, reduction);
     }
-    
+
     IEnumerator LerpValueDamage(float start, float end, float timeToMove)
     {
         yield return new WaitForSeconds(1);
         float t = 0;
-        while(t < 1)
+        while (t < 1)
         {
-            tempBar.value = Mathf.Lerp(start,end,t);
+            tempBar.value = Mathf.Lerp(start, end, t);
             t = t + Time.deltaTime / timeToMove;
             yield return new WaitForEndOfFrame();
         }
+
         tempBar.value = end;
-        
+
     }
+
     IEnumerator LerpValueHeal(float start, float end, float timeToMove)
     {
         yield return new WaitForSeconds(1);
         float t = 0;
-        while(t < 1)
+        while (t < 1)
         {
-            bar.value = Mathf.Lerp(start,end,t);
+            bar.value = Mathf.Lerp(start, end, t);
             t = t + Time.deltaTime / timeToMove;
             yield return new WaitForEndOfFrame();
         }
+
         bar.value = end;
-        
+
     }
 
     public void Initialize(Character c, Camera cam)
     {
         displayCharacter = c;
         stats = c.GetComponent<Character>().GetStats();
-        
+
 
         // foreach (var i in stats)
         // {
         //     Debug.Log(i.Key + " : " + i.Value);
         // }
-        
+
         // get screen posiiton
-        
-        Vector3 screenPos = cam.WorldToScreenPoint(c.transform.position) - new Vector3(0,50, 0);
+
+        Vector3 screenPos = cam.WorldToScreenPoint(c.transform.position) - new Vector3(0, 50, 0);
         this.transform.position = screenPos;
         bar.maxValue = c._maxHealth;
         bar.value = c._currentHealth;
         text.text = c._currentHealth + "/" + c._maxHealth;
-        
+
         tempBar.maxValue = c._maxHealth;
         tempBar.value = c._currentHealth;
 
 
+    }
+
+    public bool MakeNewOne(CombatEntity.BuffTypes buff, CombatEntity.DeBuffTypes debuff)
+    {
+        if (buff != CombatEntity.BuffTypes.None)
+        {
+            switch (buff)
+            {
+                case CombatEntity.BuffTypes.Rejuvenate:
+                    return true;
+                case CombatEntity.BuffTypes.Thorns:
+                    return true;
+                case CombatEntity.BuffTypes.Invulnerable:
+                    return false;
+                case CombatEntity.BuffTypes.Empowered:
+                    return true;
+                case CombatEntity.BuffTypes.Momentum:
+                    return false;
+                case CombatEntity.BuffTypes.Immortal:
+                    return false;
+            }
+        }
+
+        if (debuff != CombatEntity.DeBuffTypes.None)
+        {
+            switch (debuff)
+            {
+                case CombatEntity.DeBuffTypes.Bleed:
+                    return true;
+                case CombatEntity.DeBuffTypes.Burn:
+                    return true;
+                case CombatEntity.DeBuffTypes.Wound:
+                    return false;
+                case CombatEntity.DeBuffTypes.Weakened:
+                    return false;
+                case CombatEntity.DeBuffTypes.Chilled:
+                    return false;
+                case CombatEntity.DeBuffTypes.Exposed:
+                    return false;
+            }
+        }
+
+        else
+        {
+            Debug.LogWarning("Invalid Input");
+            
+        }
+
+        return false;
     }
 }
