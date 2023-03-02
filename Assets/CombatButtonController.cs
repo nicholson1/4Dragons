@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatButtonController : MonoBehaviour
 {
@@ -10,17 +12,45 @@ public class CombatButtonController : MonoBehaviour
     [SerializeField] private SpellButton scroll1;
     [SerializeField] private SpellButton scroll2;
 
+    [SerializeField] private TextMeshProUGUI energyText;
+    
+
     [SerializeField] private DataReader _dataReader;
     private List<List<object>> DataTable;
-
+    private int currentEnergy = 0;
     private void Start()
     {
         CombatTrigger.TriggerCombat += UpdateCombatUI;
+        Character.UpdateEnergy += UpdateEnergy;
         DataTable = _dataReader.GetWeaponScalingTable();
         weapon1.SetDataTable(DataTable);
         weapon2.SetDataTable(DataTable);
         scroll1.SetDataTable(DataTable);
         scroll2.SetDataTable(DataTable);
+    }
+
+    private void OnDestroy()
+    {
+        CombatTrigger.TriggerCombat -= UpdateCombatUI;
+        Character.UpdateEnergy -= UpdateEnergy;
+    }
+
+    private void UpdateEnergy(Character c, int current, int max, int change)
+    {
+        
+        if (!c.isPlayerCharacter)
+        {
+            return;
+        }
+
+        currentEnergy = current;
+        energyText.text = current + "/" + max;
+        UpdateSpellButtons(c);
+        // if change is > 0 flash the numbers or something
+
+
+        // update which spell buttons are viable
+
     }
     
 
@@ -28,9 +58,6 @@ public class CombatButtonController : MonoBehaviour
     {
         //adjust spell names based on the weapons in the players inventory
         UpdateSpellButtons(player);
-        
-       
-        
     }
 
     private void UpdateSpellButtons(Character player)
@@ -39,17 +66,33 @@ public class CombatButtonController : MonoBehaviour
         (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
 
         // refence the datatable with these spells as int
-        Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
+        //Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
 
         weapon1.UpdateSpell(weaponSpells.Item1, weaponSpells.Item3);
         weapon2.UpdateSpell(weaponSpells.Item2, weaponSpells.Item4);
         scroll1.UpdateSpell(spellScolls.Item1, spellScolls.Item3);
         scroll2.UpdateSpell(spellScolls.Item2, spellScolls.Item4);
-        
+     
+        CheckIfSpellCanBeUsed(weapon1, player);
+        CheckIfSpellCanBeUsed(weapon2, player);
+        CheckIfSpellCanBeUsed(scroll1, player);
+        CheckIfSpellCanBeUsed(scroll2, player);
 
-        
+    }
 
+    private void CheckIfSpellCanBeUsed(SpellButton button, Character player)
+    {
+        Button b = button.GetComponent<Button>();
+        int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
+        Debug.Log(energyAmount);
+        if (energyAmount > currentEnergy)
+        {
+            b.interactable = false;
+        }
 
-
+        else
+        {
+            b.interactable = true;
+        }
     }
 }

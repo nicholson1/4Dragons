@@ -13,7 +13,7 @@ public class BuffDebuffElement : MonoBehaviour
 
     public bool isDebuff = false;
     public int _turns = 0;
-    private float _amount = 0;
+    public float _amount = 0;
     public CombatEntity.DeBuffTypes _debuff;
     public CombatEntity.BuffTypes _buff;
 

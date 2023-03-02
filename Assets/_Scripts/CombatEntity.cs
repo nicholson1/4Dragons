@@ -41,6 +41,8 @@ public class CombatEntity : MonoBehaviour
     public bool isMyTurn = false;
 
     public List<(Weapon.SpellTypes, Weapon)> Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+    public CombatEntity attacker = null;
+    public Weapon.SpellTypes lastSpellCastTargeted = Weapon.SpellTypes.None;
     
 
     private void Start()
@@ -82,6 +84,43 @@ public class CombatEntity : MonoBehaviour
         CombatController._instance.EndCurrentTurn();
 
 
+    }
+
+    public void ReduceAllDebuffTurnCount()
+    {
+        for (int i = myCharacter.DeBuffs.Count - 1; i >= 0; i--)
+        {
+            myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - 1, myCharacter.DeBuffs[i].Item3);
+
+            if (myCharacter.DeBuffs[i].Item2 <= 0)
+            {
+                //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
+                // remove the debuff
+                myCharacter.DeBuffs.RemoveAt(i);
+                
+            }
+        }
+        ReduceDebuffCount(myCharacter);
+    }
+    public void ReduceAllBuffTurnCount()
+    {
+        for (int i = myCharacter.Buffs.Count - 1; i >= 0; i--)
+        {
+            if (myCharacter.Buffs[i].Item1 != BuffTypes.Block)
+            {
+                myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - 1, myCharacter.Buffs[i].Item3);
+
+                if (myCharacter.Buffs[i].Item2 <= 0)
+                {
+                    //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
+                    // remove the debuff
+                    myCharacter.Buffs.RemoveAt(i);
+                
+                }
+            }
+            
+        }
+        ReduceBuffCount(myCharacter);
     }
     private IEnumerator TriggerBuffs()
     {
@@ -134,6 +173,7 @@ public class CombatEntity : MonoBehaviour
     public void StartTurn()
     {
         //Debug.Log(myCharacter.name + "------- It is the start of my turn");
+        myCharacter.UpdateEnergyCount(myCharacter._maxEnergy);
         TriggerAllBuffs();
         isMyTurn = true;
 
@@ -166,6 +206,7 @@ public class CombatEntity : MonoBehaviour
             SetMyIntentions();
 
         }
+        myCharacter.UpdateEnergyCount(-myCharacter._currentEnergy);
         
         
         
@@ -197,14 +238,16 @@ public class CombatEntity : MonoBehaviour
         if (thingGettingAttacked != this)
             return;
         
-        Debug.Log("I am" + this.gameObject.name + "\n" +
-                  dt.ToString() + "\n" +
-                  "Damage: " + damage + "\n" +
-                  "Crit: " + crit
-        );
+        // Debug.Log("I am" + this.gameObject.name + "\n" +
+        //           dt.ToString() + "\n" +
+        //           "Damage: " + damage + "\n" +
+        //           "Crit: " + crit
+        // );
 
         int damagePreReduction = damage;
         float critModifier = 1.5f;
+        
+        
         //todo adjust crit mod via buff or title
         
         //figure if it is a crit
@@ -219,6 +262,17 @@ public class CombatEntity : MonoBehaviour
         if (dt == AbilityTypes.PhysicalAttack)
         {
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
+            //if we have thorns deal that damage back to the caster
+            int thorns = myCharacter.GetIndexOfBuff(BuffTypes.Thorns);
+            if (thorns != -1)
+            {
+                if (attacker != null && attacker != this)
+                {
+                    // do it for EACH thorn buff
+                    TriggerAllThorns(attacker);
+                    
+                }
+            }
         }
         else if (dt == AbilityTypes.SpellAttack)
         {
@@ -229,6 +283,15 @@ public class CombatEntity : MonoBehaviour
         //Debug.Log(damagePreReduction - reductionAmount + " :damage");
         
         int attackDamage = damagePreReduction - reductionAmount;
+        
+        int exposed = myCharacter.GetIndexOfDebuff(DeBuffTypes.Exposed);
+        if (exposed != -1)
+        {
+            // if we have exposed increase damage taken by 50%
+            attackDamage = Mathf.RoundToInt(attackDamage * 1.5f);
+        }
+
+
         //check for block
         int blockCheck = myCharacter.GetIndexOfBuff(BuffTypes.Block);
         if (blockCheck != -1)
@@ -266,10 +329,24 @@ public class CombatEntity : MonoBehaviour
         {
             attackDamage = 0;
         }
-        //Debug.Log(attackDamage);
+
+        int invulnerable = myCharacter.GetIndexOfBuff(BuffTypes.Invulnerable);
+        if (invulnerable != -1)
+        {
+            attackDamage = 0;
+        }
+
+        if (lastSpellCastTargeted == Weapon.SpellTypes.Blood1 || lastSpellCastTargeted == Weapon.SpellTypes.Blood2)
+        {
+            attacker.Heal(attacker, attackDamage, 0);
+        }
 
 
         GetHitWithAttack(myCharacter, dt, attackDamage, reductionAmount);
+        
+        
+        
+        
 
     }
     
@@ -308,7 +385,7 @@ public class CombatEntity : MonoBehaviour
             //make sure energy is <= energy
             // add spell + wep to intention
             // subtract energy
-            int roll = Random.Range(0, 3);
+            int roll = Random.Range(0, 4);
             
             // we need spell energy;
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
@@ -317,9 +394,16 @@ public class CombatEntity : MonoBehaviour
                 //Debug.Log(roll + " " + Spells[roll].Item1);
                 intent.Add((Spells[roll].Item1, Spells[roll].Item2));
                 energy -= spellE;
-            }
 
-            
+                if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow1)
+                {
+                    energy += 1;
+                }
+            }
+            // do the life tap first, hmmmmm
+            // maybe cant select shadow1 if you have more than 2 energy?
+
+
             infiniteStop += 1;
         }
 
@@ -354,6 +438,18 @@ public class CombatEntity : MonoBehaviour
             CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
         }
     }
+
+    public void TriggerAllThorns(CombatEntity target)
+    {
+        foreach (var thorn in myCharacter.Buffs)
+        {
+            if (thorn.Item1 == BuffTypes.Thorns)
+            {
+                AttackEvent(Target, AbilityTypes.SpellAttack, Mathf.RoundToInt(thorn.Item3), 0);
+
+            }
+        }
+    }
     
     
     
@@ -378,19 +474,29 @@ public class CombatEntity : MonoBehaviour
             heal = Mathf.RoundToInt(heal * critModifier);
             Debug.Log("CRITICAL HEAL");
         }
+
+        int wounded = myCharacter.GetIndexOfDebuff(DeBuffTypes.Wounded);
+        if (wounded != -1)
+        {
+            heal = Mathf.RoundToInt(heal * .5f);
+        }
         
+        target.attacker = this;
         GetHealed(target.myCharacter, heal);
     }
 
     public void AttackBasic(CombatEntity target,  AbilityTypes attackType, int damage, float crit)
     {
-        AttackEvent(target, attackType, damage, crit);
+        // calc damage adjustments
+        
+        target.attacker = this;
+        AttackEvent(target, attackType, Mathf.RoundToInt(damage * CalculateDamageAdjustments()), crit);
+        
     }
 
     public void Buff(CombatEntity target, BuffTypes buff, int turns, float amount)
     {
-
-        
+        target.attacker = this;
         BuffEvent(target, buff, turns, amount);
     }
     
@@ -410,8 +516,38 @@ public class CombatEntity : MonoBehaviour
         //         Debug.Log("CRITICAL HIT");
         //     }
         // }
-        
+        target.attacker = this;
         DeBuffEvent(target, deBuff, turns, amount);
+    }
+
+    public void LoseHPDirect(CombatEntity target, int amount)
+    {
+        int exposed = target.myCharacter.GetIndexOfDebuff(DeBuffTypes.Exposed);
+        if (exposed != -1)
+        {
+            amount = Mathf.RoundToInt(1.5f * amount);
+        }
+        GetHitWithAttack(target.myCharacter, AbilityTypes.SpellAttack, amount, 0);
+        
+    }
+
+    public float CalculateDamageAdjustments()
+    {
+        float adjustment = 1;
+
+        int emp = myCharacter.GetIndexOfBuff(BuffTypes.Empowered);
+        if (emp != -1)
+        {
+            adjustment += (myCharacter.Buffs[emp].Item3/100);
+        }
+        int weak = myCharacter.GetIndexOfDebuff(DeBuffTypes.Weakened);
+        if (weak != -1)
+        {
+            adjustment -= (myCharacter.DeBuffs[weak].Item3/100);
+        }
+        Debug.Log(adjustment);
+        return adjustment;
+
     }
     
     
@@ -490,7 +626,7 @@ public class CombatEntity : MonoBehaviour
     {
         Bleed, // dot physical
         Burn, // dot spell
-        Wound, // anti healing
+        Wounded, // anti healing
         Weakened, // anti power
         Chilled, // reduce energy
         Exposed, // increase damage taken

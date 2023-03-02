@@ -61,7 +61,7 @@ public class StatusText : MonoBehaviour
         Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
         if(buffTypes == CombatEntity.BuffTypes.Block){
             AmountText.text = amount.ToString();
-            AmountText.color = TheSpellBook._instance.abilityColors[4];
+            AmountText.color = TheSpellBook._instance.abilityColors[5];
             ReductionText.text = "";
         }
         else

@@ -34,6 +34,46 @@ public class Character : MonoBehaviour
     [SerializeField] public CombatEntity _combatEntity;
 
     public static event Action<Character,int, int> UpdateBlock; 
+    public static event Action<Character,int, int, int> UpdateEnergy; 
+
+    private void Start()
+    {
+        EC = FindObjectOfType<EquipmentCreator>();
+        CombatTrigger.TriggerCombat += ActivateCombatEntity;
+        CombatTrigger.EndCombat += DeactivateCombatEntity;
+        
+        CombatEntity.GetHitWithAttack += GetHitWithAttack;
+        CombatEntity.GetHitWithBuff += GetHitWithBuff;
+        CombatEntity.GetHitWithDeBuff += GetHitWithDeBuff;
+        
+        CombatEntity.GetHealed += GetHealed;
+
+        
+        //todo base it off of level
+        _equipment = EC.CreateAllEquipment(5);
+        //_weapons = EC.CreateAllWeapons(10);
+        //_spellScrolls = EC.CreateAllSpellScrolls(10);
+        UpdateStats();
+        _currentHealth = _maxHealth;
+        
+
+        if (isPlayerCharacter)
+        {
+            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow1));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Blood3));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
+        }
+        else
+        {
+            //_weapons = EC.CreateAllWeapons(1);
+            //_spellScrolls = EC.CreateAllSpellScrolls(1);
+            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Sword1));
+            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
+            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Shadow1));
+        }
+    }
     public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetWeaponSpells()
     {
         //spell 1, spell2, weapon1, weapon2
@@ -100,46 +140,14 @@ public class Character : MonoBehaviour
     {
         return _stats;
     }
-    
-    private void Start()
+
+    public void UpdateEnergyCount(int amount)
     {
-        EC = FindObjectOfType<EquipmentCreator>();
-        CombatTrigger.TriggerCombat += ActivateCombatEntity;
-        CombatTrigger.EndCombat += DeactivateCombatEntity;
-        
-        CombatEntity.GetHitWithAttack += GetHitWithAttack;
-        CombatEntity.GetHitWithBuff += GetHitWithBuff;
-        CombatEntity.GetHitWithDeBuff += GetHitWithDeBuff;
-
-
-        CombatEntity.GetHealed += GetHealed;
-
-        
-        //todo base it off of level
-        _equipment = EC.CreateAllEquipment(10);
-        //_weapons = EC.CreateAllWeapons(10);
-        //_spellScrolls = EC.CreateAllSpellScrolls(10);
-        UpdateStats();
-        _currentHealth = _maxHealth;
-
-        if (isPlayerCharacter)
-        {
-            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood3));
-            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood4));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
-        }
-        else
-        {
-            _weapons = EC.CreateAllWeapons(1);
-            _spellScrolls = EC.CreateAllSpellScrolls(1);
-            // _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
-            // _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice2));
-            // _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
-            // _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Fire2));
-        }
+        _currentEnergy += amount;
+        UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
     }
-    
+
+
     private void OnDestroy()
     {
         CombatTrigger.TriggerCombat -= ActivateCombatEntity;
@@ -223,6 +231,23 @@ public class Character : MonoBehaviour
                     }
                 }
                 break;
+            case CombatEntity.BuffTypes.Empowered:
+                if (i != -1)
+                {
+                    float a = amount + Buffs[i].Item3;
+                    if (a > 75)
+                    {
+                        a = 75;
+                    }
+                    Buffs[i] = (buff, Buffs[i].Item2 + 1,  a);
+                    
+                }
+                else
+                {
+                    Buffs.Add((buff,turns,amount));
+
+                }
+                break;
         }
         
         
@@ -292,7 +317,13 @@ public class Character : MonoBehaviour
                 //check if we already have it
                 if (i != -1)
                 {
-                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, amount);
+                    float reduct = amount + DeBuffs[i].Item3;
+                    if (reduct > 75)
+                    {
+                        reduct = 75;
+                    }
+                    
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, reduct);
                 }
                 else
                 {
@@ -312,7 +343,7 @@ public class Character : MonoBehaviour
 
                 }
                 break;
-            case CombatEntity.DeBuffTypes.Wound:
+            case CombatEntity.DeBuffTypes.Wounded:
                 //check if we already have it
                 if (i != -1)
                 {
@@ -350,6 +381,16 @@ public class Character : MonoBehaviour
         // take damage
         // possibly die
         _currentHealth -= amount;
+
+        int immortal = GetIndexOfBuff(CombatEntity.BuffTypes.Immortal);
+        if (immortal != -1)
+        {
+            if (_currentHealth < 1)
+            {
+                _currentHealth = 1;
+            }
+        }
+        
         if (_currentHealth <= 0)
         {
             // die
@@ -372,6 +413,7 @@ public class Character : MonoBehaviour
             
             //activate friends and set their target to the player
         }
+        UpdateEnergyCount(_maxEnergy);
         
     }
     private void DeactivateCombatEntity()

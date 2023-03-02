@@ -110,9 +110,11 @@ public class TheSpellBook : MonoBehaviour
     public void CastAbility(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
 
+        
         // get the scaling
         IList scaling = (IList)WeaponScalingTable[(int)spell][1];
         
+        caster.myCharacter.UpdateEnergyCount(-int.Parse(WeaponScalingTable[(int)spell][2].ToString()));
 
         switch (spell)
         {
@@ -134,7 +136,7 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Sword2:
                     BasicAOEAttack(spell, w, caster, target, scaling);
-                    //todo remove all debuffs
+                    ReduceAllDebuffs(caster);
                     break;
                 case Weapon.SpellTypes.Axe1:
                     BasicPhysicalAttack(spell, w, caster, target, scaling);
@@ -164,7 +166,7 @@ public class TheSpellBook : MonoBehaviour
                     BasicSpellAttack(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Fire1:
-                    //todo remove any current block
+                    RemoveBlock(target);
                     BasicNonDamageDebuff(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Fire2:
@@ -193,25 +195,24 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Blood1:
                     BasicSpellAttack(spell, w, caster, target, scaling);
-                    // todo heal based damage delt
                     break;
                 case Weapon.SpellTypes.Blood2:
                     BasicAOEAttack(spell, w, caster, target, scaling);
-                    // todo heal based damage delt
                     break;
                 case Weapon.SpellTypes.Blood3:
                     BasicNonDamageBuff(spell, w, caster, caster, scaling);
-                    //todo take direct damage
-                    //todo remove all debuffs
+                    ReduceAllDebuffs(caster);
+                    BasicDirectDamage(spell, w, caster, caster, scaling);
                     break;
                 case Weapon.SpellTypes.Blood4:
-                    BasicNonDamageBuff(spell, w, caster, caster, scaling);
+                    EmpowerTarget(spell, w, caster, caster, scaling);
                     break;
                 case Weapon.SpellTypes.Shadow1:
-                    //todo increase energy and take damage
+                    BasicDirectDamage(spell, w, caster, caster, scaling);
+                    GainEnergy(caster,1);
                     break;
                 case Weapon.SpellTypes.Shadow2:
-                    BasicNonDamageDebuff(spell, w, caster, target, scaling);
+                    WeakenTarget(spell, w, caster, target, scaling);
                     break;
                 case Weapon.SpellTypes.Shadow3:
                     BasicSpellAttack(spell, w, caster, target, scaling);
@@ -286,21 +287,15 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Equipment.Stats.AttackDamage, out ADorSP);
                 casterStats.TryGetValue(Equipment.Stats.Daggers, out d);
                 ADorSP += d;
-                Debuff = CombatEntity.DeBuffTypes.Wound;
+                Debuff = CombatEntity.DeBuffTypes.Wounded;
                 turns = 1;
                 break;
-            case Weapon.SpellTypes.Shadow2:
-                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
-                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out d);
-                ADorSP += d;
-                Debuff = CombatEntity.DeBuffTypes.Weakened;
-                turns = 1;
-                break;
+            
             case Weapon.SpellTypes.Shadow4:
                 casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out d);
                 ADorSP += d;
-                Debuff = CombatEntity.DeBuffTypes.Wound;
+                Debuff = CombatEntity.DeBuffTypes.Wounded;
                 turns = 1;
                 break;
             case Weapon.SpellTypes.Fire1:
@@ -432,7 +427,150 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
 
+        if (buff == CombatEntity.BuffTypes.Rejuvenate)
+        {
+            Amount = Amount / 4;
+        }
+
         
+        caster.Buff(target, buff,turns, Mathf.RoundToInt(Amount));
+
+    }
+    public void WeakenTarget(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target,
+        IList scaling)
+    {
+        int turns = 1;
+        casterStats = caster.myCharacter.GetStats();
+        
+        int Amount = 0;
+        Amount += (int) scaling[0];
+        int lvl;
+        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
+        Amount += (int)scaling[1] * lvl ;
+        int ADorSP = 0;
+        int d;
+        // some buffs and buffs dont need amount
+        CombatEntity.DeBuffTypes Debuff = CombatEntity.DeBuffTypes.None;
+        switch (spell)
+        {
+            
+            case Weapon.SpellTypes.Shadow2:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out d);
+                ADorSP += d;
+                Debuff = CombatEntity.DeBuffTypes.Weakened;
+                turns = 1;
+                break;
+        }
+        
+        //todo check for buffs/debuffs
+
+        Amount += Mathf.RoundToInt(ADorSP * (float)scaling[2]);
+        
+        //scale down Damage for Non-Epic Items
+        //    -40% : common
+        //    -30% : uncommon
+        //    -20% : rare
+        int r;
+        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        switch (r)
+        {
+            case 0:
+                //common
+                Amount -= Mathf.RoundToInt(Amount * .40f);
+                break;
+            case 1:
+                //uncommon
+                Amount -= Mathf.RoundToInt(Amount * .30f);
+                break;
+            case 2:
+                //rare
+                Amount -= Mathf.RoundToInt(Amount * .20f);
+                break;
+            case 3:
+                //Epic
+                //no damage reduction
+                break;
+        }
+        
+        // Max amount you can add is 50%
+        // it will cap out at 25% tho
+        Amount = Mathf.RoundToInt(((float)Amount/ (Amount +200))* 25);
+
+        if (Amount < 1)
+        {
+            Amount = 1;
+        }
+        caster.DeBuff(target, Debuff,turns, Mathf.RoundToInt(Amount));
+
+    }
+    
+    public void EmpowerTarget(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target,
+        IList scaling)
+    {
+        int turns = 1;
+        casterStats = caster.myCharacter.GetStats();
+        
+        int Amount = 0;
+        Amount += (int) scaling[0];
+        int lvl;
+        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
+        Amount += (int)scaling[1] * lvl ;
+        int ADorSP = 0;
+        int d;
+        // some buffs and buffs dont need amount
+        CombatEntity.BuffTypes buff = CombatEntity.BuffTypes.None;
+        switch (spell)
+        {
+            
+            case Weapon.SpellTypes.Blood4:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.BloodPower, out d);
+                ADorSP += d;
+                buff = CombatEntity.BuffTypes.Empowered;
+                turns = 1;
+                break;
+        }
+        
+        //todo check for buffs/debuffs
+
+        Amount += Mathf.RoundToInt(ADorSP * (float)scaling[2]);
+        
+        //scale down Damage for Non-Epic Items
+        //    -40% : common
+        //    -30% : uncommon
+        //    -20% : rare
+        int r;
+        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        switch (r)
+        {
+            case 0:
+                //common
+                Amount -= Mathf.RoundToInt(Amount * .40f);
+                break;
+            case 1:
+                //uncommon
+                Amount -= Mathf.RoundToInt(Amount * .30f);
+                break;
+            case 2:
+                //rare
+                Amount -= Mathf.RoundToInt(Amount * .20f);
+                break;
+            case 3:
+                //Epic
+                //no damage reduction
+                break;
+        }
+        
+        // Max amount you can add is 25%
+        // it will cap out at 75% tho
+        Amount = Mathf.RoundToInt(((float)Amount/ (Amount +200))* 25);
+
+        if (Amount < 1)
+        {
+            Amount = 1;
+        }
+
         caster.Buff(target, buff,turns, Mathf.RoundToInt(Amount));
 
     }
@@ -523,6 +661,92 @@ public class TheSpellBook : MonoBehaviour
         }
 
         
+    }
+
+    public void BasicDirectDamage(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target,
+        IList scaling)
+    {
+        casterStats = caster.myCharacter.GetStats();
+        int power = 0;
+        power += (int)  scaling[0];
+        ////////// lvl scaled Block ///////////////////
+        int lvl;
+        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
+        power += (int)scaling[1] * lvl ;
+
+        float MaxPercentHealth = 0;
+        float MinPercentHealth = 0;
+
+        ////////// ShieldStat scaled Block ///////////////////
+        int ADorSP = 0;
+        int d = 0;
+        switch (spell)
+        {
+            case Weapon.SpellTypes.Shadow1:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out d);
+                ADorSP += d;
+                // 20 to 5
+                MaxPercentHealth = 19;
+                MinPercentHealth = 4;
+
+                break;
+            case Weapon.SpellTypes.Blood3:
+                casterStats.TryGetValue(Equipment.Stats.SpellPower, out ADorSP);
+                casterStats.TryGetValue(Equipment.Stats.BloodPower, out d);
+                ADorSP += d;
+                // 40 to 20
+                MaxPercentHealth = 41;
+                MinPercentHealth = 19;
+
+                break;
+        }
+        power += Mathf.RoundToInt(ADorSP * (float)scaling[2]);
+        
+        //scale down block for Non-Epic Items
+        //    -40% : common
+        //    -30% : uncommon
+        //    -20% : rare
+        int r;
+        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        switch (r)
+        {
+            case 0:
+                //common
+                power -= Mathf.RoundToInt(power * .40f);
+                break;
+            case 1:
+                //uncommon
+                power -= Mathf.RoundToInt(power * .30f);
+                break;
+            case 2:
+                //rare
+                power -= Mathf.RoundToInt(power * .20f);
+                break;
+            case 3:
+                //Epic
+                //no damage reduction
+                break;
+        }
+
+        float percent = ((power / -(power + 100)) * MinPercentHealth) + MaxPercentHealth;
+        if (percent > MaxPercentHealth -1)
+        {
+            percent = MaxPercentHealth - 1;
+        }else if (percent < MinPercentHealth +1)
+        {
+            percent = MinPercentHealth + 1;
+        }
+        Debug.Log("Perecent max hp reduction: " + Mathf.RoundToInt(percent) + "%");
+        percent = percent / 100;
+        
+        target.LoseHPDirect(target, Mathf.RoundToInt(target.myCharacter._maxHealth * percent));
+
+    }
+
+    public void GainEnergy(CombatEntity target, int amount)
+    {
+        target.myCharacter.UpdateEnergyCount(1);
     }
 
     public void BasicBlock(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target,
@@ -671,7 +895,8 @@ public class TheSpellBook : MonoBehaviour
         CombatEntity.AbilityTypes abilityType = CombatEntity.AbilityTypes.PhysicalAttack;
 
         float crit = FigureOutHowMuchCrit();
-        
+
+        target.lastSpellCastTargeted = spell;
         caster.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Damage, crit);
         
         //Debug.Log(Mathf.RoundToInt(Damage) + " - initial physical");
@@ -850,6 +1075,7 @@ public class TheSpellBook : MonoBehaviour
 
         float crit = FigureOutHowMuchCrit();
         
+        target.lastSpellCastTargeted = spell;
         caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
         //Debug.Log(Mathf.RoundToInt(Damage) + " - initial spell");
         //Debug.Log(SP + " sp initial");
@@ -923,6 +1149,25 @@ public class TheSpellBook : MonoBehaviour
         
         caster.Heal(target, healAmount, crit);
         
+    }
+
+    public void ReduceAllDebuffs(CombatEntity target)
+    {
+        target.ReduceAllDebuffTurnCount();
+    }
+    
+    public void ReduceAllBuffs(CombatEntity target)
+    {
+        target.ReduceAllBuffTurnCount();
+    }
+
+    public void RemoveBlock(CombatEntity target)
+    {
+        int block = target.myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
+        if (block != -1)
+        {
+            target.Buff(target, CombatEntity.BuffTypes.Block, -1,-target.myCharacter.Buffs[block].Item3 );
+        }
     }
     
     public float FigureOutHowMuchCrit()

@@ -190,6 +190,14 @@ public class HealthBar : MonoBehaviour
                 BuffDebuffElement b = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
                 if (b._buff == buff)
                 {
+                    if (buff == CombatEntity.BuffTypes.Empowered)
+                    {
+                        b._amount += amount;
+                        if (b._amount > 75)
+                        {
+                            b._amount = 75;
+                        }
+                    }
                     b._turns += turns;
                     b.UpdateValues();
                     found = true;
@@ -232,14 +240,19 @@ public class HealthBar : MonoBehaviour
                 BuffDebuffElement b = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
                 if (b._debuff == debuff)
                 {
+                    if (debuff == CombatEntity.DeBuffTypes.Weakened)
+                    {
+                        b._amount += amount;
+                        if (b._amount > 75)
+                        {
+                            b._amount = 75;
+                        }
+                    }
                     b._turns += turns;
                     b.UpdateValues();
                     found = true;
                 }
-                // if we dont have it already 
-                BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-                    .GetComponent<BuffDebuffElement>();
-                icon.InitializeDisplay(debuff, turns, amount);
+                
                 
             }
 
@@ -363,7 +376,7 @@ public class HealthBar : MonoBehaviour
                 case CombatEntity.BuffTypes.Invulnerable:
                     return false;
                 case CombatEntity.BuffTypes.Empowered:
-                    return true;
+                    return false;
                 case CombatEntity.BuffTypes.Momentum:
                     return false;
                 case CombatEntity.BuffTypes.Immortal:
@@ -379,7 +392,7 @@ public class HealthBar : MonoBehaviour
                     return true;
                 case CombatEntity.DeBuffTypes.Burn:
                     return true;
-                case CombatEntity.DeBuffTypes.Wound:
+                case CombatEntity.DeBuffTypes.Wounded:
                     return false;
                 case CombatEntity.DeBuffTypes.Weakened:
                     return false;
