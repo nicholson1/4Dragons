@@ -82,15 +82,18 @@ public class EquipmentCreator : MonoBehaviour
 
         int roll = Random.Range(1, 100);
 
+        //Debug.Log(common +"," + uncommon +"," + rare +"," + epic);
+        //Debug.Log(roll);
+
         if (roll <= common)
         {
             return 0;
         }
-        if (roll <= uncommon)
+        if (roll <= uncommon + common)
         {
             return 1;
         }
-        if (roll <= rare)
+        if (roll <= rare + uncommon + common)
         {
             return 2;
         }

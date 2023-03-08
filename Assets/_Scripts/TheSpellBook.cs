@@ -455,7 +455,7 @@ public class TheSpellBook : MonoBehaviour
         float crit = FigureOutHowMuchCrit(caster);
 
         target.lastSpellCastTargeted = spell;
-        caster.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, power, crit);
+        caster.AttackBasic(target, abilityType, power, crit);
         
         //Debug.Log(Mathf.RoundToInt(Damage) + " - initial physical");
         //Debug.Log(AD + " ad initial");

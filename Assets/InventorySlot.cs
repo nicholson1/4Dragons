@@ -4,19 +4,24 @@ using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IDropHandler
 {
     public Equipment.Slot Slot;
     public DragItem Item = null;
     [SerializeField] public RectTransform _rt;
-    [SerializeField] private TextMeshProUGUI SlotLable;
+    private TextMeshProUGUI SlotLable;
+    private Image background;
+    [SerializeField] private Color baseColor;
 
     public void LabelCheck()
     {
         if (SlotLable == null)
         {
             SlotLable = GetComponentInChildren<TextMeshProUGUI>();
+            background = GetComponent<Image>();
+            baseColor = background.color;
         }
         
         if (Slot == Equipment.Slot.Drop)
@@ -26,6 +31,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         if (Item != null)
         {
             SlotLable.gameObject.SetActive(false);
+            background.color = ToolTipManager._instance.rarityColors[Item.e.stats[Equipment.Stats.Rarity]];
+            background.color = new Color(background.color.r, background.color.g,background.color.b, baseColor.a);
+
+            //change color based on the rarity
+
         }
         else
         {
@@ -43,8 +53,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             SlotLable.gameObject.SetActive(true);
 
-            
-            
+            background.color = baseColor;
+
+
+
+
 
         }
     }
@@ -58,6 +71,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             if (Slot == Equipment.Slot.Drop)
             {
                 di.currentLocation.Item = null;
+                di.currentLocation.LabelCheck();
                 EquipmentManager._instance.DropItem(di.e);
                 Destroy(di.gameObject);
                 return;

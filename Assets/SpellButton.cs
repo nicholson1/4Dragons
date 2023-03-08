@@ -15,7 +15,7 @@ public class SpellButton : MonoBehaviour
     public TextMeshProUGUI SpellText;
     List<List<object>> DataTable;
     private ToolTip _toolTip;
-    public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
+    //public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
 
     private void Start()
     {
