@@ -33,6 +33,7 @@ public class SpellButton : MonoBehaviour
     public void UpdateSpell(Weapon.SpellTypes s, Weapon w)
     {
 
+        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
         spell = s;
         SpellText.text = DataTable[(int)spell][0].ToString();
 
@@ -51,7 +52,7 @@ public class SpellButton : MonoBehaviour
         //Debug.Log(t);
 
         _toolTip.Title = DataTable[(int)spell][0].ToString();;
-        _toolTip.Message = DataTable[(int)spell][3].ToString();
+        _toolTip.Message = AdjustDescriptionValues(DataTable[(int)spell][3].ToString(), power[1], power[0]);
         _toolTip.Cost = DataTable[(int)spell][2].ToString();
         
         //iLVL
@@ -70,6 +71,16 @@ public class SpellButton : MonoBehaviour
         // get name and scaling from the type of spell, and the table, adjust the description via..... idk
         
         
+    }
+    public string AdjustDescriptionValues(string message, int turns, float amount)
+    {
+        message = message.Replace("$", turns.ToString());
+        message = message.Replace("@", amount.ToString());
+        message = message.Replace("#", (Mathf.RoundToInt(amount/4)*4).ToString());
+        
+
+        return message;
+
     }
 
     public void ShowSpell()

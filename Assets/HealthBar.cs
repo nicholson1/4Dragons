@@ -43,8 +43,12 @@ public class HealthBar : MonoBehaviour
 
         CombatEntity.AddIntent += AddIntent;
         CombatEntity.RemoveIntent += RemoveIntent;
+        CombatEntity.RemoveAllIntent += RemoveAllIntent;
+
         CombatEntity.ReduceDebuffCount += ReduceDebuffCount;
         CombatEntity.ReduceBuffCount += ReduceBuffCount;
+
+        CombatController.EndTurn += FixBars;
 
 
     }
@@ -60,12 +64,21 @@ public class HealthBar : MonoBehaviour
 
         CombatEntity.AddIntent -= AddIntent;
         CombatEntity.RemoveIntent -= RemoveIntent;
+        CombatEntity.RemoveAllIntent -= RemoveAllIntent;
+
         CombatEntity.ReduceDebuffCount -= ReduceDebuffCount;
         CombatEntity.ReduceBuffCount -= ReduceBuffCount;
 
+        CombatController.EndTurn -= FixBars;
 
 
 
+
+    }
+
+    private void FixBars()
+    {
+        StartCoroutine(FixTheBar(displayCharacter._currentHealth, bar.value, .5f));
 
     }
 
@@ -113,8 +126,6 @@ public class HealthBar : MonoBehaviour
 
                 }
             }
-
-
         }
     }
 
@@ -134,6 +145,18 @@ public class HealthBar : MonoBehaviour
 
         //todo prolly object pool these
         Destroy(intentDisplay.GetChild(intentDisplay.childCount - 1).gameObject);
+    }
+    private void RemoveAllIntent(Character c)
+    {
+        if (c != displayCharacter)
+            return;
+
+        //todo prolly object pool these
+        for (int i = intentDisplay.childCount - 1 ; i >= 0; i--)
+        {
+            Destroy(intentDisplay.GetChild(i).gameObject);
+
+        }
     }
 
 
@@ -337,6 +360,43 @@ public class HealthBar : MonoBehaviour
         bar.value = end;
 
     }
+    IEnumerator FixTheBar(float currentHP, float BarHP, float timeToMove)
+    {
+        
+        if (currentHP == BarHP)
+        {
+            yield break;
+        }
+
+        Debug.Log("Fixing the bar");
+        if (currentHP > BarHP)
+        {
+            float t = 0;
+            while (t < 1)
+            {
+                bar.value = Mathf.Lerp(BarHP, currentHP, t);
+                t = t + Time.deltaTime / timeToMove;
+                yield return new WaitForEndOfFrame();
+            }
+
+            bar.value = currentHP;
+        }
+        else
+        {
+            float t = 0;
+            while (t < 1)
+            {
+                tempBar.value = Mathf.Lerp(BarHP, currentHP, t);
+                t = t + Time.deltaTime / timeToMove;
+                yield return new WaitForEndOfFrame();
+            }
+
+            tempBar.value = currentHP;
+        }
+        
+        
+
+    }
 
     public void Initialize(Character c, Camera cam)
     {
@@ -377,7 +437,7 @@ public class HealthBar : MonoBehaviour
                     return false;
                 case CombatEntity.BuffTypes.Empowered:
                     return false;
-                case CombatEntity.BuffTypes.Momentum:
+                case CombatEntity.BuffTypes.Shatter:
                     return false;
                 case CombatEntity.BuffTypes.Immortal:
                     return false;

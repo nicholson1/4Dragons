@@ -30,11 +30,13 @@ public class CombatEntity : MonoBehaviour
     
     public static event Action<Character, Weapon.SpellTypes> AddIntent;
     public static event Action<Character> RemoveIntent;
+    public static event Action<Character> RemoveAllIntent;
+
 
     public static event Action<Character> ReduceDebuffCount;
     public static event Action<Character> ReduceBuffCount;
 
-
+    public static event Action<ErrorMessageManager.Errors> Notification;
     
     public List<(Weapon.SpellTypes, Weapon)> Spells;
     
@@ -104,6 +106,7 @@ public class CombatEntity : MonoBehaviour
     }
     public void ReduceAllBuffTurnCount()
     {
+        
         for (int i = myCharacter.Buffs.Count - 1; i >= 0; i--)
         {
             if (myCharacter.Buffs[i].Item1 != BuffTypes.Block)
@@ -121,6 +124,7 @@ public class CombatEntity : MonoBehaviour
             
         }
         ReduceBuffCount(myCharacter);
+        
     }
     private IEnumerator TriggerBuffs()
     {
@@ -172,14 +176,28 @@ public class CombatEntity : MonoBehaviour
 
     public void StartTurn()
     {
-        //Debug.Log(myCharacter.name + "------- It is the start of my turn");
+        // if chilled reduce this value by 1;
         myCharacter.UpdateEnergyCount(myCharacter._maxEnergy);
+        int block =myCharacter.GetIndexOfBuff(BuffTypes.Block);
+        if (block != -1)
+        {
+            GetBuffed(this, BuffTypes.Block, -1, -myCharacter.Buffs[block].Item3);
+        }
         TriggerAllBuffs();
         isMyTurn = true;
 
 
         if (myCharacter.isPlayerCharacter)
         {
+            Notification(ErrorMessageManager.Errors.YourTurn);
+            int chilled = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
+        
+            if (chilled != -1)
+            {
+                // if it is my turn and chill is at 1 turn, dont remove eneregy
+                myCharacter.UpdateEnergyCount(-1);
+            }
+            // if chilled reduce current energy by 1
             // activate end turn button
             //Debug.Log("Why are you starting turn when you are ending turn");
         }
@@ -230,6 +248,16 @@ public class CombatEntity : MonoBehaviour
             return;
         GetHitWithDeBuff(myCharacter, deBuff, turns, amount);
 
+        if (deBuff == DeBuffTypes.Chilled && !myCharacter.isPlayerCharacter)
+        {
+            // if we are not chilled and become chilled
+            int chill = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
+            if (myCharacter.DeBuffs[chill].Item2 == 1)
+            {
+                SetMyIntentions();
+            }
+        }
+
     }
     
     private void GetAttacked(CombatEntity thingGettingAttacked, AbilityTypes dt, int damage, float crit)
@@ -255,6 +283,8 @@ public class CombatEntity : MonoBehaviour
         {
             damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
             Debug.Log("CRITICAL HIT");
+            Notification(ErrorMessageManager.Errors.CriticalHit);
+
         }
         
         //figure out damage reduction
@@ -300,28 +330,19 @@ public class CombatEntity : MonoBehaviour
             float blockAmount = myCharacter.Buffs[blockCheck].Item3;
 
             float blockAfterDamage = blockAmount - attackDamage;
-            Debug.Log(attackDamage + " AD, " + blockAmount + " Block = " + blockAfterDamage );
 
             if (blockAfterDamage <= 0)
             {
-                Debug.Log("issue");
                 //Debug.Log(blockAmount - attackDamage + " block after damage");
 
                 GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -blockAmount);
                 attackDamage -= Mathf.RoundToInt(blockAmount);
-                
-
-
-
             }
             else
             {
                 //Debug.Log(blockAmount - attackDamage + " block after damage");
                 GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -attackDamage);
                 attackDamage -= Mathf.RoundToInt(blockAmount);
-
-
-
             }
         }
 
@@ -338,7 +359,7 @@ public class CombatEntity : MonoBehaviour
 
         if (lastSpellCastTargeted == Weapon.SpellTypes.Blood1 || lastSpellCastTargeted == Weapon.SpellTypes.Blood2)
         {
-            attacker.Heal(attacker, attackDamage, 0);
+            attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
 
 
@@ -372,11 +393,32 @@ public class CombatEntity : MonoBehaviour
 
     public List<(Weapon.SpellTypes spell, Weapon weapon)> SetMyIntentions()
     {
+        
         GetMySpells();
         List<(Weapon.SpellTypes, Weapon)> intent = new List<(Weapon.SpellTypes, Weapon)>();
         //get max energy
         int energy = myCharacter._maxEnergy;
-        //todo modify it with buff / titles
+        int chilled = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
+        
+        if (chilled != -1)
+        {
+            // if it is my turn and chill is at 1 turn, dont remove eneregy
+            if (isMyTurn && myCharacter.DeBuffs[chilled].Item2 == 1)
+            {
+                // donot remove energy
+            }
+            else
+            {
+                energy -= 1;
+                RemoveAllIntent(myCharacter);
+    
+                Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+            }
+            
+        }
+    
+        
+        //todo modify it with titles
 
         int infiniteStop = 0;
         while (energy > 0 || infiniteStop > 100)
@@ -389,6 +431,17 @@ public class CombatEntity : MonoBehaviour
             
             // we need spell energy;
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
+            if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow1)
+            {
+                if (energy == myCharacter._maxEnergy || myCharacter._currentHealth < myCharacter._maxHealth * .25f || (chilled != -1 && energy == myCharacter._maxEnergy -1))
+                {
+                    //todo keep an eye on this
+                    infiniteStop += 1;
+                    continue;
+                }
+            }
+            
+
             if ( spellE <= energy)
             {
                 //Debug.Log(roll + " " + Spells[roll].Item1);
@@ -473,6 +526,7 @@ public class CombatEntity : MonoBehaviour
         {
             heal = Mathf.RoundToInt(heal * critModifier);
             Debug.Log("CRITICAL HEAL");
+            Notification(ErrorMessageManager.Errors.CriticalHeal);
         }
 
         int wounded = myCharacter.GetIndexOfDebuff(DeBuffTypes.Wounded);
@@ -545,7 +599,7 @@ public class CombatEntity : MonoBehaviour
         {
             adjustment -= (myCharacter.DeBuffs[weak].Item3/100);
         }
-        Debug.Log(adjustment);
+        //Debug.Log(adjustment);
         return adjustment;
 
     }
@@ -616,7 +670,7 @@ public class CombatEntity : MonoBehaviour
         Thorns,
         Invulnerable,
         Empowered,
-        Momentum,
+        Shatter,
         Immortal,
         None,
         

@@ -16,8 +16,10 @@ public class Character : MonoBehaviour
     public int _currentEnergy;
 
     public bool isPlayerCharacter;
-    
-    private List<Equipment> _equipment;
+    public int inventorySize = 6;
+    public List<Equipment> _equipment = new List<Equipment>();
+    public List<Equipment> _inventory = new List<Equipment>();
+
     private List<Weapon> _weapons = new List<Weapon>();
     private List<Weapon> _spellScrolls = new List<Weapon>();
 
@@ -27,7 +29,6 @@ public class Character : MonoBehaviour
 
 
     Dictionary<Equipment.Stats, int> _stats;
-    private List<Equipment> _inventory;
 
     private EquipmentCreator EC;
 
@@ -35,6 +36,8 @@ public class Character : MonoBehaviour
 
     public static event Action<Character,int, int> UpdateBlock; 
     public static event Action<Character,int, int, int> UpdateEnergy; 
+    public static event Action<Character> UpdateStatsEvent; 
+
 
     private void Start()
     {
@@ -50,29 +53,39 @@ public class Character : MonoBehaviour
 
         
         //todo base it off of level
-        _equipment = EC.CreateAllEquipment(5);
+        _equipment = EC.CreateAllEquipment(_level);
         //_weapons = EC.CreateAllWeapons(10);
         //_spellScrolls = EC.CreateAllSpellScrolls(10);
-        UpdateStats();
-        _currentHealth = _maxHealth;
+        //_spellScrolls = EC.CreateAllSpellScrolls(10);
         
 
         if (isPlayerCharacter)
         {
-            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
-            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow1));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Blood3));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Nature1));
+            _weapons = EC.CreateAllWeapons(_level);
+            _spellScrolls = EC.CreateAllSpellScrolls(_level);
+             // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood2));
+             // _weapons.Add(EC.CreateWeapon(_level,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice3));
+             // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
+             // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield2));
         }
         else
         {
-            //_weapons = EC.CreateAllWeapons(1);
-            //_spellScrolls = EC.CreateAllSpellScrolls(1);
-            _weapons.Add(EC.CreateWeapon(5,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Sword1));
-            _weapons.Add(EC.CreateWeapon(5,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Axe2));
-            _spellScrolls.Add(EC.CreateSpellScroll(5,1,Weapon.SpellTypes.Shadow1));
+            //_weapons = EC.CreateAllWeapons(_level);
+            //_spellScrolls = EC.CreateAllSpellScrolls(_level);
+            
+           
+            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+            _weapons.Add(EC.CreateWeapon(_level,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Axe2));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire2));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice1));
+            
         }
+        _equipment.AddRange(_weapons);
+        _equipment.AddRange(_spellScrolls);
+        UpdateStats();
+        _currentHealth = _maxHealth;
+
+
     }
     public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetWeaponSpells()
     {
@@ -213,22 +226,19 @@ public class Character : MonoBehaviour
                     Buffs[i] = (buff,turns + Buffs[i].Item2, amount);
                 }
                 break;
-            case CombatEntity.BuffTypes.Momentum:
+            case CombatEntity.BuffTypes.Shatter:
                 if (i == -1)
                 {
                     Buffs.Add((buff,turns,amount));
                 }
                 else
                 {
-                    if (amount > Buffs[i].Item3)
+                    float a = amount + Buffs[i].Item3;
+                    if (a > 30)
                     {
-                        Buffs[i] = (buff,turns + Buffs[i].Item2, amount);
+                        a = 30;
                     }
-                    else
-                    {
-                        Buffs[i] = (buff,turns + Buffs[i].Item2, Buffs[i].Item3);
-
-                    }
+                    Buffs[i] = (buff, Buffs[i].Item2 + 1,  a);
                 }
                 break;
             case CombatEntity.BuffTypes.Empowered:
@@ -395,6 +405,10 @@ public class Character : MonoBehaviour
         {
             // die
             _currentHealth = 0;
+            if (!isPlayerCharacter)
+            {
+                SelectionManager._instance.RandomSelectionFromEquipment(this);
+            }
             Debug.Log("DEFEAT");
         }
     }
@@ -426,7 +440,7 @@ public class Character : MonoBehaviour
     }
 
 
-    private void UpdateStats()
+    public void UpdateStats()
     {
         _stats = new Dictionary<Equipment.Stats, int>();
 
@@ -450,6 +464,7 @@ public class Character : MonoBehaviour
         
         
         PrettyPrintStats();
+        UpdateStatsEvent(this);
     }
 
     private void SetMaxHealth()
@@ -474,7 +489,7 @@ public class Character : MonoBehaviour
 
         }
         
-        Debug.Log(Output);
+        //Debug.Log(Output);
     }
     
     

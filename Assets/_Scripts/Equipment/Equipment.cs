@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ImportantStuff
 {
@@ -8,12 +9,20 @@ namespace ImportantStuff
     {
 
         private string _name;
+        private Sprite _icon;
+        private bool _isWeapon = false;
 
         public string name // the Name property
         {
             get => _name;
             set => _name = value;
         }
+        public bool isWeapon // the Name property
+        {
+            get => _isWeapon;
+            set => _isWeapon = value;
+        }
+        
 
         private Dictionary<Stats, int> _stats;
 
@@ -30,6 +39,13 @@ namespace ImportantStuff
             get => _slot;
             set => _slot = value;
         }
+        
+        public Sprite icon
+        {
+            get => _icon;
+            set => _icon = value;
+        }
+        
 
 
         // private int _level;
@@ -50,11 +66,12 @@ namespace ImportantStuff
 
 
 
-        public Equipment(string name, Slot slot, Dictionary<Stats, int> stats)
+        public Equipment(string name, Slot slot, Dictionary<Stats, int> stats, Sprite icon)
         {
             _name = name;
             _stats = stats;
             _slot = slot;
+            _icon = icon;
         }
 
         public enum Slot
@@ -63,9 +80,8 @@ namespace ImportantStuff
 
             //Neck,
             Shoulders,
-            Gloves,
             Chest,
-
+            Gloves,
             //Belt,
             Legs,
             Boots,
@@ -73,7 +89,13 @@ namespace ImportantStuff
             // weapons
             OneHander,
             TwoHander,
-            Scroll
+            Scroll,
+            
+            //other
+            Potion,
+            All,
+            Drop,
+            
         }
 
 

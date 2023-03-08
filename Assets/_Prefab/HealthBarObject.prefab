@@ -950,6 +950,7 @@ GameObject:
   - component: {fileID: 3119191822068730035}
   - component: {fileID: 6179031279629234073}
   - component: {fileID: 1855090369083746568}
+  - component: {fileID: 3150161302463415433}
   m_Layer: 5
   m_Name: Block
   m_TagString: Untagged
@@ -975,7 +976,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -99.8, y: 0}
+  m_AnchoredPosition: {x: -88.4, y: 18.2}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6179031279629234073
@@ -1016,6 +1017,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3150161302463415433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4927408186709799181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7cd2af8a5ded64eb496cd538ea9cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Title: Block
+  Message: Block is the amount of damage a character can take before the damage affects
+    their HP, block is lost at the begining of the turn
+  Cost: 
+  iLvl: 
+  rarity: -1
 --- !u!1 &5292224840563470169
 GameObject:
   m_ObjectHideFlags: 0

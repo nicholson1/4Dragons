@@ -21,6 +21,7 @@ public class CombatController : MonoBehaviour
 
     public Vector3 playerOffset = new Vector3();
 
+    public static event Action EndTurn;
     private Character Player;
 
     private int CurrentTurnIndex = 0;
@@ -132,6 +133,7 @@ public class CombatController : MonoBehaviour
 
     public void EndCurrentTurn()
     {
+        EndTurn();
         CurrentTurnIndex += 1;
         if (CurrentTurnIndex >= entitiesInCombat.Count)
         {

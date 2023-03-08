@@ -84,7 +84,7 @@ public class CombatButtonController : MonoBehaviour
     {
         Button b = button.GetComponent<Button>();
         int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
-        Debug.Log(energyAmount);
+        //Debug.Log(energyAmount);
         if (energyAmount > currentEnergy)
         {
             b.interactable = false;

@@ -73,6 +73,7 @@ public class EquipmentCreator : MonoBehaviour
         }
 
         int common = 100 - (rare + epic + uncommon);
+
         //check if we are below 0
         if (common < 0)
         {
@@ -97,21 +98,15 @@ public class EquipmentCreator : MonoBehaviour
         //Debug.Log(level + ": " + common + " , " + uncommon + " , " + rare + " , " + epic);
 
         return 3;
-        
-        
-        
-        
-
-
-
     }
 
     public List<Weapon> CreateAllWeapons(int level)
     {
         List<Weapon> generatedWeapons = new List<Weapon>();
 
-        Weapon w = CreateRandomWeapon(level, true);
+        Weapon w = CreateRandomWeapon(level, false);
 
+        //todo 2 handers? oof
         generatedWeapons.Add(w);
 
         if (w.slot == Equipment.Slot.TwoHander)
@@ -161,15 +156,11 @@ public class EquipmentCreator : MonoBehaviour
         //only the first 6 elements
         var v = Enum.GetValues (typeof (Equipment.Slot));
         int i = 0;
-        while (i < 1)
+        while (i < 6)
         {
             //int level = Random.Range(1, 20);
-            foreach (Equipment.Slot slot in v)
-            {
-                generatedEquipment.Add(CreateArmor(level, GetRarity(level), slot));
-
-            }
-
+            
+            generatedEquipment.Add(CreateArmor(level, GetRarity(level), (Equipment.Slot)i));
             i++;
         }
 
@@ -202,7 +193,7 @@ public class EquipmentCreator : MonoBehaviour
         int def = GenerateDefensiveStats(PB);
         
         //add name for item slot
-        AddSlotName(slot);
+        Sprite icon = AddSlotName(slot);
         
         //Add other stats....
         
@@ -212,8 +203,10 @@ public class EquipmentCreator : MonoBehaviour
         
         //intitilize equipment
         //Debug.Log(name + " plz work");
-        Equipment e = new Equipment(name, slot ,equipmentStats);
-        //PrettyPrintEquipment();
+        name= name.Replace("\r", "");
+
+        Equipment e = new Equipment(name, slot ,equipmentStats, icon);
+        PrettyPrintEquipment();
         return e;
     }
 
@@ -240,12 +233,12 @@ public class EquipmentCreator : MonoBehaviour
         {
             // exclude daggers and shields
             //4-10
-            spellIndex = Random.Range(4, 9);
+            spellIndex = Random.Range(4, 10);
         }
         else
         {
             //0 - 10
-            spellIndex = Random.Range(0, 10);
+            spellIndex = Random.Range(0, 30);
 
         }
         return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
@@ -296,14 +289,14 @@ public class EquipmentCreator : MonoBehaviour
             
         }
         GenerateStats(PB);
-        AddWeaponSlotName(slot, weaponType);
+        Sprite icon = AddWeaponSlotName(slot, weaponType);
 
         
 
         
         // maybe swap order and do it based off if it starts with a space or not
-        
-        Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2);
+        name= name.Replace("\r", "");
+        Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2, icon);
         //w.spellDescription1 = GetSpellDescription(weaponType);
         //w.spellDescription2 = GetSpellDescription(spell2);
        
@@ -324,19 +317,20 @@ public class EquipmentCreator : MonoBehaviour
         equipmentStats.Add(Equipment.Stats.ItemLevel, level);
         equipmentStats.Add(Equipment.Stats.Rarity, rarity);
         
-        AddSlotName(Equipment.Slot.Scroll);
+        Sprite icon = AddSlotName(Equipment.Slot.Scroll);
         name += SpellNameAddition(spellType, false);
         name = name.Substring(1);
         
 
 
+        name= name.Replace("\r", "");
 
 
         // maybe swap order and do it based off if it starts with a space or not
         
-        Weapon scroll = new Weapon(name, Equipment.Slot.Scroll, equipmentStats, spellType);
+        Weapon scroll = new Weapon(name, Equipment.Slot.Scroll, equipmentStats, spellType, Weapon.SpellTypes.None, icon);
         
-       
+        AddWeaponScaling(scroll,spellType, Weapon.SpellTypes.None );
         //todo spell scaling
         //AddWeaponScaling(w,weaponType);
         
@@ -411,6 +405,7 @@ public class EquipmentCreator : MonoBehaviour
             name = "Exquisite " + name;
             return;
         }
+        
     
         var v = Enum.GetValues (typeof (Equipment.Stats));
         Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length));
@@ -429,18 +424,23 @@ public class EquipmentCreator : MonoBehaviour
             {
                 equipmentStats.Add(a, 1);
                 equipmentStats.Add(b, 1);
+               
             }
             else if (powerBudget % 2 == 0)
             {
                 equipmentStats.Add(a, powerBudget/2);
                 equipmentStats.Add(b, powerBudget/2);
+                
             }
             else
             {
                 equipmentStats.Add(a, (powerBudget + 1)/2);
                 equipmentStats.Add(b, (powerBudget -1 )/2);
+                
             }
         }
+        
+        
     
         AddStatName(a, b);
 
@@ -472,7 +472,7 @@ public class EquipmentCreator : MonoBehaviour
             throw new InvalidEnumArgumentException(nameof(a), (int)a, typeof(Equipment.Stats));
         //Debug.Log(a.GetHashCode() + "  " + a.ToString());
         //Debug.Log(b.GetHashCode() +" " + b.ToString());
-        string statName = dataReader.GetEquipmentNamingTable()[a.GetHashCode() - 3][b.GetHashCode() - 3];
+        string statName = dataReader.GetEquipmentNamingTable()[(int)a - 3][(int)b - 3];
 
         if (statName[0] == '-')
         {
@@ -484,6 +484,7 @@ public class EquipmentCreator : MonoBehaviour
             statName = statName.Replace('-', ' ' );
             name = statName + name;
         }
+        //Debug.Log(name + "++++++++++++++++++++++++");
     }
 
     private int GenerateDefensiveStats(int powerBudget)
@@ -595,15 +596,15 @@ public class EquipmentCreator : MonoBehaviour
         return add;
     }
 
-    private void AddWeaponSlotName(Equipment.Slot slot, Weapon.SpellTypes spell)
+    private Sprite AddWeaponSlotName(Equipment.Slot slot, Weapon.SpellTypes spell)
     {
         
         //determine if it is a Stabbing Dagger or a Dagger of Stabbing
         // does name start or end with a " "
         bool wepBefore = (name[0] == ' ');
         nameTable = dataReader.GetWeaponScalingTable();
-        
-        
+
+        Sprite icon = null;
         if (slot == Equipment.Slot.OneHander)
         {
             switch (spell)
@@ -617,6 +618,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += DaggerSlot[Random.Range(0, DaggerSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = daggerSprites[Random.Range(0, daggerSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Dagger2:
                     if (wepBefore)
@@ -627,6 +629,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += DaggerSlot[Random.Range(0, DaggerSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = daggerSprites[Random.Range(0, daggerSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Shield1:
                     if (wepBefore)
@@ -637,6 +640,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += ShieldSlot[Random.Range(0, ShieldSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = shieldSprites[Random.Range(0, shieldSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Shield2:
                     if (wepBefore)
@@ -647,6 +651,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += ShieldSlot[Random.Range(0, ShieldSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = shieldSprites[Random.Range(0, shieldSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Sword1:
                     if (wepBefore)
@@ -657,6 +662,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += SwordSlot[Random.Range(0, SwordSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = swordSprites[Random.Range(0, swordSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Sword2:
                     if (wepBefore)
@@ -667,6 +673,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += SwordSlot[Random.Range(0, SwordSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = swordSprites[Random.Range(0, swordSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Axe1:
                     if (wepBefore)
@@ -677,6 +684,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += AxeSlot[Random.Range(0, AxeSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = axeSprites[Random.Range(0, axeSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Axe2:
                     if (wepBefore)
@@ -687,6 +695,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += AxeSlot[Random.Range(0, AxeSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = axeSprites[Random.Range(0, axeSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Hammer1:
                     if (wepBefore)
@@ -697,6 +706,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += HammerSlot[Random.Range(0, HammerSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = hammerSprites[Random.Range(0, hammerSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Hammer2:
                     if (wepBefore)
@@ -707,7 +717,230 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += HammerSlot[Random.Range(0, HammerSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
+                    icon = hammerSprites[Random.Range(0, hammerSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Nature1:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Nature2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Nature3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Nature4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Fire1:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Fire2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Fire3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Fire4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Ice1:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Ice2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Ice3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Ice4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Blood1:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Blood2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Blood3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Blood4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Shadow1:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Shadow2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Shadow3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Shadow4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                
+                
             }
         }
         else
@@ -724,6 +957,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += Sword2Slot[Random.Range(0, Sword2Slot.Count)] ;
                     }
+                    icon = swordSprites[Random.Range(0, swordSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Sword2:
                     if (wepBefore)
@@ -734,6 +968,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += Sword2Slot[Random.Range(0, Sword2Slot.Count)] ;
                     }
+                    icon = swordSprites[Random.Range(0, swordSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Axe1:
                     if (wepBefore)
@@ -744,6 +979,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += Axe2Slot[Random.Range(0, Axe2Slot.Count)] ;
                     }
+                    icon = axeSprites[Random.Range(0, axeSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Axe2:
                     if (wepBefore)
@@ -754,6 +990,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += Axe2Slot[Random.Range(0, Axe2Slot.Count)] ;
                     }
+                    icon = axeSprites[Random.Range(0, axeSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Hammer1:
                     if (wepBefore)
@@ -764,6 +1001,7 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += Hammer2Slot[Random.Range(0, Hammer2Slot.Count)] ;
                     }
+                    icon = hammerSprites[Random.Range(0, hammerSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Hammer2:
                     if (wepBefore)
@@ -774,46 +1012,61 @@ public class EquipmentCreator : MonoBehaviour
                     {
                         name += Hammer2Slot[Random.Range(0, Hammer2Slot.Count)] ;
                     }
+                    icon = hammerSprites[Random.Range(0, hammerSprites.Length)];
                     break;
             }
         }
-            
+
+        return icon;
+
     }
 
 
 
-    private void AddSlotName(Equipment.Slot slot)
+    private Sprite AddSlotName(Equipment.Slot slot)
     {
+        Sprite icon = null;
         switch (slot)
         {
             case Equipment.Slot.Head:
                 name += " " +HeadSlot[Random.Range(0, ChestSlot.Count)];
+                icon = headSprites[Random.Range(0, headSprites.Length)];
                 break;
             // case Slot.Neck:
             //     name += " " +NeckSlot[Random.Range(0, NeckSlot.Count)];
             //     break;
             case Equipment.Slot.Shoulders:
                 name += " " +ShoulderSlot[Random.Range(0, ShoulderSlot.Count)];
+                icon = shoulderSprites[Random.Range(0, shoulderSprites.Length)];
                 break;
             case Equipment.Slot.Gloves:
                 name += " " +GloveSlot[Random.Range(0, GloveSlot.Count)];
+                icon = gloveSprites[Random.Range(0, gloveSprites.Length)];
                 break;
             case Equipment.Slot.Chest:
                 name += " " +ChestSlot[Random.Range(0, ChestSlot.Count)];
+                icon = chestSprites[Random.Range(0, chestSprites.Length)];
                 break;
             // case Slot.Belt:
             //     name += " " +BeltSlot[Random.Range(0, BeltSlot.Count)];
             //     break;
             case Equipment.Slot.Legs:
                 name += " " +LegSlot[Random.Range(0, LegSlot.Count)];
+                icon = legSprites[Random.Range(0, legSprites.Length)];
                 break;
             case Equipment.Slot.Boots:
                 name += " " +BootsSlot[Random.Range(0, BootsSlot.Count)];
+                icon = bootSprites[Random.Range(0, bootSprites.Length)];
                 break;
             case Equipment.Slot.Scroll:
                 name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
                 break;
         }
+        //Debug.Log(name + "-----------");
+        //Debug.Log(slot + "-----------");
+
+        return icon;
     }
 
     private void AddDefensiveName(float percentDefence, int type)
@@ -1104,9 +1357,32 @@ public class EquipmentCreator : MonoBehaviour
         "Walkers",
 
     };
-        
-        
-    
+
+    [SerializeField] private Sprite[] headSprites;
+    [SerializeField] private Sprite[] shoulderSprites;
+    [SerializeField] private Sprite[] chestSprites;
+    [SerializeField] private Sprite[] gloveSprites;
+    [SerializeField] private Sprite[] legSprites;
+    [SerializeField] private Sprite[] bootSprites;
+    [SerializeField] private Sprite[] scrollSprites;
+    [SerializeField] private Sprite[] daggerSprites;
+    [SerializeField] private Sprite[] shieldSprites;
+    [SerializeField] private Sprite[] swordSprites;
+    [SerializeField] private Sprite[] axeSprites;
+    [SerializeField] private Sprite[] hammerSprites;
+    [SerializeField] private Sprite[] magicAttackSprites;
+    [SerializeField] private Sprite[] magicSupportSprites;
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

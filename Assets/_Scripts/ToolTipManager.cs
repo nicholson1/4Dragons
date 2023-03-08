@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class ToolTipManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class ToolTipManager : MonoBehaviour
    public TextMeshProUGUI rarity;
 
    [SerializeField] public Color[] rarityColors;
+   private RectTransform _rt;
 
    private void Awake()
    {
@@ -32,27 +34,45 @@ public class ToolTipManager : MonoBehaviour
    {
       Cursor.visible = true;
       gameObject.SetActive(false);
+      _rt = GetComponent<RectTransform>();
    }
 
    private void Update()
    {
+      //Debug.Log((Screen.height - Input.mousePosition.y) + " Y");
+      //Debug.Log((Screen.width - Input.mousePosition.x) + " X");
+
+      _rt.pivot = new Vector2(.5f, .5f);
+      if (Screen.height - Input.mousePosition.y < 130)
+      {
+         _rt.pivot += new Vector2(0, 3);
+      }
+      if (Screen.width - Input.mousePosition.x < 150)
+      {
+         _rt.pivot += new Vector2(3, 0);
+      }
+
+      
       transform.position = Input.mousePosition;
+      
+
    }
 
    public void SetAndShowToolTip(string title, string message, string cost = "", string itemLvl = "", int itemRarity = -1)
    {
       transform.position = Input.mousePosition;
+      SetRarityText(itemRarity);
       gameObject.SetActive(true);
       tiptext.text = message;
       spellCost.text = cost;
       tiptitle.text = title;
+      tiptitle.color = rarity.color;
       if (itemLvl != "")
       {
          iLvl.text = "Lvl. " + itemLvl;
 
       }
       //Debug.Log(itemRarity);
-      SetRarityText(itemRarity);
       
 
 
@@ -80,6 +100,7 @@ public class ToolTipManager : MonoBehaviour
             break;
          case -1 :
             rarity.text = "";
+            rarity.color = Color.white;
             break;
             
       }
