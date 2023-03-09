@@ -36,13 +36,14 @@ public class Character : MonoBehaviour
 
     public static event Action<Character,int, int> UpdateBlock; 
     public static event Action<Character,int, int, int> UpdateEnergy; 
-    public static event Action<Character> UpdateStatsEvent; 
+    public static event Action<Character> UpdateStatsEvent;
+    public static event Action<NotificationType> Notification;
 
 
     private void Start()
     {
         EC = FindObjectOfType<EquipmentCreator>();
-        CombatTrigger.TriggerCombat += ActivateCombatEntity;
+        CombatController.UpdateUIButtons += ActivateCombatEntity;
         CombatTrigger.EndCombat += DeactivateCombatEntity;
         
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
@@ -63,10 +64,10 @@ public class Character : MonoBehaviour
         {
             _weapons = EC.CreateAllWeapons(_level);
             _spellScrolls = EC.CreateAllSpellScrolls(_level);
-             // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood2));
-             // _weapons.Add(EC.CreateWeapon(_level,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice3));
-             // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
-             // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield2));
+              //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature3));
+              //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice1));
+              //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
+              //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield2));
         }
         else
         {
@@ -74,10 +75,10 @@ public class Character : MonoBehaviour
             _spellScrolls = EC.CreateAllSpellScrolls(_level);
             
            
-            // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
-            // _weapons.Add(EC.CreateWeapon(_level,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Axe2));
-            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire2));
-            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice1));
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+            //_weapons.Add(EC.CreateWeapon(_level,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Axe1));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice1));
             
         }
         _equipment.AddRange(_weapons);
@@ -163,7 +164,7 @@ public class Character : MonoBehaviour
 
     private void OnDestroy()
     {
-        CombatTrigger.TriggerCombat -= ActivateCombatEntity;
+        CombatController.UpdateUIButtons -= ActivateCombatEntity;
         CombatTrigger.EndCombat -= DeactivateCombatEntity;
         CombatEntity.GetHitWithAttack -= GetHitWithAttack;
         CombatEntity.GetHealed -= GetHealed;
@@ -407,9 +408,17 @@ public class Character : MonoBehaviour
             _currentHealth = 0;
             if (!isPlayerCharacter)
             {
-                SelectionManager._instance.RandomSelectionFromEquipment(this);
+                CombatController._instance.entitiesInCombat.Remove(this.GetComponent<CombatEntity>());
+
+                if (CombatController._instance.entitiesInCombat.Count == 1)
+                {
+                    SelectionManager._instance.RandomSelectionFromEquipment(this);
+                    CombatController._instance.EndCombat();
+                    UIController._instance.ToggleInventoryUI();
+                }
+                
             }
-            Debug.Log("DEFEAT");
+            
         }
     }
 
@@ -419,15 +428,18 @@ public class Character : MonoBehaviour
         {
             _combatEntity.enabled = true;
             _combatEntity.Target = enemy._combatEntity;
+            UpdateEnergyCount(_maxEnergy);
+
         }
         else if (enemy == this)
         {
             _combatEntity.enabled = true;
             _combatEntity.Target = player._combatEntity;
+            UpdateEnergyCount(_maxEnergy);
+
             
             //activate friends and set their target to the player
         }
-        UpdateEnergyCount(_maxEnergy);
         
     }
     private void DeactivateCombatEntity()

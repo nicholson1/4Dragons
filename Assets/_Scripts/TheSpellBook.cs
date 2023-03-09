@@ -311,13 +311,17 @@ public class TheSpellBook : MonoBehaviour
         }
 
 
-        int Amount = 0;
+        int Amount = power[0];
         if (buff == CombatEntity.BuffTypes.Rejuvenate)
         {
-            Amount = power[0] / 4;
+            Amount = Amount / 4;
         }
 
-        
+        if (Amount < 1)
+        {
+            Amount = 1;
+        }
+
         caster.Buff(target, buff, power[1], Mathf.RoundToInt(Amount));
 
     }
@@ -768,7 +772,8 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
 
-        
+        //Debug.Log(power + " " + spell.ToString());
+
         return new List<int>(){ power, turn};
 
     }

@@ -12,6 +12,19 @@ public class UIController : MonoBehaviour
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
     
+    public static UIController _instance;
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
     public void ToggleInventoryUI()
     {
         if (!moving)

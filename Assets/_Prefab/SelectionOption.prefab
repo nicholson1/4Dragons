@@ -712,8 +712,8 @@ MonoBehaviour:
   - {fileID: 2451590713101114628}
   - {fileID: 2451590713098216431}
   - {fileID: 2451590712328322513}
-  equip: {fileID: 0}
-  inventory: {fileID: 0}
+  equip: {fileID: 2451590713069999537}
+  inventory: {fileID: 2451590714326015740}
   _toolTip: {fileID: 5422653048552273186}
   icon: {fileID: 2451590712674105217}
 --- !u!1 &2451590713069999543
@@ -837,7 +837,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2451590713069999538}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2451590712748000235}
+        m_TargetAssemblyTypeName: SelectionItem, Assembly-CSharp
+        m_MethodName: EquipedFromSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2451590713098216429
 GameObject:
   m_ObjectHideFlags: 0
@@ -1904,4 +1916,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2451590714326015741}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2451590712748000235}
+        m_TargetAssemblyTypeName: SelectionItem, Assembly-CSharp
+        m_MethodName: AddToInventory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

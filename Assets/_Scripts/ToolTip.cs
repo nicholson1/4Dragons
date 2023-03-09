@@ -65,4 +65,10 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
     }
+
+    private void OnDisable()
+    {
+        ToolTipManager._instance.HideToolTip();
+
+    }
 }

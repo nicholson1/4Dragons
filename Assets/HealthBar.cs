@@ -318,11 +318,17 @@ public class HealthBar : MonoBehaviour
         StopAllCoroutines();
         if (c != displayCharacter)
             return;
+        
         bar.value = bar.value - amount;
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = DamageColor;
 
 
         //start of coroutine to reduce the temp bar
+        if (!this.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+        //Debug.Log("Active? "+gameObject.activeInHierarchy);
         StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
 

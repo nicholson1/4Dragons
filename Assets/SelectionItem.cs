@@ -149,6 +149,22 @@ public class SelectionItem : MonoBehaviour
 
     }
 
+    public void AddToInventory()
+    {
+        EquipmentManager._instance.AddItemToInventoryFromSelection(item, this);
+    }
+
+    public void EquipedFromSelection()
+    {
+        EquipmentManager._instance.EquipItemFromSelection(item, this);
+    }
+
+    public void RemoveSelection()
+    {
+        SelectionManager._instance.SelectionMade();
+        Destroy(gameObject);
+    }
+
 
 
 

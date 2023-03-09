@@ -20,8 +20,9 @@ public class CombatButtonController : MonoBehaviour
     private int currentEnergy = 0;
     private void Start()
     {
-        CombatTrigger.TriggerCombat += UpdateCombatUI;
+        //CombatTrigger.TriggerCombat += UpdateCombatUI;
         Character.UpdateEnergy += UpdateEnergy;
+        CombatController.UpdateUIButtons += UpdateCombatUI;
         DataTable = _dataReader.GetWeaponScalingTable();
         weapon1.SetDataTable(DataTable);
         weapon2.SetDataTable(DataTable);
@@ -31,7 +32,9 @@ public class CombatButtonController : MonoBehaviour
 
     private void OnDestroy()
     {
-        CombatTrigger.TriggerCombat -= UpdateCombatUI;
+        //CombatTrigger.TriggerCombat -= UpdateCombatUI;
+        CombatController.UpdateUIButtons -= UpdateCombatUI;
+
         Character.UpdateEnergy -= UpdateEnergy;
     }
 

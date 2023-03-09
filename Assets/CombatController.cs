@@ -22,6 +22,8 @@ public class CombatController : MonoBehaviour
     public Vector3 playerOffset = new Vector3();
 
     public static event Action EndTurn;
+    public static event Action<Character, Character> UpdateUIButtons;
+
     private Character Player;
 
     private int CurrentTurnIndex = 0;
@@ -71,7 +73,7 @@ public class CombatController : MonoBehaviour
         StartCoroutine(TransitionFromCombatCamera(2, 2));
 
     }
-    private void EndCombat()
+    public void EndCombat()
     {
         TransitionFromCombat();
     }
@@ -128,8 +130,12 @@ public class CombatController : MonoBehaviour
         // start the turn
         entitiesInCombat[0].isMyTurn = true;
 
+        UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
+        EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+
 
     }
+
 
     public void EndCurrentTurn()
     {

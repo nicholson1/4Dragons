@@ -16,6 +16,8 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private Transform inventoryTransform;
     [SerializeField] private TextMeshProUGUI stats;
+    public static Action<ErrorMessageManager.Errors> InventoryNotifications;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -37,7 +39,6 @@ public class EquipmentManager : MonoBehaviour
         Character.UpdateStatsEvent -= UpdateStats;
     }
 
-    public static Action<ErrorMessageManager.Errors> InventoryNotifications;
 
     private void UpdateStats(Character c)
     {
@@ -59,57 +60,55 @@ public class EquipmentManager : MonoBehaviour
         }
     }
 
-    public void EquipItem(Equipment e)
+    public void EquipItemFromSelection(Equipment e, SelectionItem si)
     {
         
         // loop through char inventory
         bool equippedSlot = false;
-        foreach (var equip in c._equipment)
+        foreach (var invSlot in InventorySlots)
         {
-            if (equip.slot == e.slot)
+            //find the slot that has the item
+            if (invSlot.Slot == e.slot)
             {
-                equippedSlot = true;
-                if (e.slot == Equipment.Slot.OneHander)
+                
+                InventorySlot slot = null;
+                // check if we have an empty, if we do save that one
+                for (int i = 10; i < InventorySlots.Length; i++)
                 {
-
+                    if (InventorySlots[i].Item == null)
+                    {
+                        slot = InventorySlots[i];
+                        break;
+                    }
                 }
-                else if (e.slot == Equipment.Slot.TwoHander)
-                {
 
-                }
-                else if (e.slot == Equipment.Slot.Scroll)
+                if (slot == null)
                 {
-
+                    InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
+                    return;
                 }
                 else
                 {
-                    if (c._inventory.Contains(e))
-                    {
-                        // switch the item
-                        c._inventory.Add(equip);
-                        c._equipment.Remove(equip);
-
-                        c._equipment.Add(e);
-                        c._inventory.Remove(e);
-                    }
-                    else
-                    {
-                        if (c._inventory.Count < c.inventorySize)
-                        {
-                            c._inventory.Add(equip);
-                            c._equipment.Remove(equip);
-
-                            c._equipment.Add(e);
-                            c._inventory.Remove(e);
-                        }
-                        else
-                        {
-                            InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
-                            return;
-                        }
-                    }
+                    //move current equiped item to inventory
+                    DragItem equiped = invSlot.Item;
+                    equiped.currentLocation = slot;
+                    equiped._rectTransform.anchoredPosition = slot._rt.anchoredPosition;
+                    equiped.currentLocation.Item = equiped;
+                    slot.LabelCheck();
+                    
+                    UnEquipItem(invSlot.Item.e);
+                    
+                    DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+                    di.InitializeDragItem(e, invSlot);
+                    c._equipment.Add(e);
+                    c.UpdateStats();
+                    
+                    si.RemoveSelection();
+                    return;
 
                 }
+
+                
             }
         }
 
@@ -152,8 +151,43 @@ public class EquipmentManager : MonoBehaviour
         
     }
 
+    public void AddItemToInventoryFromSelection(Equipment e, SelectionItem si)
+    {
+        InventorySlot slot = null;
+        // check if we have an empty, if we do save that one
+        for (int i = 10; i < InventorySlots.Length; i++)
+        {
+            if (InventorySlots[i].Item == null)
+            {
+                slot = InventorySlots[i];
+                break;
+            }
+        }
+
+        if (slot == null)
+        {
+            InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
+            return;
+        }
+        else
+        {
+            DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+            di.InitializeDragItem(e, slot);
+            c._inventory.Add(e);
+            
+            si.RemoveSelection();
+
+        }
+    }
+
+    private bool hasInitialized = false;
+
     public void InitializeEquipmentAndInventoryItems()
     {
+        if (hasInitialized)
+        {
+            return;
+        }
         bool placedWep = false;
         bool placedScroll = false;
         
@@ -200,6 +234,8 @@ public class EquipmentManager : MonoBehaviour
             di.InitializeDragItem(e, currentSlot);
 
         }
+
+        hasInitialized = true;
     }
     
     

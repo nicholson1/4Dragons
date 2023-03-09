@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
-    public static SelectionManager _instance;
     [SerializeField] private SelectionItem selectionItemPrefab;
+
+    
+    private int selectionsLeft = 2;
+    public static SelectionManager _instance;
 
     private void Awake()
     {
@@ -37,5 +40,28 @@ public class SelectionManager : MonoBehaviour
             item.InitializeSelectionItem(c._equipment[i]);
         }
         
+    }
+
+    public void SelectionMade()
+    {
+        selectionsLeft -= 1;
+        if (selectionsLeft <= 0)
+        {
+            ClearSelections();
+        }
+    }
+
+    public void ClearSelections()
+    {
+        SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
+        for (int i = selectionItems.Length -1; i > 0; i--)
+        {
+            selectionsLeft = 10;
+            selectionItems[i].RemoveSelection();
+        }
+        selectionsLeft = 2;
+        
+        // open map
+
     }
 }

@@ -14,13 +14,10 @@ public class SpellButton : MonoBehaviour
     public Sprite SpellSprite;
     public TextMeshProUGUI SpellText;
     List<List<object>> DataTable;
-    private ToolTip _toolTip;
+    [SerializeField]private ToolTip _toolTip;
     //public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
 
-    private void Start()
-    {
-        _toolTip = GetComponent<ToolTip>();
-    }
+    
 
     //[SerializeField] private DataReader dataReader;
     public void SetDataTable(List<List<object>> WeaponScalingTable )
