@@ -374,7 +374,7 @@ public class HealthBar : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("Fixing the bar");
+        //Debug.Log("Fixing the bar");
         if (currentHP > BarHP)
         {
             float t = 0;
@@ -476,5 +476,10 @@ public class HealthBar : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void OnDisable()
+    {
+        Destroy(this.gameObject);
     }
 }

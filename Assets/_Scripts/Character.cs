@@ -20,8 +20,8 @@ public class Character : MonoBehaviour
     public List<Equipment> _equipment = new List<Equipment>();
     public List<Equipment> _inventory = new List<Equipment>();
 
-    private List<Weapon> _weapons = new List<Weapon>();
-    private List<Weapon> _spellScrolls = new List<Weapon>();
+    public List<Weapon> _weapons = new List<Weapon>();
+    public List<Weapon> _spellScrolls = new List<Weapon>();
 
     public List<(CombatEntity.BuffTypes, int, float)> Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
     public List<(CombatEntity.DeBuffTypes, int, float)> DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
@@ -413,8 +413,11 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     SelectionManager._instance.RandomSelectionFromEquipment(this);
+                    CombatController._instance.Player._level += 1;
+                    CombatController._instance.Player._currentHealth += 50;
                     CombatController._instance.EndCombat();
                     UIController._instance.ToggleInventoryUI();
+                    Destroy(this.gameObject);
                 }
                 
             }

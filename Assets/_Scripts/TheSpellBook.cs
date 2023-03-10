@@ -90,6 +90,7 @@ public class TheSpellBook : MonoBehaviour
         //get scaling table
         List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
         //return 1;
+        //Debug.Log(spell);
         return (int.Parse((scaling[(int)spell][2]).ToString()));
         
     }

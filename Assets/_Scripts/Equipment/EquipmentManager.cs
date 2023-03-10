@@ -101,6 +101,18 @@ public class EquipmentManager : MonoBehaviour
                     DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
                     di.InitializeDragItem(e, invSlot);
                     c._equipment.Add(e);
+                    if (e.isWeapon)
+                    {
+                        Weapon x = (Weapon) e;
+                        if (x.slot == Equipment.Slot.Scroll)
+                        {
+                            c._spellScrolls.Add(x);
+                        }
+                        else
+                        {
+                            c._weapons.Add(x);
+                        }
+                    }
                     c.UpdateStats();
                     
                     si.RemoveSelection();
@@ -117,6 +129,18 @@ public class EquipmentManager : MonoBehaviour
             // no item in same slot
             c._equipment.Add(e);
             c._inventory.Remove(e);
+            if (e.isWeapon)
+            {
+                Weapon x = (Weapon) e;
+                if (x.slot == Equipment.Slot.Scroll)
+                {
+                    c._spellScrolls.Add(x);
+                }
+                else
+                {
+                    c._weapons.Add(x);
+                }
+            }
         }
         c.UpdateStats();
 
@@ -129,6 +153,20 @@ public class EquipmentManager : MonoBehaviour
         {
             c._inventory.Add(e);
         }
+
+        if (e.isWeapon)
+        {
+            Weapon x = (Weapon) e;
+            if (x.slot == Equipment.Slot.Scroll)
+            {
+                c._spellScrolls.Remove(x);
+            }
+            else
+            {
+                c._weapons.Remove(x);
+            }
+        }
+        
         c.UpdateStats();
 
     }
@@ -140,12 +178,37 @@ public class EquipmentManager : MonoBehaviour
         {
             c._equipment.Add(e);
             c.UpdateStats();
+            if (e.isWeapon)
+            {
+                Weapon x = (Weapon) e;
+                if (x.slot == Equipment.Slot.Scroll)
+                {
+                    c._spellScrolls.Add(x);
+                }
+                else
+                {
+                    c._weapons.Add(x);
+                }
+            }
         }
     }
     public void DropItem(Equipment e)
     {
         c._inventory.Remove(e);
         c._equipment.Remove(e);
+        
+        if (e.isWeapon)
+        {
+            Weapon x = (Weapon) e;
+            if (x.slot == Equipment.Slot.Scroll)
+            {
+                c._spellScrolls.Remove(x);
+            }
+            else
+            {
+                c._weapons.Remove(x);
+            }
+        }
         
         c.UpdateStats();
         

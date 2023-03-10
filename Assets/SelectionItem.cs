@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class SelectionItem : MonoBehaviour
 {
     public Equipment item;
-    [SerializeField] private Character myCharacter;
+    [SerializeField] private CombatEntity myCharacter;
     
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI rarity;
@@ -22,8 +22,13 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private ToolTip _toolTip;
     [SerializeField] private Image icon;
 
+    [SerializeField] private ToolTip[] SpellToolTips;
+
     public void InitializeSelectionItem(Equipment e)
     {
+
+        myCharacter = CombatController._instance.entitiesInCombat[0];
+        
         item = e;
         title.text = e.name;
         slot.text = e.slot.ToString();
@@ -33,9 +38,11 @@ public class SelectionItem : MonoBehaviour
         icon.sprite = e.icon;
         title.color = rarity.color;
 
-        foreach (var stat in stats)
+        for (int i = 0; i < stats.Length -1; i++)
         {
-            stat.text = String.Empty;
+            stats[i].text = String.Empty;
+            SpellToolTips[i].gameObject.SetActive(false);
+
         }
 
         int count = 0;
@@ -45,6 +52,7 @@ public class SelectionItem : MonoBehaviour
             {
                 stats[count].text = kvp.Key + ": " + kvp.Value;
                 count += 1;
+                
             }
         }
         
@@ -56,7 +64,12 @@ public class SelectionItem : MonoBehaviour
             {
                 stats[count].text = x.scalingInfo1[0].ToString();
                 stats[count].color = rarity.color;
+                
+                
+                SpellToolTip(x.spellType1,x, count);
+
                 // activate tool tip on stats[count]
+                
                 count += 1;
             }
             if (x.spellType2 != Weapon.SpellTypes.None)
@@ -64,6 +77,9 @@ public class SelectionItem : MonoBehaviour
                 stats[count].text = x.scalingInfo1[0].ToString();
                 stats[count].color = rarity.color;
                 // activate tool tip on stats[count]
+                
+                SpellToolTip(x.spellType1,x, count);
+
                 count += 1;
             }
         }
@@ -113,31 +129,31 @@ public class SelectionItem : MonoBehaviour
         }
     }
     
-    public void UpdateToolTipWeapon(Weapon.SpellTypes s, Weapon w)
-    {
-
-       
-        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter.GetComponent<CombatEntity>());
-
-        List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
-
-        _toolTip.Title = DataTable[(int)s][0].ToString();;
-        _toolTip.Message = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
-        _toolTip.Cost = DataTable[(int)s][2].ToString();
-        
-        //iLVL
-        int a;
-        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
-        _toolTip.iLvl = a.ToString();
-        //Rarity
-        int r;
-        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
-        _toolTip.rarity = r;
-        
-        
-        
-        
-    }
+    // public void UpdateToolTipWeapon(Weapon.SpellTypes s, Weapon w)
+    // {
+    //
+    //    
+    //     List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
+    //
+    //     List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
+    //
+    //     _toolTip.Title = DataTable[(int)s][0].ToString();;
+    //     _toolTip.Message = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
+    //     _toolTip.Cost = DataTable[(int)s][2].ToString();
+    //     
+    //     //iLVL
+    //     int a;
+    //     w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+    //     _toolTip.iLvl = a.ToString();
+    //     //Rarity
+    //     int r;
+    //     w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+    //     _toolTip.rarity = r;
+    //     
+    //     
+    //     
+    //     
+    // }
     public string AdjustDescriptionValues(string message, int turns, float amount)
     {
         message = message.Replace("$", turns.ToString());
@@ -161,8 +177,39 @@ public class SelectionItem : MonoBehaviour
 
     public void RemoveSelection()
     {
-        SelectionManager._instance.SelectionMade();
-        Destroy(gameObject);
+        SelectionManager._instance.SelectionMade(this);
+        //Destroy(gameObject);
+    }
+
+    public void SpellToolTip(Weapon.SpellTypes s, Weapon w, int index)
+    {
+        
+        SpellToolTips[index].gameObject.SetActive(true);
+        List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
+        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
+
+        //Debug.Log(w.name + "--------------");
+
+
+        //tt.enabled = true;
+
+
+        SpellToolTips[index].Title = DataTable[(int)s][0].ToString();;
+        SpellToolTips[index].Message = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
+        SpellToolTips[index].Cost = DataTable[(int)s][2].ToString();
+        
+        //iLVL
+        int a;
+        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+        SpellToolTips[index].iLvl = a.ToString();
+        //Rarity
+        int r;
+        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        SpellToolTips[index].rarity = r;
+        
+        //Debug.Log("we did the things?");
+
+        
     }
 
 

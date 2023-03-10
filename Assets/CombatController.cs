@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class CombatController : MonoBehaviour
@@ -17,6 +18,9 @@ public class CombatController : MonoBehaviour
 
     [SerializeField] private GameObject _healthBarPrefab;
 
+    [SerializeField] private Character EnemeyPrefab;
+    [SerializeField] private Transform SpawnPos;
+
     public List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
 
     public Vector3 playerOffset = new Vector3();
@@ -24,7 +28,9 @@ public class CombatController : MonoBehaviour
     public static event Action EndTurn;
     public static event Action<Character, Character> UpdateUIButtons;
 
-    private Character Player;
+    public static event Action<ErrorMessageManager.Errors> CombatNotifications;
+
+    public Character Player;
 
     private int CurrentTurnIndex = 0;
     
@@ -42,15 +48,15 @@ public class CombatController : MonoBehaviour
     private void TransitionToCombat(Vector3 DirVect)
     {
         //set transition camera to starting point
-        TransitionCamera.transform.position = MainCamera.transform.position;
-        TransitionCamera.transform.rotation = MainCamera.transform.rotation;
+        //TransitionCamera.transform.position = MainCamera.transform.position;
+        //TransitionCamera.transform.rotation = MainCamera.transform.rotation;
         
         //set combat camera position to player offset + rotation
         //CombatCamParent.transform.position = Player.transform.position +  (Player.transform.rotation * Vector3.forward * 2.5f);
-        CombatCamParent.transform.position = Player.transform.position +  ((DirVect * 2.5f));
+        //CombatCamParent.transform.position = Player.transform.position +  ((DirVect * 2.5f));
 
         
-        CombatCamParent.transform.LookAt(new Vector3(Player.transform.position.x, CombatCamParent.transform.position.y, Player.transform.position.z));
+        //CombatCamParent.transform.LookAt(new Vector3(Player.transform.position.x, CombatCamParent.transform.position.y, Player.transform.position.z));
         //CombatCamera.transform
         
         StartCoroutine(TransitionToCombatCamera(2, 2));
@@ -59,8 +65,8 @@ public class CombatController : MonoBehaviour
     private void TransitionFromCombat()
     {
         //set transition camera to starting point
-        TransitionCamera.transform.position = CombatCamera.transform.position;
-        TransitionCamera.transform.rotation = CombatCamera.transform.rotation;
+        //TransitionCamera.transform.position = CombatCamera.transform.position;
+        //TransitionCamera.transform.rotation = CombatCamera.transform.rotation;
         
         //set combat camera position to player offset + rotation
         //CombatCamParent.transform.position = Player.transform.position +  (Player.transform.rotation * Vector3.forward * 2.5f);
@@ -81,44 +87,45 @@ public class CombatController : MonoBehaviour
     {
         CombatUI.SetActive(false);
 
-        CombatCamera.gameObject.SetActive(false);
-        TransitionCamera.gameObject.SetActive(true);
+        //CombatCamera.gameObject.SetActive(false);
+        //TransitionCamera.gameObject.SetActive(true);
         float elapsedTime = 0;
          
-        while (elapsedTime < moveTime)
-        {
-            TransitionCamera.transform.position = Vector3.Lerp(CombatCamera.transform.position,MainCamera.transform.position, (elapsedTime / moveTime));
-            TransitionCamera.transform.rotation = Quaternion.Lerp( CombatCamera.transform.rotation,MainCamera.transform.rotation, (elapsedTime / rotateTime));
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        // while (elapsedTime < moveTime)
+        // {
+        //     TransitionCamera.transform.position = Vector3.Lerp(CombatCamera.transform.position,MainCamera.transform.position, (elapsedTime / moveTime));
+        //     TransitionCamera.transform.rotation = Quaternion.Lerp( CombatCamera.transform.rotation,MainCamera.transform.rotation, (elapsedTime / rotateTime));
+        //
+        //     elapsedTime += Time.deltaTime;
+        //     yield return null;
+        // }
         
-        TransitionCamera.gameObject.SetActive(false);
-        MainCamera.gameObject.SetActive(true);
+        //TransitionCamera.gameObject.SetActive(false);
+        //MainCamera.gameObject.SetActive(true);
+        yield return 1;
 
     }
 
     private IEnumerator TransitionToCombatCamera(float moveTime, float rotateTime)
     {
         //deactivate main camera
-        MainCamera.gameObject.SetActive(false);
+        //MainCamera.gameObject.SetActive(false);
         // activate transition camera
-        TransitionCamera.gameObject.SetActive(true);
+        //TransitionCamera.gameObject.SetActive(true);
         // move transition camera to combat cam position
         float elapsedTime = 0;
          
-        while (elapsedTime < moveTime)
-        {
-            TransitionCamera.transform.position = Vector3.Lerp(MainCamera.transform.position, CombatCamera.transform.position, (elapsedTime / moveTime));
-            TransitionCamera.transform.rotation = Quaternion.Lerp(MainCamera.transform.rotation, CombatCamera.transform.rotation, (elapsedTime / rotateTime));
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        // while (elapsedTime < moveTime)
+        // {
+        //     TransitionCamera.transform.position = Vector3.Lerp(MainCamera.transform.position, CombatCamera.transform.position, (elapsedTime / moveTime));
+        //     TransitionCamera.transform.rotation = Quaternion.Lerp(MainCamera.transform.rotation, CombatCamera.transform.rotation, (elapsedTime / rotateTime));
+        //
+        //     elapsedTime += Time.deltaTime;
+        //     yield return null;
+        // }
         
-        TransitionCamera.gameObject.SetActive(false);
-        CombatCamera.gameObject.SetActive(true);
+        //TransitionCamera.gameObject.SetActive(false);
+        //CombatCamera.gameObject.SetActive(true);
 
         CombatUI.SetActive(true);
         
@@ -133,6 +140,7 @@ public class CombatController : MonoBehaviour
         UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
         EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
 
+        yield return 1;
 
     }
 
@@ -249,16 +257,37 @@ public class CombatController : MonoBehaviour
 
         }
 
-        Debug.LogWarning("No Ground Found");
+        //Debug.LogWarning("No Ground Found");
         return Vector3.zero;
+    }
+
+    public void StartRandomCombat()
+    {
+        // spawn random enemy
+        //Player.transform.position + (DirVect * 5)
+        
+        Character enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+        enemy.transform.LookAt(Player.transform.position);
+        enemy._level = Player._level;
+        
+        
+        StartCoroutine(waitTheStartCombat(Player, enemy));
+    }
+
+    private IEnumerator waitTheStartCombat(Character p, Character e)
+    {
+        CombatNotifications(ErrorMessageManager.Errors.NewFoe);
+        yield return new WaitForSeconds(.5f);
+        StartCombat(p, e);
     }
 
     private void StartCombat(Character player, Character enemy)
     {
         Player = player;
         Vector3 DirVect = GetDirectionVector();
-        StartCoroutine(LerpMoveEnemy(enemy.transform, 1, Player.transform.position + (DirVect * 5)));
-        
+        //StartCoroutine(LerpMoveEnemy(enemy.transform, 1, Player.transform.position + (DirVect * 5)));
+        //StartCoroutine(LerpMoveEnemy(enemy.transform, 1, Player.transform.position + (new Vector3(0,0,10))));
+
         //Debug.Log("?");
         //get all the enemies
         //Move enemies to right location

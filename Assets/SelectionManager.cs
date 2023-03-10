@@ -42,8 +42,9 @@ public class SelectionManager : MonoBehaviour
         
     }
 
-    public void SelectionMade()
+    public void SelectionMade(SelectionItem si)
     {
+        Destroy(si.gameObject);
         selectionsLeft -= 1;
         if (selectionsLeft <= 0)
         {
@@ -54,10 +55,10 @@ public class SelectionManager : MonoBehaviour
     public void ClearSelections()
     {
         SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
+        //selectionsLeft = 10;
         for (int i = selectionItems.Length -1; i > 0; i--)
         {
-            selectionsLeft = 10;
-            selectionItems[i].RemoveSelection();
+            Destroy(selectionItems[i].gameObject);
         }
         selectionsLeft = 2;
         

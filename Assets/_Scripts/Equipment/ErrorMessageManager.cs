@@ -12,12 +12,15 @@ public class ErrorMessageManager : MonoBehaviour
     {
         EquipmentManager.InventoryNotifications += Notification;
         CombatEntity.Notification += Notification;
+        CombatController.CombatNotifications += Notification;
     }
 
     private void OnDestroy()
     {
         EquipmentManager.InventoryNotifications -= Notification;
-        CombatEntity.Notification += Notification;
+        CombatEntity.Notification -= Notification;
+        CombatController.CombatNotifications -= Notification;
+
 
 
     }
@@ -39,6 +42,9 @@ public class ErrorMessageManager : MonoBehaviour
             case Errors.YourTurn:
                 e.InitializeError("Your Turn!", Color.white);
                 break;
+            case Errors.NewFoe:
+                e.InitializeError("A New Foe Has Appeared!", Color.yellow);
+                break;
 
         }
     }
@@ -46,6 +52,7 @@ public class ErrorMessageManager : MonoBehaviour
     public enum Errors
     {
         InventoryFull,
+        NewFoe,
         NotEnoughGold,
         NotEnoughEnergy,
         YouHaveDied,

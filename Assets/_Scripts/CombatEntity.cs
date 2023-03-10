@@ -440,6 +440,15 @@ public class CombatEntity : MonoBehaviour
                     continue;
                 }
             }
+            if (Spells[roll].Item1 == Weapon.SpellTypes.Blood3)
+            {
+                if (myCharacter._currentHealth < myCharacter._maxHealth * .25f)
+                {
+                    //todo keep an eye on this
+                    infiniteStop += 1;
+                    continue;
+                }
+            }
             
 
             if ( spellE <= energy)
