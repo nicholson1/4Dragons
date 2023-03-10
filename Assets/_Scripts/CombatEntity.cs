@@ -406,6 +406,7 @@ public class CombatEntity : MonoBehaviour
             if (isMyTurn && myCharacter.DeBuffs[chilled].Item2 == 1)
             {
                 // donot remove energy
+                Debug.Log("we are not removing energy");
             }
             else
             {
@@ -420,8 +421,9 @@ public class CombatEntity : MonoBehaviour
         
         //todo modify it with titles
 
+        int bloodpactcount = 0;
         int infiniteStop = 0;
-        while (energy > 0 || infiniteStop > 100)
+        while (energy > 0 && infiniteStop < 100)
         {
             // roll random 0-3
             //make sure energy is <= energy
@@ -442,9 +444,10 @@ public class CombatEntity : MonoBehaviour
             }
             if (Spells[roll].Item1 == Weapon.SpellTypes.Blood3)
             {
-                if (myCharacter._currentHealth < myCharacter._maxHealth * .25f)
+                if (myCharacter._currentHealth < myCharacter._maxHealth * .25f && bloodpactcount < 2) 
                 {
                     //todo keep an eye on this
+                    bloodpactcount += 1;
                     infiniteStop += 1;
                     continue;
                 }
@@ -520,6 +523,7 @@ public class CombatEntity : MonoBehaviour
     {
         // use spell book to determine targets, effect, and quantity
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
+        myCharacter._am.SetTrigger("attack");
     }
     
     public void Heal(CombatEntity target, int amount, float crit)
@@ -602,12 +606,16 @@ public class CombatEntity : MonoBehaviour
         if (emp != -1)
         {
             adjustment += (myCharacter.Buffs[emp].Item3/100);
+            
         }
         int weak = myCharacter.GetIndexOfDebuff(DeBuffTypes.Weakened);
         if (weak != -1)
         {
             adjustment -= (myCharacter.DeBuffs[weak].Item3/100);
+            
         }
+
+        
         //Debug.Log(adjustment);
         return adjustment;
 

@@ -402,38 +402,10 @@ public class TheSpellBook : MonoBehaviour
         
         List<int> power = GetPowerValues(spell, w, caster);
         
-        float MaxPercentHealth = 0;
-        float MinPercentHealth = 0;
-
-        switch (spell)
-        {
-            case Weapon.SpellTypes.Shadow1:
-                // 20 to 5
-                MaxPercentHealth = 19;
-                MinPercentHealth = 4;
-
-                break;
-            case Weapon.SpellTypes.Blood3:
-                // 40 to 20
-                MaxPercentHealth = 41;
-                MinPercentHealth = 19;
-
-                break;
-        }
-       
-
-        float percent = (((float)power[0] / -(power[0] + 100)) * MinPercentHealth) + MaxPercentHealth;
-        if (percent > MaxPercentHealth -1)
-        {
-            percent = MaxPercentHealth - 1;
-        }else if (percent < MinPercentHealth +1)
-        {
-            percent = MinPercentHealth + 1;
-        }
-        //Debug.Log("Perecent max hp reduction: " + Mathf.RoundToInt(percent) + "%");
-        percent = percent / 100;
         
-        target.LoseHPDirect(target, Mathf.RoundToInt(target.myCharacter._maxHealth * percent));
+        
+        
+        target.LoseHPDirect(target,  power[0]);
 
     }
 
@@ -584,28 +556,31 @@ public class TheSpellBook : MonoBehaviour
             if (t != caster && t != target)
             {
                 Debug.Log("AOE DAMAGE FROM PYRO");
+                //caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
+
                 caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, Damage/4, crit);
 
             }
         }
         
     }
-    
+
     public List<int> GetPowerValues(Weapon.SpellTypes spell, Weapon w, CombatEntity caster)
     {
+        //Debug.Log(spell);
         IList scaling = (IList)WeaponScalingTable[(int)spell][1];
 
         casterStats = caster.myCharacter.GetStats();
-        
+
         ////////// base power ///////////////////
         int power = 0;
-        power += (int) scaling[0];
-        
+        power += (int)scaling[0];
+
         ////////// lvl scaled power ///////////////////
         int lvl;
         w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
-        power += (int)scaling[1] * lvl ;
-        
+        power += (int)scaling[1] * lvl;
+
         ////////// specialty scaled power ///////////////////
 
         bool useSP = true;
@@ -744,9 +719,9 @@ public class TheSpellBook : MonoBehaviour
         {
             casterStats.TryGetValue(Equipment.Stats.AttackDamage, out SPorAD);
         }
-        
+
         power += SPorAD;
-        
+
         //scale down Damage for Non-Epic Items
         //    -40% : common
         //    -30% : uncommon
@@ -771,6 +746,51 @@ public class TheSpellBook : MonoBehaviour
                 //Epic
                 //no damage reduction
                 break;
+        }
+
+        if (spell == Weapon.SpellTypes.Blood3 || spell == Weapon.SpellTypes.Shadow1)
+        {
+            float MaxPercentHealth = 0;
+            float MinPercentHealth = 0;
+
+            switch (spell)
+            {
+                case Weapon.SpellTypes.Shadow1:
+                    // 20 to 5
+                    MaxPercentHealth = 19;
+                    MinPercentHealth = 4;
+
+                    break;
+                case Weapon.SpellTypes.Blood3:
+                    // 40 to 20
+                    MaxPercentHealth = 41;
+                    MinPercentHealth = 19;
+
+                    break;
+            }
+       
+
+            float percent = (((float)power / -(power + 100)) * MinPercentHealth) + MaxPercentHealth;
+            if (percent > MaxPercentHealth -1)
+            {
+                percent = MaxPercentHealth - 1;
+            }else if (percent < MinPercentHealth +1)
+            {
+                percent = MinPercentHealth + 1;
+            }
+            //Debug.Log("Perecent max hp reduction: " + Mathf.RoundToInt(percent) + "%");
+            percent = percent / 100;
+
+            power = Mathf.RoundToInt(caster.myCharacter._maxHealth * percent);
+        }
+
+
+    if (!caster.myCharacter.isPlayerCharacter)
+        {
+            //Debug.Log(power);
+            power =Mathf.RoundToInt(power * .5f);
+            //Debug.Log(power);
+
         }
 
         //Debug.Log(power + " " + spell.ToString());

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class ToolTipManager : MonoBehaviour
 {
@@ -117,4 +117,6 @@ public class ToolTipManager : MonoBehaviour
       iLvl.text = string.Empty;
       rarity.text = string.Empty;
    }
+
+  
 }

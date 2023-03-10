@@ -221,6 +221,14 @@ public class HealthBar : MonoBehaviour
                             b._amount = 75;
                         }
                     }
+                    if (buff == CombatEntity.BuffTypes.Shatter)
+                    {
+                        b._amount += amount;
+                        if (b._amount > 30)
+                        {
+                            b._amount = 30;
+                        }
+                    }
                     b._turns += turns;
                     b.UpdateValues();
                     found = true;

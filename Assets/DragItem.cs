@@ -35,7 +35,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All)
         {
-            Debug.Log(slotType + " "+ currentLocation.Slot);
+            //Debug.Log(slotType + " "+ currentLocation.Slot);
             Debug.Log("I think we fudged this one up bud");
         }
         
@@ -43,7 +43,10 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
         _toolTip.Cost = "";
         _toolTip.Title = e.name;
-        _toolTip.Message += "Slot: " + e.slot + "\n";
+        if (!e.isWeapon)
+        {
+            _toolTip.Message += "Slot: " + e.slot + "\n";
+        }
         foreach (var stat in e.stats)
         {
             if (stat.Key != Equipment.Stats.Rarity && stat.Key != Equipment.Stats.ItemLevel )
@@ -67,6 +70,8 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
                 
             }
+
+            _toolTip.Message = "Weapon: " + GetWeaponType(x.spellType1) + "\n" + _toolTip.Message;
         }
 
     }
@@ -125,20 +130,124 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 
                 currentLocation.LabelCheck();
                 di.currentLocation.LabelCheck();
+                
+                //Debug.Log(slotType +" "+ di.slotType);
 
-
-                if (slotType != Equipment.Slot.All && currentLocation.Slot != Equipment.Slot.All)
+                if (slotType != Equipment.Slot.All || currentLocation.Slot != Equipment.Slot.All)
                 {
                     // it is in out equipment
-                    EquipmentManager._instance.EquipFromInventory(e);
-                    if (di.currentLocation.Slot == Equipment.Slot.All)
+                    Debug.Log( di.e.name+ " => removing " + e.name);
+                    EquipmentManager._instance.EquipFromInventory(di.e);
+                    if (this.currentLocation.Slot == Equipment.Slot.All)
                     {
-                        EquipmentManager._instance.UnEquipItem(di.e);
+                        EquipmentManager._instance.UnEquipItem(e);
                     }
                     
                 }
+                EquipmentManager._instance.c.UpdateStats();
+
 
             }
         }
+    }
+    private string GetWeaponType(Weapon.SpellTypes spell)
+    {
+        string name = "";
+        switch (spell)
+        {
+            case Weapon.SpellTypes.Dagger1:
+                name = "Dagger";
+                break;
+            case Weapon.SpellTypes.Dagger2:
+                name = "Dagger";
+                break;
+            case Weapon.SpellTypes.Shield1:
+                name = "Shield";
+                break;
+            case Weapon.SpellTypes.Shield2:
+                name = "Shield";
+                break;
+            case Weapon.SpellTypes.Sword1:
+                name = "Sword";
+                break;
+            case Weapon.SpellTypes.Sword2:
+                name = "Sword";
+                break;
+            case Weapon.SpellTypes.Axe1:
+                name = "Axe";
+                break;
+            case Weapon.SpellTypes.Axe2:
+                name = "Axe";
+                break;
+            case Weapon.SpellTypes.Hammer1:
+                name = "Hammer";
+                break;
+            case Weapon.SpellTypes.Hammer2:
+                name = "Hammer";
+                break;
+            case Weapon.SpellTypes.Nature1:
+                name = "Nature";
+                break;
+            case Weapon.SpellTypes.Nature2:
+                name = "Nature";
+                break;
+            case Weapon.SpellTypes.Nature3:
+                name = "Nature";
+                break;
+            case Weapon.SpellTypes.Nature4:
+                name = "Nature";
+                break;
+            case Weapon.SpellTypes.Fire1:
+                name = "Fire";
+                break;
+            case Weapon.SpellTypes.Fire2:
+                name = "Fire";
+                break;
+            case Weapon.SpellTypes.Fire3:
+                name = "Fire";
+                break;
+            case Weapon.SpellTypes.Fire4:
+                name = "Fire";
+                break;
+            case Weapon.SpellTypes.Ice1:
+                name = "Ice";
+                break;
+            case Weapon.SpellTypes.Ice2:
+                name = "Ice";
+                break;
+            case Weapon.SpellTypes.Ice3:
+                name = "Ice";
+                break;
+            case Weapon.SpellTypes.Ice4:
+                name = "Ice";
+                break;
+            case Weapon.SpellTypes.Blood1:
+                name = "Blood";
+                break;
+            case Weapon.SpellTypes.Blood2:
+                name = "Blood";
+                break;
+            case Weapon.SpellTypes.Blood3:
+                name = "Blood";
+                break;
+            case Weapon.SpellTypes.Blood4:
+                name = "Blood";
+                break;
+            case Weapon.SpellTypes.Shadow1:
+                name = "Shadow";
+                break;
+            case Weapon.SpellTypes.Shadow2:
+                name = "Shadow";
+                break;
+            case Weapon.SpellTypes.Shadow3:
+                name = "Shadow";
+                break;
+            case Weapon.SpellTypes.Shadow4:
+                name = "Shadow";
+                break;
+            }
+
+        return name;
+
     }
 }

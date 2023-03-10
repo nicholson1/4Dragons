@@ -12,6 +12,7 @@ public class ErrorMessageManager : MonoBehaviour
     {
         EquipmentManager.InventoryNotifications += Notification;
         CombatEntity.Notification += Notification;
+        Character.Notification += Notification;
         CombatController.CombatNotifications += Notification;
     }
 
@@ -20,6 +21,8 @@ public class ErrorMessageManager : MonoBehaviour
         EquipmentManager.InventoryNotifications -= Notification;
         CombatEntity.Notification -= Notification;
         CombatController.CombatNotifications -= Notification;
+        Character.Notification -= Notification;
+
 
 
 
@@ -45,6 +48,15 @@ public class ErrorMessageManager : MonoBehaviour
             case Errors.NewFoe:
                 e.InitializeError("A New Foe Has Appeared!", Color.yellow);
                 break;
+            case Errors.Victory:
+                e.InitializeError("Level Up!", Color.white);
+                e.InitializeError("Victory!", Color.blue);
+                break;
+            case Errors.YouHaveDied:
+                e.InitializeError("Death!", Color.black);
+                break;
+
+                
 
         }
     }

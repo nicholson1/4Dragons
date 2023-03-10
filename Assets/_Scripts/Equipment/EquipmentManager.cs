@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class EquipmentManager : MonoBehaviour
 {
-    [SerializeField] private Character c;
+    [SerializeField] public Character c;
     
     public static EquipmentManager _instance;
 
@@ -48,6 +48,7 @@ public class EquipmentManager : MonoBehaviour
         }
 
         stats.text = "Stats:\n";
+        stats.text += "Level: " + c._level+ "\n";
         stats.text += "Max HP: " + c._maxHealth + "\n";
 
         foreach (var kvp in c.GetStats())
@@ -70,6 +71,28 @@ public class EquipmentManager : MonoBehaviour
             //find the slot that has the item
             if (invSlot.Slot == e.slot)
             {
+                if (invSlot.Item == null )
+                {
+                    DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+                    di.InitializeDragItem(e, invSlot);
+                    c._equipment.Add(e);
+                    if (e.isWeapon)
+                    {
+                        Weapon x = (Weapon) e;
+                        if (x.slot == Equipment.Slot.Scroll)
+                        {
+                            c._spellScrolls.Add(x);
+                        }
+                        else
+                        {
+                            c._weapons.Add(x);
+                        }
+                    }
+                    c.UpdateStats();
+                    
+                    si.RemoveSelection();
+                    return;
+                }
                 
                 InventorySlot slot = null;
                 // check if we have an empty, if we do save that one
@@ -87,30 +110,66 @@ public class EquipmentManager : MonoBehaviour
                     InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
                     return;
                 }
+                
                 else
                 {
                     //move current equiped item to inventory
+                    //if weapon check slot + 1
+
+                    if (e.isWeapon)
+                    {
+                        if (InventorySlots[Array.IndexOf(InventorySlots, invSlot) + 1].Item == null)
+                        {
+                            DragItem wep = Instantiate(_dragItemPrefab, inventoryTransform);
+                            wep.InitializeDragItem(e, InventorySlots[Array.IndexOf(InventorySlots, invSlot) + 1]);
+                            c._equipment.Add(e);
+                            if (e.isWeapon)
+                            {
+                                Weapon x = (Weapon) e;
+                                if (x.slot == Equipment.Slot.Scroll)
+                                {
+                                    c._spellScrolls.Add(x);
+                                }
+                                else
+                                {
+                                    c._weapons.Add(x);
+                                }
+                            }
+                            c.UpdateStats();
+                    
+                            si.RemoveSelection();
+                            return;
+                        }
+                    }
+
+                    
                     DragItem equiped = invSlot.Item;
                     equiped.currentLocation = slot;
                     equiped._rectTransform.anchoredPosition = slot._rt.anchoredPosition;
                     equiped.currentLocation.Item = equiped;
                     slot.LabelCheck();
-                    
                     UnEquipItem(invSlot.Item.e);
+                    //c._equipment.Remove(equiped.e);
+                    
+                    
                     
                     DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
                     di.InitializeDragItem(e, invSlot);
                     c._equipment.Add(e);
                     if (e.isWeapon)
                     {
+                        Weapon eq = (Weapon)equiped.e;
                         Weapon x = (Weapon) e;
                         if (x.slot == Equipment.Slot.Scroll)
                         {
                             c._spellScrolls.Add(x);
+                            c._spellScrolls.Remove(eq);
                         }
                         else
                         {
                             c._weapons.Add(x);
+                            c._spellScrolls.Remove(eq);
+
                         }
                     }
                     c.UpdateStats();
@@ -177,7 +236,6 @@ public class EquipmentManager : MonoBehaviour
         if (!c._equipment.Contains(e))
         {
             c._equipment.Add(e);
-            c.UpdateStats();
             if (e.isWeapon)
             {
                 Weapon x = (Weapon) e;
@@ -190,7 +248,10 @@ public class EquipmentManager : MonoBehaviour
                     c._weapons.Add(x);
                 }
             }
+
         }
+        c.UpdateStats();
+
     }
     public void DropItem(Equipment e)
     {

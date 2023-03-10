@@ -40,6 +40,10 @@ public class EquipmentCreator : MonoBehaviour
     {
         // we will return the rarity of the item, this will be random based on the the rarity spawn rate for that level
         //some rough example
+        if (level == 1)
+        {
+            return 0;
+        }
         // lvl 5 : 80 , 20 , 0  , 0
         // lvl 10: 50 , 40 , 10 , 0
         //lvl 15:  15 , 60 , 20 , 5
@@ -163,7 +167,7 @@ public class EquipmentCreator : MonoBehaviour
         {
             //int level = Random.Range(1, 20);
             
-            generatedEquipment.Add(CreateArmor(level, GetRarity(level), (Equipment.Slot)i));
+            generatedEquipment.Add(CreateArmor(level, (Equipment.Slot)i));
             i++;
         }
 
@@ -178,8 +182,13 @@ public class EquipmentCreator : MonoBehaviour
     // uncommon = 1     Power level 10 * level
     // rare = 2         Power level 15 * level
     // epic = 3         Power level 20 * level
-    private Equipment CreateArmor(int level, int rarity, Equipment.Slot slot)
+    public Equipment CreateArmor(int level, Equipment.Slot slot, int rarity = -1)
     {
+        if (rarity == -1)
+        {
+            rarity = GetRarity(level);
+        }
+        
         
         name = "";
         equipmentStats = new Dictionary<Equipment.Stats, int>();
@@ -213,7 +222,7 @@ public class EquipmentCreator : MonoBehaviour
         return e;
     }
 
-    private Weapon CreateRandomWeapon(int level, bool canBeTwoHand)
+    public Weapon CreateRandomWeapon(int level, bool canBeTwoHand)
     {
         int rarity = GetRarity(level);
         float twoHanderPercentage = .20f;
@@ -249,8 +258,22 @@ public class EquipmentCreator : MonoBehaviour
         //return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Shield2);
 
     }
+    
+    public Weapon CreateRandomWeaponWithSpell(int level, Weapon.SpellTypes spell)
+    {
+        int rarity = GetRarity(level);
+        
+        bool isTwoHand = false;
+        Equipment.Slot slot = Equipment.Slot.OneHander;
+        
+        return CreateWeapon(level, rarity, slot, spell);
 
-    private Weapon CreateRandomSpellScroll(int level)
+        //return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Shield2);
+    }
+    
+    
+
+    public Weapon CreateRandomSpellScroll(int level)
     {
         int rarity = GetRarity(level);
         int spellIndex;
@@ -534,7 +557,17 @@ public class EquipmentCreator : MonoBehaviour
             else
             {
                 equipmentStats.Add(Equipment.Stats.Armor, (roll + 1) / 2);
-                equipmentStats.Add(Equipment.Stats.MagicResist, (roll - 1) / 2);
+
+                if (((roll - 1) / 2) <= 0)
+                {
+                    equipmentStats.Add(Equipment.Stats.MagicResist, (1));
+
+                }
+                else
+                {
+                    equipmentStats.Add(Equipment.Stats.MagicResist, (roll - 1) / 2);
+
+                }
             }
 
 
@@ -582,11 +615,12 @@ public class EquipmentCreator : MonoBehaviour
         {
            // do nothing 
         }
-        else
+        else if ((int)spell <10)
         {
             add = add + "ing";
+ 
         }
-        
+
         if (wepBefore)
         {
             add = add + " ";

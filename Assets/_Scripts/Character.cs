@@ -15,6 +15,8 @@ public class Character : MonoBehaviour
     public int _maxEnergy;
     public int _currentEnergy;
 
+    [SerializeField] public Animator _am;
+
     public bool isPlayerCharacter;
     public int inventorySize = 6;
     public List<Equipment> _equipment = new List<Equipment>();
@@ -37,7 +39,7 @@ public class Character : MonoBehaviour
     public static event Action<Character,int, int> UpdateBlock; 
     public static event Action<Character,int, int, int> UpdateEnergy; 
     public static event Action<Character> UpdateStatsEvent;
-    public static event Action<NotificationType> Notification;
+    public static event Action<ErrorMessageManager.Errors> Notification;
 
 
     private void Start()
@@ -53,8 +55,7 @@ public class Character : MonoBehaviour
         CombatEntity.GetHealed += GetHealed;
 
         
-        //todo base it off of level
-        _equipment = EC.CreateAllEquipment(_level);
+        
         //_weapons = EC.CreateAllWeapons(10);
         //_spellScrolls = EC.CreateAllSpellScrolls(10);
         //_spellScrolls = EC.CreateAllSpellScrolls(10);
@@ -62,8 +63,8 @@ public class Character : MonoBehaviour
 
         if (isPlayerCharacter)
         {
-            _weapons = EC.CreateAllWeapons(_level);
-            _spellScrolls = EC.CreateAllSpellScrolls(_level);
+            //_weapons = EC.CreateAllWeapons(_level);
+            //_spellScrolls = EC.CreateAllSpellScrolls(_level);
               //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature3));
               //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice1));
               //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
@@ -71,15 +72,25 @@ public class Character : MonoBehaviour
         }
         else
         {
-            _weapons = EC.CreateAllWeapons(_level);
-            _spellScrolls = EC.CreateAllSpellScrolls(_level);
-            
-           
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
-            //_weapons.Add(EC.CreateWeapon(_level,2,Equipment.Slot.OneHander, Weapon.SpellTypes.Axe1));
+            //_weapons = EC.CreateAllWeapons(_level);
+            //_spellScrolls = EC.CreateAllSpellScrolls(_level);
+            _equipment = EC.CreateAllEquipment(_level);
+
+            if (_level <= 5)
+            {
+                _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+            }
+            else
+            {
+                _weapons.Add(EC.CreateRandomWeapon(_level, false));
+
+            }
+            _weapons.Add(EC.CreateRandomWeapon(_level, false));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice1));
-            
+
         }
         _equipment.AddRange(_weapons);
         _equipment.AddRange(_spellScrolls);
@@ -239,6 +250,7 @@ public class Character : MonoBehaviour
                     {
                         a = 30;
                     }
+                    //Debug.Log(amount + Buffs[i].Item3);
                     Buffs[i] = (buff, Buffs[i].Item2 + 1,  a);
                 }
                 break;
@@ -415,10 +427,35 @@ public class Character : MonoBehaviour
                     SelectionManager._instance.RandomSelectionFromEquipment(this);
                     CombatController._instance.Player._level += 1;
                     CombatController._instance.Player._currentHealth += 50;
+                    CombatController._instance.Player._currentEnergy = 0;
+
+                    CombatController._instance.Player.UpdateStats();
+                    
+                    //todo just for this test
+                    CombatController._instance.Player._currentHealth = CombatController._instance.Player._maxHealth;
+                    CombatController._instance.Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
+                    CombatController._instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
+                    
                     CombatController._instance.EndCombat();
-                    UIController._instance.ToggleInventoryUI();
+                    Notification(ErrorMessageManager.Errors.Victory);
+                    UIController._instance.ToggleInventoryUI(1);
                     Destroy(this.gameObject);
                 }
+                
+            }
+            else
+            {
+                //GameOver
+                Notification(ErrorMessageManager.Errors.YouHaveDied);
+                UIController._instance.ToggleInventoryUI(0);
+                _am.SetTrigger("die");
+                UIController._instance.RestartButton.SetActive(true);
+                CombatController._instance.EndCombat();
+
+                //UI controller place restart button on screen
+
+                
+
                 
             }
             
@@ -474,12 +511,42 @@ public class Character : MonoBehaviour
             }
         }
         
+        //PrintEquip();
+        
         // max health = 50 * level + 50 + hp from stats
         SetMaxHealth();
-        
+        //_currentEnergy = 0;
+        //UpdateEnergyCount(_currentEnergy);
         
         PrettyPrintStats();
         UpdateStatsEvent(this);
+    }
+
+    private void PrintEquip()
+    {
+        string OutS = "";
+
+        OutS += "------------eq------\n";
+
+        foreach (var VARIABLE in _equipment)
+        {
+            OutS += VARIABLE.name + "\n";
+        }
+
+        OutS += "------------wep------\n";
+        foreach (var VARIABLE in _weapons)
+        {
+            OutS += VARIABLE.name + "\n";
+        }
+        OutS += "------------scrol------\n";
+
+        foreach (var VARIABLE in _spellScrolls)
+        {
+            OutS += VARIABLE.name + "\n";
+        }
+        Debug.Log(OutS);
+        
+        
     }
 
     private void SetMaxHealth()
@@ -489,7 +556,10 @@ public class Character : MonoBehaviour
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
         hp += hpFromStats;
         _maxHealth = hp;
-        
+
+        _currentHealth = _maxHealth;
+
+
     }
     
     private void PrettyPrintStats()

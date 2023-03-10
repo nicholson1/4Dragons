@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatController : MonoBehaviour
 {
@@ -22,6 +22,8 @@ public class CombatController : MonoBehaviour
     [SerializeField] private Transform SpawnPos;
 
     public List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
+    public Button NextCombatButton;
+    public Button EndTurnButton;
 
     public Vector3 playerOffset = new Vector3();
 
@@ -136,6 +138,15 @@ public class CombatController : MonoBehaviour
         GetAllCombatEntities();
         // start the turn
         entitiesInCombat[0].isMyTurn = true;
+        if (CurrentTurnIndex == 0)
+        {
+            EndTurnButton.interactable = true;
+        }
+        else
+        {
+            EndTurnButton.interactable = false;
+
+        }
 
         UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
         EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
@@ -153,7 +164,16 @@ public class CombatController : MonoBehaviour
         {
             CurrentTurnIndex = 0;
         }
-        
+
+        if (CurrentTurnIndex == 0)
+        {
+            EndTurnButton.interactable = true;
+        }
+        else
+        {
+            EndTurnButton.interactable = false;
+
+        }
         Debug.Log(entitiesInCombat[CurrentTurnIndex] + " now their turn");
         entitiesInCombat[CurrentTurnIndex].StartTurn();
         
@@ -263,6 +283,9 @@ public class CombatController : MonoBehaviour
 
     public void StartRandomCombat()
     {
+        UIController._instance.ToggleInventoryUI(0);
+
+        NextCombatButton.gameObject.SetActive(false);
         // spawn random enemy
         //Player.transform.position + (DirVect * 5)
         
@@ -279,6 +302,7 @@ public class CombatController : MonoBehaviour
         CombatNotifications(ErrorMessageManager.Errors.NewFoe);
         yield return new WaitForSeconds(.5f);
         StartCombat(p, e);
+        ToolTipManager._instance.HideToolTip();
     }
 
     private void StartCombat(Character player, Character enemy)

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
@@ -8,11 +9,20 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject MapUI;
 
+    public GameObject RestartButton;
+
 
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
-    
+
+
+    private bool InventoryOn = false;
     public static UIController _instance;
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
+    }
 
     private void Awake()
     {
@@ -25,11 +35,28 @@ public class UIController : MonoBehaviour
             _instance = this;
         }
     }
-    public void ToggleInventoryUI()
+    public void ToggleInventoryUI(int force = -1)
     {
+        if (force == 0)
+        {
+            if (InventoryOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (InventoryOn == true)
+            {
+                return;
+            }
+        }
+        
         if (!moving)
         {
+            InventoryOn = !InventoryOn;
             StartCoroutine(MoveObject(inventoryUI));
+            
 
         }
         

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
@@ -14,6 +15,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     private TextMeshProUGUI SlotLable;
     private Image background;
     [SerializeField] private Color baseColor;
+
+    public void Start()
+    {
+        LabelCheck();
+    }
 
     public void LabelCheck()
     {

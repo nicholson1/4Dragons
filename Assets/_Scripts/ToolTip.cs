@@ -68,6 +68,16 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void OnDisable()
     {
+        timer = .5f;
+
+        ToolTipManager._instance.HideToolTip();
+
+    }
+
+    private void OnDestroy()
+    {
+        timer = .5f;
+
         ToolTipManager._instance.HideToolTip();
 
     }
