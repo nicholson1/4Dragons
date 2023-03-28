@@ -45,7 +45,8 @@ public class CombatEntity : MonoBehaviour
     public List<(Weapon.SpellTypes, Weapon)> Intentions = new List<(Weapon.SpellTypes, Weapon)>();
     public CombatEntity attacker = null;
     public Weapon.SpellTypes lastSpellCastTargeted = Weapon.SpellTypes.None;
-    
+    public bool IntentionsRunning = false;
+
 
     private void Start()
     {
@@ -393,7 +394,8 @@ public class CombatEntity : MonoBehaviour
 
     public List<(Weapon.SpellTypes spell, Weapon weapon)> SetMyIntentions()
     {
-        
+        IntentionsRunning = true;
+
         GetMySpells();
         List<(Weapon.SpellTypes, Weapon)> intent = new List<(Weapon.SpellTypes, Weapon)>();
         //get max energy
@@ -422,6 +424,7 @@ public class CombatEntity : MonoBehaviour
         //todo modify it with titles
 
         int bloodpactcount = 0;
+        int tapcount = 0;
         int infiniteStop = 0;
         while (energy > 0 && infiniteStop < 100)
         {
@@ -435,21 +438,31 @@ public class CombatEntity : MonoBehaviour
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
             if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow1)
             {
-                if (energy == myCharacter._maxEnergy || myCharacter._currentHealth < myCharacter._maxHealth * .25f || (chilled != -1 && energy == myCharacter._maxEnergy -1))
+                if ((energy != myCharacter._maxEnergy ||  (chilled != -1 && energy != myCharacter._maxEnergy -1)) && myCharacter._currentHealth > myCharacter._maxHealth * .25f && tapcount < 2)
                 {
                     //todo keep an eye on this
+                    tapcount += 1;
+
+                }
+                else
+                {
                     infiniteStop += 1;
                     continue;
                 }
             }
             if (Spells[roll].Item1 == Weapon.SpellTypes.Blood3)
             {
-                if (myCharacter._currentHealth < myCharacter._maxHealth * .25f && bloodpactcount < 2) 
+                if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && bloodpactcount < 2) 
                 {
                     //todo keep an eye on this
                     bloodpactcount += 1;
+
+                }
+                else
+                {
                     infiniteStop += 1;
                     continue;
+
                 }
             }
             
@@ -479,7 +492,8 @@ public class CombatEntity : MonoBehaviour
             TriggerAllDebuffs();
 
         }
-        
+        IntentionsRunning = false;
+
         return intent;
 
     }

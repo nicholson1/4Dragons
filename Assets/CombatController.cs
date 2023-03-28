@@ -155,9 +155,24 @@ public class CombatController : MonoBehaviour
 
     }
 
+    private bool CheckForIntentions()
+    {
+        bool no_Intentions_running = true;
+
+        while (no_Intentions_running)
+        {
+            
+        }
+
+        return no_Intentions_running;
+
+    }
+
 
     public void EndCurrentTurn()
     {
+        // wait till no combat entitiy is intentionsRunning
+        
         EndTurn();
         CurrentTurnIndex += 1;
         if (CurrentTurnIndex >= entitiesInCombat.Count)

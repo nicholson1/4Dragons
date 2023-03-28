@@ -10,6 +10,8 @@ public class StatusText : MonoBehaviour
     public TextMeshProUGUI AmountText;
     public TextMeshProUGUI ReductionText;
     public Image Icon;
+
+    private HealthBar _healthBar;
     
     //have colors for each abilitytypes
     
@@ -22,8 +24,9 @@ public class StatusText : MonoBehaviour
     
     
 
-    public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, int reduction = 0)
+    public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, HealthBar hb, int reduction = 0)
     {
+        _healthBar = hb;
         Icon.sprite = null;
         Icon.color = Color.white;
 
@@ -56,8 +59,10 @@ public class StatusText : MonoBehaviour
         }
     }
     
-    public void InitializeStatusText(int turns, int amount, CombatEntity.BuffTypes buffTypes)
+    public void InitializeStatusText(int turns, int amount, CombatEntity.BuffTypes buffTypes, HealthBar hb)
     {
+        _healthBar = hb;
+
         Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
         if(buffTypes == CombatEntity.BuffTypes.Block){
             AmountText.text = amount.ToString();
@@ -75,8 +80,10 @@ public class StatusText : MonoBehaviour
 
         }
     }
-    public void InitializeStatusText(int turns, int amount, CombatEntity.DeBuffTypes debuffTypes)
+    public void InitializeStatusText(int turns, int amount, CombatEntity.DeBuffTypes debuffTypes, HealthBar hb)
     {
+        _healthBar = hb;
+
         Icon.sprite = TheSpellBook._instance.GetSprite(debuffTypes);
         AmountText.text = debuffTypes.ToString();
         AmountText.color = TheSpellBook._instance.abilityColors[3];
@@ -155,7 +162,8 @@ public class StatusText : MonoBehaviour
 
     private void MoveFinished()
     {
-        //todo object pooler
-        Destroy(this.gameObject);
+        UIPooler._instance.StatusTextsPool.Add(this.gameObject);
+        this.transform.SetParent(UIPooler._instance.transform);
+        this.gameObject.SetActive(false);
     }
 }

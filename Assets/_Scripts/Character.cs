@@ -86,10 +86,10 @@ public class Character : MonoBehaviour
 
             }
             _weapons.Add(EC.CreateRandomWeapon(_level, false));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice1));
+            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
 
         }
         _equipment.AddRange(_weapons);

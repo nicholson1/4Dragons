@@ -32,6 +32,9 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private IntentDisplay intentPrefab;
     [SerializeField] private Transform intentDisplay;
 
+   
+
+
     private void Start()
     {
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
@@ -97,7 +100,9 @@ public class HealthBar : MonoBehaviour
 
                 if (debuff._turns <= 0)
                 {
-                    Destroy(debuff.gameObject);
+                    UIPooler._instance.buffDebuffPool.Add(debuff.gameObject);
+                    debuff.transform.SetParent(UIPooler._instance.transform);
+                    debuff.gameObject.SetActive(false);
 
                 }
             }
@@ -122,7 +127,12 @@ public class HealthBar : MonoBehaviour
 
                 if (buff._turns <= 0)
                 {
-                    Destroy(buff.gameObject);
+                    
+
+                    UIPooler._instance.buffDebuffPool.Add(buff.gameObject);
+                    buff.transform.SetParent(UIPooler._instance.transform);
+                    buff.gameObject.SetActive(false);
+                    
 
                 }
             }
@@ -134,7 +144,7 @@ public class HealthBar : MonoBehaviour
         if (c != displayCharacter)
             return;
 
-        IntentDisplay intent = Instantiate(intentPrefab, intentDisplay);
+        IntentDisplay intent = GetIntent();
         intent.UpdateInfo(spell);
     }
 
@@ -143,18 +153,22 @@ public class HealthBar : MonoBehaviour
         if (c != displayCharacter)
             return;
 
-        //todo prolly object pool these
-        Destroy(intentDisplay.GetChild(intentDisplay.childCount - 1).gameObject);
+        int count = intentDisplay.childCount;
+        intentDisplay.GetChild(count - 1).gameObject.SetActive(false);
+        UIPooler._instance.IntentPool.Add(intentDisplay.GetChild(count - 1).gameObject);
+        intentDisplay.GetChild(count - 1).SetParent(UIPooler._instance.transform);
+        
     }
     private void RemoveAllIntent(Character c)
     {
         if (c != displayCharacter)
             return;
 
-        //todo prolly object pool these
         for (int i = intentDisplay.childCount - 1 ; i >= 0; i--)
         {
-            Destroy(intentDisplay.GetChild(i).gameObject);
+            intentDisplay.GetChild(i).gameObject.SetActive(false);
+            UIPooler._instance.IntentPool.Add(intentDisplay.GetChild(i).gameObject);
+            intentDisplay.GetChild(i).SetParent(UIPooler._instance.transform);
 
         }
     }
@@ -168,7 +182,6 @@ public class HealthBar : MonoBehaviour
         if (amount <= 0)
         {
             // remove icon
-            Debug.Log("removeIcon " + amount);
             BlockIcon.SetActive(false);
         }
         else
@@ -177,10 +190,11 @@ public class HealthBar : MonoBehaviour
             BlockText.text = amount.ToString();
         }
 
-        StatusText st = Instantiate(statusTextPrefab, this.transform);
+        StatusText st = GetStatus();
+
         st.transform.localPosition += new Vector3(0, 450, 0);
         // we really want the change
-        st.InitializeStatusText(1, change, CombatEntity.BuffTypes.Block);
+        st.InitializeStatusText(1, change, CombatEntity.BuffTypes.Block, this);
 
 
     }
@@ -200,8 +214,7 @@ public class HealthBar : MonoBehaviour
         // make the icon
         if (MakeNewOne(buff, CombatEntity.DeBuffTypes.None))
         {
-            BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-                .GetComponent<BuffDebuffElement>();
+            BuffDebuffElement icon = GetBuffDebuff();
             icon.InitializeDisplay(buff, turns, amount);
         }
         else
@@ -238,15 +251,15 @@ public class HealthBar : MonoBehaviour
 
             if (!found)
             {
-                BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-                    .GetComponent<BuffDebuffElement>();
+                BuffDebuffElement icon = GetBuffDebuff();
+
                 icon.InitializeDisplay(buff, turns, amount);
             }
         }
-        
-        StatusText st = Instantiate(statusTextPrefab, this.transform);
+
+        StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 350, 0);
-        st.InitializeStatusText(turns, Mathf.RoundToInt(amount), buff);
+        st.InitializeStatusText(turns, Mathf.RoundToInt(amount), buff, this);
     }
 
     private void GetHitWithDeBuff(Character c, CombatEntity.DeBuffTypes debuff, int turns, float amount)
@@ -258,8 +271,8 @@ public class HealthBar : MonoBehaviour
         // make the icon
         if (MakeNewOne(CombatEntity.BuffTypes.None,debuff ))
         {
-            BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-                .GetComponent<BuffDebuffElement>();
+            BuffDebuffElement icon = GetBuffDebuff();
+
             icon.InitializeDisplay(debuff, turns, amount);
         }
         else
@@ -289,15 +302,15 @@ public class HealthBar : MonoBehaviour
 
             if (!found)
             {
-                BuffDebuffElement icon = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup)
-                    .GetComponent<BuffDebuffElement>();
+                BuffDebuffElement icon = GetBuffDebuff();
+
                 icon.InitializeDisplay(debuff, turns, amount);
             }
         }
-        
-        StatusText st = Instantiate(statusTextPrefab, this.transform);
+
+        StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 350, 0);
-        st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff);
+        st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff, this);
     }
 
     private void GetHealed(Character c, int heal)
@@ -313,9 +326,9 @@ public class HealthBar : MonoBehaviour
         StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
 
-        StatusText st = Instantiate(statusTextPrefab, this.transform);
+        StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 400, 0);
-        st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal);
+        st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this);
 
 
     }
@@ -340,9 +353,9 @@ public class HealthBar : MonoBehaviour
         StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
 
-        StatusText st = Instantiate(statusTextPrefab, this.transform);
+        StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 400, 0);
-        st.InitializeStatusText(amount, abilityTypes, reduction);
+        st.InitializeStatusText(amount, abilityTypes, this,reduction);
     }
 
     IEnumerator LerpValueDamage(float start, float end, float timeToMove)
@@ -490,4 +503,64 @@ public class HealthBar : MonoBehaviour
     {
         Destroy(this.gameObject);
     }
+
+    private StatusText GetStatus()
+    {
+        StatusText st;
+        if (UIPooler._instance.StatusTextsPool.Count != 0)
+        {
+            st = UIPooler._instance.StatusTextsPool[0].GetComponent<StatusText>();
+            UIPooler._instance.StatusTextsPool.Remove(st.gameObject);
+            st.gameObject.SetActive(true);
+            st.transform.SetParent(this.transform);
+            
+        }
+        else
+        {
+            st = Instantiate(statusTextPrefab, this.transform);
+
+        }
+
+        return st;
+    }
+
+    private IntentDisplay GetIntent()
+    {
+        IntentDisplay intent;
+        if (UIPooler._instance.IntentPool.Count != 0)
+        {
+            intent = UIPooler._instance.IntentPool[0].GetComponent<IntentDisplay>();
+            UIPooler._instance.IntentPool.Remove(intent.gameObject);
+            intent.gameObject.SetActive(true);
+            intent.transform.SetParent(intentDisplay);
+            
+        }
+        else
+        {
+            intent = Instantiate(intentPrefab, intentDisplay);
+
+        }
+
+        return intent;
+    }
+    private BuffDebuffElement GetBuffDebuff()
+    {
+        BuffDebuffElement buffDebuff;
+        if (UIPooler._instance.buffDebuffPool.Count != 0)
+        {
+            buffDebuff = UIPooler._instance.buffDebuffPool[0].GetComponent<BuffDebuffElement>();
+            UIPooler._instance.buffDebuffPool.Remove(buffDebuff.gameObject);
+            buffDebuff.gameObject.SetActive(true);
+            buffDebuff.transform.SetParent(buffDebuffLayoutGroup);
+            
+        }
+        else
+        {
+            buffDebuff = Instantiate(buffDebuffElementPrefab, buffDebuffLayoutGroup);
+
+        }
+
+        return buffDebuff;
+    }
+    
 }
