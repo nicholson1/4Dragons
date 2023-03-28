@@ -30,7 +30,7 @@ public class ErrorMessageManager : MonoBehaviour
 
     private void Notification(Errors error)
     {
-        ErrorMessage e = Instantiate(ErrorMessagePrefab, this.transform);
+        ErrorMessage e = GetMessage();
         switch (error)
         {
             case Errors.InventoryFull:
@@ -59,6 +59,24 @@ public class ErrorMessageManager : MonoBehaviour
                 
 
         }
+    }
+
+    private ErrorMessage GetMessage()
+    {
+        ErrorMessage e;
+        if (UIPooler._instance.NotificationMessages.Count != 0)
+        {
+            e = UIPooler._instance.NotificationMessages[0].GetComponent<ErrorMessage>();
+            e.transform.SetParent(this.transform);
+            e.gameObject.SetActive(true);
+
+        }
+        else
+        {
+            e = Instantiate(ErrorMessagePrefab, this.transform);
+        }
+
+        return e;
     }
 
     public enum Errors

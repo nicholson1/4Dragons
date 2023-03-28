@@ -31,7 +31,9 @@ public class ErrorMessage : MonoBehaviour
             text.color = Color.Lerp(initialColor, targetColor, elapsedTime / fadeDuration);
             yield return null;
         }
-        Destroy(this.gameObject);
+        UIPooler._instance.NotificationMessages.Add(this.gameObject);
+        this.gameObject.transform.SetParent(UIPooler._instance.transform);
+        this.gameObject.SetActive(false);
     }
     
 }
