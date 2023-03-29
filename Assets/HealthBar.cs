@@ -513,6 +513,7 @@ public class HealthBar : MonoBehaviour
             UIPooler._instance.StatusTextsPool.Remove(st.gameObject);
             st.gameObject.SetActive(true);
             st.transform.SetParent(this.transform);
+            st.transform.localPosition = Vector3.zero;
             
         }
         else
@@ -533,6 +534,7 @@ public class HealthBar : MonoBehaviour
             UIPooler._instance.IntentPool.Remove(intent.gameObject);
             intent.gameObject.SetActive(true);
             intent.transform.SetParent(intentDisplay);
+            
             
         }
         else

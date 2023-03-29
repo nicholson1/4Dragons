@@ -88,6 +88,7 @@ public class CombatController : MonoBehaviour
     private IEnumerator TransitionFromCombatCamera(float moveTime, float rotateTime)
     {
         CombatUI.SetActive(false);
+        CurrentTurnIndex = 0;
 
         //CombatCamera.gameObject.SetActive(false);
         //TransitionCamera.gameObject.SetActive(true);
@@ -317,6 +318,7 @@ public class CombatController : MonoBehaviour
         CombatNotifications(ErrorMessageManager.Errors.NewFoe);
         yield return new WaitForSeconds(.5f);
         StartCombat(p, e);
+        Debug.Log("hide tool tip at begining of combat");
         ToolTipManager._instance.HideToolTip();
     }
 

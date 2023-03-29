@@ -15,8 +15,10 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private DragItem _dragItemPrefab;
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private Transform inventoryTransform;
-    [SerializeField] private TextMeshProUGUI stats;
+    //[SerializeField] private TextMeshProUGUI stats;
     public static Action<ErrorMessageManager.Errors> InventoryNotifications;
+
+    [SerializeField] private StatDisplay[] _statDisplays;
 
     private void Awake()
     {
@@ -39,27 +41,38 @@ public class EquipmentManager : MonoBehaviour
         Character.UpdateStatsEvent -= UpdateStats;
     }
 
-
     private void UpdateStats(Character c)
     {
-        if (!c.isPlayerCharacter)
-        {
-            return;
-        }
-
-        stats.text = "Stats:\n";
-        stats.text += "Level: " + c._level+ "\n";
-        stats.text += "Max HP: " + c._maxHealth + "\n";
-
         foreach (var kvp in c.GetStats())
         {
-            if (kvp.Key != Equipment.Stats.Rarity)
+            if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel )
             {
-                stats.text += kvp.Key + ": " + kvp.Value +"\n";
-
+                _statDisplays[((int)kvp.Key)-2].UpdateValues(kvp.Key, kvp.Value);
+        
             }
         }
     }
+
+    // private void UpdateStats(Character c)
+    // {
+    //     if (!c.isPlayerCharacter)
+    //     {
+    //         return;
+    //     }
+    //
+    //     stats.text = "Stats:\n";
+    //     stats.text += "Level: " + c._level+ "\n";
+    //     stats.text += "Max HP: " + c._maxHealth + "\n";
+    //
+    //     foreach (var kvp in c.GetStats())
+    //     {
+    //         if (kvp.Key != Equipment.Stats.Rarity)
+    //         {
+    //             stats.text += kvp.Key + ": " + kvp.Value +"\n";
+    //
+    //         }
+    //     }
+    // }
 
     public void EquipItemFromSelection(Equipment e, SelectionItem si)
     {

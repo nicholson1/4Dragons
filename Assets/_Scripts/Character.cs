@@ -65,10 +65,10 @@ public class Character : MonoBehaviour
         {
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-              //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature3));
-              //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice1));
-              //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
-              //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield2));
+              // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature3));
+              // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice1));
+              // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
+              // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield2));
         }
         else
         {
@@ -86,10 +86,10 @@ public class Character : MonoBehaviour
 
             }
             _weapons.Add(EC.CreateRandomWeapon(_level, false));
-            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood3));
 
         }
         _equipment.AddRange(_weapons);
@@ -424,6 +424,7 @@ public class Character : MonoBehaviour
 
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
+                    ToolTipManager._instance.HideToolTip();
                     SelectionManager._instance.RandomSelectionFromEquipment(this);
                     CombatController._instance.Player._level += 1;
                     CombatController._instance.Player._currentHealth += 50;
@@ -496,6 +497,14 @@ public class Character : MonoBehaviour
     {
         _stats = new Dictionary<Equipment.Stats, int>();
 
+        //base stats
+        for (int i = 2; i < 18; i++)
+        {
+            _stats.Add((Equipment.Stats)i, 0);
+        }
+        
+        
+
         foreach (Equipment e in _equipment)
         {
             foreach (var stat in e.stats)
@@ -556,6 +565,8 @@ public class Character : MonoBehaviour
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
         hp += hpFromStats;
         _maxHealth = hp;
+
+        _stats[Equipment.Stats.Health] += hp;
 
         _currentHealth = _maxHealth;
 

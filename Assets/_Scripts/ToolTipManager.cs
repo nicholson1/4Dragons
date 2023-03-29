@@ -110,6 +110,7 @@ public class ToolTipManager : MonoBehaviour
 
    public void HideToolTip()
    {
+      Debug.Log("Hide tool tip");
       gameObject.SetActive(false);
       spellCost.text = string.Empty;
       tiptext.text = string.Empty;

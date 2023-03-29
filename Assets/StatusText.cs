@@ -57,6 +57,7 @@ public class StatusText : MonoBehaviour
                 
                 break;
         }
+        StartMovement();
     }
     
     public void InitializeStatusText(int turns, int amount, CombatEntity.BuffTypes buffTypes, HealthBar hb)
@@ -64,6 +65,7 @@ public class StatusText : MonoBehaviour
         _healthBar = hb;
 
         Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
+        
         if(buffTypes == CombatEntity.BuffTypes.Block){
             AmountText.text = amount.ToString();
             AmountText.color = TheSpellBook._instance.abilityColors[5];
@@ -75,10 +77,9 @@ public class StatusText : MonoBehaviour
             AmountText.color = TheSpellBook._instance.abilityColors[2];
             ReductionText.text = "(" + turns +")";
             ReductionText.color = TheSpellBook._instance.abilityColors[2];
-
-
-
         }
+        StartMovement();
+
     }
     public void InitializeStatusText(int turns, int amount, CombatEntity.DeBuffTypes debuffTypes, HealthBar hb)
     {
@@ -88,25 +89,19 @@ public class StatusText : MonoBehaviour
         AmountText.text = debuffTypes.ToString();
         AmountText.color = TheSpellBook._instance.abilityColors[3];
         ReductionText.text = "(" + turns +")";
+        
         ReductionText.color = TheSpellBook._instance.abilityColors[3];
 
-
-        // switch (debuffTypes)
-        // {
-        //     case CombatEntity.DeBuffTypes.Bleed:
-        //         AmountText.text = debuffTypes.ToString();
-        //         AmountText.color = abilityColors[3];
-        //         ReductionText.text = "";
-        //
-        //         
-        //        
-        //         
-        //         break;
-        // }
+        StartMovement();
     }
 
-    private void Start()
+    private void StartMovement()
     {
+        Icon.color = Color.white;
+        if (!this.isActiveAndEnabled)
+        {
+            return;
+        }
         StartCoroutine(LerpPos(transform.position, transform.position + new Vector3(0, 200, 0), 4f));
         StartCoroutine(Fade(1f, 1f, AmountText));
         StartCoroutine(Fade(1f, 1f, ReductionText));
@@ -165,5 +160,6 @@ public class StatusText : MonoBehaviour
         UIPooler._instance.StatusTextsPool.Add(this.gameObject);
         this.transform.SetParent(UIPooler._instance.transform);
         this.gameObject.SetActive(false);
+
     }
 }
