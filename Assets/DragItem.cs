@@ -270,7 +270,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private void StartCombat()
     {
         canBeDragged = false;
-        Debug.Log("can no longer drag");
+        //Debug.Log("can no longer drag");
     }
     private void EndCombat()
     {

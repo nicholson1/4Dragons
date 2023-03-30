@@ -79,7 +79,16 @@ public class SelectionManager : MonoBehaviour
 
     public void ClearSelections()
     {
+        
+        
         SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
+        foreach (var si in selectionItems)
+        {
+            if (si.isFlipping)
+            {
+                return;
+            }
+        }
         //selectionsLeft = 10;
         for (int i = selectionItems.Length -1; i >= 0; i--)
         {

@@ -26,18 +26,18 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private float timer = .5f;
 
-    private void OnMouseEnter()
-    {
-        //start counting for 3 sec
-        count = true;
-    }
-
-    private void OnMouseExit()
-    {
-        count = false;
-        timer = .5f;
-        ToolTipManager._instance.HideToolTipAll();
-    }
+    // private void OnMouseEnter()
+    // {
+    //     //start counting for 3 sec
+    //     count = true;
+    // }
+    //
+    // private void OnMouseExit()
+    // {
+    //     count = false;
+    //     timer = .5f;
+    //     ToolTipManager._instance.HideToolTipAll();
+    // }
     
     public void OnPointerEnter(PointerEventData pointer)
     {
@@ -46,9 +46,13 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData pointer)
     {
-        count1 = false;
-        timer = .5f;
-        ToolTipManager._instance.HideToolTipAll();
+        if (count1 == true)
+        {
+            count1 = false;
+            timer = .5f;
+            ToolTipManager._instance.HideToolTipAll();
+        }
+        
     }
 
     private void LateUpdate()
@@ -77,8 +81,10 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private void OnDisable()
     {
         timer = .5f;
+        count1 = false;
 
-        ToolTipManager._instance.HideToolTipAll();
+
+        //ToolTipManager._instance.HideToolTipAll();
 
     }
 
@@ -86,7 +92,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         timer = .5f;
 
-        ToolTipManager._instance.HideToolTipAll();
+        //ToolTipManager._instance.HideToolTipAll();
 
     }
 }

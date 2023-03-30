@@ -24,10 +24,14 @@ public class CombatButtonController : MonoBehaviour
         Character.UpdateEnergy += UpdateEnergy;
         CombatController.UpdateUIButtons += UpdateCombatUI;
         DataTable = _dataReader.GetWeaponScalingTable();
-        weapon1.SetDataTable(DataTable);
-        weapon2.SetDataTable(DataTable);
-        scroll1.SetDataTable(DataTable);
-        scroll2.SetDataTable(DataTable);
+        if(weapon1 != null)
+            weapon1.SetDataTable(DataTable);
+        if(weapon2 != null)
+            weapon2.SetDataTable(DataTable);
+        if(scroll1 != null)
+            scroll1.SetDataTable(DataTable);
+        if(scroll2 != null)
+            scroll2.SetDataTable(DataTable);
     }
 
     private void OnDestroy()
@@ -71,6 +75,7 @@ public class CombatButtonController : MonoBehaviour
         // refence the datatable with these spells as int
         //Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
 
+        //Debug.Log("heeeey");
         weapon1.UpdateSpell(weaponSpells.Item1, weaponSpells.Item3);
         weapon2.UpdateSpell(weaponSpells.Item2, weaponSpells.Item4);
         scroll1.UpdateSpell(spellScolls.Item1, spellScolls.Item3);
@@ -86,6 +91,12 @@ public class CombatButtonController : MonoBehaviour
     private void CheckIfSpellCanBeUsed(SpellButton button, Character player)
     {
         Button b = button.GetComponent<Button>();
+
+        if (button.spell == Weapon.SpellTypes.None)
+        {
+            b.interactable = false;
+            return;
+        }
         int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
         //Debug.Log(energyAmount);
         if (energyAmount > currentEnergy)

@@ -556,6 +556,10 @@ public class TheSpellBook : MonoBehaviour
     public List<int> GetPowerValues(Weapon.SpellTypes spell, Weapon w, CombatEntity caster)
     {
         //Debug.Log(spell);
+        if (spell == Weapon.SpellTypes.None)
+        {
+            return null;
+        }
         IList scaling = (IList)WeaponScalingTable[(int)spell][1];
 
         casterStats = caster.myCharacter.GetStats();

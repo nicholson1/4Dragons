@@ -22,6 +22,7 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private ToolTip _toolTip;
     [SerializeField] private Image icon;
 
+    public bool isFlipping = false;
     //[SerializeField] private ToolTip[] SpellToolTips;
     [SerializeField] private SpellDisplay _spellDisplay;
     [SerializeField] private GameObject Cardback;
@@ -153,6 +154,7 @@ public class SelectionItem : MonoBehaviour
     }
     IEnumerator RotateObjectBack()
     {
+        isFlipping = true;
         bool halfway = false;
     
         float angle = 0;
@@ -175,12 +177,14 @@ public class SelectionItem : MonoBehaviour
             yield return null;
         } while( angle < 180);
 
+        isFlipping = false;
         if (SelectionManager._instance.selectionsLeft <= 0)
         {
             SelectionManager._instance.ClearSelections();
         }
 
-        
+
+
     }
     
     private void SetRarityText(int r, Equipment e)

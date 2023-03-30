@@ -113,7 +113,7 @@ public class ToolTipManager : MonoBehaviour
 
       activated = true;
 
-      Debug.Log("hello");
+      //Debug.Log("hello");
 
 
    }
@@ -146,6 +146,9 @@ public class ToolTipManager : MonoBehaviour
       current.tiptitle.color = info.Item3;
       current.tiptext.text = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
       current.spellCost.text = DataTable[(int)s][2].ToString();
+
+      current.iLvl.text = "Lvl: " +e.stats[Equipment.Stats.ItemLevel].ToString();
+      current.iLvl.color = rarityColors[e.stats[Equipment.Stats.ItemLevel] - 1];
       gameObject.SetActive(true);
 
 
@@ -281,18 +284,21 @@ public class ToolTipManager : MonoBehaviour
       {
          return;
       }
+      //Debug.Log("Hide Tool Tip");
+
       //Debug.Log("Hide tool tip");
       HideToolTip(MainTip);
       HideToolTip(ItemTip);
       HideToolTip(SpellTip);
       activated = false;
       //Debug.Log("hiiii");
+      gameObject.SetActive(false);
 
    }
    public void HideToolTip(ToolTipDisplay current)
    {
       //Debug.Log("Hide tool tip");
-      gameObject.SetActive(false);
+      current.gameObject.SetActive(false);
       current.spellCost.text = string.Empty;
       current.tiptext.text = string.Empty;
       current.tiptitle.text = string.Empty;

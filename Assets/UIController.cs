@@ -37,7 +37,7 @@ public class UIController : MonoBehaviour
     }
     public void ToggleInventoryUI(int force = -1)
     {
-        
+        EquipmentManager._instance.c.UpdateStats();
         if (force == 0)
         {
             if (InventoryOn == false)

@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using ImportantStuff;
+using UnityEngine.UI;
 
 public class SpellButton : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class SpellButton : MonoBehaviour
     List<List<object>> DataTable;
     public void SetDataTable(List<List<object>> WeaponScalingTable )
     {
+        
        DataTable = WeaponScalingTable;
     }
 
@@ -31,8 +33,43 @@ public class SpellButton : MonoBehaviour
     public void UpdateSpell(Weapon.SpellTypes s, Weapon w)
     {
 
-        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
+
         spell = s;
+        if (spell == Weapon.SpellTypes.None)
+        {
+            _toolTip.icon =  null;
+            _toolTip.IconColor = new Color(0,0,0,0);
+
+            _toolTip.Message = "You have no Item Equipped in this slot";
+            _toolTip.Title = "None";
+            _toolTip.IconColor = Color.white;
+            //_toolTip.Message = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
+            _toolTip.Cost = "";
+        
+            //iLVL
+            //int a;
+            //w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+            _toolTip.iLvl = "";
+            //Rarity
+            
+            _toolTip.rarity = -1;
+
+            _toolTip.e = null;
+            SpellText.text = "None";
+            _toolTip.is_spell = false;
+            return;
+
+        }
+        else
+        {
+            this.GetComponent<Button>().interactable = true;
+            _toolTip.is_spell = true;
+
+
+
+        }
+        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
+
         SpellText.text = DataTable[(int)spell][0].ToString();
 
         //Debug.Log(w.name + "--------------");
