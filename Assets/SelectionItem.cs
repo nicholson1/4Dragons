@@ -24,14 +24,18 @@ public class SelectionItem : MonoBehaviour
 
     //[SerializeField] private ToolTip[] SpellToolTips;
     [SerializeField] private SpellDisplay _spellDisplay;
+    [SerializeField] private GameObject Cardback;
 
     public void InitializeSelectionItem(Equipment e)
     {
+        equip.interactable = true;
+        inventory.interactable = true;
+        Cardback.SetActive(true);
+        transform.rotation = Quaternion.Euler( 0,180, 0);
 
-        
         myCharacter = CombatController._instance.Player.GetComponent<CombatEntity>();
-        
-        
+
+        _toolTip.is_spell = false;
         item = e;
         title.text = e.name;
         if (e.slot != Equipment.Slot.OneHander)
@@ -42,6 +46,7 @@ public class SelectionItem : MonoBehaviour
         {
             Weapon x = (Weapon)e;
             slot.text = "Weapon"; //+GetWeaponType(x.spellType1);
+            _toolTip.is_spell = true;
 
         }
         SetRarityText(e.stats[Equipment.Stats.Rarity], e);
@@ -114,10 +119,68 @@ public class SelectionItem : MonoBehaviour
             //_toolTip.Message += stat.text + "\n";
         }
 
-       
+
+        StartCoroutine(RotateObjectForward());
 
 
 
+    }
+
+    IEnumerator RotateObjectForward()
+    {
+        bool halfway = false;
+    
+        float angle = 180;
+        do {
+            angle -= 200 * Time.deltaTime;
+            if (angle < 0)
+            {
+                angle = 0; // clamp
+                
+            }
+
+            if (angle <= 90 && halfway == false)
+            {
+                halfway = true;
+                Cardback.SetActive(false);
+            }
+            
+        
+            transform.rotation = Quaternion.Euler( 0,angle, 0);
+            yield return null;
+        } while( angle > 0);
+        
+    }
+    IEnumerator RotateObjectBack()
+    {
+        bool halfway = false;
+    
+        float angle = 0;
+        do {
+            angle += 200 * Time.deltaTime;
+            if (angle > 180)
+            {
+                angle = 180; // clamp
+                
+            }
+
+            if (angle >= 90 && halfway == false)
+            {
+                halfway = true;
+                Cardback.SetActive(true);
+            }
+            
+        
+            transform.rotation = Quaternion.Euler( 0,angle, 0);
+            yield return null;
+        } while( angle < 180);
+
+        if (SelectionManager._instance.selectionsLeft <= 0)
+        {
+            SelectionManager._instance.ClearSelections();
+        }
+
+        
     }
     
     private void SetRarityText(int r, Equipment e)
@@ -201,8 +264,18 @@ public class SelectionItem : MonoBehaviour
 
     public void RemoveSelection()
     {
+        // disable interation on buttons
         SelectionManager._instance.SelectionMade(this);
+
+        
+        StartCoroutine(RotateObjectBack());
         //Destroy(gameObject);
+    }
+
+    public void DisableButtons()
+    {
+        equip.interactable = false;
+        inventory.interactable = false;
     }
 
     // public void SpellToolTip(Weapon.SpellTypes s, Weapon w, int index)

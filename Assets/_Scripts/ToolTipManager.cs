@@ -15,6 +15,8 @@ public class ToolTipManager : MonoBehaviour
    public ToolTipDisplay SpellTip;
    public ToolTipDisplay ItemTip;
 
+   public bool activated = false;
+
    // public TextMeshProUGUI tiptext;
    // public TextMeshProUGUI tiptitle;
    // public TextMeshProUGUI spellCost;
@@ -26,7 +28,7 @@ public class ToolTipManager : MonoBehaviour
    [SerializeField] public Color[] rarityColors;
    private RectTransform _rt;
 
-   public HorizontalLayoutGroup LayoutGroup;
+   //public HorizontalLayoutGroup LayoutGroup;
    private void Awake()
    {
       if (_instance != null && _instance != this)
@@ -59,7 +61,7 @@ public class ToolTipManager : MonoBehaviour
       }
       if (Screen.width - Input.mousePosition.x < 150)
       {
-         _rt.pivot += new Vector2(3, 0);
+         _rt.pivot += new Vector2(5, 0);
          //LayoutGroup.reverseArrangement = true;
       }
       //LayoutGroup.reverseArrangement = false;
@@ -74,6 +76,10 @@ public class ToolTipManager : MonoBehaviour
    public void SetAndShowToolTip(string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip)
    {
 
+      if (activated)
+      {
+         return;
+      }
       
       if (is_Spell)
       {
@@ -87,7 +93,8 @@ public class ToolTipManager : MonoBehaviour
 
       if (is_item)
       {
-         UpdateTipDisplay(ItemTip, title, message, cost, itemLvl, itemRarity, i, c, is_Spell, is_item);
+         UpdateItemTipDisplay(ItemTip, title , itemLvl, itemRarity, equip);
+
       }
       else
       {
@@ -97,12 +104,16 @@ public class ToolTipManager : MonoBehaviour
       if (!is_Spell && !is_item)
       {
          UpdateTipDisplay(MainTip, title, message, cost, itemLvl, itemRarity, i, c, is_Spell, is_item);
+
       }
       else
       {
          MainTip.gameObject.SetActive(false);
       }
-      
+
+      activated = true;
+
+      Debug.Log("hello");
 
 
    }
@@ -179,6 +190,60 @@ public class ToolTipManager : MonoBehaviour
 
       }
    }
+   private void UpdateItemTipDisplay(ToolTipDisplay current, string title, string itemLvl, int itemRarity, Equipment e)
+   {
+      //Debug.Log("hellllo");
+     
+      //make them all active
+      foreach (var sd in current.stats)
+      {
+         sd.gameObject.SetActive(true);
+      }
+      
+
+      current.gameObject.SetActive(true);
+      
+      
+      transform.position = Input.mousePosition;
+      SetRarityText(itemRarity, current);
+      gameObject.SetActive(true);
+      current.tiptitle.text = title;
+
+      if (itemRarity != -1 )
+      {
+         current.tiptitle.color = current.rarity.color;
+      }
+      
+      if (itemLvl != "")
+      {
+         current.iLvl.text = "Lvl: " + itemLvl;
+         current.iLvl.color = current.rarity.color = rarityColors[0];
+
+      }
+      
+      
+      int count = 0;
+      foreach (var kvp in e.stats)
+      {
+         if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+         {
+            current.stats[count].UpdateValues(kvp.Key, kvp.Value);
+            count += 1;
+                
+         }
+      }
+      //hide the ones that arnt being used
+      for (int i = current.stats.Length -1; i > count-1 ; i--)
+      {
+         current.stats[i].gameObject.SetActive(false);
+      }
+
+      current.slot.text = e.slot.ToString();
+      if (e.isWeapon)
+      {
+         current.slot.text = "Weapon";
+      }
+   }
 
    private void SetRarityText(int r, ToolTipDisplay current)
    {
@@ -212,10 +277,17 @@ public class ToolTipManager : MonoBehaviour
 
    public void HideToolTipAll()
    {
+      if (activated == false)
+      {
+         return;
+      }
       //Debug.Log("Hide tool tip");
       HideToolTip(MainTip);
       HideToolTip(ItemTip);
       HideToolTip(SpellTip);
+      activated = false;
+      //Debug.Log("hiiii");
+
    }
    public void HideToolTip(ToolTipDisplay current)
    {
@@ -226,6 +298,8 @@ public class ToolTipManager : MonoBehaviour
       current.tiptitle.text = string.Empty;
       current.iLvl.text = string.Empty;
       current.rarity.text = string.Empty;
+
+      
    }
    public string AdjustDescriptionValues(string message, int turns, float amount)
    {

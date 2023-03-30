@@ -12,7 +12,7 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private SelectionItem selectionItemPrefab;
 
     
-    private int selectionsLeft = 2;
+    public int selectionsLeft = 2;
     public static SelectionManager _instance;
     public Button SkipButton;
 
@@ -63,11 +63,17 @@ public class SelectionManager : MonoBehaviour
 
     public void SelectionMade(SelectionItem si)
     {
-        Destroy(si.gameObject);
+        //todo pool these
+        
+        si.DisableButtons();
         selectionsLeft -= 1;
         if (selectionsLeft <= 0)
         {
-            ClearSelections();
+            SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
+            foreach (var i in selectionItems)
+            {
+                i.DisableButtons();
+            }
         }
     }
 

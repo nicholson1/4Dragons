@@ -12,4 +12,9 @@ public class ToolTipDisplay : MonoBehaviour
     public TextMeshProUGUI iLvl;
     public TextMeshProUGUI rarity;
     public Image icon;
+
+    public StatDisplay[] stats;
+    public TextMeshProUGUI slot;
+
+    
 }
