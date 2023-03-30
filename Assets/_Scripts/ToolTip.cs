@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ImportantStuff;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
@@ -12,7 +13,14 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public string Cost;
     public string iLvl;
     public int rarity;
+    public Sprite icon;
 
+    public Color IconColor;
+    public bool is_spell = false;
+    public bool is_item = false;
+
+    public Equipment e = null;
+    
     private bool count;
     private bool count1;
 
@@ -28,7 +36,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         count = false;
         timer = .5f;
-        ToolTipManager._instance.HideToolTip();
+        ToolTipManager._instance.HideToolTipAll();
     }
     
     public void OnPointerEnter(PointerEventData pointer)
@@ -40,7 +48,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         count1 = false;
         timer = .5f;
-        ToolTipManager._instance.HideToolTip();
+        ToolTipManager._instance.HideToolTipAll();
     }
 
     private void LateUpdate()
@@ -50,7 +58,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
+                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e);
 
             }
         }
@@ -59,7 +67,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity);
+                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e);
 
 
             }
@@ -70,7 +78,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         timer = .5f;
 
-        ToolTipManager._instance.HideToolTip();
+        ToolTipManager._instance.HideToolTipAll();
 
     }
 
@@ -78,7 +86,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         timer = .5f;
 
-        ToolTipManager._instance.HideToolTip();
+        ToolTipManager._instance.HideToolTipAll();
 
     }
 }

@@ -16,10 +16,9 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     private Image background;
     [SerializeField] private Color baseColor;
 
-    public void Start()
-    {
-        LabelCheck();
-    }
+    
+    public static event Action<ErrorMessageManager.Errors> CombatMove;
+
 
     public void LabelCheck()
     {
@@ -73,6 +72,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (canBeDragged == false)
+        {
+            Debug.Log("reset");
+            //notification
+            CombatMove(ErrorMessageManager.Errors.CombatMove);
+            return;
+        }
         if (eventData.pointerDrag != null)
         {
             DragItem di = eventData.pointerDrag.GetComponent<DragItem>();
@@ -114,5 +120,29 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             LabelCheck();
         }
+    }
+
+    public bool canBeDragged = true;
+    private void StartCombat()
+    {
+        canBeDragged = false;
+        Debug.Log("can no longer drag");
+    }
+    private void EndCombat()
+    {
+        canBeDragged = true;
+    }
+    private void Start()
+    {
+        LabelCheck();
+
+        CombatController.StartCombatEvent += StartCombat;
+        CombatController.EndCombatEvent += EndCombat;
+    }
+    private void OnDestroy()
+    {
+        CombatController.StartCombatEvent -= StartCombat;
+        CombatController.EndCombatEvent -= EndCombat;
+
     }
 }

@@ -14,6 +14,8 @@ public class ErrorMessageManager : MonoBehaviour
         CombatEntity.Notification += Notification;
         Character.Notification += Notification;
         CombatController.CombatNotifications += Notification;
+        DragItem.CombatMove += Notification;
+        InventorySlot.CombatMove += Notification;
     }
 
     private void OnDestroy()
@@ -22,6 +24,9 @@ public class ErrorMessageManager : MonoBehaviour
         CombatEntity.Notification -= Notification;
         CombatController.CombatNotifications -= Notification;
         Character.Notification -= Notification;
+        DragItem.CombatMove -= Notification;
+        InventorySlot.CombatMove -= Notification;
+
 
 
 
@@ -54,6 +59,9 @@ public class ErrorMessageManager : MonoBehaviour
                 break;
             case Errors.YouHaveDied:
                 e.InitializeError("Death!", Color.black);
+                break;
+            case Errors.CombatMove:
+                e.InitializeError("You Cant Move Items During Combat", Color.white);
                 break;
 
                 
@@ -90,5 +98,6 @@ public class ErrorMessageManager : MonoBehaviour
         YourTurn,
         CriticalHit,
         CriticalHeal,
+        CombatMove,
     }
 }

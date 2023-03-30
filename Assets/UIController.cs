@@ -37,6 +37,7 @@ public class UIController : MonoBehaviour
     }
     public void ToggleInventoryUI(int force = -1)
     {
+        
         if (force == 0)
         {
             if (InventoryOn == false)

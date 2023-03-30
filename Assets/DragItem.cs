@@ -13,12 +13,16 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private InventorySlot temp;
     public Image icon;
     public Equipment.Slot slotType;
+    
+    public static event Action<ErrorMessageManager.Errors> CombatMove;
+
 
     [SerializeField] public RectTransform _rectTransform;
     [SerializeField] private Canvas canvas;
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private ToolTip _toolTip;
 
+    public bool canBeDragged = true;
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
@@ -43,6 +47,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
         _toolTip.Cost = "";
         _toolTip.Title = e.name;
+        _toolTip.e = e;
         if (!e.isWeapon)
         {
             _toolTip.Message += "Slot: " + e.slot + "\n";
@@ -71,6 +76,8 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 
             }
 
+            _toolTip.is_spell = true;
+
             _toolTip.Message = "Weapon: " + GetWeaponType(x.spellType1) + "\n" + _toolTip.Message;
         }
 
@@ -98,13 +105,22 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void OnDrag(PointerEventData eventData)
     {
         //Debug.Log("dragging");
+        
         _rectTransform.anchoredPosition += eventData.delta/ canvas.scaleFactor;
     }
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (canBeDragged == false)
+        {
+            Debug.Log("reset");
+            //notification
+            CombatMove(ErrorMessageManager.Errors.CombatMove);
+            return;
+        }
         if (eventData.pointerDrag != null)
         {
+            //Debug.Log("ji");
             DragItem di = eventData.pointerDrag.GetComponent<DragItem>();
 
             if (currentLocation.Slot != di.slotType && currentLocation.Slot != Equipment.Slot.All)
@@ -248,6 +264,27 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             }
 
         return name;
+
+    }
+
+    private void StartCombat()
+    {
+        canBeDragged = false;
+        Debug.Log("can no longer drag");
+    }
+    private void EndCombat()
+    {
+        canBeDragged = true;
+    }
+    private void Start()
+    {
+        CombatController.StartCombatEvent += StartCombat;
+        CombatController.EndCombatEvent += EndCombat;
+    }
+    private void OnDestroy()
+    {
+        CombatController.StartCombatEvent -= StartCombat;
+        CombatController.EndCombatEvent -= EndCombat;
 
     }
 }

@@ -13,13 +13,14 @@ public class SpellButton : MonoBehaviour
     public Weapon weapon;
     public Sprite SpellSprite;
     public TextMeshProUGUI SpellText;
-    List<List<object>> DataTable;
+   
     [SerializeField]private ToolTip _toolTip;
     //public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
 
     
 
     //[SerializeField] private DataReader dataReader;
+    List<List<object>> DataTable;
     public void SetDataTable(List<List<object>> WeaponScalingTable )
     {
        DataTable = WeaponScalingTable;
@@ -48,9 +49,18 @@ public class SpellButton : MonoBehaviour
         }
         //Debug.Log(t);
 
-        _toolTip.Title = DataTable[(int)spell][0].ToString();;
-        _toolTip.Message = AdjustDescriptionValues(DataTable[(int)spell][3].ToString(), power[1], power[0]);
-        _toolTip.Cost = DataTable[(int)spell][2].ToString();
+        (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValuesFromSpell(s);
+        
+        spell = s;
+        
+        //Debug.Log(toolTip);
+        _toolTip.icon =  info.Item2;
+        _toolTip.IconColor = info.Item3;
+
+        _toolTip.Message = info.Item4;
+        _toolTip.Title = DataTable[(int)s][0].ToString();;
+        _toolTip.Message = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
+        _toolTip.Cost = DataTable[(int)s][2].ToString();
         
         //iLVL
         int a;
@@ -60,19 +70,24 @@ public class SpellButton : MonoBehaviour
         int r;
         w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
         _toolTip.rarity = r;
-        
-        
+
+        _toolTip.e = w;
+
+
         //Debug.Log(SpellText.text = DataTable[(int)spell][0].ToString());
-        
-        
+
+
         // get name and scaling from the type of spell, and the table, adjust the description via..... idk
-        
-        
+
+
     }
     public string AdjustDescriptionValues(string message, int turns, float amount)
     {
+        //turns
         message = message.Replace("$", turns.ToString());
+        //amount
         message = message.Replace("@", amount.ToString());
+        //secondary amount
         message = message.Replace("#", (Mathf.RoundToInt(amount/4)*4).ToString());
         
 

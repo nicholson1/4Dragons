@@ -293,25 +293,25 @@ public class CombatEntity : MonoBehaviour
         if (dt == AbilityTypes.PhysicalAttack)
         {
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
-            //if we have thorns deal that damage back to the caster
-            int thorns = myCharacter.GetIndexOfBuff(BuffTypes.Thorns);
-            if (thorns != -1)
-            {
-                if (attacker != null && attacker != this)
-                {
-                    // do it for EACH thorn buff
-                    TriggerAllThorns(attacker);
-                    
-                }
-            }
+            
         }
         else if (dt == AbilityTypes.SpellAttack)
         {
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
 
         }
-        //Debug.Log(reductionAmount + " :reduction");
-        //Debug.Log(damagePreReduction - reductionAmount + " :damage");
+        //if we have thorns deal that damage back to the caster
+        int thorns = myCharacter.GetIndexOfBuff(BuffTypes.Thorns);
+        if (thorns != -1)
+        {
+            if (attacker != null && attacker != this)
+            {
+                // do it for EACH thorn buff
+                TriggerAllThorns(attacker);
+                    
+            }
+        }
+        
         
         int attackDamage = damagePreReduction - reductionAmount;
         

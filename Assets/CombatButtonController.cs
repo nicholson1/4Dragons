@@ -47,7 +47,7 @@ public class CombatButtonController : MonoBehaviour
         }
 
         currentEnergy = current;
-        energyText.text = current + "/" + max;
+        energyText.text = current.ToString();
         UpdateSpellButtons(c);
         // if change is > 0 flash the numbers or something
 

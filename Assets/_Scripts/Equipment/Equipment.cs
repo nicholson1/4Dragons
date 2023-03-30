@@ -108,7 +108,7 @@ namespace ImportantStuff
             Armor, // (physical)
             MagicResist, // (spell)
 
-            AttackDamage,
+            Strength,
 
             //specific types of physical damage
             Swords,
@@ -128,7 +128,7 @@ namespace ImportantStuff
 
             //additional stats
             Health,
-            CriticalStrikeChance,
+            CritChance,
             
 
 

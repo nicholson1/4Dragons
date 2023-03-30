@@ -334,13 +334,13 @@ public class TheSpellBook : MonoBehaviour
         
         // Max amount you can add is 50%
         // it will cap out at 25% tho
-        int Amount = Mathf.RoundToInt(((float)power[0]/ (power[0] +200))* 25);
-
-        if (Amount < 1)
-        {
-            Amount = 1;
-        }
-        caster.DeBuff(target, Debuff,power[1], Mathf.RoundToInt(Amount));
+        // int Amount = Mathf.RoundToInt(((float)power[0]/ (power[0] +200))* 25);
+        //
+        // if (Amount < 1)
+        // {
+        //     Amount = 1;
+        // }
+        caster.DeBuff(target, Debuff,power[1], Mathf.RoundToInt(power[0]));
 
     }
     
@@ -351,14 +351,9 @@ public class TheSpellBook : MonoBehaviour
         CombatEntity.BuffTypes buff = CombatEntity.BuffTypes.Empowered;
         
         
-        int Amount = Mathf.RoundToInt(((float)power[0]/ (power[0] +200))* 25);
+        
 
-        if (Amount < 1)
-        {
-            Amount = 1;
-        }
-
-        caster.Buff(target, buff,power[1], Mathf.RoundToInt(Amount));
+        caster.Buff(target, buff,power[1], Mathf.RoundToInt(power[0]));
 
     }
 
@@ -511,14 +506,7 @@ public class TheSpellBook : MonoBehaviour
         int turns = power[1];
         int Amount = power[0];
 
-        // Max amount you can add is 10%
-        // it will cap out at 30% tho
-        Amount = Mathf.RoundToInt(((float)Amount/ (Amount +200))* 10);
-
-        if (Amount < 1)
-        {
-            Amount = 1;
-        }
+        
 
         caster.Buff(target, CombatEntity.BuffTypes.Shatter,turns, Mathf.RoundToInt(Amount));
 
@@ -666,7 +654,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Ice2:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
-                turn = 1;
+                turn = 2;
                 break;
             case Weapon.SpellTypes.Ice3:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
@@ -688,7 +676,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Blood4:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
-                turn = 2;
+                turn = 1;
                 break;
             case Weapon.SpellTypes.Shadow1:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
@@ -717,7 +705,7 @@ public class TheSpellBook : MonoBehaviour
         }
         else
         {
-            casterStats.TryGetValue(Equipment.Stats.AttackDamage, out SPorAD);
+            casterStats.TryGetValue(Equipment.Stats.Strength, out SPorAD);
         }
 
         power += SPorAD;
@@ -784,13 +772,42 @@ public class TheSpellBook : MonoBehaviour
             power = Mathf.RoundToInt(caster.myCharacter._maxHealth * percent);
         }
 
+        
 
-    if (!caster.myCharacter.isPlayerCharacter)
+
+        if (!caster.myCharacter.isPlayerCharacter)
         {
             //Debug.Log(power);
             power =Mathf.RoundToInt(power * .5f);
             //Debug.Log(power);
 
+        }
+        
+        if (spell == Weapon.SpellTypes.Shadow2 || spell == Weapon.SpellTypes.Blood4)
+        {
+            int Amount = Mathf.RoundToInt(((float)power/ (power +200))* 25);
+
+            if (Amount < 1)
+            {
+                Amount = 1;
+            }
+
+            power = Amount;
+        }
+
+        if (spell == Weapon.SpellTypes.Ice2)
+        {
+            // Max amount you can add is 10%
+            // it will cap out at 30% tho
+            int Amount = power;
+            Amount = Mathf.RoundToInt(((float)Amount/ (Amount +200))* 10);
+
+            if (Amount < 1)
+            {
+                Amount = 1;
+            }
+
+            power = Amount;
         }
 
         //Debug.Log(power + " " + spell.ToString());
@@ -800,10 +817,15 @@ public class TheSpellBook : MonoBehaviour
     }
     public float FigureOutHowMuchCrit(CombatEntity caster)
     {
+        if (casterStats == null)
+        {
+            casterStats = caster.myCharacter.GetStats();
+
+        }
         //get base
         float critBase = 0;
         int tempValue;
-        casterStats.TryGetValue(Equipment.Stats.CriticalStrikeChance, out tempValue);
+        casterStats.TryGetValue(Equipment.Stats.CritChance, out tempValue);
         critBase += tempValue;
         
 

@@ -12,11 +12,13 @@ public class EquipmentManager : MonoBehaviour
     
     public static EquipmentManager _instance;
 
+    public TextMeshProUGUI levelText;
+
     [SerializeField] private DragItem _dragItemPrefab;
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private Transform inventoryTransform;
     //[SerializeField] private TextMeshProUGUI stats;
-    public static Action<ErrorMessageManager.Errors> InventoryNotifications;
+    public static event Action<ErrorMessageManager.Errors> InventoryNotifications;
 
     [SerializeField] private StatDisplay[] _statDisplays;
 
@@ -51,6 +53,8 @@ public class EquipmentManager : MonoBehaviour
         
             }
         }
+
+        levelText.text = "Level: " + c._level;
     }
 
     // private void UpdateStats(Character c)

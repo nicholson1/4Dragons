@@ -65,10 +65,10 @@ public class Character : MonoBehaviour
         {
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-              // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature3));
-              // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice1));
-              // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
-              // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield2));
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice4));
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow2));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice2));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood4));
         }
         else
         {
@@ -88,8 +88,8 @@ public class Character : MonoBehaviour
             _weapons.Add(EC.CreateRandomWeapon(_level, false));
             _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
             _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow2));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood4));
 
         }
         _equipment.AddRange(_weapons);
@@ -239,6 +239,7 @@ public class Character : MonoBehaviour
                 }
                 break;
             case CombatEntity.BuffTypes.Shatter:
+                UpdateStatsEvent(this);
                 if (i == -1)
                 {
                     Buffs.Add((buff,turns,amount));
@@ -386,7 +387,7 @@ public class Character : MonoBehaviour
     }
 
     private void GetHealed(Character c, int healAmount)
-    {
+    { 
         if(c != this)
             return;
 
@@ -424,19 +425,20 @@ public class Character : MonoBehaviour
 
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
-                    ToolTipManager._instance.HideToolTip();
+                    ToolTipManager._instance.HideToolTipAll();
                     SelectionManager._instance.RandomSelectionFromEquipment(this);
                     CombatController._instance.Player._level += 1;
                     CombatController._instance.Player._currentHealth += 50;
                     CombatController._instance.Player._currentEnergy = 0;
 
-                    CombatController._instance.Player.UpdateStats();
                     
                     //todo just for this test
                     CombatController._instance.Player._currentHealth = CombatController._instance.Player._maxHealth;
                     CombatController._instance.Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
                     CombatController._instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
                     
+                    CombatController._instance.Player.UpdateStats();
+
                     CombatController._instance.EndCombat();
                     Notification(ErrorMessageManager.Errors.Victory);
                     UIController._instance.ToggleInventoryUI(1);
@@ -500,6 +502,7 @@ public class Character : MonoBehaviour
         //base stats
         for (int i = 2; i < 18; i++)
         {
+            //Debug.Log((Equipment.Stats)i);
             _stats.Add((Equipment.Stats)i, 0);
         }
         

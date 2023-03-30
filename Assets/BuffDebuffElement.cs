@@ -30,6 +30,7 @@ public class BuffDebuffElement : MonoBehaviour
         toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(deBuff), turns, amount);
         toolTip.rarity = -1;
         isDebuff = true;
+        toolTip.IconColor = Color.white;
     }
 
     public void InitializeDisplay(CombatEntity.BuffTypes buff, int turns, float amount)
@@ -45,6 +46,8 @@ public class BuffDebuffElement : MonoBehaviour
         toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(buff), turns, amount);
         toolTip.rarity = -1;
         isDebuff = false;
+        toolTip.IconColor = Color.white;
+
 
 
     }
