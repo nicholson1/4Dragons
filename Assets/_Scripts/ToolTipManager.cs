@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ImportantStuff;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,7 +15,12 @@ public class ToolTipManager : MonoBehaviour
    public ToolTipDisplay MainTip;
    public ToolTipDisplay SpellTip;
    public ToolTipDisplay ItemTip;
+   public ToolTipDisplay Comparison1tip;
+   public ToolTipDisplay Comparison2tip;
 
+   public Character c;
+
+   
    public bool activated = false;
 
    // public TextMeshProUGUI tiptext;
@@ -43,9 +49,15 @@ public class ToolTipManager : MonoBehaviour
 
    private void Start()
    {
+      
       Cursor.visible = true;
       gameObject.SetActive(false);
       _rt = GetComponent<RectTransform>();
+
+      if (c == null)
+      {
+         c = CombatController._instance.Player;
+      }
    }
 
    private void Update()
@@ -81,6 +93,9 @@ public class ToolTipManager : MonoBehaviour
          return;
       }
       
+      Comparison1tip.gameObject.SetActive(false);
+      Comparison2tip.gameObject.SetActive(false);
+      
       if (is_Spell)
       {
         UpdateSpellTip(SpellTip, equip);
@@ -94,6 +109,8 @@ public class ToolTipManager : MonoBehaviour
       if (is_item)
       {
          UpdateItemTipDisplay(ItemTip, title , itemLvl, itemRarity, equip);
+         UpdateComparisonTip(equip);
+
 
       }
       else
@@ -118,7 +135,160 @@ public class ToolTipManager : MonoBehaviour
 
    }
 
-   //todo MAYBE WE CANT DO THIS ALL AT ONCE OR IF WE DO WE PASS IN A SPELL OR WEAPON, AND THEN FIGURE OUT DATA ON THIS, I THINK THAT WOULD WORK
+   private void UpdateComparisonTip( Equipment newItem)
+   {
+      if (c == null)
+      {
+         c = CombatController._instance.Player;
+      }
+      
+      Comparison1tip.gameObject.SetActive(false);
+      Comparison2tip.gameObject.SetActive(false);
+
+      if (c._equipment.Contains(newItem))
+      {
+         return;
+      }
+      
+      Equipment oldItem1 = null;
+      Equipment oldItem2 = null;
+      // get old item or items
+      if (newItem.isWeapon)
+      {
+         if (newItem.slot == Equipment.Slot.Scroll)
+         {
+            
+            return;
+         }
+         else
+         {
+            // need to get both
+            if (c._weapons.Count == 0)
+            {
+               
+               return;
+            }else if (c._weapons.Count == 1)
+            {
+               oldItem1 = c._weapons[0];
+            }
+            else
+            {
+               oldItem1 = c._weapons[0];
+               oldItem2 = c._weapons[1];
+
+            }
+         }
+      }
+      else
+      {
+         // check if we have something equipped
+         
+         foreach (var eq in c._equipment)
+         {
+            if (eq.slot == newItem.slot)
+            {
+               oldItem1 = eq;
+            }
+         }
+      }
+      //if nothign equipped in that slot stop
+      if (oldItem1 == null)
+      {
+         
+         return;
+      }
+         
+      //make a list of gained stats, make a list of lossed stats
+      if (oldItem1 != null)
+      {
+         UpdateGetGainsAndLosses(Comparison1tip, newItem, oldItem1);
+         Comparison1tip.gameObject.SetActive(true);
+
+      }
+      if (oldItem2 != null)
+      {
+         UpdateGetGainsAndLosses(Comparison2tip, newItem, oldItem2);
+         Comparison2tip.gameObject.SetActive(true);
+
+      }
+   }
+
+   private void UpdateGetGainsAndLosses(ToolTipDisplay current, Equipment newItem,
+      Equipment oldItem)
+   {
+      Dictionary<Equipment.Stats, int> Gains = new Dictionary<Equipment.Stats, int>();
+      Gains.AddRange(newItem.stats);
+      Dictionary<Equipment.Stats, int> Losses = new Dictionary<Equipment.Stats, int>();
+
+      foreach (var kvp in oldItem.stats)
+      {
+         if (!Gains.ContainsKey(kvp.Key))
+         {
+            Losses.Add(kvp.Key, -kvp.Value);
+         }
+         else
+         {
+            Gains[kvp.Key] -= kvp.Value;
+
+            if (Gains[kvp.Key] == 0)
+            {
+               Gains.Remove(kvp.Key);
+            }else if (Gains[kvp.Key] < 0)
+            {
+               Losses.Add(kvp.Key, Gains[kvp.Key]);
+               Gains.Remove(kvp.Key);
+            }
+         }
+      }
+      
+      foreach (var sd in current.stats)
+      {
+         sd.gameObject.SetActive(true);
+      }
+      foreach (var sd in current.lossesStats)
+      {
+         sd.gameObject.SetActive(true);
+      }
+
+      //current.gameObject.SetActive(true);
+      
+      
+      transform.position = Input.mousePosition;
+      gameObject.SetActive(true);
+      
+      int count = 0;
+      foreach (var kvp in Gains)
+      {
+         if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+         {
+            current.stats[count].UpdateValues(kvp.Key, kvp.Value, 1);
+            count += 1;
+                
+         }
+      }
+      //hide the ones that arnt being used
+      for (int i = current.stats.Length -1; i > count-1 ; i--)
+      {
+         current.stats[i].gameObject.SetActive(false);
+      }
+      
+      int count2 = 0;
+      foreach (var kvp in Losses)
+      {
+         if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+         {
+            current.lossesStats[count2].UpdateValues(kvp.Key, kvp.Value, -1);
+            count2 += 1;
+                
+         }
+      }
+      //hide the ones that arnt being used
+      for (int i = current.lossesStats.Length -1; i > count2-1 ; i--)
+      {
+         current.lossesStats[i].gameObject.SetActive(false);
+      }
+   }
+   
    private void UpdateSpellTip(ToolTipDisplay current, Equipment e)
    {
       SpellTip.gameObject.SetActive(true);

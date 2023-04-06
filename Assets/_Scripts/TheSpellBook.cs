@@ -138,7 +138,7 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Sword2:
                     BasicAOEAttack(spell, w, caster, target);
-                    ReduceAllDebuffs(caster);
+                    ReduceAllDebuffs(caster,2);
                     break;
                 case Weapon.SpellTypes.Axe1:
                     BasicPhysicalAttack(spell, w, caster, target);
@@ -204,7 +204,7 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Blood3:
                     BasicNonDamageBuff(spell, w, caster, caster);
-                    ReduceAllDebuffs(caster);
+                    ReduceAllDebuffs(caster, 1);
                     BasicDirectDamage(spell, w, caster, caster);
                     break;
                 case Weapon.SpellTypes.Blood4:
@@ -512,14 +512,15 @@ public class TheSpellBook : MonoBehaviour
 
     }
 
-    public void ReduceAllDebuffs(CombatEntity target)
+    public void ReduceAllDebuffs(CombatEntity target, int amount)
     {
-        target.ReduceAllDebuffTurnCount();
+        target.ReduceAllDebuffTurnCount(amount);
     }
     
-    public void ReduceAllBuffs(CombatEntity target)
+    
+    public void ReduceAllBuffs(CombatEntity target, int amount)
     {
-        target.ReduceAllBuffTurnCount();
+        target.ReduceAllBuffTurnCount(amount);
     }
 
     public void RemoveBlock(CombatEntity target)
@@ -699,7 +700,14 @@ public class TheSpellBook : MonoBehaviour
 
         }
 
-        power += Mathf.RoundToInt(p * (float)scaling[2]);
+        int cost = int.Parse(WeaponScalingTable[(int)spell][2].ToString());
+
+        if (cost == 0)
+        {
+            cost = 1;
+        }
+        power += cost * Mathf.RoundToInt(p * (float)scaling[2]);
+        
 
         //todo check for buffs/debuffs
         int SPorAD;
@@ -712,7 +720,7 @@ public class TheSpellBook : MonoBehaviour
             casterStats.TryGetValue(Equipment.Stats.Strength, out SPorAD);
         }
 
-        power += SPorAD;
+        power += SPorAD * cost;
 
         //scale down Damage for Non-Epic Items
         //    -40% : common

@@ -13,7 +13,9 @@ public class ToolTipDisplay : MonoBehaviour
     public TextMeshProUGUI rarity;
     public Image icon;
 
-    public StatDisplay[] stats;
+    public StatDisplay[] stats; 
+    public StatDisplay[] lossesStats;
+
     public TextMeshProUGUI slot;
 
     

@@ -29,7 +29,7 @@ public class StatDisplay : MonoBehaviour
         // }
     }
 
-    public void UpdateValues(Equipment.Stats s, int v)
+    public void UpdateValues(Equipment.Stats s, int v, int LossOrGain = 0)
     {
         if (player == null)
         {
@@ -40,7 +40,15 @@ public class StatDisplay : MonoBehaviour
 
         icon.sprite = info.Item2;
         icon.color = info.Item3;
-        text.text = info.Item1 + ": " + v;
+        if (LossOrGain == 1)
+        {
+            text.text = info.Item1 + ": +" + v;
+
+        }
+        else
+        {
+            text.text = info.Item1 + ": " + v;
+        }
         text.color = info.Item3;
         stat = s;
         if (s == Equipment.Stats.CritChance && charStats)
@@ -61,6 +69,12 @@ public class StatDisplay : MonoBehaviour
         toolTip.Title = stat.ToString();
         toolTip.icon = icon.sprite;
         toolTip.IconColor = icon.color;
+
+        if (LossOrGain == -1)
+        {
+            text.color -= new Color(0, 0, 0, .3f);
+            icon.color -= new Color(0, 0, 0, .3f);
+        }
 
         toolTip.Message = AdjustDescriptionValues(info.Item4, s);
         

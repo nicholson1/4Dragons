@@ -90,11 +90,11 @@ public class CombatEntity : MonoBehaviour
 
     }
 
-    public void ReduceAllDebuffTurnCount()
+    public void ReduceAllDebuffTurnCount(int amount)
     {
         for (int i = myCharacter.DeBuffs.Count - 1; i >= 0; i--)
         {
-            myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - 1, myCharacter.DeBuffs[i].Item3);
+            myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - amount, myCharacter.DeBuffs[i].Item3);
 
             if (myCharacter.DeBuffs[i].Item2 <= 0)
             {
@@ -106,14 +106,14 @@ public class CombatEntity : MonoBehaviour
         }
         ReduceDebuffCount(myCharacter);
     }
-    public void ReduceAllBuffTurnCount()
+    public void ReduceAllBuffTurnCount(int amount)
     {
         
         for (int i = myCharacter.Buffs.Count - 1; i >= 0; i--)
         {
             if (myCharacter.Buffs[i].Item1 != BuffTypes.Block)
             {
-                myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - 1, myCharacter.Buffs[i].Item3);
+                myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - amount, myCharacter.Buffs[i].Item3);
 
                 if (myCharacter.Buffs[i].Item2 <= 0)
                 {
@@ -704,6 +704,7 @@ public class CombatEntity : MonoBehaviour
         Empowered,
         Shatter,
         Immortal,
+        Preperation,
         None,
         
     }
