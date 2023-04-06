@@ -40,11 +40,11 @@ public class EquipmentCreator : MonoBehaviour
     {
         // we will return the rarity of the item, this will be random based on the the rarity spawn rate for that level
         //some rough example
-        if (level == 1)
+        if (level <= 3)
         {
             return 0;
         }
-        // lvl 5 : 80 , 20 , 0  , 0
+        // lvl 5 : 70 , 30 , 0  , 0
         // lvl 10: 50 , 40 , 10 , 0
         //lvl 15:  15 , 60 , 20 , 5
         //lvl 20:   0 , 60 , 30 , 10
@@ -69,7 +69,7 @@ public class EquipmentCreator : MonoBehaviour
             rare += 100 - (rare + epic);
         }
 
-        int uncommon = (4 * level);
+        int uncommon = (6 * level);
         //check if we are over 100
         if (100 - (rare + epic + uncommon) < 0)
         {
@@ -1281,7 +1281,7 @@ public class EquipmentCreator : MonoBehaviour
         "Ledger",
         "Grimoire",
         "Codex",
-        "Manuel",
+        "Manual",
         
         
     };

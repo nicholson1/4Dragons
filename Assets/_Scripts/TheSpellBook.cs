@@ -821,11 +821,10 @@ public class TheSpellBook : MonoBehaviour
     }
     public float FigureOutHowMuchCrit(CombatEntity caster)
     {
-        if (casterStats == null)
-        {
-            casterStats = caster.myCharacter.GetStats();
+        
+        casterStats = caster.myCharacter.GetStats();
 
-        }
+        
         //get base
         float critBase = 0;
         int tempValue;

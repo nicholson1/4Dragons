@@ -146,9 +146,8 @@ public class ToolTipManager : MonoBehaviour
       current.tiptitle.color = info.Item3;
       current.tiptext.text = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
       current.spellCost.text = DataTable[(int)s][2].ToString();
-
       current.iLvl.text = "Lvl: " +e.stats[Equipment.Stats.ItemLevel].ToString();
-      current.iLvl.color = rarityColors[e.stats[Equipment.Stats.ItemLevel] - 1];
+      current.iLvl.color = rarityColors[e.stats[Equipment.Stats.Rarity]];
       gameObject.SetActive(true);
 
 
@@ -244,7 +243,17 @@ public class ToolTipManager : MonoBehaviour
       current.slot.text = e.slot.ToString();
       if (e.isWeapon)
       {
-         current.slot.text = "Weapon";
+         if (e.slot == Equipment.Slot.Scroll)
+         {
+            current.slot.text = "Scroll";
+
+         }
+         else
+         {
+            current.slot.text = "Weapon";
+
+         }
+
       }
    }
 

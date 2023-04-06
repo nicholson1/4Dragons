@@ -45,21 +45,17 @@ public class StatDisplay : MonoBehaviour
         stat = s;
         if (s == Equipment.Stats.CritChance && charStats)
         {
+            //Debug.Log();
             
-            if (player.GetComponent<CombatEntity>() != null)
-            {
-                float crit = TheSpellBook._instance.FigureOutHowMuchCrit(
-                    player);
-                v = Mathf.RoundToInt(crit * 100);
-                text.text = info.Item1 + ": " + v + "%";
-            }
-            else
-            {
-                Debug.Log("combat entity busted");
-            }
+            float crit = TheSpellBook._instance.FigureOutHowMuchCrit(
+                player);
+            v = Mathf.RoundToInt(crit * 100);
+            text.text = info.Item1 + ": " + v + "%";
+            //Debug.Log("update crit: " + text.text + " :" +v);
             
             
-
+            
+        
         }
         //Debug.Log(toolTip);
         toolTip.Title = stat.ToString();

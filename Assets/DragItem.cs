@@ -152,7 +152,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 if (slotType != Equipment.Slot.All || currentLocation.Slot != Equipment.Slot.All)
                 {
                     // it is in out equipment
-                    Debug.Log( di.e.name+ " => removing " + e.name);
+                    //Debug.Log( di.e.name+ " => removing " + e.name);
                     EquipmentManager._instance.EquipFromInventory(di.e);
                     if (this.currentLocation.Slot == Equipment.Slot.All)
                     {
@@ -160,7 +160,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                     }
                     
                 }
-                EquipmentManager._instance.c.UpdateStats();
+                //EquipmentManager._instance.c.UpdateStats();
 
 
             }

@@ -39,15 +39,22 @@ public class SelectionItem : MonoBehaviour
         _toolTip.is_spell = false;
         item = e;
         title.text = e.name;
-        if (e.slot != Equipment.Slot.OneHander)
+        if (e.slot == Equipment.Slot.OneHander)
         {
-            slot.text = e.slot.ToString();
+            slot.text = "Weapon"; //+GetWeaponType(x.spellType1);
+            _toolTip.is_spell = true;
+        }
+        else if (e.slot == Equipment.Slot.Scroll )
+        {
+            slot.text = "Scroll"; //+GetWeaponType(x.spellType1);
+            _toolTip.is_spell = true;
+            //_toolTip.is_item = false;
         }
         else
         {
-            Weapon x = (Weapon)e;
-            slot.text = "Weapon"; //+GetWeaponType(x.spellType1);
-            _toolTip.is_spell = true;
+            //Weapon x = (Weapon)e;
+            slot.text = e.slot.ToString();
+
 
         }
         SetRarityText(e.stats[Equipment.Stats.Rarity], e);

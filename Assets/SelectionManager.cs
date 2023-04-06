@@ -45,6 +45,12 @@ public class SelectionManager : MonoBehaviour
         SkipButton.gameObject.SetActive(true);
         // get 4 random ints 0-c.equip.count
         List<int> index = new List<int>();
+        // force a spell or weapon that has not been selected
+        int forcedWep = Random.Range(c._equipment.Count - 4, c._equipment.Count);
+
+        index.Add(forcedWep);
+        
+        // fill the rest with 3 random
         while (index.Count < 4)
         {
             int temp = Random.Range(0, c._equipment.Count);
@@ -53,6 +59,8 @@ public class SelectionManager : MonoBehaviour
                 index.Add(temp);
             }
         }
+        
+        
         foreach (var i in index)
         {
             SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
@@ -118,6 +126,8 @@ public class SelectionManager : MonoBehaviour
     
     public void RandomSelectionBegging()
     {
+        //get level from character
+        int level = CombatController._instance.Player._level;
         if (!startingSelections)
         {
             return;
@@ -132,10 +142,10 @@ public class SelectionManager : MonoBehaviour
             selectionText.text = "Selection (1/4)";
             inventoryButton.gameObject.SetActive(true);
             BeginAdventureButton.SetActive(false);
-            equipments.Add(EC.CreateRandomWeaponWithSpell(1, Weapon.SpellTypes.Shield2));
-            equipments.Add(EC.CreateRandomWeapon(1, false));
-            equipments.Add(EC.CreateRandomWeapon(1, false));
-            equipments.Add(EC.CreateRandomWeapon(1, false));
+            equipments.Add(EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
+            equipments.Add(EC.CreateRandomWeapon(level, false));
+            equipments.Add(EC.CreateRandomWeapon(level, false));
+            equipments.Add(EC.CreateRandomWeapon(level, false));
 
         }
 
@@ -143,10 +153,10 @@ public class SelectionManager : MonoBehaviour
         {
             // present 4 spells
             selectionText.text = "Selection (2/4)";
-            equipments.Add(EC.CreateRandomSpellScroll(1));
-            equipments.Add(EC.CreateRandomSpellScroll(1));
-            equipments.Add(EC.CreateRandomSpellScroll(1));
-            equipments.Add(EC.CreateRandomSpellScroll(1));
+            equipments.Add(EC.CreateRandomSpellScroll(level));
+            equipments.Add(EC.CreateRandomSpellScroll(level));
+            equipments.Add(EC.CreateRandomSpellScroll(level));
+            equipments.Add(EC.CreateRandomSpellScroll(level));
 
             
         }
@@ -154,10 +164,10 @@ public class SelectionManager : MonoBehaviour
         {
             //head, shoulder, chest, random
             selectionText.text = "Selection (3/4)";
-            equipments.Add(EC.CreateArmor(1, Equipment.Slot.Head));
-            equipments.Add(EC.CreateArmor(1, Equipment.Slot.Shoulders));
-            equipments.Add(EC.CreateArmor(1, Equipment.Slot.Chest));
-            equipments.Add(EC.CreateArmor(1, (Equipment.Slot)Random.Range(0,6)));
+            equipments.Add(EC.CreateArmor(level, Equipment.Slot.Head));
+            equipments.Add(EC.CreateArmor(level, Equipment.Slot.Shoulders));
+            equipments.Add(EC.CreateArmor(level, Equipment.Slot.Chest));
+            equipments.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0,6)));
 
 
         }
@@ -165,10 +175,10 @@ public class SelectionManager : MonoBehaviour
         {
             //gloves, legs, boots, random
             selectionText.text = "Selection (4/4)";
-            equipments.Add(EC.CreateArmor(1, Equipment.Slot.Gloves));
-            equipments.Add(EC.CreateArmor(1, Equipment.Slot.Legs));
-            equipments.Add(EC.CreateArmor(1, Equipment.Slot.Boots));
-            equipments.Add(EC.CreateArmor(1, (Equipment.Slot)Random.Range(0,6)));
+            equipments.Add(EC.CreateArmor(level, Equipment.Slot.Gloves));
+            equipments.Add(EC.CreateArmor(level, Equipment.Slot.Legs));
+            equipments.Add(EC.CreateArmor(level, Equipment.Slot.Boots));
+            equipments.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0,6)));
         }
         
         //SkipButton.gameObject.SetActive(true);

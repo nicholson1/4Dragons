@@ -71,7 +71,6 @@ public class CombatEntity : MonoBehaviour
             
             TheSpellBook._instance.DoDebuffEffect( myCharacter.DeBuffs[i], this);
             myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - 1, myCharacter.DeBuffs[i].Item3);
-            yield return new WaitForSeconds(1);
 
             if (myCharacter.DeBuffs[i].Item2 <= 0)
             {
@@ -80,6 +79,8 @@ public class CombatEntity : MonoBehaviour
                 myCharacter.DeBuffs.RemoveAt(i);
                 
             }
+            yield return new WaitForSeconds(1);
+
             
         }
         ReduceDebuffCount(myCharacter);
