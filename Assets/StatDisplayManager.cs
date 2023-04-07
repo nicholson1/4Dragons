@@ -49,10 +49,16 @@ public class StatDisplayManager : MonoBehaviour
             case Weapon.SpellTypes.Dagger2:
                 i = 7;
                 break;
+            case Weapon.SpellTypes.Dagger3:
+                i = 7;
+                break;
             case Weapon.SpellTypes.Shield1:
                 i = 8;
                 break;
             case Weapon.SpellTypes.Shield2:
+                i = 8;
+                break;
+            case Weapon.SpellTypes.Shield3:
                 i = 8;
                 break;
             case Weapon.SpellTypes.Sword1:
@@ -61,16 +67,25 @@ public class StatDisplayManager : MonoBehaviour
             case Weapon.SpellTypes.Sword2:
                 i = 5;
                 break;
+            case Weapon.SpellTypes.Sword3:
+                i = 5;
+                break;
             case Weapon.SpellTypes.Axe1:
                 i = 6;
                 break;
             case Weapon.SpellTypes.Axe2:
                 i = 6;
                 break;
+            case Weapon.SpellTypes.Axe3:
+                i = 6;
+                break;
             case Weapon.SpellTypes.Hammer1:
                 i = 9;
                 break;
             case Weapon.SpellTypes.Hammer2:
+                i = 9;
+                break;
+            case Weapon.SpellTypes.Hammer3:
                 i = 9;
                 break;
             case Weapon.SpellTypes.Nature1:

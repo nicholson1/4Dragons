@@ -34,7 +34,7 @@ public class CombatEntity : MonoBehaviour
 
 
     public static event Action<Character> ReduceDebuffCount;
-    public static event Action<Character> ReduceBuffCount;
+    public static event Action<Character, bool> ReduceBuffCount;
 
     public static event Action<ErrorMessageManager.Errors> Notification;
     
@@ -111,7 +111,7 @@ public class CombatEntity : MonoBehaviour
         
         for (int i = myCharacter.Buffs.Count - 1; i >= 0; i--)
         {
-            if (myCharacter.Buffs[i].Item1 != BuffTypes.Block && myCharacter.Buffs[i].Item1 != BuffTypes.Prepared)
+            if (myCharacter.Buffs[i].Item1 != BuffTypes.Block)
             {
                 myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - amount, myCharacter.Buffs[i].Item3);
 
@@ -125,7 +125,7 @@ public class CombatEntity : MonoBehaviour
             }
             
         }
-        ReduceBuffCount(myCharacter);
+        ReduceBuffCount(myCharacter, true);
         
     }
     private IEnumerator TriggerBuffs()
@@ -150,7 +150,7 @@ public class CombatEntity : MonoBehaviour
             }
             
         }
-        ReduceBuffCount(myCharacter);
+        ReduceBuffCount(myCharacter, false);
 
     }
 
@@ -397,6 +397,10 @@ public class CombatEntity : MonoBehaviour
         {
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
+        if (lastSpellCastTargeted == Weapon.SpellTypes.Sword3)
+        {
+            attacker.Buff(attacker, CombatEntity.BuffTypes.Block, 1, Mathf.RoundToInt(attackDamage/(float)2));
+        }
 
 
         GetHitWithAttack(myCharacter, dt, attackDamage, reductionAmount);
@@ -572,6 +576,7 @@ public class CombatEntity : MonoBehaviour
     {
         // use spell book to determine targets, effect, and quantity
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
+        Debug.Log(spell);
         myCharacter._am.SetTrigger("attack");
     }
     

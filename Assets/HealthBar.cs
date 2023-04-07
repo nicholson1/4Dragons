@@ -122,7 +122,7 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    private void ReduceBuffCount(Character c)
+    private void ReduceBuffCount(Character c, bool includePrep)
     {
         if (c != displayCharacter)
             return;
@@ -130,10 +130,16 @@ public class HealthBar : MonoBehaviour
         for (int i = buffDebuffLayoutGroup.childCount - 1; i >= 0; i--)
         {
             BuffDebuffElement buff = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+            
+            
 
             if (!buff.isDebuff)
             {
-                if (buff._buff == CombatEntity.BuffTypes.Prepared)
+                if (buff._buff == CombatEntity.BuffTypes.Block)
+                {
+                    continue;
+                }
+                if (buff._buff == CombatEntity.BuffTypes.Prepared && !includePrep)
                 {
                     continue;
                 }
@@ -155,6 +161,8 @@ public class HealthBar : MonoBehaviour
 
                 st.transform.localPosition += new Vector3(0, 350, 0);
                 st.InitializeStatusText(-1, -1, buff._buff, this);
+                
+
 
             }
         }

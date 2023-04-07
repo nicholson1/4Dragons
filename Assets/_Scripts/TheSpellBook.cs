@@ -125,13 +125,21 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Dagger2:
                     BasicPhysicalAttack(spell, w, caster, target);
-                    BasicNonDamageDebuff(spell, w, caster, target);
+                    WeakenTarget(spell, w, caster, target);
+                    break;
+                case Weapon.SpellTypes.Dagger3:
+                    BasicPhysicalAttack(spell, w, caster, target);
+                    WeakenTarget(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Shield1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Shield2:
                     BasicBlock(spell, w, caster, caster);
+                    break;
+                case Weapon.SpellTypes.Shield3:
+                    BasicBlock(spell, w, caster, caster);
+                    BasicNonDamageBuff(spell, w, caster, caster);
                     break;
                 case Weapon.SpellTypes.Sword1:
                     BasicPhysicalAttack(spell, w, caster, target);
@@ -140,6 +148,10 @@ public class TheSpellBook : MonoBehaviour
                     BasicAOEAttack(spell, w, caster, target);
                     ReduceAllDebuffs(caster,2);
                     break;
+                case Weapon.SpellTypes.Sword3:
+                    BasicAOEAttack(spell, w, caster, target);
+                    // add block later
+                    break;
                 case Weapon.SpellTypes.Axe1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
@@ -147,12 +159,20 @@ public class TheSpellBook : MonoBehaviour
                     BasicPhysicalAttack(spell, w, caster, target);
                     BasicDoT(spell, w, caster, target);
                     break;
+                case Weapon.SpellTypes.Axe3:
+                    BasicPhysicalAttack(spell, w, caster, target);
+                    ReduceAllBuffs(target, 1);
+                    break;
                 case Weapon.SpellTypes.Hammer1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Hammer2:
                     BasicPhysicalAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
+                    break;
+                case Weapon.SpellTypes.Hammer3:
+                    BasicPhysicalAttack(spell, w, caster, target);
+                    EmpowerTarget(spell, w, caster, caster);
                     break;
                 case Weapon.SpellTypes.Nature1:
                     BasicHeal(spell, w, caster, caster);
@@ -330,6 +350,9 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Fire5:
                 buff = CombatEntity.BuffTypes.Prepared;
                 break;
+            case Weapon.SpellTypes.Shield3:
+                buff = CombatEntity.BuffTypes.Prepared;
+                break;
             case Weapon.SpellTypes.Blood3:
                 buff = CombatEntity.BuffTypes.Invulnerable;
                 break;
@@ -369,6 +392,13 @@ public class TheSpellBook : MonoBehaviour
         List<int> power = GetPowerValues(spell, w, caster);
 
         CombatEntity.DeBuffTypes Debuff = CombatEntity.DeBuffTypes.Weakened;
+
+        if (spell == Weapon.SpellTypes.Dagger3)
+        {
+            caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[0]));
+            return;
+
+        }
         
         // Max amount you can add is 50%
         // it will cap out at 25% tho
@@ -388,7 +418,12 @@ public class TheSpellBook : MonoBehaviour
 
         CombatEntity.BuffTypes buff = CombatEntity.BuffTypes.Empowered;
         
-        
+        if (spell == Weapon.SpellTypes.Hammer3)
+        {
+            caster.Buff(target, buff,2, Mathf.RoundToInt(power[0]));
+            return;
+
+        }
         
 
         caster.Buff(target, buff,power[1], Mathf.RoundToInt(power[0]));
@@ -457,15 +492,19 @@ public class TheSpellBook : MonoBehaviour
 
     public void BasicPhysicalAttack(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
+        List<int> power = GetPowerValues(spell, w, caster);
 
-        int power = GetPowerValues(spell, w, caster)[0];
+        if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        {
+            power[0] = power[1];
+        }
         
         CombatEntity.AbilityTypes abilityType = CombatEntity.AbilityTypes.PhysicalAttack;
 
         float crit = FigureOutHowMuchCrit(caster);
 
         target.lastSpellCastTargeted = spell;
-        caster.AttackBasic(target, abilityType, power, crit);
+        caster.AttackBasic(target, abilityType, power[0], crit);
         
         //Debug.Log(Mathf.RoundToInt(Damage) + " - initial physical");
         //Debug.Log(AD + " ad initial");
@@ -628,11 +667,20 @@ public class TheSpellBook : MonoBehaviour
                 turn = 1;
                 useSP = false;
                 break;
+            case Weapon.SpellTypes.Dagger3:
+                casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
+                useSP = false;
+                break;
             case Weapon.SpellTypes.Shield1:
                 casterStats.TryGetValue(Equipment.Stats.Shields, out p);
                 useSP = false;
                 break;
             case Weapon.SpellTypes.Shield2:
+                casterStats.TryGetValue(Equipment.Stats.Shields, out p);
+                turn = 1;
+                useSP = false;
+                break;
+            case Weapon.SpellTypes.Shield3:
                 casterStats.TryGetValue(Equipment.Stats.Shields, out p);
                 turn = 1;
                 useSP = false;
@@ -645,6 +693,10 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Equipment.Stats.Swords, out p);
                 useSP = false;
                 break;
+            case Weapon.SpellTypes.Sword3:
+                casterStats.TryGetValue(Equipment.Stats.Swords, out p);
+                useSP = false;
+                break;
             case Weapon.SpellTypes.Axe1:
                 casterStats.TryGetValue(Equipment.Stats.Axes, out p);
                 useSP = false;
@@ -654,6 +706,10 @@ public class TheSpellBook : MonoBehaviour
                 turn = 4;
                 useSP = false;
                 break;
+            case Weapon.SpellTypes.Axe3:
+                casterStats.TryGetValue(Equipment.Stats.Axes, out p);
+                useSP = false;
+                break;
             case Weapon.SpellTypes.Hammer1:
                 casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
                 useSP = false;
@@ -661,6 +717,10 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Hammer2:
                 casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
                 turn = 2;
+                useSP = false;
+                break;
+            case Weapon.SpellTypes.Hammer3:
+                casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
                 useSP = false;
                 break;
             case Weapon.SpellTypes.Nature1:
@@ -805,6 +865,11 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
 
+        if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        {
+            turn = power;
+        }
+
         if (spell == Weapon.SpellTypes.Blood3 || spell == Weapon.SpellTypes.Shadow1 || spell == Weapon.SpellTypes.Shadow5)
         {
             float MaxPercentHealth = 0;
@@ -857,7 +922,7 @@ public class TheSpellBook : MonoBehaviour
 
         }
         
-        if (spell == Weapon.SpellTypes.Shadow2 || spell == Weapon.SpellTypes.Blood4 || spell == Weapon.SpellTypes.Fire5)
+        if (spell == Weapon.SpellTypes.Shadow2 || spell == Weapon.SpellTypes.Blood4 || spell == Weapon.SpellTypes.Fire5 || spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
         {
             int Amount = Mathf.RoundToInt(((float)power/ (power +200))* 25);
 

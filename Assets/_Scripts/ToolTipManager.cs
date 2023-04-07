@@ -62,6 +62,7 @@ public class ToolTipManager : MonoBehaviour
 
    private void Update()
    {
+      // scale based on reference resolution
       
       //Debug.Log((Screen.height - Input.mousePosition.y) + " Y");
       //Debug.Log((Screen.width - Input.mousePosition.x) + " X");

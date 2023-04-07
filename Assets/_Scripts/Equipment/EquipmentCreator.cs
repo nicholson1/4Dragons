@@ -250,7 +250,7 @@ public class EquipmentCreator : MonoBehaviour
         else
         {
             //0 - 10
-            spellIndex = Random.Range(0, 35);
+            spellIndex = Random.Range(0, 40);
 
         }
         return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
@@ -277,7 +277,7 @@ public class EquipmentCreator : MonoBehaviour
     {
         int rarity = GetRarity(level);
         int spellIndex;
-        spellIndex = Random.Range(10, 29);
+        spellIndex = Random.Range(15, 29);
         return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
         //return CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2);
 
@@ -668,6 +668,17 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = daggerSprites[Random.Range(0, daggerSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Dagger3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + DaggerSlot[Random.Range(0, DaggerSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += DaggerSlot[Random.Range(0, DaggerSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = daggerSprites[Random.Range(0, daggerSprites.Length)];
+                    break;
                 case Weapon.SpellTypes.Shield1:
                     if (wepBefore)
                     {
@@ -680,6 +691,17 @@ public class EquipmentCreator : MonoBehaviour
                     icon = shieldSprites[Random.Range(0, shieldSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Shield2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + ShieldSlot[Random.Range(0, ShieldSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += ShieldSlot[Random.Range(0, ShieldSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = shieldSprites[Random.Range(0, shieldSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Shield3:
                     if (wepBefore)
                     {
                         name = SpellNameAddition(spell, true)  + ShieldSlot[Random.Range(0, ShieldSlot.Count)] + name;
@@ -712,6 +734,17 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = swordSprites[Random.Range(0, swordSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Sword3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + SwordSlot[Random.Range(0, SwordSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += SwordSlot[Random.Range(0, SwordSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = swordSprites[Random.Range(0, swordSprites.Length)];
+                    break;
                 case Weapon.SpellTypes.Axe1:
                     if (wepBefore)
                     {
@@ -734,6 +767,17 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = axeSprites[Random.Range(0, axeSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Axe3:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + AxeSlot[Random.Range(0, AxeSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += AxeSlot[Random.Range(0, AxeSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = axeSprites[Random.Range(0, axeSprites.Length)];
+                    break;
                 case Weapon.SpellTypes.Hammer1:
                     if (wepBefore)
                     {
@@ -746,6 +790,17 @@ public class EquipmentCreator : MonoBehaviour
                     icon = hammerSprites[Random.Range(0, hammerSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Hammer2:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + HammerSlot[Random.Range(0, HammerSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += HammerSlot[Random.Range(0, HammerSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = hammerSprites[Random.Range(0, hammerSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Hammer3:
                     if (wepBefore)
                     {
                         name = SpellNameAddition(spell, true)  + HammerSlot[Random.Range(0, HammerSlot.Count)] + name;
