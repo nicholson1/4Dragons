@@ -37,6 +37,8 @@ public class Character : MonoBehaviour
     [SerializeField] public CombatEntity _combatEntity;
 
     public static event Action<Character,int, int> UpdateBlock; 
+    public static event Action<Character> UsePrep; 
+
     public static event Action<Character,int, int, int> UpdateEnergy; 
     public static event Action<Character> UpdateStatsEvent;
     public static event Action<ErrorMessageManager.Errors> Notification;
@@ -65,10 +67,10 @@ public class Character : MonoBehaviour
         {
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice4));
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow2));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice2));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood4));
+            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice5));
+            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow5));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire5));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood5));
         }
         else
         {
@@ -78,20 +80,20 @@ public class Character : MonoBehaviour
 
             if (_level <= 5)
             {
-                _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                //_weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
             }
             else
             {
                 _weapons.Add(EC.CreateRandomWeapon(_level, false));
 
             }
-            _weapons.Add(EC.CreateRandomWeapon(_level, false));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow1));
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Blood3));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shadow1));
-           // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood3));
+            //_weapons.Add(EC.CreateRandomWeapon(_level, false));
+            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
+            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature1));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood3));
 
         }
         _equipment.AddRange(_weapons);
@@ -174,6 +176,13 @@ public class Character : MonoBehaviour
         UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
     }
 
+    public void UsePrepStack()
+    {
+        Debug.Log("use prep");
+        UsePrep(this);
+    }
+    
+
 
     private void OnDestroy()
     {
@@ -231,6 +240,16 @@ public class Character : MonoBehaviour
                 }
                 break;
             case CombatEntity.BuffTypes.Invulnerable:
+                if (i == -1)
+                {
+                    Buffs.Add((buff,turns,amount));
+                }
+                else
+                {
+                    Buffs[i] = (buff,turns + Buffs[i].Item2, amount);
+                }
+                break;
+            case CombatEntity.BuffTypes.Prepared:
                 if (i == -1)
                 {
                     Buffs.Add((buff,turns,amount));
@@ -407,15 +426,7 @@ public class Character : MonoBehaviour
         // take damage
         // possibly die
         _currentHealth -= amount;
-
-        int immortal = GetIndexOfBuff(CombatEntity.BuffTypes.Immortal);
-        if (immortal != -1)
-        {
-            if (_currentHealth < 1)
-            {
-                _currentHealth = 1;
-            }
-        }
+        
         
         if (_currentHealth <= 0)
         {

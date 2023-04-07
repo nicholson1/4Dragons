@@ -207,6 +207,7 @@ RectTransform:
   - {fileID: 3119191822068730035}
   - {fileID: 496874701449854286}
   - {fileID: 3559505583526692726}
+  - {fileID: 3151212685460505437}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -241,6 +242,7 @@ MonoBehaviour:
   BlockText: {fileID: 1887479725812506708}
   intentPrefab: {fileID: 3916466350239829116, guid: 38cd7184df8f442479432d18990c1d29, type: 3}
   intentDisplay: {fileID: 3559505583526692726}
+  statusDisplay: {fileID: 3151212685460505437}
 --- !u!1 &1323043235771898467
 GameObject:
   m_ObjectHideFlags: 0
@@ -939,6 +941,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4603682187890930905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3151212685460505437}
+  m_Layer: 0
+  m_Name: StatusDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3151212685460505437
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4603682187890930905}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.75271606, z: 0.0012969971}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1323043235627263375}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4927408186709799181
 GameObject:
   m_ObjectHideFlags: 0
@@ -1038,6 +1071,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   IconColor: {r: 1, g: 1, b: 1, a: 1}
   is_spell: 0
+  is_item: 0
 --- !u!1 &5292224840563470169
 GameObject:
   m_ObjectHideFlags: 0

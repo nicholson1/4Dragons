@@ -97,6 +97,8 @@ public class StatusText : MonoBehaviour
 
     private void StartMovement()
     {
+        // if i have siblings increase my starting pos by 30
+        transform.position += new Vector3(0, (transform.parent.childCount - 1) * -25, 0);
         Icon.color = Color.white;
         if (!this.isActiveAndEnabled)
         {

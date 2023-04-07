@@ -111,7 +111,7 @@ public class CombatEntity : MonoBehaviour
         
         for (int i = myCharacter.Buffs.Count - 1; i >= 0; i--)
         {
-            if (myCharacter.Buffs[i].Item1 != BuffTypes.Block)
+            if (myCharacter.Buffs[i].Item1 != BuffTypes.Block && myCharacter.Buffs[i].Item1 != BuffTypes.Prepared)
             {
                 myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - amount, myCharacter.Buffs[i].Item3);
 
@@ -132,6 +132,10 @@ public class CombatEntity : MonoBehaviour
     {
         for (int i = myCharacter.Buffs.Count-1; i >= 0; i--)
         {
+            if (myCharacter.Buffs[i].Item1 == BuffTypes.Prepared)
+            {
+                continue;
+            }
             
             TheSpellBook._instance.DoBuffEffect( myCharacter.Buffs[i], this);
             myCharacter.Buffs[i] = (myCharacter.Buffs[i].Item1, myCharacter.Buffs[i].Item2 - 1, myCharacter.Buffs[i].Item3);
@@ -248,6 +252,24 @@ public class CombatEntity : MonoBehaviour
     {
         if (target != this)
             return;
+        
+        // prevent defuff if prepared
+        int prep = myCharacter.GetIndexOfBuff(BuffTypes.Prepared);
+        if (prep != -1)
+        {
+            if ( myCharacter.Buffs[prep].Item2 == 1)
+            {
+                myCharacter.Buffs.RemoveAt(prep);
+            }else
+            {
+                myCharacter.Buffs[prep] = (BuffTypes.Prepared, myCharacter.Buffs[prep].Item2 - 1, 0);
+ 
+            }
+            myCharacter.UsePrepStack();
+            return;
+        }
+        // send some sort of status
+        
         GetHitWithDeBuff(myCharacter, deBuff, turns, amount);
 
         if (deBuff == DeBuffTypes.Chilled && !myCharacter.isPlayerCharacter)
@@ -357,6 +379,18 @@ public class CombatEntity : MonoBehaviour
         if (invulnerable != -1)
         {
             attackDamage = 0;
+        }
+        
+        int immortal = myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Immortal);
+        if (immortal != -1)
+        {
+            // adjust damage so that it only puts us to 1 hp
+            if (attackDamage > myCharacter._currentHealth)
+            {
+                reductionAmount += attackDamage - myCharacter._currentHealth -1;
+                attackDamage = myCharacter._currentHealth - 1;
+            }
+            
         }
 
         if (lastSpellCastTargeted == Weapon.SpellTypes.Blood1 || lastSpellCastTargeted == Weapon.SpellTypes.Blood2)
@@ -704,7 +738,7 @@ public class CombatEntity : MonoBehaviour
         Empowered,
         Shatter,
         Immortal,
-        Preperation,
+        Prepared,
         None,
         
     }

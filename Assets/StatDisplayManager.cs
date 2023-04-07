@@ -85,6 +85,9 @@ public class StatDisplayManager : MonoBehaviour
             case Weapon.SpellTypes.Nature4:
                 i = 11;
                 break;
+            case Weapon.SpellTypes.Nature5:
+                i = 11;
+                break;
             case Weapon.SpellTypes.Fire1:
                 i = 12;
                 break;
@@ -95,6 +98,9 @@ public class StatDisplayManager : MonoBehaviour
                 i = 12;
                 break;
             case Weapon.SpellTypes.Fire4:
+                i = 12;
+                break;
+            case Weapon.SpellTypes.Fire5:
                 i = 12;
                 break;
             case Weapon.SpellTypes.Ice1:
@@ -109,6 +115,9 @@ public class StatDisplayManager : MonoBehaviour
             case Weapon.SpellTypes.Ice4:
                 i = 13;
                 break;
+            case Weapon.SpellTypes.Ice5:
+                i = 13;
+                break;
             case Weapon.SpellTypes.Blood1:
                 i = 14;
                 break;
@@ -121,6 +130,9 @@ public class StatDisplayManager : MonoBehaviour
             case Weapon.SpellTypes.Blood4:
                 i = 14;
                 break;
+            case Weapon.SpellTypes.Blood5:
+                i = 14;
+                break;
             case Weapon.SpellTypes.Shadow1:
                 i = 15;
                 break;
@@ -131,6 +143,9 @@ public class StatDisplayManager : MonoBehaviour
                 i = 15;
                 break;
             case Weapon.SpellTypes.Shadow4:
+                i = 15;
+                break;
+            case Weapon.SpellTypes.Shadow5:
                 i = 15;
                 break;
 

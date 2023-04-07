@@ -167,6 +167,9 @@ public class TheSpellBook : MonoBehaviour
                 case Weapon.SpellTypes.Nature4:
                     BasicSpellAttack(spell, w, caster, target);
                     break;
+                case Weapon.SpellTypes.Nature5:
+                    BasicNonDamageBuff(spell, w, caster, caster);
+                    break;
                 case Weapon.SpellTypes.Fire1:
                     RemoveBlock(target);
                     BasicNonDamageDebuff(spell, w, caster, target);
@@ -181,6 +184,10 @@ public class TheSpellBook : MonoBehaviour
                 case Weapon.SpellTypes.Fire4:
                     Pyroblast(spell, w, caster, target);
                     break;
+                case Weapon.SpellTypes.Fire5:
+                    EmpowerTarget(spell, w, caster, caster);
+                    BasicNonDamageBuff(spell, w, caster, caster);
+                    break;
                 case Weapon.SpellTypes.Ice1:
                     BasicBlock(spell, w, caster, caster);
                     break;
@@ -194,7 +201,10 @@ public class TheSpellBook : MonoBehaviour
                 case Weapon.SpellTypes.Ice4:
                     BasicSpellAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
-
+                    break;
+                case Weapon.SpellTypes.Ice5:
+                    //BasicSpellAttack(spell, w, caster, target);
+                    BasicNonDamageDebuff(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Blood1:
                     BasicSpellAttack(spell, w, caster, target);
@@ -210,6 +220,9 @@ public class TheSpellBook : MonoBehaviour
                 case Weapon.SpellTypes.Blood4:
                     EmpowerTarget(spell, w, caster, caster);
                     break;
+                case Weapon.SpellTypes.Blood5:
+                    ReduceAllBuffs(target, 1);
+                    break;
                 case Weapon.SpellTypes.Shadow1:
                     BasicDirectDamage(spell, w, caster, caster);
                     GainEnergy(caster,1);
@@ -222,6 +235,10 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Shadow4:
                     BasicNonDamageDebuff(spell, w, caster, target);
+                    break;
+                case Weapon.SpellTypes.Shadow5:
+                    BasicNonDamageBuff(spell, w, caster, caster);
+                    BasicDirectDamage(spell, w, caster, caster);
                     break;
                 case Weapon.SpellTypes.None:
                     break;
@@ -268,6 +285,10 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Ice4:
                 Debuff = CombatEntity.DeBuffTypes.Chilled;
                 break;
+            case Weapon.SpellTypes.Ice5:
+                Debuff = CombatEntity.DeBuffTypes.Chilled;
+                caster.DeBuff(target, CombatEntity.DeBuffTypes.Exposed, power[1], Mathf.RoundToInt(power[0]));
+                break;
             case Weapon.SpellTypes.Dagger2:
                 Debuff = CombatEntity.DeBuffTypes.Wounded;
                 break;
@@ -281,9 +302,12 @@ public class TheSpellBook : MonoBehaviour
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
                 break;
         }
+        
+        
 
 
         caster.DeBuff(target, Debuff, power[1], Mathf.RoundToInt(power[0]));
+        
 
     }
 
@@ -300,6 +324,12 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Nature3:
                 buff = CombatEntity.BuffTypes.Thorns;
                 break;
+            case Weapon.SpellTypes.Nature5:
+                buff = CombatEntity.BuffTypes.Prepared;
+                break;
+            case Weapon.SpellTypes.Fire5:
+                buff = CombatEntity.BuffTypes.Prepared;
+                break;
             case Weapon.SpellTypes.Blood3:
                 buff = CombatEntity.BuffTypes.Invulnerable;
                 break;
@@ -309,6 +339,9 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Ice2:
                 buff = CombatEntity.BuffTypes.Shatter;
                 break;
+            case Weapon.SpellTypes.Shadow5:
+                buff = CombatEntity.BuffTypes.Immortal;
+                break;
         }
 
 
@@ -316,6 +349,11 @@ public class TheSpellBook : MonoBehaviour
         if (buff == CombatEntity.BuffTypes.Rejuvenate)
         {
             Amount = Amount / 4;
+        }
+
+        if (buff == CombatEntity.BuffTypes.Prepared)
+        {
+            Amount = 1;
         }
 
         if (Amount < 1)
@@ -639,6 +677,10 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Nature4:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
                 break;
+            case Weapon.SpellTypes.Nature5:
+                casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+                turn = 1;
+                break;
             case Weapon.SpellTypes.Fire1:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
                 turn = 2;
@@ -652,6 +694,10 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Fire4:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+                break;
+            case Weapon.SpellTypes.Fire5:
+                casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+                turn = 1;
                 break;
             case Weapon.SpellTypes.Ice1:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
@@ -669,6 +715,10 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
                 turn = 1;
                 break;
+            case Weapon.SpellTypes.Ice5:
+                casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+                turn = 1;
+                break;
             case Weapon.SpellTypes.Blood1:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
                 break;
@@ -683,6 +733,9 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
                 turn = 1;
                 break;
+            case Weapon.SpellTypes.Blood5:
+                casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                break;
             case Weapon.SpellTypes.Shadow1:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
                 break;
@@ -694,6 +747,10 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
                 break;
             case Weapon.SpellTypes.Shadow4:
+                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+                turn = 1;
+                break;
+            case Weapon.SpellTypes.Shadow5:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
                 turn = 1;
                 break;
@@ -748,7 +805,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
 
-        if (spell == Weapon.SpellTypes.Blood3 || spell == Weapon.SpellTypes.Shadow1)
+        if (spell == Weapon.SpellTypes.Blood3 || spell == Weapon.SpellTypes.Shadow1 || spell == Weapon.SpellTypes.Shadow5)
         {
             float MaxPercentHealth = 0;
             float MinPercentHealth = 0;
@@ -756,17 +813,22 @@ public class TheSpellBook : MonoBehaviour
             switch (spell)
             {
                 case Weapon.SpellTypes.Shadow1:
-                    // 20 to 5
-                    MaxPercentHealth = 19;
-                    MinPercentHealth = 4;
+                    // 20 to 10
+                    MaxPercentHealth = 21;
+                    MinPercentHealth = 10;
 
                     break;
                 case Weapon.SpellTypes.Blood3:
-                    // 40 to 20
+                    // 40 to 25
                     MaxPercentHealth = 41;
-                    MinPercentHealth = 19;
-
+                    MinPercentHealth = 24;
                     break;
+                case Weapon.SpellTypes.Shadow5:
+                    // 30 to 20
+                    MaxPercentHealth = 31;
+                    MinPercentHealth = 19;
+                    break;
+                
             }
        
 
@@ -795,7 +857,7 @@ public class TheSpellBook : MonoBehaviour
 
         }
         
-        if (spell == Weapon.SpellTypes.Shadow2 || spell == Weapon.SpellTypes.Blood4)
+        if (spell == Weapon.SpellTypes.Shadow2 || spell == Weapon.SpellTypes.Blood4 || spell == Weapon.SpellTypes.Fire5)
         {
             int Amount = Mathf.RoundToInt(((float)power/ (power +200))* 25);
 

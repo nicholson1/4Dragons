@@ -250,7 +250,7 @@ public class EquipmentCreator : MonoBehaviour
         else
         {
             //0 - 10
-            spellIndex = Random.Range(0, 30);
+            spellIndex = Random.Range(0, 35);
 
         }
         return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
@@ -800,6 +800,17 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Nature5:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
                 case Weapon.SpellTypes.Fire1:
                     if (wepBefore)
                     {
@@ -834,6 +845,17 @@ public class EquipmentCreator : MonoBehaviour
                     icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Fire4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Fire5:
                     if (wepBefore)
                     {
                         name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
@@ -888,6 +910,17 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Ice5:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    break;
                 case Weapon.SpellTypes.Blood1:
                     if (wepBefore)
                     {
@@ -932,6 +965,17 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
                     break;
+                case Weapon.SpellTypes.Blood5:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
                 case Weapon.SpellTypes.Shadow1:
                     if (wepBefore)
                     {
@@ -966,6 +1010,17 @@ public class EquipmentCreator : MonoBehaviour
                     icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Shadow4:
+                    if (wepBefore)
+                    {
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                    }
+                    else
+                    {
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                    }
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    break;
+                case Weapon.SpellTypes.Shadow5:
                     if (wepBefore)
                     {
                         name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;

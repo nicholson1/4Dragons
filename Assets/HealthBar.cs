@@ -31,6 +31,8 @@ public class HealthBar : MonoBehaviour
 
     [SerializeField] private IntentDisplay intentPrefab;
     [SerializeField] private Transform intentDisplay;
+    [SerializeField] private Transform statusDisplay;
+
 
    
 
@@ -43,6 +45,8 @@ public class HealthBar : MonoBehaviour
 
         CombatEntity.GetHealed += GetHealed;
         Character.UpdateBlock += UpdateBlock;
+        Character.UsePrep += UsePrepared;
+
 
         CombatEntity.AddIntent += AddIntent;
         CombatEntity.RemoveIntent += RemoveIntent;
@@ -64,6 +68,8 @@ public class HealthBar : MonoBehaviour
 
         CombatEntity.GetHealed -= GetHealed;
         Character.UpdateBlock -= UpdateBlock;
+        Character.UsePrep -= UsePrepared;
+
 
         CombatEntity.AddIntent -= AddIntent;
         CombatEntity.RemoveIntent -= RemoveIntent;
@@ -105,7 +111,12 @@ public class HealthBar : MonoBehaviour
                     debuff.gameObject.SetActive(false);
 
                 }
+                StatusText st = GetStatus();
+
+                st.transform.localPosition += new Vector3(0, 350, 0);
+                st.InitializeStatusText(-1, -1, debuff._debuff, this);
             }
+           
 
 
         }
@@ -122,6 +133,10 @@ public class HealthBar : MonoBehaviour
 
             if (!buff.isDebuff)
             {
+                if (buff._buff == CombatEntity.BuffTypes.Prepared)
+                {
+                    continue;
+                }
                 buff._turns -= 1;
                 buff.UpdateValues();
 
@@ -135,6 +150,12 @@ public class HealthBar : MonoBehaviour
                     
 
                 }
+                
+                StatusText st = GetStatus();
+
+                st.transform.localPosition += new Vector3(0, 350, 0);
+                st.InitializeStatusText(-1, -1, buff._buff, this);
+
             }
         }
     }
@@ -192,11 +213,61 @@ public class HealthBar : MonoBehaviour
 
         StatusText st = GetStatus();
 
-        st.transform.localPosition += new Vector3(0, 450, 0);
+        st.transform.localPosition += new Vector3(0, 350, 0);
         // we really want the change
         st.InitializeStatusText(1, change, CombatEntity.BuffTypes.Block, this);
 
 
+    }
+    private void UsePrepared(Character c)
+    {
+        if (c != displayCharacter)
+            return;
+
+       
+
+        StatusText st = GetStatus();
+
+        st.transform.localPosition += new Vector3(0, 350, 0);
+        // we really want the change
+        st.InitializeStatusText(-1, -1, CombatEntity.BuffTypes.Prepared, this);
+        
+        ReduceSpecificBuff(CombatEntity.BuffTypes.Prepared);
+
+
+    }
+
+    private void ReduceSpecificBuff(CombatEntity.BuffTypes buff)
+    {
+        // loop through buffs
+        for (int i = buffDebuffLayoutGroup.childCount - 1; i >= 0; i--)
+        {
+            BuffDebuffElement buffDisplay = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+
+            if (!buffDisplay.isDebuff)
+            {
+                if (buffDisplay._buff == buff)
+                {
+                    buffDisplay._turns -= 1;
+                    buffDisplay.UpdateValues();
+
+                    if (buffDisplay._turns <= 0)
+                    {
+                    
+
+                        UIPooler._instance.buffDebuffPool.Add(buffDisplay.gameObject);
+                        buffDisplay.transform.SetParent(UIPooler._instance.transform);
+                        buffDisplay.gameObject.SetActive(false);
+                    
+
+                    }
+                    return;
+                }
+                
+                
+            }
+        }
+        
     }
 
     private void GetHitWithBuff(Character c, CombatEntity.BuffTypes buff, int turns, float amount)
@@ -327,7 +398,7 @@ public class HealthBar : MonoBehaviour
         text.text = c._currentHealth + "/" + c._maxHealth;
 
         StatusText st = GetStatus();
-        st.transform.localPosition += new Vector3(0, 400, 0);
+        st.transform.localPosition += new Vector3(0, 350, 0);
         st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this);
 
 
@@ -354,7 +425,7 @@ public class HealthBar : MonoBehaviour
         text.text = c._currentHealth + "/" + c._maxHealth;
 
         StatusText st = GetStatus();
-        st.transform.localPosition += new Vector3(0, 400, 0);
+        st.transform.localPosition += new Vector3(0, 350, 0);
         st.InitializeStatusText(amount, abilityTypes, this,reduction);
     }
 
@@ -468,6 +539,8 @@ public class HealthBar : MonoBehaviour
                     return false;
                 case CombatEntity.BuffTypes.Immortal:
                     return false;
+                case CombatEntity.BuffTypes.Prepared:
+                    return false;
             }
         }
 
@@ -512,13 +585,13 @@ public class HealthBar : MonoBehaviour
             st = UIPooler._instance.StatusTextsPool[0].GetComponent<StatusText>();
             UIPooler._instance.StatusTextsPool.Remove(st.gameObject);
             st.gameObject.SetActive(true);
-            st.transform.SetParent(this.transform);
+            st.transform.SetParent(statusDisplay);
             st.transform.localPosition = Vector3.zero;
             
         }
         else
         {
-            st = Instantiate(statusTextPrefab, this.transform);
+            st = Instantiate(statusTextPrefab, statusDisplay);
 
         }
 
