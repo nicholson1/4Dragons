@@ -65,12 +65,12 @@ public class Character : MonoBehaviour
 
         if (isPlayerCharacter)
         {
-            //_weapons = EC.CreateAllWeapons(_level);
-            //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice5));
-            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow5));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire5));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood5));
+            _weapons = EC.CreateAllWeapons(_level);
+            _spellScrolls = EC.CreateAllSpellScrolls(_level);
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice5));
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow5));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire5));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood5));
         }
         else
         {
@@ -80,20 +80,20 @@ public class Character : MonoBehaviour
 
             if (_level <= 5)
             {
-                //_weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
             }
             else
             {
                 _weapons.Add(EC.CreateRandomWeapon(_level, false));
 
             }
-            //_weapons.Add(EC.CreateRandomWeapon(_level, false));
-            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
-            _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature1));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood3));
+            _weapons.Add(EC.CreateRandomWeapon(_level, false));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Nature4));
+            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature1));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood3));
 
         }
         _equipment.AddRange(_weapons);
