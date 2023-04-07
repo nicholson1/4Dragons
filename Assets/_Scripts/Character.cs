@@ -65,8 +65,8 @@ public class Character : MonoBehaviour
 
         if (isPlayerCharacter)
         {
-            _weapons = EC.CreateAllWeapons(_level);
-            _spellScrolls = EC.CreateAllSpellScrolls(_level);
+            //_weapons = EC.CreateAllWeapons(_level);
+            //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Ice5));
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shadow5));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire5));
