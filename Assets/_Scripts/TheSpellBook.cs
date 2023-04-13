@@ -862,15 +862,15 @@ public class TheSpellBook : MonoBehaviour
         {
             case 0:
                 //common
-                power -= Mathf.RoundToInt(power * .40f);
+                power -= Mathf.RoundToInt(power * .30f);
                 break;
             case 1:
                 //uncommon
-                power -= Mathf.RoundToInt(power * .30f);
+                power -= Mathf.RoundToInt(power * .20f);
                 break;
             case 2:
                 //rare
-                power -= Mathf.RoundToInt(power * .20f);
+                power -= Mathf.RoundToInt(power * .10f);
                 break;
             case 3:
                 //Epic
@@ -932,36 +932,36 @@ public class TheSpellBook : MonoBehaviour
             //Debug.Log(power);
             if (caster.myCharacter._level < 5)
             {
-                power =Mathf.RoundToInt(power * .75f);
+                power = Mathf.RoundToInt(power * .25f);
             }
             else if (caster.myCharacter._level < 10)
             {
-                power =Mathf.RoundToInt(power * .5f);
+                power = Mathf.RoundToInt(power * .5f);
 
             }
             else if (caster.myCharacter._level < 15)
             {
-                power =Mathf.RoundToInt(power * .25f);
+                power = Mathf.RoundToInt(power * .75f);
 
             }
             else if (caster.myCharacter._level < 20)
             {
-                power =Mathf.RoundToInt(power );
+                power = Mathf.RoundToInt(power );
 
             }
             else if (caster.myCharacter._level < 25)
             {
-                power =Mathf.RoundToInt(power *1.25f );
+                power = Mathf.RoundToInt(power *1.25f );
 
             }
             else if (caster.myCharacter._level < 30)
             {
-                power =Mathf.RoundToInt(power *1.5f );
+                power = Mathf.RoundToInt(power *1.5f );
 
             }
             else
             {
-                power =Mathf.RoundToInt(power * 2f );
+                power = Mathf.RoundToInt(power * 2f );
             }
             //Debug.Log(power);
 
