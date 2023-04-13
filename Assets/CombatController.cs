@@ -28,10 +28,12 @@ public class CombatController : MonoBehaviour
     public Vector3 playerOffset = new Vector3();
 
     public static event Action EndTurn;
-    public static event Action EndCombatEvent;
-    public static event Action StartCombatEvent;
+    // public static event Action EndCombatEvent;
+    // public static event Action StartCombatEvent;
 
     public static event Action<Character, Character> UpdateUIButtons;
+    public static event Action<Character, Character> ActivateCombatEntities;
+
 
     public static event Action<ErrorMessageManager.Errors> CombatNotifications;
 
@@ -93,7 +95,7 @@ public class CombatController : MonoBehaviour
         CombatUI.SetActive(false);
         CurrentTurnIndex = 0;
 
-        EndCombatEvent();
+        //EndCombatEvent();
         //CombatCamera.gameObject.SetActive(false);
         //TransitionCamera.gameObject.SetActive(true);
         float elapsedTime = 0;
@@ -153,11 +155,18 @@ public class CombatController : MonoBehaviour
 
         }
 
+        ActivateCombatEntities(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
         UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
         EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
 
-        StartCombatEvent();
+        //StartCombatEvent();
         yield return 1;
+
+    }
+
+    public void UpdateUiButtons()
+    {
+        UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
 
     }
 

@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3900843960638511632
 RectTransform:
   m_ObjectHideFlags: 0
@@ -625,6 +625,7 @@ MonoBehaviour:
   inventory: {fileID: 2451590714326015740}
   _toolTip: {fileID: 5422653048552273186}
   icon: {fileID: 2451590712674105217}
+  isFlipping: 0
   _spellDisplay: {fileID: 4241984035304164066}
   Cardback: {fileID: 2114543047147227836}
 --- !u!1 &2451590713069999543
@@ -1676,6 +1677,22 @@ PrefabInstance:
     - target: {fileID: 8328884998639782218, guid: 885b56c95bdd5f046b831758d0b432d9, type: 3}
       propertyPath: m_text
       value: SpellName
+      objectReference: {fileID: 0}
+    - target: {fileID: 8328884998639782218, guid: 885b56c95bdd5f046b831758d0b432d9, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 8328884998639782218, guid: 885b56c95bdd5f046b831758d0b432d9, type: 3}
+      propertyPath: m_margin.x
+      value: -63.353317
+      objectReference: {fileID: 0}
+    - target: {fileID: 8328884998639782218, guid: 885b56c95bdd5f046b831758d0b432d9, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 8328884998639782218, guid: 885b56c95bdd5f046b831758d0b432d9, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8328884998981489969, guid: 885b56c95bdd5f046b831758d0b432d9, type: 3}
       propertyPath: m_Pivot.x

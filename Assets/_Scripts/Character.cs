@@ -47,7 +47,7 @@ public class Character : MonoBehaviour
     private void Start()
     {
         EC = FindObjectOfType<EquipmentCreator>();
-        CombatController.UpdateUIButtons += ActivateCombatEntity;
+        CombatController.ActivateCombatEntities += ActivateCombatEntity;
         CombatTrigger.EndCombat += DeactivateCombatEntity;
         
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
@@ -68,8 +68,8 @@ public class Character : MonoBehaviour
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Dagger3));
-            // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Shield3));
-            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Sword3));
+            //_weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
             // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe3));
         }
         else
@@ -92,8 +92,8 @@ public class Character : MonoBehaviour
             _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Hammer3));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Hammer3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice4));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire3));
 
         }
         _equipment.AddRange(_weapons);
@@ -150,6 +150,7 @@ public class Character : MonoBehaviour
                 break;
             case 1:
                 spells.Item1 = _spellScrolls[0].GetSpellTypes().Item1;
+                spells.Item3 = _spellScrolls[0];
                 break;
             case 2:
                 spells.Item1 = _spellScrolls[0].GetSpellTypes().Item1;
@@ -172,7 +173,11 @@ public class Character : MonoBehaviour
 
     public void UpdateEnergyCount(int amount)
     {
+        
         _currentEnergy += amount;
+
+        
+        
         UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
     }
 
@@ -186,7 +191,7 @@ public class Character : MonoBehaviour
 
     private void OnDestroy()
     {
-        CombatController.UpdateUIButtons -= ActivateCombatEntity;
+        CombatController.ActivateCombatEntities -= ActivateCombatEntity;
         CombatTrigger.EndCombat -= DeactivateCombatEntity;
         CombatEntity.GetHitWithAttack -= GetHitWithAttack;
         CombatEntity.GetHealed -= GetHealed;
@@ -224,10 +229,36 @@ public class Character : MonoBehaviour
                 }
                 break;
             case CombatEntity.BuffTypes.Rejuvenate:
-                Buffs.Add((buff,turns,amount));
+                if (i == -1)
+                {
+                    Buffs.Add((buff,turns,amount));
+
+                }
+                else
+                {
+                    Buffs[i] = (buff, Buffs[i].Item2 + turns, amount + Buffs[i].Item3);
+                    
+                    if (Buffs[i].Item3 <=0)
+                    {
+                        Buffs.RemoveAt(i);
+                    }
+                }
                 break;
             case CombatEntity.BuffTypes.Thorns:
-                Buffs.Add((buff,turns,amount));
+                if (i == -1)
+                {
+                    Buffs.Add((buff,turns,amount));
+
+                }
+                else
+                {
+                    Buffs[i] = (buff, Buffs[i].Item2 + turns, amount + Buffs[i].Item3);
+                
+                    if (Buffs[i].Item3 <=0)
+                    {
+                        Buffs.RemoveAt(i);
+                    }
+                }
                 break;
             case CombatEntity.BuffTypes.Immortal:
                 if (i == -1)
@@ -341,20 +372,51 @@ public class Character : MonoBehaviour
         switch (deBuff)
         {
             case CombatEntity.DeBuffTypes.Bleed:
-                DeBuffs.Add((deBuff,turns,amount));
-                break;
-            case CombatEntity.DeBuffTypes.Burn:
-                DeBuffs.Add((deBuff,turns,amount));
-                break;
-            case CombatEntity.DeBuffTypes.Chilled:
-                //check if we already have it
-                if (i != -1)
+                if (i == -1)
                 {
-                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount);
+                    DeBuffs.Add((deBuff,turns,amount));
+
                 }
                 else
                 {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount + DeBuffs[i].Item3);
+                
+                    if (DeBuffs[i].Item3 <=0)
+                    {
+                        DeBuffs.RemoveAt(i);
+                    }
+                }
+                break;
+            case CombatEntity.DeBuffTypes.Burn:
+                if (i == -1)
+                {
                     DeBuffs.Add((deBuff,turns,amount));
+                }
+                else
+                {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount + DeBuffs[i].Item3);
+                
+                    if (DeBuffs[i].Item3 <=0)
+                    {
+                        DeBuffs.RemoveAt(i);
+                    }
+                }
+                break;
+            case CombatEntity.DeBuffTypes.Chilled:
+                //check if we already have it
+                if (i == -1)
+                {
+                    DeBuffs.Add((deBuff,turns,amount));
+
+                }
+                else
+                {
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount);
+                    
+                    if (DeBuffs[i].Item3 <=0)
+                    {
+                        DeBuffs.RemoveAt(i);
+                    }
 
                 }
                 break;
@@ -466,6 +528,7 @@ public class Character : MonoBehaviour
                 UIController._instance.ToggleInventoryUI(0);
                 _am.SetTrigger("die");
                 UIController._instance.RestartButton.SetActive(true);
+                //CombatController._instance.
                 CombatController._instance.EndCombat();
 
                 //UI controller place restart button on screen
@@ -480,6 +543,7 @@ public class Character : MonoBehaviour
 
     private void ActivateCombatEntity(Character player, Character enemy)
     {
+        //Debug.Log("its mee thats calling it");
         if (player == this)
         {
             _combatEntity.enabled = true;

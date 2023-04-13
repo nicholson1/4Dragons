@@ -64,9 +64,6 @@ public class SpellButton : MonoBehaviour
         {
             this.GetComponent<Button>().interactable = true;
             _toolTip.is_spell = true;
-
-
-
         }
         List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
 

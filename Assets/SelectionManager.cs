@@ -143,20 +143,65 @@ public class SelectionManager : MonoBehaviour
             inventoryButton.gameObject.SetActive(true);
             BeginAdventureButton.SetActive(false);
             equipments.Add(EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
-            equipments.Add(EC.CreateRandomWeapon(level, false));
-            equipments.Add(EC.CreateRandomWeapon(level, false));
-            equipments.Add(EC.CreateRandomWeapon(level, false));
+            // present 4 spells
+            int spellCount = 1;
+            while (spellCount < 4)
+            {
+                Equipment eq = EC.CreateRandomWeapon(level, false);
+
+                Weapon w = (Weapon)eq;
+
+                bool hasSpell = false;
+                foreach (var equipment in equipments)
+                {
+                    Weapon wep = (Weapon)equipment;
+                    if (wep.spellType1 == w.spellType1)
+                    {
+                        hasSpell = true;
+                    }
+                }
+
+                if (hasSpell == false)
+                {
+                    equipments.Add(eq);
+                    spellCount += 1;
+                    Debug.Log(spellCount);
+                }
+
+            }
 
         }
 
         else if (startingSelectionCount == 3)
         {
             // present 4 spells
+            int spellCount = 0;
             selectionText.text = "Selection (2/4)";
-            equipments.Add(EC.CreateRandomSpellScroll(level));
-            equipments.Add(EC.CreateRandomSpellScroll(level));
-            equipments.Add(EC.CreateRandomSpellScroll(level));
-            equipments.Add(EC.CreateRandomSpellScroll(level));
+            while (spellCount < 4)
+            {
+                Equipment eq = EC.CreateRandomSpellScroll(level);
+
+                Weapon w = (Weapon)eq;
+
+                bool hasSpell = false;
+                foreach (var equipment in equipments)
+                {
+                    Weapon wep = (Weapon)equipment;
+                    if (wep.spellType1 == w.spellType1)
+                    {
+                        hasSpell = true;
+                    }
+                }
+
+                if (hasSpell == false)
+                {
+                    equipments.Add(eq);
+                    spellCount += 1;
+                }
+
+            }
+            //equipments.Add(EC.CreateRandomSpellScroll(level));
+            //equipments.Add(EC.CreateRandomSpellScroll(level));
 
             
         }

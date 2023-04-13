@@ -72,8 +72,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, 1, 1,1);
+
         if (canBeDragged == false)
         {
+            
             Debug.Log("reset");
             //notification
             CombatMove(ErrorMessageManager.Errors.CombatMove);
@@ -123,26 +126,63 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     }
 
     public bool canBeDragged = true;
-    private void StartCombat()
+    private void AdjustDragabilityBasedOnEnergy( Character c, int cur, int max, int amount)
     {
-        canBeDragged = false;
-        //.Log("can no longer drag");
+        if (!c.isPlayerCharacter)
+        {
+            return;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count >1)
+        {
+            canBeDragged = true;
+            return;
+        }
+        
+        if (cur <= 0)
+        {
+            canBeDragged = false;
+        }
+        else
+        {
+            canBeDragged = true;
+
+        }
     }
-    private void EndCombat()
-    {
-        canBeDragged = true;
-    }
+   
     private void Start()
     {
+        Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         LabelCheck();
-
-        CombatController.StartCombatEvent += StartCombat;
-        CombatController.EndCombatEvent += EndCombat;
+        //CombatController.EndCombatEvent += EndCombat;
     }
     private void OnDestroy()
     {
-        CombatController.StartCombatEvent -= StartCombat;
-        CombatController.EndCombatEvent -= EndCombat;
+        Character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;
+
+        //CombatController.EndCombatEvent -= EndCombat;
 
     }
+    // private void StartCombat()
+    // {
+    //     canBeDragged = false;
+    //     //.Log("can no longer drag");
+    // }
+    // private void EndCombat()
+    // {
+    //     canBeDragged = true;
+    // }
+    // private void Start()
+    // {
+    //     LabelCheck();
+    //
+    //     CombatController.StartCombatEvent += StartCombat;
+    //     CombatController.EndCombatEvent += EndCombat;
+    // }
+    // private void OnDestroy()
+    // {
+    //     CombatController.StartCombatEvent -= StartCombat;
+    //     CombatController.EndCombatEvent -= EndCombat;
+    //
+    // }
 }

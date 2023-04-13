@@ -321,6 +321,11 @@ public class HealthBar : MonoBehaviour
                             b._amount = 30;
                         }
                     }
+
+                    if (buff == CombatEntity.BuffTypes.Rejuvenate || buff == CombatEntity.BuffTypes.Thorns)
+                    {
+                        b._amount += amount;
+                    }
                     b._turns += turns;
                     b.UpdateValues();
                     found = true;
@@ -371,6 +376,10 @@ public class HealthBar : MonoBehaviour
                             b._amount = 75;
                         }
                     }
+                    if (debuff == CombatEntity.DeBuffTypes.Burn || debuff == CombatEntity.DeBuffTypes.Bleed)
+                    {
+                        b._amount += amount;
+                    }
                     b._turns += turns;
                     b.UpdateValues();
                     found = true;
@@ -381,6 +390,7 @@ public class HealthBar : MonoBehaviour
 
             if (!found)
             {
+                Debug.Log("making a new one");
                 BuffDebuffElement icon = GetBuffDebuff();
 
                 icon.InitializeDisplay(debuff, turns, amount);
@@ -536,9 +546,9 @@ public class HealthBar : MonoBehaviour
             switch (buff)
             {
                 case CombatEntity.BuffTypes.Rejuvenate:
-                    return true;
+                    return false;
                 case CombatEntity.BuffTypes.Thorns:
-                    return true;
+                    return false;
                 case CombatEntity.BuffTypes.Invulnerable:
                     return false;
                 case CombatEntity.BuffTypes.Empowered:
@@ -557,9 +567,9 @@ public class HealthBar : MonoBehaviour
             switch (debuff)
             {
                 case CombatEntity.DeBuffTypes.Bleed:
-                    return true;
+                    return false;
                 case CombatEntity.DeBuffTypes.Burn:
-                    return true;
+                    return false;
                 case CombatEntity.DeBuffTypes.Wounded:
                     return false;
                 case CombatEntity.DeBuffTypes.Weakened:
@@ -632,6 +642,8 @@ public class HealthBar : MonoBehaviour
         if (UIPooler._instance.buffDebuffPool.Count != 0)
         {
             buffDebuff = UIPooler._instance.buffDebuffPool[0].GetComponent<BuffDebuffElement>();
+            buffDebuff._debuff = CombatEntity.DeBuffTypes.None;
+            buffDebuff._buff = CombatEntity.BuffTypes.None;
             UIPooler._instance.buffDebuffPool.Remove(buffDebuff.gameObject);
             buffDebuff.gameObject.SetActive(true);
             buffDebuff.transform.SetParent(buffDebuffLayoutGroup);

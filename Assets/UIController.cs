@@ -66,6 +66,13 @@ public class UIController : MonoBehaviour
             EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
             haveInitializedEquipmentItems = true;
         }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+
+        }
+        
     }
     
     public void ToggleCombatUI()

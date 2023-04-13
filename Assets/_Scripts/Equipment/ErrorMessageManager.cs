@@ -61,7 +61,7 @@ public class ErrorMessageManager : MonoBehaviour
                 e.InitializeError("Death!", Color.black);
                 break;
             case Errors.CombatMove:
-                e.InitializeError("You Cant Move Items During Combat", Color.white);
+                e.InitializeError("You Don't Have Enough Energy", Color.white);
                 break;
 
                 

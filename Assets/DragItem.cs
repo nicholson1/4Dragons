@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private InventorySlot temp;
     public Image icon;
     public Equipment.Slot slotType;
+    public TextMeshProUGUI LvlText;
     
     public static event Action<ErrorMessageManager.Errors> CombatMove;
 
@@ -48,6 +50,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _toolTip.Cost = "";
         _toolTip.Title = e.name;
         _toolTip.e = e;
+
+        LvlText.text = "Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+        //LvlText.color = ToolTipManager._instance.rarityColors[e.stats[Equipment.Stats.Rarity]];
         if (!e.isWeapon)
         {
             _toolTip.Message += "Slot: " + e.slot + "\n";
@@ -86,6 +91,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void OnPointerDown(PointerEventData eventData)
     {
         //Debug.Log("OnPointerDown");
+        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, 1, 1,1);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -267,24 +273,39 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     }
 
-    private void StartCombat()
+    private void AdjustDragabilityBasedOnEnergy( Character c, int cur, int max, int amount)
     {
-        canBeDragged = false;
-        //Debug.Log("can no longer drag");
+        if (!c.isPlayerCharacter)
+        {
+            return;
+        }
+        if (CombatController._instance.entitiesInCombat.Count >1)
+        {
+            canBeDragged = true;
+            return;
+        }
+        
+        if (cur <= 0)
+        {
+            canBeDragged = false;
+        }
+        else
+        {
+            canBeDragged = true;
+
+        }
     }
-    private void EndCombat()
-    {
-        canBeDragged = true;
-    }
+   
     private void Start()
     {
-        CombatController.StartCombatEvent += StartCombat;
-        CombatController.EndCombatEvent += EndCombat;
+        Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
+        //CombatController.EndCombatEvent += EndCombat;
     }
     private void OnDestroy()
     {
-        CombatController.StartCombatEvent -= StartCombat;
-        CombatController.EndCombatEvent -= EndCombat;
+        Character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;
+
+        //CombatController.EndCombatEvent -= EndCombat;
 
     }
 }

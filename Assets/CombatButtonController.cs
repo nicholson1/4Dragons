@@ -23,6 +23,7 @@ public class CombatButtonController : MonoBehaviour
         //CombatTrigger.TriggerCombat += UpdateCombatUI;
         Character.UpdateEnergy += UpdateEnergy;
         CombatController.UpdateUIButtons += UpdateCombatUI;
+        
         DataTable = _dataReader.GetWeaponScalingTable();
         if(weapon1 != null)
             weapon1.SetDataTable(DataTable);
@@ -44,14 +45,17 @@ public class CombatButtonController : MonoBehaviour
 
     private void UpdateEnergy(Character c, int current, int max, int change)
     {
-        
+        //Debug.Log("This is called twice");
         if (!c.isPlayerCharacter)
         {
             return;
         }
 
+        //Debug.Log(current + "current in comButCont");
         currentEnergy = current;
         energyText.text = current.ToString();
+        //Debug.Log("2nd here here");
+
         UpdateSpellButtons(c);
         // if change is > 0 flash the numbers or something
 
@@ -64,6 +68,7 @@ public class CombatButtonController : MonoBehaviour
     private void UpdateCombatUI(Character player, Character enemy)
     {
         //adjust spell names based on the weapons in the players inventory
+        //Debug.Log("one here");
         UpdateSpellButtons(player);
     }
 
@@ -75,7 +80,22 @@ public class CombatButtonController : MonoBehaviour
         // refence the datatable with these spells as int
         //Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
 
-        //Debug.Log("heeeey");
+        // Debug.Log(player._weapons.Count);
+        // foreach (var VARIABLE in player._weapons)
+        // {
+        //     Debug.Log(VARIABLE.spellType1);
+        // }
+        // Debug.Log(player._spellScrolls.Count);
+        // foreach (var VARIABLE in player._spellScrolls)
+        // {
+        //     Debug.Log(VARIABLE.spellType1);
+        // }
+
+       
+
+
+       
+        
         weapon1.UpdateSpell(weaponSpells.Item1, weaponSpells.Item3);
         weapon2.UpdateSpell(weaponSpells.Item2, weaponSpells.Item4);
         scroll1.UpdateSpell(spellScolls.Item1, spellScolls.Item3);
@@ -94,6 +114,7 @@ public class CombatButtonController : MonoBehaviour
 
         if (button.spell == Weapon.SpellTypes.None)
         {
+            //Debug.Log(" spell is false");
             b.interactable = false;
             return;
         }

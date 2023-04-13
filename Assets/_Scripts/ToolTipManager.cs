@@ -195,7 +195,6 @@ public class ToolTipManager : MonoBehaviour
       //if nothign equipped in that slot stop
       if (oldItem1 == null)
       {
-         
          return;
       }
          
@@ -204,12 +203,16 @@ public class ToolTipManager : MonoBehaviour
       {
          UpdateGetGainsAndLosses(Comparison1tip, newItem, oldItem1);
          Comparison1tip.gameObject.SetActive(true);
+         Comparison1tip.tiptitle.text = oldItem1.name;
+         Comparison1tip.tiptitle.color = rarityColors[oldItem1.stats[Equipment.Stats.Rarity]];
 
       }
       if (oldItem2 != null)
       {
          UpdateGetGainsAndLosses(Comparison2tip, newItem, oldItem2);
          Comparison2tip.gameObject.SetActive(true);
+         Comparison2tip.tiptitle.text = oldItem2.name;
+         Comparison2tip.tiptitle.color = rarityColors[oldItem2.stats[Equipment.Stats.Rarity]];
 
       }
    }

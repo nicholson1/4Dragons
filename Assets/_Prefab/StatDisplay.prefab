@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 152.4, y: 50}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &8328884998639782217
 CanvasRenderer:
@@ -96,9 +96,9 @@ MonoBehaviour:
   m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 36
   m_fontStyle: 0
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0.000030517578, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -192,6 +192,8 @@ MonoBehaviour:
   player: {fileID: 0}
   stat: 2
   value: 57
+  toolTip: {fileID: 0}
+  charStats: 0
 --- !u!114 &-145058702599438600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +211,10 @@ MonoBehaviour:
   Cost: 
   iLvl: 
   rarity: -1
+  icon: {fileID: 0}
+  IconColor: {r: 0, g: 0, b: 0, a: 0}
+  is_spell: 0
+  is_item: 0
 --- !u!1 &8328884998985845973
 GameObject:
   m_ObjectHideFlags: 0

@@ -125,7 +125,7 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Dagger2:
                     BasicPhysicalAttack(spell, w, caster, target);
-                    WeakenTarget(spell, w, caster, target);
+                    BasicNonDamageDebuff(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Dagger3:
                     BasicPhysicalAttack(spell, w, caster, target);
@@ -146,7 +146,7 @@ public class TheSpellBook : MonoBehaviour
                     break;
                 case Weapon.SpellTypes.Sword2:
                     BasicAOEAttack(spell, w, caster, target);
-                    ReduceAllDebuffs(caster,2);
+                    ReduceAllDebuffs(caster,1);
                     break;
                 case Weapon.SpellTypes.Sword3:
                     BasicAOEAttack(spell, w, caster, target);
@@ -278,6 +278,16 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
         
+        // switch (debuff.Item1)
+        // {
+        //     case CombatEntity.DeBuffTypes.Bleed:
+        //         target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0);
+        //         break;
+        //     case CombatEntity.DeBuffTypes.Burn:
+        //         target.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Mathf.RoundToInt(debuff.Item3), 0);
+        //         break;
+        // }
+        
             
         
     }
@@ -371,7 +381,7 @@ public class TheSpellBook : MonoBehaviour
         int Amount = power[0];
         if (buff == CombatEntity.BuffTypes.Rejuvenate)
         {
-            Amount = Amount / 4;
+            Amount = Amount / 2;
         }
 
         if (buff == CombatEntity.BuffTypes.Prepared)
@@ -384,6 +394,8 @@ public class TheSpellBook : MonoBehaviour
             Amount = 1;
         }
 
+        target.lastSpellCastTargeted = spell;
+
         caster.Buff(target, buff, power[1], Mathf.RoundToInt(Amount));
 
     }
@@ -395,7 +407,7 @@ public class TheSpellBook : MonoBehaviour
 
         if (spell == Weapon.SpellTypes.Dagger3)
         {
-            caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[0]));
+            caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[1]));
             return;
 
         }
@@ -420,7 +432,7 @@ public class TheSpellBook : MonoBehaviour
         
         if (spell == Weapon.SpellTypes.Hammer3)
         {
-            caster.Buff(target, buff,2, Mathf.RoundToInt(power[0]));
+            caster.Buff(target, buff,2, Mathf.RoundToInt(power[1]));
             return;
 
         }
@@ -451,14 +463,14 @@ public class TheSpellBook : MonoBehaviour
         if (abilityType == CombatEntity.AbilityTypes.SpellAttack)
         {
             // burn
-            caster.DeBuff(target, CombatEntity.DeBuffTypes.Burn, 4, Mathf.RoundToInt(power[0]/4f), crit);
+            caster.DeBuff(target, CombatEntity.DeBuffTypes.Burn, 2, Mathf.RoundToInt(power[0]/2f), crit);
 
             
         }
         else if (abilityType == CombatEntity.AbilityTypes.PhysicalAttack)
         {
             //bleed
-            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,4, Mathf.RoundToInt(power[0]/4f), crit);
+            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,2, Mathf.RoundToInt(power[0]/2f), crit);
 
         }
 
@@ -469,9 +481,6 @@ public class TheSpellBook : MonoBehaviour
     {
         
         List<int> power = GetPowerValues(spell, w, caster);
-        
-        
-        
         
         target.LoseHPDirect(target,  power[0]);
 
@@ -485,6 +494,8 @@ public class TheSpellBook : MonoBehaviour
     public void BasicBlock(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
+        target.lastSpellCastTargeted = spell;
+
         
         caster.Buff(target, CombatEntity.BuffTypes.Block, power[1], power[0]);
 
@@ -494,10 +505,10 @@ public class TheSpellBook : MonoBehaviour
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
-        if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
-        {
-            power[0] = power[1];
-        }
+        // if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        // {
+        //     power[0] = power[1];
+        // }
         
         CombatEntity.AbilityTypes abilityType = CombatEntity.AbilityTypes.PhysicalAttack;
 
@@ -570,6 +581,8 @@ public class TheSpellBook : MonoBehaviour
         int healAmount = power[0];
 
         //CombatEntity.AbilityTypes abilityType = CombatEntity.AbilityTypes.Heal;
+        target.lastSpellCastTargeted = spell;
+
 
         float crit = FigureOutHowMuchCrit(caster);
         
@@ -703,7 +716,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Axe2:
                 casterStats.TryGetValue(Equipment.Stats.Axes, out p);
-                turn = 4;
+                turn = 1;
                 useSP = false;
                 break;
             case Weapon.SpellTypes.Axe3:
@@ -725,14 +738,14 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Nature1:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
-                turn = 4;
+                turn = 2;
                 break;
             case Weapon.SpellTypes.Nature2:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
                 break;
             case Weapon.SpellTypes.Nature3:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
-                turn = 4;
+                turn = 2;
                 break;
             case Weapon.SpellTypes.Nature4:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
@@ -747,7 +760,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Fire2:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
-                turn = 4;
+                turn = 2;
                 break;
             case Weapon.SpellTypes.Fire3:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
@@ -865,10 +878,10 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
 
-        if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
-        {
-            turn = power;
-        }
+        // if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        // {
+        //     turn = power;
+        // }
 
         if (spell == Weapon.SpellTypes.Blood3 || spell == Weapon.SpellTypes.Shadow1 || spell == Weapon.SpellTypes.Shadow5)
         {
@@ -917,7 +930,39 @@ public class TheSpellBook : MonoBehaviour
         if (!caster.myCharacter.isPlayerCharacter)
         {
             //Debug.Log(power);
-            power =Mathf.RoundToInt(power * .5f);
+            if (caster.myCharacter._level < 5)
+            {
+                power =Mathf.RoundToInt(power * .75f);
+            }
+            else if (caster.myCharacter._level < 10)
+            {
+                power =Mathf.RoundToInt(power * .5f);
+
+            }
+            else if (caster.myCharacter._level < 15)
+            {
+                power =Mathf.RoundToInt(power * .25f);
+
+            }
+            else if (caster.myCharacter._level < 20)
+            {
+                power =Mathf.RoundToInt(power );
+
+            }
+            else if (caster.myCharacter._level < 25)
+            {
+                power =Mathf.RoundToInt(power *1.25f );
+
+            }
+            else if (caster.myCharacter._level < 30)
+            {
+                power =Mathf.RoundToInt(power *1.5f );
+
+            }
+            else
+            {
+                power =Mathf.RoundToInt(power * 2f );
+            }
             //Debug.Log(power);
 
         }
@@ -931,7 +976,19 @@ public class TheSpellBook : MonoBehaviour
                 Amount = 1;
             }
 
-            power = Amount;
+            if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+            {
+                // cap at a 10% increase
+                if (Amount > 10)
+                {
+                    Amount = 10;
+                }
+                turn = Amount;
+            }
+            else
+            {
+                power = Amount;
+            }
         }
 
         if (spell == Weapon.SpellTypes.Ice2)

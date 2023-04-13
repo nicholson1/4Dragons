@@ -64,11 +64,14 @@ public class CombatEntity : MonoBehaviour
        //CombatTrigger.TriggerCombat -= GetMySpells;
     }
 
+    
+
     private IEnumerator TriggerDebuffs()
     {
         for (int i = myCharacter.DeBuffs.Count-1; i >= 0; i--)
         {
-            
+            Debug.Log(myCharacter.DeBuffs.Count + "count");
+
             TheSpellBook._instance.DoDebuffEffect( myCharacter.DeBuffs[i], this);
             myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - 1, myCharacter.DeBuffs[i].Item3);
 
@@ -76,6 +79,8 @@ public class CombatEntity : MonoBehaviour
             {
                 //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
                 // remove the debuff
+                
+                
                 myCharacter.DeBuffs.RemoveAt(i);
                 
             }
@@ -96,10 +101,18 @@ public class CombatEntity : MonoBehaviour
         {
             myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - amount, myCharacter.DeBuffs[i].Item3);
 
+            //Debug.Log(myCharacter.DeBuffs[i].Item1 + " " +  myCharacter.DeBuffs[i].Item2);
             if (myCharacter.DeBuffs[i].Item2 <= 0)
             {
-                //Debug.Log("remove " + myCharacter.DeBuffs[i].Item1);
-                // remove the debuff
+                if (myCharacter.DeBuffs[i].Item1 == DeBuffTypes.Chilled)
+                {
+                    if (isMyTurn)
+                    {
+                        Debug.Log("its mee thats calling it");
+
+                        myCharacter.UpdateEnergyCount(1);
+                    }
+                }
                 myCharacter.DeBuffs.RemoveAt(i);
                 
             }
@@ -222,6 +235,7 @@ public class CombatEntity : MonoBehaviour
         {
             // disable end turn 
             isMyTurn = false;
+            Debug.Log("ran twice");
             TriggerAllDebuffs();
         }
         else
@@ -330,7 +344,10 @@ public class CombatEntity : MonoBehaviour
             if (attacker != null && attacker != this)
             {
                 // do it for EACH thorn buff
-                TriggerAllThorns(attacker);
+                //TriggerAllThorns(attacker);
+                
+                AttackEvent(attacker, AbilityTypes.SpellAttack, Mathf.RoundToInt(myCharacter.Buffs[thorns].Item3), 0);
+                
                     
             }
         }
@@ -395,6 +412,7 @@ public class CombatEntity : MonoBehaviour
 
         if (lastSpellCastTargeted == Weapon.SpellTypes.Blood1 || lastSpellCastTargeted == Weapon.SpellTypes.Blood2)
         {
+            //Debug.Log("hey im healing because it was a blood spell " + lastSpellCastTargeted);
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
         if (lastSpellCastTargeted == Weapon.SpellTypes.Sword3)
@@ -463,6 +481,7 @@ public class CombatEntity : MonoBehaviour
         //todo modify it with titles
 
         int bloodpactcount = 0;
+        int immortalcount = 0;
         int tapcount = 0;
         int infiniteStop = 0;
         while (energy > 0 && infiniteStop < 100)
@@ -491,10 +510,41 @@ public class CombatEntity : MonoBehaviour
             }
             if (Spells[roll].Item1 == Weapon.SpellTypes.Blood3)
             {
+                // can cast spell if i already have it
+                int bloodpact = myCharacter.GetIndexOfBuff(BuffTypes.Invulnerable);
+                if (bloodpact != -1)
+                {
+                    infiniteStop += 1;
+                    continue;
+                }
+                
                 if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && bloodpactcount < 2) 
                 {
                     //todo keep an eye on this
                     bloodpactcount += 1;
+
+                }
+                else
+                {
+                    infiniteStop += 1;
+                    continue;
+
+                }
+            }
+            if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow5)
+            {
+                // // can cast spell if i already have it
+                // int immortal = myCharacter.GetIndexOfBuff(BuffTypes.Immortal);
+                // if (immortal != -1)
+                // {
+                //     infiniteStop += 1;
+                //     continue;
+                // }
+                
+                if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && immortalcount < 2) 
+                {
+                    //todo keep an eye on this
+                    immortalcount += 1;
 
                 }
                 else
@@ -559,6 +609,7 @@ public class CombatEntity : MonoBehaviour
 
     public void TriggerAllThorns(CombatEntity target)
     {
+        
         foreach (var thorn in myCharacter.Buffs)
         {
             if (thorn.Item1 == BuffTypes.Thorns)
@@ -617,6 +668,7 @@ public class CombatEntity : MonoBehaviour
 
     public void Buff(CombatEntity target, BuffTypes buff, int turns, float amount)
     {
+
         target.attacker = this;
         BuffEvent(target, buff, turns, amount);
     }

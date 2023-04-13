@@ -251,6 +251,7 @@ public class EquipmentManager : MonoBehaviour
 
     public void EquipFromInventory(Equipment e)
     {
+        //Debug.Log("i only ran once" + e.name) ;
         c._inventory.Remove(e);
         if (!c._equipment.Contains(e))
         {
@@ -270,6 +271,12 @@ public class EquipmentManager : MonoBehaviour
 
         }
         c.UpdateStats();
+        // if incombat
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            UpdateUi();
+
+        }
 
     }
     public void DropItem(Equipment e)
@@ -291,6 +298,12 @@ public class EquipmentManager : MonoBehaviour
         }
         
         c.UpdateStats();
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            UpdateUi();
+
+        }
+        
         
     }
 
@@ -380,6 +393,20 @@ public class EquipmentManager : MonoBehaviour
 
         hasInitialized = true;
     }
+
+    private void UpdateUi()
+    {
+        //CombatController._instance.UpdateUiButtons();
+        
+        // if in combat take one energy
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            //Debug.Log("three times?");
+            c.UpdateEnergyCount(-1);
+        }
+
+    }
+
     
     
 }
