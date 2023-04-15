@@ -19,6 +19,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public static event Action<ErrorMessageManager.Errors> CombatMove;
 
 
+
     [SerializeField] public RectTransform _rectTransform;
     [SerializeField] private Canvas canvas;
     [SerializeField] private CanvasGroup canvasGroup;
@@ -113,6 +114,21 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //Debug.Log("dragging");
         
         _rectTransform.anchoredPosition += eventData.delta/ canvas.scaleFactor;
+        
+        // check if we are over upgrade or sell
+        // if (eventData.pointerDrag != null)
+        // {
+        //     InventorySlot i = eventData.pointerDrag.GetComponent<InventorySlot>();
+        //     if (i == null)
+        //     {
+        //         return;
+        //     }
+        //     if (i.SellType != InventorySlot.SellShopType.None )
+        //     {
+        //         Debug.Log("hi");
+        //     }
+        // }
+
     }
 
     public void OnDrop(PointerEventData eventData)

@@ -165,7 +165,7 @@ public class SelectionManager : MonoBehaviour
                 {
                     equipments.Add(eq);
                     spellCount += 1;
-                    Debug.Log(spellCount);
+                    //Debug.Log(spellCount);
                 }
 
             }

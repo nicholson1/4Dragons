@@ -16,8 +16,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     private Image background;
     [SerializeField] private Color baseColor;
 
+    public SellShopType SellType = SellShopType.None;
+    public bool CanDropHere = true;
+
     
     public static event Action<ErrorMessageManager.Errors> CombatMove;
+    public static event Action<ErrorMessageManager.Errors, int> SellItem;
+
 
 
     public void LabelCheck()
@@ -82,6 +87,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             CombatMove(ErrorMessageManager.Errors.CombatMove);
             return;
         }
+        if (CanDropHere == false)
+        {
+            return;
+        }
+        
         if (eventData.pointerDrag != null)
         {
             DragItem di = eventData.pointerDrag.GetComponent<DragItem>();
@@ -94,6 +104,27 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 Destroy(di.gameObject);
                 return;
             }
+            if (Slot == Equipment.Slot.Sell)
+            {
+                // calculate gold
+                int gold = CalculateGold(di.e, this);
+                //character add gold
+                CombatController._instance.Player._gold += gold;
+                CombatController._instance.Player.UpdateStats();
+
+                //trigger notification event
+                SellItem(ErrorMessageManager.Errors.GetGold, gold);
+
+                
+                
+                di.currentLocation.Item = null;
+                di.currentLocation.LabelCheck();
+                EquipmentManager._instance.DropItem(di.e);
+                Destroy(di.gameObject);
+                
+                
+                return;
+            }
 
             if (Slot != di.slotType && Slot != Equipment.Slot.All)
             {
@@ -103,6 +134,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             
             if (Item == null)
             {
+                di.transform.SetParent(_rt.parent);
 
                 di._rectTransform.anchoredPosition = _rt.anchoredPosition;
                 di._rectTransform.localScale = _rt.localScale;
@@ -114,6 +146,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 if (Slot != Equipment.Slot.All)
                 {
                     EquipmentManager._instance.EquipFromInventory(Item.e);
+                    //di._rectTransform.position = _rt.position;
+
                 }
                 else
                 {
@@ -163,6 +197,64 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         //CombatController.EndCombatEvent -= EndCombat;
 
     }
+    
+    public enum SellShopType
+    {
+        None,
+        Armor,
+        Scrolls,
+        Potions,
+        Weapons,
+        FullHalfPrice,
+    }
+
+    int CalculateGold(Equipment e, InventorySlot SellButton)
+    {
+        // get rarity
+
+        float costReduction= .25f;
+        
+        switch (SellButton.SellType)
+        {
+            case SellShopType.Armor:
+                costReduction = .5f;
+                if (e.slot == Equipment.Slot.Potion || e.slot == Equipment.Slot.Scroll || e.slot == Equipment.Slot.OneHander)
+                {
+                    costReduction = .25f;
+                }
+                break;
+
+            case SellShopType.Weapons:
+                if (e.slot == Equipment.Slot.OneHander)
+                {
+                    costReduction = .5f;
+                }
+                break;
+            case SellShopType.Scrolls:
+                if (e.slot == Equipment.Slot.Scroll)
+                {
+                    costReduction = .5f;
+                }
+                break;
+            case SellShopType.Potions:
+                if (e.slot == Equipment.Slot.Potion)
+                {
+                    costReduction = .5f;
+                }
+                break;
+            case SellShopType.FullHalfPrice:
+                costReduction = .5f;
+                break;
+
+
+
+        }
+        int rarity = e.stats[Equipment.Stats.Rarity] + 1;
+
+        return Mathf.RoundToInt((60 * rarity) * costReduction);
+
+
+    }
     // private void StartCombat()
     // {
     //     canBeDragged = false;
@@ -186,3 +278,5 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     //
     // }
 }
+
+

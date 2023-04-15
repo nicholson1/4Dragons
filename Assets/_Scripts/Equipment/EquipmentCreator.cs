@@ -182,6 +182,14 @@ public class EquipmentCreator : MonoBehaviour
     // uncommon = 1     Power level 10 * level
     // rare = 2         Power level 15 * level
     // epic = 3         Power level 20 * level
+
+    public Equipment CreateRandomArmorWithRarity(int level, int rarity)
+    {
+        // get random slot
+        int slotIndex = Random.Range(0, 6);
+        return CreateArmor(level, (Equipment.Slot)slotIndex, rarity);
+
+    }
     public Equipment CreateArmor(int level, Equipment.Slot slot, int rarity = -1)
     {
         if (rarity == -1)
@@ -271,15 +279,29 @@ public class EquipmentCreator : MonoBehaviour
         //return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Shield2);
     }
     
+    public Weapon CreateRandomWeaponWithRarity(int level, int rarity)
+    {
+        bool isTwoHand = false;
+        Equipment.Slot slot = Equipment.Slot.OneHander;
+        int spellIndex = Random.Range(0, 40);
+        return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
+
+    }
     
+    public Weapon CreateRandomSpellScrollWithRarity(int level, int rarity)
+    {
+        int spellIndex;
+        spellIndex = Random.Range(15, 40);
+        return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
+
+    }
 
     public Weapon CreateRandomSpellScroll(int level)
     {
         int rarity = GetRarity(level);
         int spellIndex;
-        spellIndex = Random.Range(15, 29);
+        spellIndex = Random.Range(15, 40);
         return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
-        //return CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2);
 
         
     }

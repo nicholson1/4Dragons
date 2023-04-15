@@ -95,7 +95,9 @@ namespace ImportantStuff
             Potion,
             All,
             Drop,
-            
+            Sell,
+            Upgrade,
+
         }
 
 

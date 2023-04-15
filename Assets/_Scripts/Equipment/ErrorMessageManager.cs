@@ -13,9 +13,14 @@ public class ErrorMessageManager : MonoBehaviour
         EquipmentManager.InventoryNotifications += Notification;
         CombatEntity.Notification += Notification;
         Character.Notification += Notification;
+        Character.NotificationGold += Notification;
+
         CombatController.CombatNotifications += Notification;
+
         DragItem.CombatMove += Notification;
         InventorySlot.CombatMove += Notification;
+        InventorySlot.SellItem += Notification;
+
     }
 
     private void OnDestroy()
@@ -26,12 +31,37 @@ public class ErrorMessageManager : MonoBehaviour
         Character.Notification -= Notification;
         DragItem.CombatMove -= Notification;
         InventorySlot.CombatMove -= Notification;
+        InventorySlot.SellItem -= Notification;
+
+        Character.NotificationGold -= Notification;
+
 
 
 
 
 
     }
+
+    private void Notification(Errors error, int i)
+    {
+        if (i == 0)
+        {
+            return;
+        }
+        ErrorMessage e = GetMessage();
+        switch (error)
+        {
+            case Errors.GetGold:
+                e.InitializeError("+" + i + " Gold", Color.yellow);
+                break;
+            case Errors.LoseGold:                
+                e.InitializeError( i + " Gold", Color.yellow);
+                break;
+
+        }
+
+    }
+
 
     private void Notification(Errors error)
     {
@@ -75,6 +105,7 @@ public class ErrorMessageManager : MonoBehaviour
         if (UIPooler._instance.NotificationMessages.Count != 0)
         {
             e = UIPooler._instance.NotificationMessages[0].GetComponent<ErrorMessage>();
+            UIPooler._instance.NotificationMessages.RemoveAt(0);
             e.transform.SetParent(this.transform);
             e.gameObject.SetActive(true);
 
@@ -99,5 +130,7 @@ public class ErrorMessageManager : MonoBehaviour
         CriticalHit,
         CriticalHeal,
         CombatMove,
+        GetGold,
+        LoseGold,
     }
 }

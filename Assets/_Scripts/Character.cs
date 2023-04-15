@@ -10,6 +10,7 @@ public class Character : MonoBehaviour
     private string _name;
     public int _level;
     public int _experience;
+    public int _gold;
     public int _currentHealth;
     public int _maxHealth;
     public int _maxEnergy;
@@ -42,6 +43,8 @@ public class Character : MonoBehaviour
     public static event Action<Character,int, int, int> UpdateEnergy; 
     public static event Action<Character> UpdateStatsEvent;
     public static event Action<ErrorMessageManager.Errors> Notification;
+    public static event Action<ErrorMessageManager.Errors, int> NotificationGold;
+
 
 
     private void Start()
@@ -94,6 +97,8 @@ public class Character : MonoBehaviour
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice4));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire3));
+
+            _gold = _level * 2 + (Random.Range(-_level, _level+1));
 
         }
         _equipment.AddRange(_weapons);
@@ -515,6 +520,9 @@ public class Character : MonoBehaviour
                     CombatController._instance.Player.UpdateStats();
 
                     CombatController._instance.EndCombat();
+                    CombatController._instance.Player._gold += _gold;
+                    NotificationGold(ErrorMessageManager.Errors.GetGold, _gold);
+
                     Notification(ErrorMessageManager.Errors.Victory);
                     UIController._instance.ToggleInventoryUI(1);
                     Destroy(this.gameObject);
@@ -640,7 +648,7 @@ public class Character : MonoBehaviour
 
     private void SetMaxHealth()
     {
-        int hp = 50 * _level + 50;
+        int hp = 100 * _level + 100;
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
         hp += hpFromStats;

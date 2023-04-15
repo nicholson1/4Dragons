@@ -13,10 +13,13 @@ public class EquipmentManager : MonoBehaviour
     public static EquipmentManager _instance;
 
     public TextMeshProUGUI levelText;
+    public TextMeshProUGUI goldText;
+
 
     [SerializeField] private DragItem _dragItemPrefab;
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private Transform inventoryTransform;
+    
     //[SerializeField] private TextMeshProUGUI stats;
     public static event Action<ErrorMessageManager.Errors> InventoryNotifications;
 
@@ -54,6 +57,8 @@ public class EquipmentManager : MonoBehaviour
         }
 
         levelText.text = "Level: " + c._level;
+        goldText.text = c._gold.ToString();
+
     }
 
     // private void UpdateStats(Character c)
@@ -305,6 +310,16 @@ public class EquipmentManager : MonoBehaviour
         }
         
         
+    }
+    public void CreateDragItemInShop(Equipment e, InventorySlot slot)
+    {
+        
+        DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+        di.InitializeDragItem(e, slot);
+        di.transform.SetParent(slot._rt.parent);
+        di.transform.position = slot.transform.position;
+
+
     }
 
     public void AddItemToInventoryFromSelection(Equipment e, SelectionItem si)

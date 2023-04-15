@@ -929,41 +929,15 @@ public class TheSpellBook : MonoBehaviour
 
         if (!caster.myCharacter.isPlayerCharacter)
         {
-            //Debug.Log(power);
-            if (caster.myCharacter._level < 5)
-            {
-                power = Mathf.RoundToInt(power * .25f);
-            }
-            else if (caster.myCharacter._level < 10)
-            {
-                power = Mathf.RoundToInt(power * .5f);
+            float adjustment = .075f * caster.myCharacter._level;
 
-            }
-            else if (caster.myCharacter._level < 15)
+            if (adjustment < .25f)
             {
-                power = Mathf.RoundToInt(power * .75f);
-
+                adjustment = .25f;
             }
-            else if (caster.myCharacter._level < 20)
-            {
-                power = Mathf.RoundToInt(power );
-
-            }
-            else if (caster.myCharacter._level < 25)
-            {
-                power = Mathf.RoundToInt(power *1.25f );
-
-            }
-            else if (caster.myCharacter._level < 30)
-            {
-                power = Mathf.RoundToInt(power *1.5f );
-
-            }
-            else
-            {
-                power = Mathf.RoundToInt(power * 2f );
-            }
-            //Debug.Log(power);
+            
+            power = Mathf.RoundToInt(power * adjustment);
+           
 
         }
         
