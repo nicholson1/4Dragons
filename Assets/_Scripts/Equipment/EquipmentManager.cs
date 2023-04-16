@@ -57,6 +57,10 @@ public class EquipmentManager : MonoBehaviour
         }
 
         levelText.text = "Level: " + c._level;
+        if (c._gold < 0)
+        {
+            c._gold = 0;
+        }
         goldText.text = c._gold.ToString();
 
     }

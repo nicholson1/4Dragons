@@ -232,12 +232,14 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     
     public enum SellShopType
     {
-        None,
         Armor,
         Scrolls,
-        Potions,
         Weapons,
         FullHalfPrice,
+        Potions,
+        None,
+
+
     }
 
     int CalculateGold(Equipment e, InventorySlot SellButton)

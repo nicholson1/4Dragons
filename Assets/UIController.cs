@@ -7,7 +7,7 @@ public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
-    [SerializeField] private GameObject MapUI;
+    [SerializeField] private GameObject ShopUI;
 
     public GameObject RestartButton;
 
@@ -72,20 +72,19 @@ public class UIController : MonoBehaviour
             CombatController._instance.UpdateUiButtons();
 
         }
+        //ToggleShopUI();
         
     }
-    
-    public void ToggleCombatUI()
+    bool shopMoving = false;
+
+    public void ToggleShopUI(int force = -1)
     {
-        CombatUI.SetActive(!CombatUI.activeSelf);
-    }
-    public void ToggleMapUI()
-    {
-        MapUI.SetActive(!MapUI.activeSelf);
+        if(!shopMoving)
+            StartCoroutine(MoveShopObject(ShopUI));
     }
 
     IEnumerator MoveObject(GameObject moveObj)
-    {
+    { 
         moving = true;
         
         Vector2 startpos = moveObj.transform.position;
@@ -103,12 +102,29 @@ public class UIController : MonoBehaviour
         moveObj.transform.position = endpos;
 
         moving = false;
+    }
+    IEnumerator MoveShopObject(GameObject moveObj)
+    {
+        
+        shopMoving = true;
+        
+        Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 endpos = new Vector2(-startpos.x, startpos.y);
+        
+        //Debug.Log(startpos);
+        //Debug.Log(endpos);
+            
+        float t = 0;
+        while (t < 1)
+        {
+            moveObj.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
 
+        moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
 
-
-
-
-
+        shopMoving = false;
     }
 
 

@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class ShopManager : MonoBehaviour
 {
@@ -13,32 +16,81 @@ public class ShopManager : MonoBehaviour
     public InventorySlot Item4;
     
     public InventorySlot SellButton;
-    public InventorySlot UpgradeButton;
+    public TextMeshProUGUI RerollButton;
+    public TextMeshProUGUI ShopTitle;
+
 
     public EquipmentCreator EC;
 
     public InventorySlot.SellShopType ShopType;
+    public int shopPrice = 25;
+
+    public static ShopManager _instance;
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
+    public void RandomShop()
+    {
+        // get random shop
+        //Armor,
+        // Scrolls,
+        // Weapons,
+        // FullHalfPrice,
+        InitializeShop(Random.Range(0,4));
+        UIController._instance.ToggleShopUI();
+    }
 
     public void InitializeShop(int i)
     {
         InitializeShop((InventorySlot.SellShopType) i);
     }
 
+    public void ReRollShop()
+    {
+        InitializeShop(ShopType);
+        CombatController._instance.Player._gold -= shopPrice;
+        CombatController._instance.Player.UpdateStats();
+        shopPrice += 25;
+
+
+    }
+    
+
     public void InitializeShop(InventorySlot.SellShopType type)
     {
+        CombatController._instance.NextCombatButton.gameObject.SetActive(false);
+
+        ShopType = type;
         SellButton.SellType = type;
         int level = CombatController._instance.Player._level;
         Equipment e;
         // create drag items
+
+        RerollButton.text = "Reroll - " + shopPrice;
         
+        
+        
+
         ClearItem(Item1);
         ClearItem(Item2);
         ClearItem(Item3);
         ClearItem(Item4);
+
+        ShopTitle.text = GetShopName(type);
         
         switch (type)
         {
             case InventorySlot.SellShopType.Weapons:
+
                 e = EC.CreateRandomWeaponWithRarity(level, 0);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
@@ -52,6 +104,7 @@ public class ShopManager : MonoBehaviour
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
             case InventorySlot.SellShopType.Scrolls:
+
                 e = EC.CreateRandomSpellScrollWithRarity(level, 0);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
@@ -122,6 +175,46 @@ public class ShopManager : MonoBehaviour
         }
         Destroy(slot.Item.gameObject);
         slot.Item = null;
+    }
+
+    private string GetShopName(InventorySlot.SellShopType type)
+    {
+
+        switch (type)
+        {
+            case InventorySlot.SellShopType.FullHalfPrice:
+                return "The Traveling Merchant";
+            case InventorySlot.SellShopType.Weapons:
+                return "The Weaponsmith";
+            case InventorySlot.SellShopType.Armor:
+                return "The Armory";
+            case InventorySlot.SellShopType.Scrolls:
+                return "The Scribe";
+        }
+
+        return "";
+    }
+
+    public void Leave()
+    {
+        UIController._instance.ToggleShopUI();
+        CombatController._instance.NextCombatButton.gameObject.SetActive(true);
+
+    }
+
+    private void UpdateRerollButton(Character c)
+    {
+        RerollButton.GetComponentInParent<Button>().interactable = shopPrice <= CombatController._instance.Player._gold;
+    }
+
+    private void Start()
+    {
+        Character.UpdateStatsEvent += UpdateRerollButton;
+    }
+
+    private void OnDestroy()
+    {
+        Character.UpdateStatsEvent -= UpdateRerollButton;
 
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class CombatController : MonoBehaviour
 {
@@ -40,6 +41,8 @@ public class CombatController : MonoBehaviour
     public Character Player;
 
     private int CurrentTurnIndex = 0;
+
+    private int ShopChancePercent = 0;
     
     private void Awake()
     {
@@ -52,6 +55,28 @@ public class CombatController : MonoBehaviour
             _instance = this;
         }
     }
+
+    public void DecideShopOrCombat()
+    {
+        if (Player._level > 5)
+        {
+            ShopChancePercent += 10;
+        }
+        
+        //do we hit a shop
+        int roll = Random.Range(0, 100);
+        if (roll < ShopChancePercent)
+        {
+            ShopChancePercent = 0;
+            ShopManager._instance.RandomShop();
+        }
+        else
+        {
+            StartRandomCombat();
+        }
+
+    }
+    
     private void TransitionToCombat(Vector3 DirVect)
     {
         //set transition camera to starting point
@@ -316,8 +341,6 @@ public class CombatController : MonoBehaviour
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);
-        // spawn random enemy
-        //Player.transform.position + (DirVect * 5)
         
         Character enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
         enemy.transform.LookAt(Player.transform.position);

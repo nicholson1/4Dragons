@@ -472,7 +472,7 @@ public class TheSpellBook : MonoBehaviour
         else if (abilityType == CombatEntity.AbilityTypes.PhysicalAttack)
         {
             //bleed
-            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,2, Mathf.RoundToInt(power[0]/2f), crit);
+            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,1, Mathf.RoundToInt(power[0]/2f), crit);
 
         }
 

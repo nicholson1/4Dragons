@@ -443,7 +443,7 @@ public class EquipmentCreator : MonoBehaviour
 
     private int GetPowerBudget(int level, int rarity)
     {
-        return level * (5 * (rarity + 1));
+        return level * ((3 * (rarity + 1)) + 2);
     }
 
     private void GenerateStats(int powerBudget)
