@@ -346,20 +346,7 @@ public class CombatEntity : MonoBehaviour
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
 
         }
-        //if we have thorns deal that damage back to the caster
-        int thorns = myCharacter.GetIndexOfBuff(BuffTypes.Thorns);
-        if (thorns != -1)
-        {
-            if (attacker != null && attacker != this)
-            {
-                // do it for EACH thorn buff
-                //TriggerAllThorns(attacker);
-                
-                AttackEvent(attacker, AbilityTypes.SpellAttack, Mathf.RoundToInt(myCharacter.Buffs[thorns].Item3), 0);
-                
-                    
-            }
-        }
+        
         
         
         int attackDamage = damagePreReduction - reductionAmount;
@@ -431,6 +418,21 @@ public class CombatEntity : MonoBehaviour
         if (lastSpellCastTargeted == Weapon.SpellTypes.Sword3)
         {
             attacker.Buff(attacker, CombatEntity.BuffTypes.Block, 1, Mathf.RoundToInt(attackDamage/(float)2));
+        }
+        
+        //if we have thorns deal that damage back to the caster
+        int thorns = myCharacter.GetIndexOfBuff(BuffTypes.Thorns);
+        if (thorns != -1)
+        {
+            if (attacker != null && attacker != this)
+            {
+                // do it for EACH thorn buff
+                //TriggerAllThorns(attacker);
+                
+                AttackEvent(attacker, AbilityTypes.SpellAttack, Mathf.RoundToInt(myCharacter.Buffs[thorns].Item3), 0);
+                
+                    
+            }
         }
 
 
