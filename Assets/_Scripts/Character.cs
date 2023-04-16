@@ -81,6 +81,9 @@ public class Character : MonoBehaviour
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             _equipment = EC.CreateAllEquipment(_level);
 
+           
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
             if (_level <= 5)
             {
                 _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
@@ -90,9 +93,18 @@ public class Character : MonoBehaviour
                 _weapons.Add(EC.CreateRandomWeapon(_level, false));
 
             }
-            _weapons.Add(EC.CreateRandomWeapon(_level, false));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+
+            if (!HasDamageSpell(_spellScrolls) && !HasDamageSpell(_weapons))
+            {
+                // if we have no damage abilitys yet, give em one
+                _weapons.Add(EC.CreateRandomWeaponWithSpell(_level,
+                    (Weapon.SpellTypes)GetRandomDamageSpell()));
+            }
+            else
+            {
+                _weapons.Add(EC.CreateRandomWeapon(_level, false));
+            }
+            
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice4));
@@ -447,12 +459,17 @@ public class Character : MonoBehaviour
                 //check if we already have it
                 if (i != -1)
                 {
-                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, amount);
+                    float reduct = DeBuffs[i].Item3 + 10;
+                    if (reduct > 50)
+                    {
+                        reduct = 50;
+                    }
+                    
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + 1, reduct);
                 }
                 else
                 {
-                    DeBuffs.Add((deBuff,turns,amount));
-
+                    DeBuffs.Add((deBuff,turns,10));
                 }
                 break;
             case CombatEntity.DeBuffTypes.Wounded:
@@ -648,7 +665,7 @@ public class Character : MonoBehaviour
 
     private void SetMaxHealth()
     {
-        int hp = 100 * _level + 100;
+        int hp = 75 * _level + 25;
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
         hp += hpFromStats;
@@ -710,6 +727,32 @@ public class Character : MonoBehaviour
         return printString;
     }
     
+    
+    bool HasDamageSpell(List<Weapon> equipments)
+    {
+        bool hasDamage = false;
+        foreach (var eq in equipments)
+        {
+            Weapon wep = (Weapon)eq;
+            // get the spell
+            int spellIndex = (int)wep.spellType1;
+            List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
+            IList abilities = (IList)scaling[(int)spellIndex][4];
+
+            if (abilities.Contains(0) || abilities.Contains(1))
+            {
+                hasDamage = true;
+            }
+        }
+
+        return hasDamage;
+    }
+    
+    int GetRandomDamageSpell()
+    {
+        int[] damageSpells = new[] { 0,1,2,3,6,7,8,9,10,11,12,13,14, 17, 18, 21, 22, 23, 27, 28, 30, 31, 37  };
+        return damageSpells[Random.Range(0, damageSpells.Length)];
+    }
     
     
     

@@ -317,7 +317,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Ice5:
                 Debuff = CombatEntity.DeBuffTypes.Chilled;
-                caster.DeBuff(target, CombatEntity.DeBuffTypes.Exposed, power[1], Mathf.RoundToInt(power[0]));
+                caster.DeBuff(target, CombatEntity.DeBuffTypes.Exposed, power[1], 10);
                 break;
             case Weapon.SpellTypes.Dagger2:
                 Debuff = CombatEntity.DeBuffTypes.Wounded;
@@ -327,9 +327,11 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Fire1:
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
+                power[0] = 10;
                 break;
             case Weapon.SpellTypes.Hammer2:
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
+                power[0] = 10;
                 break;
         }
         
@@ -929,7 +931,7 @@ public class TheSpellBook : MonoBehaviour
 
         if (!caster.myCharacter.isPlayerCharacter)
         {
-            float adjustment = .075f * caster.myCharacter._level;
+            float adjustment = .1f * caster.myCharacter._level;
 
             if (adjustment < .25f)
             {

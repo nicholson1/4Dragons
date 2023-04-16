@@ -84,13 +84,15 @@ public class CombatEntity : MonoBehaviour
                 myCharacter.DeBuffs.RemoveAt(i);
                 
             }
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
 
             
         }
         ReduceDebuffCount(myCharacter);
         isMyTurn = false;
+        disableDoubleClick = false;
         CombatController._instance.EndCurrentTurn();
+        yield return null;
 
 
     }
@@ -227,14 +229,21 @@ public class CombatEntity : MonoBehaviour
         }
     }
 
+    private bool disableDoubleClick = false;
+    
     public void EndTurn()
     {
+        if (disableDoubleClick)
+        {
+            return;
+        }
         
 
         if (myCharacter.isPlayerCharacter)
         {
+            disableDoubleClick = true;
             // disable end turn 
-            isMyTurn = false;
+            //isMyTurn = false;
             Debug.Log("ran twice");
             TriggerAllDebuffs();
         }
@@ -359,7 +368,11 @@ public class CombatEntity : MonoBehaviour
         if (exposed != -1)
         {
             // if we have exposed increase damage taken by 50%
-            attackDamage = Mathf.RoundToInt(attackDamage * 1.5f);
+            
+            //get the value
+            float exposedAmount = myCharacter.DeBuffs[exposed].Item3;
+            Debug.Log(exposedAmount +" " + (1+ exposedAmount/100));
+            attackDamage = Mathf.RoundToInt(attackDamage * (1+ exposedAmount/100));
         }
 
 

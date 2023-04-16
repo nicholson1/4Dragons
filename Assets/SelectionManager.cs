@@ -149,6 +149,14 @@ public class SelectionManager : MonoBehaviour
             {
                 Equipment eq = EC.CreateRandomWeapon(level, false);
 
+                if (spellCount == 3)
+                {
+                    if (!HasDamageSpell(equipments))
+                    {
+                        eq = EC.CreateWeapon(level, 0, Equipment.Slot.OneHander,(Weapon.SpellTypes)GetRandomDamagePhysicalSpellInt());
+                    }
+                }
+                
                 Weapon w = (Weapon)eq;
 
                 bool hasSpell = false;
@@ -181,6 +189,16 @@ public class SelectionManager : MonoBehaviour
             {
                 Equipment eq = EC.CreateRandomSpellScroll(level);
 
+                if (spellCount == 3)
+                {
+                    if (!HasDamageSpell(equipments))
+                    {
+                        eq = EC.CreateSpellScroll(level, 0, (Weapon.SpellTypes)GetRandomDamageSpellInt());
+                    }
+                }
+
+                
+
                 Weapon w = (Weapon)eq;
 
                 bool hasSpell = false;
@@ -192,6 +210,7 @@ public class SelectionManager : MonoBehaviour
                         hasSpell = true;
                     }
                 }
+                
 
                 if (hasSpell == false)
                 {
@@ -243,6 +262,39 @@ public class SelectionManager : MonoBehaviour
         {
             startingSelections = false;
         }
+        
+        
 
+    }
+
+    bool HasDamageSpell(List<Equipment> equipments)
+    {
+        bool hasDamage = false;
+        foreach (var eq in equipments)
+        {
+            Weapon wep = (Weapon)eq;
+            // get the spell
+            int spellIndex = (int)wep.spellType1;
+            List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
+            IList abilities = (IList)scaling[(int)spellIndex][4];
+
+            if (abilities.Contains(0) || abilities.Contains(1))
+            {
+                hasDamage = true;
+            }
+        }
+
+        return hasDamage;
+    }
+
+    int GetRandomDamageSpellInt()
+    {
+        int[] damageSpells = new[] { 17, 18, 21, 22, 23, 27, 28, 30, 31, 37 };
+        return damageSpells[Random.Range(0, damageSpells.Length)];
+    }
+    int GetRandomDamagePhysicalSpellInt()
+    {
+        int[] damageSpells = new[] { 0,1,2,3,6,7,8,9,10,11,12,13,14 };
+        return damageSpells[Random.Range(0, damageSpells.Length)];
     }
 }

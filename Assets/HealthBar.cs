@@ -183,6 +183,10 @@ public class HealthBar : MonoBehaviour
             return;
 
         int count = intentDisplay.childCount;
+        if (count == 0)
+        {
+            return;
+        }
         intentDisplay.GetChild(count - 1).gameObject.SetActive(false);
         UIPooler._instance.IntentPool.Add(intentDisplay.GetChild(count - 1).gameObject);
         intentDisplay.GetChild(count - 1).SetParent(UIPooler._instance.transform);
@@ -379,6 +383,14 @@ public class HealthBar : MonoBehaviour
                     if (debuff == CombatEntity.DeBuffTypes.Burn || debuff == CombatEntity.DeBuffTypes.Bleed)
                     {
                         b._amount += amount;
+                    }
+                    if (debuff == CombatEntity.DeBuffTypes.Exposed)
+                    {
+                        b._amount += 10;
+                        if (b._amount > 50)
+                        {
+                            b._amount = 50;
+                        }
                     }
                     b._turns += turns;
                     b.UpdateValues();
