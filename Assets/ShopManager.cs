@@ -30,6 +30,12 @@ public class ShopManager : MonoBehaviour
         int level = CombatController._instance.Player._level;
         Equipment e;
         // create drag items
+        
+        ClearItem(Item1);
+        ClearItem(Item2);
+        ClearItem(Item3);
+        ClearItem(Item4);
+        
         switch (type)
         {
             case InventorySlot.SellShopType.Weapons:
@@ -106,5 +112,16 @@ public class ShopManager : MonoBehaviour
     {
         slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text =
             ((slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60).ToString();
+    }
+
+    void ClearItem(InventorySlot slot)
+    {
+        if (slot.Item == null)
+        {
+            return;
+        }
+        Destroy(slot.Item.gameObject);
+        slot.Item = null;
+
     }
 }

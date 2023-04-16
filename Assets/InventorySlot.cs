@@ -22,6 +22,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     
     public static event Action<ErrorMessageManager.Errors> CombatMove;
     public static event Action<ErrorMessageManager.Errors, int> SellItem;
+    public static event Action<ErrorMessageManager.Errors> NotEnoughGold;
+
 
 
 
@@ -61,7 +63,15 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             else
             {
-                SlotLable.text = "";
+                if (CanDropHere)
+                {
+                    SlotLable.text = "";
+                }
+                else
+                {
+                    SlotLable.text = "Sold!";
+
+                }
             }
             SlotLable.gameObject.SetActive(true);
 
@@ -125,6 +135,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 
                 return;
             }
+            
 
             if (Slot != di.slotType && Slot != Equipment.Slot.All)
             {
@@ -132,10 +143,31 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             
             
+
+            if (!di.currentLocation.CanDropHere)
+            {
+                // if item is coming from shop
+                // check if we have enough gold if we dont return
+                int currentGold = CombatController._instance.Player._gold;
+                int cost = (di.e.stats[Equipment.Stats.Rarity] + 1) * 60;
+                if (currentGold < cost)
+                {
+                    NotEnoughGold(ErrorMessageManager.Errors.NotEnoughGold);
+                    return;
+                }
+                // if we do - gold
+                CombatController._instance.Player._gold -= cost;
+                SellItem(ErrorMessageManager.Errors.LoseGold, -cost);
+                Debug.Log("why not here");
+
+
+            }
+            
             if (Item == null)
             {
+                
+                
                 di.transform.SetParent(_rt.parent);
-
                 di._rectTransform.anchoredPosition = _rt.anchoredPosition;
                 di._rectTransform.localScale = _rt.localScale;
                 di.currentLocation.Item = null;

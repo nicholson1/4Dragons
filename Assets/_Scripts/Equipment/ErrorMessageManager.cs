@@ -20,6 +20,7 @@ public class ErrorMessageManager : MonoBehaviour
         DragItem.CombatMove += Notification;
         InventorySlot.CombatMove += Notification;
         InventorySlot.SellItem += Notification;
+        InventorySlot.NotEnoughGold += Notification;
 
     }
 
@@ -34,6 +35,8 @@ public class ErrorMessageManager : MonoBehaviour
         InventorySlot.SellItem -= Notification;
 
         Character.NotificationGold -= Notification;
+        InventorySlot.NotEnoughGold -= Notification;
+
 
 
 
@@ -92,6 +95,9 @@ public class ErrorMessageManager : MonoBehaviour
                 break;
             case Errors.CombatMove:
                 e.InitializeError("You Don't Have Enough Energy", Color.white);
+                break;
+            case Errors.NotEnoughGold:
+                e.InitializeError("You Don't Have Enough Gold", Color.yellow);
                 break;
 
                 
