@@ -254,6 +254,7 @@ public class TheSpellBook : MonoBehaviour
                     BasicSpellAttack(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Shadow4:
+                    BasicSpellAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
                 case Weapon.SpellTypes.Shadow5:
@@ -931,11 +932,12 @@ public class TheSpellBook : MonoBehaviour
 
         if (!caster.myCharacter.isPlayerCharacter)
         {
-            float adjustment = .1f * caster.myCharacter._level;
+            //float adjustment = .05f * caster.myCharacter._level;
 
-            if (adjustment < .25f)
+            float adjustment = .5f;
+            if (adjustment < .5f)
             {
-                adjustment = .25f;
+                adjustment = .5f;
             }
             
             power = Mathf.RoundToInt(power * adjustment);

@@ -458,7 +458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1913,6 +1913,7 @@ MonoBehaviour:
   NextCombatButton: {fileID: 2139860285}
   EndTurnButton: {fileID: 341539784}
   playerOffset: {x: 3, y: 3, z: -5}
+  turnCounter: 0
   Player: {fileID: 1887791475}
 --- !u!114 &112750801
 MonoBehaviour:
@@ -1952,7 +1953,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 4637953d65a24364aab3372a525b9ed2, type: 3}
   BuffDescriptions:
   - Block @ damage on the next turn
-  - At the begining of the next $ turns heal @ HP
+  - 'Heal @ HP at the begining of the next $ turns '
   - 'Deal @ spell damage when struck with a damaging ability over the next $ turns '
   - Take no damage from enemies for the next $ turns
   - 'Increase damage done by @% for the next $ turns '
@@ -23226,7 +23227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

@@ -88,6 +88,8 @@ public class ToolTipManager : MonoBehaviour
 
    public void SetAndShowToolTip(string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip)
    {
+      transform.position = Input.mousePosition;
+
 
       if (activated)
       {

@@ -28,6 +28,7 @@ public class CombatController : MonoBehaviour
 
     public Vector3 playerOffset = new Vector3();
 
+    public int turnCounter = 0;
     public static event Action EndTurn;
     // public static event Action EndCombatEvent;
     // public static event Action StartCombatEvent;
@@ -208,10 +209,43 @@ public class CombatController : MonoBehaviour
 
     }
 
+    public void Tie()
+    {
+        ToolTipManager._instance.HideToolTipAll();
+        Player._currentHealth = Player._maxHealth;
+        Player._currentEnergy = 0;
+        
+        Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
+        Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
+                    
+        Player.UpdateStats();
+
+        EndCombat();
+        
+        // trigger its a tie
+        CombatNotifications(ErrorMessageManager.Errors.Tie);
+        // activate next button
+        NextCombatButton.gameObject.SetActive(true);
+        // deactivate enemy
+        Destroy(entitiesInCombat[1].gameObject);
+        
+        
+
+    }
+
 
     public void EndCurrentTurn()
     {
         // wait till no combat entitiy is intentionsRunning
+
+        Debug.Log(turnCounter + " turn counter");
+        if (turnCounter > 30)
+        {
+            Tie();
+            return;
+        }
+
+        turnCounter += 1;
         
         EndTurn();
         CurrentTurnIndex += 1;
@@ -338,6 +372,8 @@ public class CombatController : MonoBehaviour
 
     public void StartRandomCombat()
     {
+        
+        
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);
@@ -345,8 +381,8 @@ public class CombatController : MonoBehaviour
         Character enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
         enemy.transform.LookAt(Player.transform.position);
         enemy._level = Player._level;
-        
-        
+
+        turnCounter = 0;
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
 

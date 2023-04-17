@@ -99,6 +99,9 @@ public class ErrorMessageManager : MonoBehaviour
             case Errors.NotEnoughGold:
                 e.InitializeError("You Don't Have Enough Gold", Color.yellow);
                 break;
+            case Errors.Tie:
+                e.InitializeError("Its a Draw!", Color.blue);
+                break;
 
                 
 
@@ -138,5 +141,6 @@ public class ErrorMessageManager : MonoBehaviour
         CombatMove,
         GetGold,
         LoseGold,
+        Tie,
     }
 }
