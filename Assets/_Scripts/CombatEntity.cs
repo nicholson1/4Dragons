@@ -646,6 +646,8 @@ public class CombatEntity : MonoBehaviour
         string trigger = ((TheSpellBook.AnimationTriggerNames)powerValues[2]).ToString();
         myCharacter._am.SetTrigger(trigger);
         
+        ParticleManager._instance.SpawnParticle(this, Target, spell);
+        
         
     }
     
@@ -687,7 +689,7 @@ public class CombatEntity : MonoBehaviour
     
     public IEnumerator WaitThenGetDoAttack(float time, CombatEntity target,  AbilityTypes attackType, int damage, float crit)
     {
-        Debug.Log(time);
+        //Debug.Log(time);
         yield return new WaitForSeconds(time);
         AttackEvent(target, attackType, Mathf.RoundToInt(damage * CalculateDamageAdjustments()), crit);
 

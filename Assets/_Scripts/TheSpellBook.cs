@@ -274,9 +274,13 @@ public class TheSpellBook : MonoBehaviour
         {
             case CombatEntity.DeBuffTypes.Bleed:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
+                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Axe2);
+
                 break;
             case CombatEntity.DeBuffTypes.Burn:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
+                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Fire2);
+
                 break;
         }
         
@@ -299,6 +303,8 @@ public class TheSpellBook : MonoBehaviour
         {
             case CombatEntity.BuffTypes.Rejuvenate:
                 target.Heal(target, Mathf.RoundToInt(buff.Item3), 0);
+                ParticleManager._instance.SpawnParticle(target, null, Weapon.SpellTypes.Nature1);
+
                 break;
             
         }

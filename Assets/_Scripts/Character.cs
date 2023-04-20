@@ -75,8 +75,8 @@ public class Character : MonoBehaviour
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Dagger3));
             //_weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
-            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe3));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield3));
         }
         else
         {
