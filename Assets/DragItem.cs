@@ -175,11 +175,12 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 {
                     // it is in out equipment
                     //Debug.Log( di.e.name+ " => removing " + e.name);
-                    EquipmentManager._instance.EquipFromInventory(di.e);
                     if (this.currentLocation.Slot == Equipment.Slot.All)
                     {
                         EquipmentManager._instance.UnEquipItem(e);
                     }
+                    EquipmentManager._instance.EquipFromInventory(di.e);
+                    
                     
                 }
                 //EquipmentManager._instance.c.UpdateStats();

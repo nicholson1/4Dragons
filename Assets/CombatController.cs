@@ -238,7 +238,7 @@ public class CombatController : MonoBehaviour
     {
         // wait till no combat entitiy is intentionsRunning
 
-        Debug.Log(turnCounter + " turn counter");
+        //Debug.Log(turnCounter + " turn counter");
         if (turnCounter > 30)
         {
             Tie();

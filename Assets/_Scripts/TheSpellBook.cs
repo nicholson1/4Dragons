@@ -21,6 +21,7 @@ public class TheSpellBook : MonoBehaviour
     [SerializeField] private Sprite[] DeBuffSprites;
     [SerializeField] private String[] DeBuffDescriptions;
     
+    
     public Color[] abilityColors;
     
     
@@ -272,10 +273,10 @@ public class TheSpellBook : MonoBehaviour
         switch (debuff.Item1)
         {
             case CombatEntity.DeBuffTypes.Bleed:
-                target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0);
+                target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
                 break;
             case CombatEntity.DeBuffTypes.Burn:
-                target.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Mathf.RoundToInt(debuff.Item3), 0);
+                target.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
                 break;
         }
         
@@ -518,7 +519,7 @@ public class TheSpellBook : MonoBehaviour
         float crit = FigureOutHowMuchCrit(caster);
 
         target.lastSpellCastTargeted = spell;
-        caster.AttackBasic(target, abilityType, power[0], crit);
+        caster.AttackBasic(target, abilityType, power[0], crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
         
         //Debug.Log(Mathf.RoundToInt(Damage) + " - initial physical");
         //Debug.Log(AD + " ad initial");
@@ -545,7 +546,8 @@ public class TheSpellBook : MonoBehaviour
                  damageType = CombatEntity.AbilityTypes.SpellAttack;
                  break;
          }
-         int power = GetPowerValues(spell, w, caster)[0];
+         List<int> powerValues = GetPowerValues(spell, w, caster);
+         
          
         float crit = FigureOutHowMuchCrit(caster);
         foreach (var t in CombatController._instance.entitiesInCombat)
@@ -553,7 +555,7 @@ public class TheSpellBook : MonoBehaviour
             if (t != caster)
             {
                 t.lastSpellCastTargeted = spell;
-                caster.AttackBasic(t, damageType, power, crit);
+                caster.AttackBasic(t, damageType, powerValues[0], crit, WaitTimeForAnimation((AnimationTriggerNames)powerValues[2]));
                 if (spell == Weapon.SpellTypes.Ice3)
                 {
                     BasicNonDamageDebuff(spell, w, caster, t);
@@ -572,7 +574,7 @@ public class TheSpellBook : MonoBehaviour
         
         target.lastSpellCastTargeted = spell;
         
-        caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
+        caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Damage, crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
 
 
     }
@@ -626,12 +628,12 @@ public class TheSpellBook : MonoBehaviour
     }
     private void Pyroblast(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
-        int Damage = GetPowerValues(spell, w, caster)[0];
+        List<int> power = GetPowerValues(spell, w, caster);
 
         float crit = FigureOutHowMuchCrit(caster);
         
         // big hit on target
-        caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
+        caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, power[0], crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
         // smaller hit on all other
         foreach (var t in CombatController._instance.entitiesInCombat)
         {
@@ -640,7 +642,7 @@ public class TheSpellBook : MonoBehaviour
                 Debug.Log("AOE DAMAGE FROM PYRO");
                 //caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
 
-                caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, Damage/4, crit);
+                caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, power[0]/4, crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
 
             }
         }
@@ -666,6 +668,8 @@ public class TheSpellBook : MonoBehaviour
         int lvl;
         w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
         power += (int)scaling[1] * lvl;
+        /// animation stuff ///////////////////
+        AnimationTriggerNames animTrigger = AnimationTriggerNames.Reset;
 
         ////////// specialty scaled power ///////////////////
 
@@ -677,157 +681,197 @@ public class TheSpellBook : MonoBehaviour
             case Weapon.SpellTypes.Dagger1:
                 casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Stab;
                 break;
             case Weapon.SpellTypes.Dagger2:
                 casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
                 turn = 1;
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Stab;
                 break;
             case Weapon.SpellTypes.Dagger3:
                 casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hack;
                 break;
             case Weapon.SpellTypes.Shield1:
                 casterStats.TryGetValue(Equipment.Stats.Shields, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hack;
                 break;
             case Weapon.SpellTypes.Shield2:
                 casterStats.TryGetValue(Equipment.Stats.Shields, out p);
                 turn = 1;
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Block;
                 break;
             case Weapon.SpellTypes.Shield3:
                 casterStats.TryGetValue(Equipment.Stats.Shields, out p);
                 turn = 1;
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Block;
                 break;
             case Weapon.SpellTypes.Sword1:
                 casterStats.TryGetValue(Equipment.Stats.Swords, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hack;
                 break;
             case Weapon.SpellTypes.Sword2:
                 casterStats.TryGetValue(Equipment.Stats.Swords, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Spin;
                 break;
             case Weapon.SpellTypes.Sword3:
                 casterStats.TryGetValue(Equipment.Stats.Swords, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 useSP = false;
                 break;
             case Weapon.SpellTypes.Axe1:
                 casterStats.TryGetValue(Equipment.Stats.Axes, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hack;
                 break;
             case Weapon.SpellTypes.Axe2:
                 casterStats.TryGetValue(Equipment.Stats.Axes, out p);
+                animTrigger = AnimationTriggerNames.Hack;
                 turn = 1;
                 useSP = false;
                 break;
             case Weapon.SpellTypes.Axe3:
                 casterStats.TryGetValue(Equipment.Stats.Axes, out p);
+                animTrigger = AnimationTriggerNames.Hammer;
                 useSP = false;
                 break;
             case Weapon.SpellTypes.Hammer1:
                 casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hack;
                 break;
             case Weapon.SpellTypes.Hammer2:
                 casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
                 turn = 2;
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hammer;
                 break;
             case Weapon.SpellTypes.Hammer3:
                 casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
                 useSP = false;
+                animTrigger = AnimationTriggerNames.Hammer;
                 break;
             case Weapon.SpellTypes.Nature1:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
                 turn = 2;
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Nature2:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Nature3:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 2;
                 break;
             case Weapon.SpellTypes.Nature4:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 break;
             case Weapon.SpellTypes.Nature5:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
                 turn = 1;
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Fire1:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
                 turn = 2;
+                animTrigger = AnimationTriggerNames.BigSpell;
                 break;
             case Weapon.SpellTypes.Fire2:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
                 turn = 2;
+                animTrigger = AnimationTriggerNames.BigSpell;
                 break;
             case Weapon.SpellTypes.Fire3:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 break;
             case Weapon.SpellTypes.Fire4:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+                animTrigger = AnimationTriggerNames.BigSpell;
                 break;
             case Weapon.SpellTypes.Fire5:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
                 turn = 1;
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Ice1:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
                 turn = 1;
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Ice2:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 2;
                 break;
             case Weapon.SpellTypes.Ice3:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+                animTrigger = AnimationTriggerNames.BigSpell;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Ice4:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Ice5:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Blood1:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                animTrigger = AnimationTriggerNames.BigSpellRev;
                 break;
             case Weapon.SpellTypes.Blood2:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                animTrigger = AnimationTriggerNames.BigSpellRev;
                 break;
             case Weapon.SpellTypes.Blood3:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Blood4:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Blood5:
                 casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 break;
             case Weapon.SpellTypes.Shadow1:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Shadow2:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Shadow3:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 break;
             case Weapon.SpellTypes.Shadow4:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+                animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Shadow5:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+                animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
 
@@ -986,7 +1030,7 @@ public class TheSpellBook : MonoBehaviour
 
         //Debug.Log(power + " " + spell.ToString());
 
-        return new List<int>(){ power, turn};
+        return new List<int>(){ power, turn, (int)animTrigger};
 
     }
     public float FigureOutHowMuchCrit(CombatEntity caster)
@@ -1019,6 +1063,60 @@ public class TheSpellBook : MonoBehaviour
         //Debug.Log(critPercent);
         
         return critPercent;
+    }
+
+    public float WaitTimeForAnimation(AnimationTriggerNames trig)
+    {
+        float time = 0;
+        switch (trig)
+        {
+            case AnimationTriggerNames.HealOrBuff:
+                time = .25f;
+                break;
+            case AnimationTriggerNames.Spin:
+                time = .5f;
+                break;
+            case AnimationTriggerNames.Hack:
+                time = .5f;
+                break;
+            case AnimationTriggerNames.Stab:
+                time = .3f;
+                break;
+            case AnimationTriggerNames.SmallSpell:
+                time = .3f;
+                break;
+            case AnimationTriggerNames.BigSpell:
+                time = .75f;
+                break;
+            case AnimationTriggerNames.Block:
+                time = .25f;
+                break;
+            case AnimationTriggerNames.Hammer:
+                time = .50f;
+                break;
+            case AnimationTriggerNames.BigSpellRev:
+                time = .75f;
+                break;
+            
+        }
+
+        return time;
+    }
+
+    public enum AnimationTriggerNames
+    {
+        HealOrBuff,
+        Spin,
+        Hack,
+        Stab,
+        SmallSpell,
+        BigSpell,
+        Block,
+        Hammer,
+        SmallHit,
+        Die,
+        Reset,
+        BigSpellRev
     }
     
     // public CombatEntity.DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)

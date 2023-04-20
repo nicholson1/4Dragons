@@ -20,10 +20,11 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private Transform inventoryTransform;
     
-    //[SerializeField] private TextMeshProUGUI stats;
     public static event Action<ErrorMessageManager.Errors> InventoryNotifications;
 
     [SerializeField] private StatDisplay[] _statDisplays;
+    
+    
 
     private void Awake()
     {
@@ -113,7 +114,23 @@ public class EquipmentManager : MonoBehaviour
                         {
                             c._weapons.Add(x);
                         }
+
+                        if (c._weapons.Count > 1)
+                        {
+                            c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+                        }
+                        else if (c._weapons.Count == 1)
+                        {
+                            c.EqMM.UpdateWeapon(c._weapons[0], null);
+                        }
+                        else
+                        {
+                            c.EqMM.UpdateWeapon(null, null);
+
+                        }
+
                     }
+                    c.EqMM.UpdateSlot(e);
                     c.UpdateStats();
                     //Debug.Log(c.GetStats()[Equipment.Stats.CritChance]);
 
@@ -162,8 +179,24 @@ public class EquipmentManager : MonoBehaviour
                                 {
                                     c._weapons.Add(x);
                                 }
+                                if (c._weapons.Count > 1)
+                                {
+                                    c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+                                }
+                                else if (c._weapons.Count == 1)
+                                {
+                                    c.EqMM.UpdateWeapon(c._weapons[0], null);
+                                }
+                                else
+                                {
+                                    c.EqMM.UpdateWeapon(null, null);
+
+                                }
+
                             }
                             c.UpdateStats();
+                            c.EqMM.UpdateSlot(e);
+
                     
                             si.RemoveSelection();
                             return;
@@ -196,12 +229,26 @@ public class EquipmentManager : MonoBehaviour
                         else
                         {
                             c._weapons.Add(x);
-                            c._spellScrolls.Remove(eq);
+                            c._weapons.Remove(eq);
 
                         }
+                        if (c._weapons.Count > 1)
+                        {
+                            c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+                        }
+                        else if (c._weapons.Count == 1)
+                        {
+                            c.EqMM.UpdateWeapon(c._weapons[0], null);
+                        }
+                        else
+                        {
+                            c.EqMM.UpdateWeapon(null, null);
+
+                        }
+
                     }
                     c.UpdateStats();
-                    
+                    c.EqMM.UpdateSlot(e);
                     si.RemoveSelection();
                     return;
 
@@ -227,7 +274,23 @@ public class EquipmentManager : MonoBehaviour
                 {
                     c._weapons.Add(x);
                 }
+                if (c._weapons.Count > 1)
+                {
+                    c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+                }
+                else if (c._weapons.Count == 1)
+                {
+                    c.EqMM.UpdateWeapon(c._weapons[0], null);
+                }
+                else
+                {
+                    c.EqMM.UpdateWeapon(null, null);
+
+                }
+
             }
+            c.EqMM.UpdateSlot(e);
+
         }
         c.UpdateStats();
 
@@ -252,8 +315,22 @@ public class EquipmentManager : MonoBehaviour
             {
                 c._weapons.Remove(x);
             }
+            if (c._weapons.Count > 1)
+            {
+                c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+            }
+            else if (c._weapons.Count == 1)
+            {
+                c.EqMM.UpdateWeapon(c._weapons[0], null);
+            }
+            else
+            {
+                c.EqMM.UpdateWeapon(null, null);
+
+            }
         }
-        
+        c.EqMM.UpdateSlot(e, true);
+
         c.UpdateStats();
 
     }
@@ -276,10 +353,25 @@ public class EquipmentManager : MonoBehaviour
                 {
                     c._weapons.Add(x);
                 }
+                if (c._weapons.Count > 1)
+                {
+                    c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+                }
+                else if (c._weapons.Count == 1)
+                {
+                    c.EqMM.UpdateWeapon(c._weapons[0], null);
+                }
+                else
+                {
+                    c.EqMM.UpdateWeapon(null, null);
+
+                }
             }
 
         }
         c.UpdateStats();
+        c.EqMM.UpdateSlot(e);
+
         // if incombat
         if (CombatController._instance.entitiesInCombat.Count > 1)
         {
@@ -290,8 +382,13 @@ public class EquipmentManager : MonoBehaviour
     }
     public void DropItem(Equipment e)
     {
+        if (c._equipment.Contains(e))
+        {
+            c.EqMM.UpdateSlot(e, true);
+            c._equipment.Remove(e);
+
+        }
         c._inventory.Remove(e);
-        c._equipment.Remove(e);
         
         if (e.isWeapon)
         {
@@ -303,6 +400,19 @@ public class EquipmentManager : MonoBehaviour
             else
             {
                 c._weapons.Remove(x);
+            }
+            if (c._weapons.Count > 1)
+            {
+                c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+            }
+            else if (c._weapons.Count == 1)
+            {
+                c.EqMM.UpdateWeapon(c._weapons[0], null);
+            }
+            else
+            {
+                c.EqMM.UpdateWeapon(null, null);
+
             }
         }
         

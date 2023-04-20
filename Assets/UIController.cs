@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,9 +10,18 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
 
+    [SerializeField] private GameObject CustomizeUI;
+
+    [SerializeField] private GameObject BeginAdventureButton;
+    [SerializeField] private GameObject CustomizeButton;
+
+    [SerializeField] private GameObject MainCamera;
+    [SerializeField] private GameObject TransitionCamera;
+    [SerializeField] private GameObject UiCamera;
+    
+    
+    
     public GameObject RestartButton;
-
-
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
 
@@ -23,6 +33,81 @@ public class UIController : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
+    public void LeaveMainMenu()
+    {
+        CustomizeButton.SetActive(false);
+    }
+
+
+    public void ActivateCustomizeUI()
+    {
+        StartCoroutine(TransitionToUiCamera(1, 1));
+    }
+
+    public void ActivateMainMenu()
+    {
+        StartCoroutine(TransitionToMainCamera(1, 1));
+    }
+
+    private IEnumerator TransitionToUiCamera(float moveTime, float rotateTime)
+    {
+        BeginAdventureButton.SetActive(false);
+        CustomizeButton.SetActive(false);
+
+        //deactivate main camera
+        MainCamera.gameObject.SetActive(false);
+        // activate transition camera
+        TransitionCamera.gameObject.SetActive(true);
+        // move transition camera to combat cam position
+        float elapsedTime = 0;
+
+        while (elapsedTime < moveTime)
+        {
+            TransitionCamera.transform.position = Vector3.Lerp(MainCamera.transform.position,
+                UiCamera.transform.position, (elapsedTime / moveTime));
+            TransitionCamera.transform.rotation = Quaternion.Lerp(MainCamera.transform.rotation,
+                UiCamera.transform.rotation, (elapsedTime / rotateTime));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        TransitionCamera.gameObject.SetActive(false);
+        UiCamera.gameObject.SetActive(true);
+        CustomizeUI.SetActive(true);
+
+    }
+    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime)
+    {
+        CustomizeUI.SetActive(false);
+
+        //deactivate main camera
+        UiCamera.gameObject.SetActive(false);
+        // activate transition camera
+        TransitionCamera.gameObject.SetActive(true);
+        // move transition camera to combat cam position
+        float elapsedTime = 0;
+
+        while (elapsedTime < moveTime)
+        {
+            TransitionCamera.transform.position = Vector3.Lerp(UiCamera.transform.position,
+                MainCamera.transform.position, (elapsedTime / moveTime));
+            TransitionCamera.transform.rotation = Quaternion.Lerp(UiCamera.transform.rotation,
+                MainCamera.transform.rotation, (elapsedTime / rotateTime));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        TransitionCamera.gameObject.SetActive(false);
+        MainCamera.gameObject.SetActive(true);
+        BeginAdventureButton.SetActive(true);
+        CustomizeButton.SetActive(true);
+
+
+    }
+
 
     private void Awake()
     {

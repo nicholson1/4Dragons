@@ -210,14 +210,14 @@ public class EquipmentCreator : MonoBehaviour
         
         //decide % of defensive stats
         
-        int def = GenerateDefensiveStats(PB);
+        (int,int) defAndModelIndex = GenerateDefensiveStats(PB, slot);
         
         //add name for item slot
         Sprite icon = AddSlotName(slot);
         
         //Add other stats....
         
-        GenerateStats(PB-def);
+        GenerateStats(PB-defAndModelIndex.Item1);
 
         
         
@@ -225,7 +225,7 @@ public class EquipmentCreator : MonoBehaviour
         //Debug.Log(name + " plz work");
         name= name.Replace("\r", "");
 
-        Equipment e = new Equipment(name, slot ,equipmentStats, icon);
+        Equipment e = new Equipment(name, slot ,equipmentStats, icon, defAndModelIndex.Item2);
         PrettyPrintEquipment();
         return e;
     }
@@ -339,12 +339,13 @@ public class EquipmentCreator : MonoBehaviour
         GenerateStats(PB);
         Sprite icon = AddWeaponSlotName(slot, weaponType);
 
-        
+
+        int modelIndex = GetWeaponModel(rarity, weaponType);
 
         
         // maybe swap order and do it based off if it starts with a space or not
         name= name.Replace("\r", "");
-        Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2, icon);
+        Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2, icon, modelIndex);
         //w.spellDescription1 = GetSpellDescription(weaponType);
         //w.spellDescription2 = GetSpellDescription(spell2);
        
@@ -535,7 +536,7 @@ public class EquipmentCreator : MonoBehaviour
         //Debug.Log(name + "++++++++++++++++++++++++");
     }
 
-    private int GenerateDefensiveStats(int powerBudget)
+    private (int,int) GenerateDefensiveStats(int powerBudget, Equipment.Slot slot)
     {
         int roll = Random.Range(0, powerBudget + 1);
         
@@ -546,10 +547,10 @@ public class EquipmentCreator : MonoBehaviour
         
         //fix the roll;
         roll = FixTheRoll(roll, powerBudget);
-            
-            
-        
-        AddDefensiveName((float)roll/powerBudget * 100, type);
+
+
+
+        int modelIndex = AddDefensiveName((float)roll/powerBudget * 100, type, slot);
 
         if (roll == 0)
         {
@@ -595,7 +596,7 @@ public class EquipmentCreator : MonoBehaviour
 
         }
 
-        return roll;
+        return (roll, modelIndex);
     }
 
     private int FixTheRoll(int roll, int PB)
@@ -880,13 +881,13 @@ public class EquipmentCreator : MonoBehaviour
                 case Weapon.SpellTypes.Nature5:
                     if (wepBefore)
                     {
-                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
                     }
                     else
                     {
-                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
-                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Fire1:
                     if (wepBefore)
@@ -935,13 +936,13 @@ public class EquipmentCreator : MonoBehaviour
                 case Weapon.SpellTypes.Fire5:
                     if (wepBefore)
                     {
-                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
+                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
                     }
                     else
                     {
-                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
+                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
-                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
+                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Ice1:
                     if (wepBefore)
@@ -1089,13 +1090,13 @@ public class EquipmentCreator : MonoBehaviour
                 case Weapon.SpellTypes.Shadow4:
                     if (wepBefore)
                     {
-                        name = SpellNameAddition(spell, true)  + MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + name;
+                        name = SpellNameAddition(spell, true)  + MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + name;
                     }
                     else
                     {
-                        name += MagicSupportSlot[Random.Range(0, MagicSupportSlot.Count)] + SpellNameAddition(spell, false) ;
+                        name += MagicAttackSlot[Random.Range(0, MagicAttackSlot.Count)] + SpellNameAddition(spell, false) ;
                     }
-                    icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
+                    icon = magicAttackSprites[Random.Range(0, magicAttackSprites.Length)];
                     break;
                 case Weapon.SpellTypes.Shadow5:
                     if (wepBefore)
@@ -1198,7 +1199,7 @@ public class EquipmentCreator : MonoBehaviour
         switch (slot)
         {
             case Equipment.Slot.Head:
-                name += " " +HeadSlot[Random.Range(0, ChestSlot.Count)];
+                name += " " +HeadSlot[Random.Range(0, HeadSlot.Count)];
                 icon = headSprites[Random.Range(0, headSprites.Length)];
                 break;
             // case Slot.Neck:
@@ -1238,7 +1239,7 @@ public class EquipmentCreator : MonoBehaviour
         return icon;
     }
 
-    private void AddDefensiveName(float percentDefence, int type)
+    private int AddDefensiveName(float percentDefence, int type, Equipment.Slot slot)
     {
         //Debug.Log(percentDefence);
         int yindex = 0;
@@ -1246,8 +1247,9 @@ public class EquipmentCreator : MonoBehaviour
         
         if (percentDefence == 0)
         {
+            //chest 5
             name += "Spectral";
-            return;
+            return 0;
         }
         else if (percentDefence < 21)
         {
@@ -1279,16 +1281,188 @@ public class EquipmentCreator : MonoBehaviour
 
         name += DefNameTable[yindex][type];
 
+        return GetModelInt(slot, yindex, type);
+
     }
-    
+
+    private int GetModelInt(Equipment.Slot slot, int yindex, int xindex)
+    {
+        switch (slot)
+        {
+            case Equipment.Slot.Head:
+                return HeadModelTable[yindex][xindex];
+            case Equipment.Slot.Shoulders:
+                return ShoulderModelTable[yindex][xindex];
+            case Equipment.Slot.Chest:
+                return ChestModelTable[yindex][xindex];
+            case Equipment.Slot.Gloves:
+                return GloveModelTable[yindex][xindex];
+            case Equipment.Slot.Legs:
+                return -1;
+            case Equipment.Slot.Boots:
+                return ShoeModelTable[yindex][xindex];
+            
+        }
+        Debug.LogWarning("no model found for that slot");
+
+        return -1;
+    }
+
+    private int GetWeaponModel(int rarity, Weapon.SpellTypes spell)
+    {
+        int s = (int)spell;
+        if (s < 3)
+        {
+            //daggers
+            switch (rarity)
+            {
+                case 0:
+                    return Random.Range(0, 3);
+                case 1:
+                    return 3;
+                case 2:
+                    return Random.Range(5,6);
+                case 3:
+                    return Random.Range(6, 8);
+                
+            }
+        }else if (s < 6)
+        {
+            //sheilds
+            switch (rarity)
+            {
+                case 0:
+                    return 8;
+                case 1:
+                    return 9;
+                case 2:
+                    return Random.Range(10,13);
+                case 3:
+                    return Random.Range(13, 15);
+                
+            }
+        }
+        else if (s < 9)
+        {
+            //swords
+            switch (rarity)
+            {
+                case 0:
+                    return Random.Range(16,18);
+                case 1:
+                    return 18;
+                case 2:
+                    return Random.Range(19,21);
+                case 3:
+                    return Random.Range(21, 23);
+                
+            }
+        }
+        else if (s < 12)
+        {
+            //Axes
+            switch (rarity)
+            {
+                case 0:
+                    return Random.Range(23,25);
+                case 1:
+                    return Random.Range(23,25);
+                case 2:
+                    return Random.Range(23,25);
+                case 3:
+                    return Random.Range(23,25);
+
+                
+            }
+        }
+        else if (s < 15)
+        {
+            //Hammer
+            switch (rarity)
+            {
+                case 0:
+                    return Random.Range(25,27);
+                case 1:
+                    return Random.Range(25,27);
+                case 2:
+                    return Random.Range(25,27);
+                case 3:
+                    return Random.Range(25,27);
+                
+            }
+        }
+        
+        // figure out wands vs orbs
+        if (s == 18 || s == 21 || s == 22 || s == 23 || s == 27 || s == 28 || s == 30 || s == 31 || s == 37 || s == 38)
+        {
+            // wands
+            return Random.Range(27, 30);
+        }
+        else
+        {
+            // orbs
+            return Random.Range(30, 33);
+        }
+    }
+
     private List<string[]> DefNameTable = new List<string[]>()
     {
         new String[]{"Chain Mail", "Linen", "Leather"},
-        new String[]{"Iron", "Silk", "Skeletal"},
+        new String[]{"Iron",       "Silk",  "Skeletal"},
         new String[]{"Cold Forged", "Bone", "Silver"},
-        new String[]{"Bronzed", "Ivory", "Rune Forged"},
-        new String[]{"Steel", "Ornate", "Dragon Scale"},
-        new String[]{"Mithril", "Arcane", "Obsidian"},
+        new String[]{"Bronzed",     "Ivory", "Rune Forged"},
+        new String[]{"Steel",       "Ornate", "Dragon Scale"},
+        new String[]{"Mithril",     "Arcane", "Obsidian"},
+       	
+    };
+    private List<int[]> HeadModelTable = new List<int[]>()
+    {
+        new int[]{1, 10, 8},
+        new int[]{5, 9, 13},
+        new int[]{4, 6, 12},
+        new int[]{7, 4, 11},
+        new int[]{2, 14, 7},
+        new int[]{3, 11, 3},
+       	
+    };
+    private List<int[]> ShoulderModelTable = new List<int[]>()
+    {
+        new int[]{1, 0, 6},
+        new int[]{6, 0, 4},
+        new int[]{6, 4, 2},
+        new int[]{3, 6, 3},
+        new int[]{2, 3, 5},
+        new int[]{5, 5, 2},
+       	
+    };
+    private List<int[]> ShoeModelTable = new List<int[]>()
+    {
+        new int[]{1, 0, 0},
+        new int[]{1, 0, 1},
+        new int[]{2, 3, 2},
+        new int[]{2, 3, 5},
+        new int[]{3, 4, 3},
+        new int[]{4, 5, 4},
+       	
+    };
+    private List<int[]> GloveModelTable = new List<int[]>()
+    {
+        new int[]{0, 0, 0},
+        new int[]{1, 0, 4},
+        new int[]{1, 4, 3},
+        new int[]{4, 1, 2},
+        new int[]{3, 5, 6},
+        new int[]{6, 6, 6},
+       	
+    };
+    private List<int[]> ChestModelTable = new List<int[]>()
+    {
+        new int[]{2, 1, 0},
+        new int[]{4, 1, 2},
+        new int[]{4, 7, 6},
+        new int[]{5, 4, 3},
+        new int[]{6, 8, 7},
+        new int[]{5, 3, 5},
        	
     };
     private List<string> DaggerSlot = new List<string>()

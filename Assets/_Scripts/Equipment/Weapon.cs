@@ -51,7 +51,7 @@ public class Weapon : Equipment
     }
 
 
-    public Weapon(string name, Slot slot,Dictionary<Stats,int> stats, Weapon.SpellTypes spell1, Weapon.SpellTypes spell2 = Weapon.SpellTypes.None, Sprite sprite = null)
+    public Weapon(string name, Slot slot,Dictionary<Stats,int> stats, Weapon.SpellTypes spell1, Weapon.SpellTypes spell2 = Weapon.SpellTypes.None, Sprite sprite = null, int modelIndex = -1)
     {
         this.name = name;
         this.slot = slot;
@@ -60,9 +60,7 @@ public class Weapon : Equipment
         _spellType2 = spell2;
         this.icon = sprite;
         this.isWeapon = true;
-
-
-
+        this.modelIndex = modelIndex;
     }
 
     

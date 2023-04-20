@@ -29,6 +29,7 @@ public class Character : MonoBehaviour
     public List<(CombatEntity.BuffTypes, int, float)> Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
     public List<(CombatEntity.DeBuffTypes, int, float)> DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
 
+    public bool showHelm = true;
 
 
     Dictionary<Equipment.Stats, int> _stats;
@@ -46,6 +47,7 @@ public class Character : MonoBehaviour
     public static event Action<ErrorMessageManager.Errors, int> NotificationGold;
 
 
+    public EquipmentModelManager EqMM;
 
     private void Start()
     {
@@ -59,6 +61,7 @@ public class Character : MonoBehaviour
         
         CombatEntity.GetHealed += GetHealed;
 
+        EqMM = GetComponentInChildren<EquipmentModelManager>();
         
         
         //_weapons = EC.CreateAllWeapons(10);
@@ -77,6 +80,7 @@ public class Character : MonoBehaviour
         }
         else
         {
+            EqMM.RandomCharacter();
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             _equipment = EC.CreateAllEquipment(_level);
@@ -105,6 +109,7 @@ public class Character : MonoBehaviour
                 _weapons.Add(EC.CreateRandomWeapon(_level, false));
             }
             
+            EqMM.UpdateWeapon(_weapons[0], _weapons[1]);
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
             //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice4));
@@ -113,6 +118,13 @@ public class Character : MonoBehaviour
             _gold = _level * 2 + (Random.Range(-_level, _level+1));
 
         }
+
+        foreach (var eq in _equipment)
+        {
+            EqMM.UpdateSlot(eq, showHelm);
+        }
+        
+        
         _equipment.AddRange(_weapons);
         _equipment.AddRange(_spellScrolls);
         UpdateStats();
@@ -509,12 +521,18 @@ public class Character : MonoBehaviour
             return;
         // take damage
         // possibly die
+        if (amount > 0)
+        {
+            _am.SetTrigger(TheSpellBook.AnimationTriggerNames.SmallHit.ToString());
+        }
+
         _currentHealth -= amount;
         
         
         if (_currentHealth <= 0)
         {
             // die
+            _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Die.ToString());
             _currentHealth = 0;
             if (!isPlayerCharacter)
             {
@@ -542,7 +560,7 @@ public class Character : MonoBehaviour
 
                     Notification(ErrorMessageManager.Errors.Victory);
                     UIController._instance.ToggleInventoryUI(1);
-                    Destroy(this.gameObject);
+                    StartCoroutine(WaitThenDestroy());
                 }
                 
             }
@@ -564,6 +582,15 @@ public class Character : MonoBehaviour
             }
             
         }
+    }
+
+    private IEnumerator WaitThenDestroy()
+    {
+        yield return new WaitForSeconds(3);
+        
+        Destroy(this.gameObject);
+
+        
     }
 
     private void ActivateCombatEntity(Character player, Character enemy)

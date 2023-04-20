@@ -11,6 +11,7 @@ namespace ImportantStuff
         private string _name;
         private Sprite _icon;
         private bool _isWeapon = false;
+        private int _modelIndex;
 
         public string name // the Name property
         {
@@ -21,6 +22,11 @@ namespace ImportantStuff
         {
             get => _isWeapon;
             set => _isWeapon = value;
+        }
+        public int modelIndex // the Name property
+        {
+            get => _modelIndex;
+            set => _modelIndex = value;
         }
         
 
@@ -66,12 +72,13 @@ namespace ImportantStuff
 
 
 
-        public Equipment(string name, Slot slot, Dictionary<Stats, int> stats, Sprite icon)
+        public Equipment(string name, Slot slot, Dictionary<Stats, int> stats, Sprite icon, int modelIndex)
         {
             _name = name;
             _stats = stats;
             _slot = slot;
             _icon = icon;
+            _modelIndex = modelIndex;
         }
 
         public enum Slot

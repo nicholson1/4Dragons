@@ -172,14 +172,10 @@ public class CombatEntity : MonoBehaviour
     private void TriggerAllDebuffs()
     {
         StartCoroutine(TriggerDebuffs());
-        
-        
     }
     private void TriggerAllBuffs()
     {
         StartCoroutine(TriggerBuffs());
-        
-        
     }
     private IEnumerator CastAllIntentions()
     {
@@ -258,12 +254,7 @@ public class CombatEntity : MonoBehaviour
         
         
     }
-
-    public void GetAttackedTest(int amount)
-    {
-        GetAttacked(this, AbilityTypes.PhysicalAttack, amount, 0);
-
-    }
+    
 
     private void GetBuffed(CombatEntity target, BuffTypes buff, int turns, float amount)
     {
@@ -312,6 +303,7 @@ public class CombatEntity : MonoBehaviour
         //check if im being attack, if not leave
         if (thingGettingAttacked != this)
             return;
+        
         
         // Debug.Log("I am" + this.gameObject.name + "\n" +
         //           dt.ToString() + "\n" +
@@ -375,6 +367,7 @@ public class CombatEntity : MonoBehaviour
             if (blockAfterDamage <= 0)
             {
                 //Debug.Log(blockAmount - attackDamage + " block after damage");
+                //myCharacter._am.SetTrigger(TheSpellBook.AnimationTriggerNames.Block.ToString());
 
                 GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -blockAmount);
                 attackDamage -= Mathf.RoundToInt(blockAmount);
@@ -384,6 +377,8 @@ public class CombatEntity : MonoBehaviour
                 //Debug.Log(blockAmount - attackDamage + " block after damage");
                 GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -attackDamage);
                 attackDamage -= Mathf.RoundToInt(blockAmount);
+                myCharacter._am.SetTrigger(TheSpellBook.AnimationTriggerNames.Block.ToString());
+
             }
         }
 
@@ -619,8 +614,12 @@ public class CombatEntity : MonoBehaviour
         {
             GetMySpells();
             CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
+            
+            // set the animator to the correct thang
         }
     }
+
+    
 
     public void TriggerAllThorns(CombatEntity target)
     {
@@ -634,7 +633,7 @@ public class CombatEntity : MonoBehaviour
             }
         }
     }
-    
+
     
     
 
@@ -643,7 +642,11 @@ public class CombatEntity : MonoBehaviour
         // use spell book to determine targets, effect, and quantity
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
         Debug.Log(spell);
-        myCharacter._am.SetTrigger("attack");
+        List<int> powerValues = TheSpellBook._instance.GetPowerValues(spell, weapon, this);
+        string trigger = ((TheSpellBook.AnimationTriggerNames)powerValues[2]).ToString();
+        myCharacter._am.SetTrigger(trigger);
+        
+        
     }
     
     public void Heal(CombatEntity target, int amount, float crit)
@@ -672,13 +675,23 @@ public class CombatEntity : MonoBehaviour
         GetHealed(target.myCharacter, heal);
     }
 
-    public void AttackBasic(CombatEntity target,  AbilityTypes attackType, int damage, float crit)
+    public void AttackBasic(CombatEntity target,  AbilityTypes attackType, int damage, float crit, float TimeToHit)
     {
         // calc damage adjustments
         
         target.attacker = this;
+        StartCoroutine(WaitThenGetDoAttack(TimeToHit, target, attackType, damage, crit));
+        //AttackEvent(target, attackType, Mathf.RoundToInt(damage * CalculateDamageAdjustments()), crit);
+
+    }
+    
+    public IEnumerator WaitThenGetDoAttack(float time, CombatEntity target,  AbilityTypes attackType, int damage, float crit)
+    {
+        Debug.Log(time);
+        yield return new WaitForSeconds(time);
         AttackEvent(target, attackType, Mathf.RoundToInt(damage * CalculateDamageAdjustments()), crit);
-        
+
+
     }
 
     public void Buff(CombatEntity target, BuffTypes buff, int turns, float amount)
