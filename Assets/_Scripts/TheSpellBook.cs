@@ -649,20 +649,22 @@ public class TheSpellBook : MonoBehaviour
 
         float crit = FigureOutHowMuchCrit(caster);
         
+        target.lastSpellCastTargeted = spell;
+
         // big hit on target
         caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, power[0], crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
         // smaller hit on all other
-        foreach (var t in CombatController._instance.entitiesInCombat)
-        {
-            if (t != caster && t != target)
-            {
-                Debug.Log("AOE DAMAGE FROM PYRO");
-                //caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
-
-                caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, power[0]/4, crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
-
-            }
-        }
+        // foreach (var t in CombatController._instance.entitiesInCombat)
+        // {
+        //     if (t != caster && t != target)
+        //     {
+        //         Debug.Log("AOE DAMAGE FROM PYRO");
+        //         //caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, Damage, crit);
+        //
+        //         caster.AttackBasic(t, CombatEntity.AbilityTypes.SpellAttack, power[0]/4, crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
+        //
+        //     }
+        // }
         
     }
 
@@ -1109,7 +1111,7 @@ public class TheSpellBook : MonoBehaviour
                 time = .75f;
                 break;
             case AnimationTriggerNames.VeryBigSpell:
-                time = 1.3f;
+                time = 1.5f;
                 break;
             case AnimationTriggerNames.Block:
                 time = .25f;

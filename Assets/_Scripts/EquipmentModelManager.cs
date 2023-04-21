@@ -63,9 +63,27 @@ public class EquipmentModelManager : MonoBehaviour
 
     public void UpdateHead()
     {
+        showHelm = !showHelm;
         HeadModels[headIndex].SetActive(!HeadModels[headIndex].activeSelf);
+
+        if (!showHelm)
+        {
+            Hair[hairIndex].SetActive(true);
+            //Debug.Log("showing hari");
+
+        }
+        else 
+        {
+            if (headIndex > 10 || headIndex == 0)
+            {
+                Hair[hairIndex].SetActive(true);
+            }
+            else
+            {
+                Hair[hairIndex].SetActive(false);
+            }
+        }
         
-        Hair[hairIndex].SetActive(!Hair[hairIndex].activeSelf);
     }
 
 
@@ -84,6 +102,7 @@ public class EquipmentModelManager : MonoBehaviour
                 if (showHelm == false)
                 {
                     HeadModels[headIndex].SetActive(false);
+                    headIndex = newIndex;
                     Hair[hairIndex].SetActive(true);
                     break;
                 }
