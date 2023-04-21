@@ -1317,7 +1317,7 @@ public class EquipmentCreator : MonoBehaviour
             switch (rarity)
             {
                 case 0:
-                    return Random.Range(0, 3);
+                    return Random.Range(1, 3);
                 case 1:
                     return 3;
                 case 2:

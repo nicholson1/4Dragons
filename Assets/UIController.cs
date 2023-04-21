@@ -9,6 +9,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
+    [SerializeField] private GameObject SettingUI;
+
 
     [SerializeField] private GameObject CustomizeUI;
 
@@ -29,6 +31,10 @@ public class UIController : MonoBehaviour
     private bool InventoryOn = false;
     public static UIController _instance;
 
+    public void ToggleSettings()
+    {
+        SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
+    }
     public void RestartGame()
     {
         SceneManager.LoadScene(0);

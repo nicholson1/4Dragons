@@ -59,7 +59,7 @@ public class TheSpellBook : MonoBehaviour
     
     public (Sprite, Sprite) GetAbilityTypeIcons(Weapon.SpellTypes spell)
     {
-        List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
+        List<List<object>> scaling = WeaponScalingTable;
         IList abilities = (IList)scaling[(int)spell][4];
 
         if (abilities.Count == 1)
@@ -74,7 +74,7 @@ public class TheSpellBook : MonoBehaviour
 
     public (string,string, string, string) GetIntentTitleAndDescription(Weapon.SpellTypes spell)
     {
-        List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
+        List<List<object>> scaling = WeaponScalingTable;
         IList abilities = (IList)scaling[(int)spell][4];
         if (abilities.Count == 1)
         {
@@ -88,10 +88,21 @@ public class TheSpellBook : MonoBehaviour
     }
     public int GetEnergy(Weapon.SpellTypes spell)
     {
-        //get scaling table
-        List<List<object>> scaling = DataReader._instance.GetWeaponScalingTable();
+        //get scaling 
+        if (spell == Weapon.SpellTypes.None || spell == null)
+        {
+            return 0;
+        }
+        if (WeaponScalingTable == null)
+        {
+            WeaponScalingTable = GetComponent<DataReader>().GetWeaponScalingTable();
+        }
+        List<List<object>> scaling = WeaponScalingTable;
         //return 1;
-        //Debug.Log(spell);
+        Debug.Log(scaling.Count);
+        Debug.Log(spell);
+        Debug.Log((int)spell);
+        Debug.Log(scaling[(int)spell] );
         return (int.Parse((scaling[(int)spell][2]).ToString()));
         
     }
@@ -274,12 +285,12 @@ public class TheSpellBook : MonoBehaviour
         {
             case CombatEntity.DeBuffTypes.Bleed:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
-                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Axe2);
+                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Axe2, 0);
 
                 break;
             case CombatEntity.DeBuffTypes.Burn:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
-                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Fire2);
+                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Fire2, 0);
 
                 break;
         }
@@ -780,7 +791,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Nature4:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
-                animTrigger = AnimationTriggerNames.SmallSpell;
+                animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 break;
             case Weapon.SpellTypes.Nature5:
                 casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
@@ -799,11 +810,11 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Fire3:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
-                animTrigger = AnimationTriggerNames.SmallSpell;
+                animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 break;
             case Weapon.SpellTypes.Fire4:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
-                animTrigger = AnimationTriggerNames.BigSpell;
+                animTrigger = AnimationTriggerNames.VeryBigSpell;
                 break;
             case Weapon.SpellTypes.Fire5:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
@@ -827,7 +838,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Ice4:
                 casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
-                animTrigger = AnimationTriggerNames.SmallSpell;
+                animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Ice5:
@@ -868,7 +879,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Shadow3:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
-                animTrigger = AnimationTriggerNames.SmallSpell;
+                animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 break;
             case Weapon.SpellTypes.Shadow4:
                 casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
@@ -1091,8 +1102,14 @@ public class TheSpellBook : MonoBehaviour
             case AnimationTriggerNames.SmallSpell:
                 time = .3f;
                 break;
+            case AnimationTriggerNames.SmallSpellTravel:
+                time = .75f;
+                break;
             case AnimationTriggerNames.BigSpell:
                 time = .75f;
+                break;
+            case AnimationTriggerNames.VeryBigSpell:
+                time = 1.3f;
                 break;
             case AnimationTriggerNames.Block:
                 time = .25f;
@@ -1101,7 +1118,7 @@ public class TheSpellBook : MonoBehaviour
                 time = .50f;
                 break;
             case AnimationTriggerNames.BigSpellRev:
-                time = .75f;
+                time = .8f;
                 break;
             
         }
@@ -1122,7 +1139,9 @@ public class TheSpellBook : MonoBehaviour
         SmallHit,
         Die,
         Reset,
-        BigSpellRev
+        BigSpellRev,
+        VeryBigSpell,
+        SmallSpellTravel
     }
     
     // public CombatEntity.DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)

@@ -423,16 +423,27 @@ public class CombatEntity : MonoBehaviour
             {
                 // do it for EACH thorn buff
                 //TriggerAllThorns(attacker);
-                
+                ParticleManager._instance.SpawnParticle(this, this, Weapon.SpellTypes.Nature3, 0);
                 AttackEvent(attacker, AbilityTypes.SpellAttack, Mathf.RoundToInt(myCharacter.Buffs[thorns].Item3), 0);
-                
-                    
+                CameraShake._instance.GetHit(1);
+
             }
         }
 
 
         GetHitWithAttack(myCharacter, dt, attackDamage, reductionAmount);
         
+        //return 1;
+        //Debug.Log(spell);
+        if (lastSpellCastTargeted != null)
+        {
+            
+            //int cost =(int.Parse((scaling[(int)lastSpellCastTargeted][2]).ToString()));
+            //Debug.Log(lastSpellCastTargeted + " " + cost);
+            CameraShake._instance.GetHit(TheSpellBook._instance.GetEnergy(lastSpellCastTargeted));
+        }
+        
+
         
         
         

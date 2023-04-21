@@ -49,6 +49,11 @@ public class Character : MonoBehaviour
 
     public EquipmentModelManager EqMM;
 
+    public void ToggleShowHelm()
+    {
+        showHelm = !showHelm;
+        EqMM.UpdateHead();
+    }
     private void Start()
     {
         EC = FindObjectOfType<EquipmentCreator>();
@@ -75,8 +80,8 @@ public class Character : MonoBehaviour
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Dagger3));
             //_weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Axe2));
-            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Shield3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire2));
         }
         else
         {
@@ -112,8 +117,8 @@ public class Character : MonoBehaviour
             EqMM.UpdateWeapon(_weapons[0], _weapons[1]);
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
             //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Ice4));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire3));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood1));
+            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature4));
 
             _gold = _level * 2 + (Random.Range(-_level, _level+1));
 
@@ -519,11 +524,13 @@ public class Character : MonoBehaviour
     {
         if(c != this)
             return;
+        
         // take damage
         // possibly die
         if (amount > 0)
         {
             _am.SetTrigger(TheSpellBook.AnimationTriggerNames.SmallHit.ToString());
+            
         }
 
         _currentHealth -= amount;
@@ -553,6 +560,8 @@ public class Character : MonoBehaviour
                     CombatController._instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
                     
                     CombatController._instance.Player.UpdateStats();
+                    
+                    Destroy(_combatEntity);
 
                     CombatController._instance.EndCombat();
                     CombatController._instance.Player._gold += _gold;

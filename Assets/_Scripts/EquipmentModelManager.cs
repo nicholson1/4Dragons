@@ -61,6 +61,13 @@ public class EquipmentModelManager : MonoBehaviour
 
     }
 
+    public void UpdateHead()
+    {
+        HeadModels[headIndex].SetActive(!HeadModels[headIndex].activeSelf);
+        
+        Hair[hairIndex].SetActive(!Hair[hairIndex].activeSelf);
+    }
+
 
     public void UpdateSlot(Equipment equipment,  bool remove = false)
     {
