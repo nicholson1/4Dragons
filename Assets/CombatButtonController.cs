@@ -75,8 +75,9 @@ public class CombatButtonController : MonoBehaviour
     private void UpdateSpellButtons(Character player)
     {
         (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = player.GetWeaponSpells();
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
+        //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
 
+        List<(Weapon.SpellTypes, Weapon)> spellScrolls = player.GetSpells();
         // refence the datatable with these spells as int
         //Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
 
@@ -91,15 +92,35 @@ public class CombatButtonController : MonoBehaviour
         //     Debug.Log(VARIABLE.spellType1);
         // }
 
-       
+        switch (spellScrolls.Count)
+        {
+            case 0:
+                scroll1.UpdateSpell(Weapon.SpellTypes.None, null);
+                scroll2.UpdateSpell(Weapon.SpellTypes.None, null);
+                break;
+            case 1:
+                scroll1.UpdateSpell(spellScrolls[0].Item1, spellScrolls[0].Item2);
+                scroll2.UpdateSpell(Weapon.SpellTypes.None, null);
+                break;
+            case 2:
+                scroll1.UpdateSpell(spellScrolls[0].Item1, spellScrolls[0].Item2);
+                scroll2.UpdateSpell(spellScrolls[1].Item1, spellScrolls[1].Item2);
+                break;
+            case 3:
+                scroll1.UpdateSpell(spellScrolls[0].Item1, spellScrolls[0].Item2);
+                scroll2.UpdateSpell(spellScrolls[1].Item1, spellScrolls[1].Item2);
+                Debug.LogWarning("WE HAVE 3 SPELLS IN SPELL SCROLLS");
+                break;
+                
+        }
 
 
        
         
         weapon1.UpdateSpell(weaponSpells.Item1, weaponSpells.Item3);
         weapon2.UpdateSpell(weaponSpells.Item2, weaponSpells.Item4);
-        scroll1.UpdateSpell(spellScolls.Item1, spellScolls.Item3);
-        scroll2.UpdateSpell(spellScolls.Item2, spellScolls.Item4);
+
+        
      
         CheckIfSpellCanBeUsed(weapon1, player);
         CheckIfSpellCanBeUsed(weapon2, player);

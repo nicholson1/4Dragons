@@ -99,10 +99,10 @@ public class TheSpellBook : MonoBehaviour
         }
         List<List<object>> scaling = WeaponScalingTable;
         //return 1;
-        Debug.Log(scaling.Count);
-        Debug.Log(spell);
-        Debug.Log((int)spell);
-        Debug.Log(scaling[(int)spell] );
+       // Debug.Log(scaling.Count);
+        //Debug.Log(spell);
+        //Debug.Log((int)spell);
+        //Debug.Log(scaling[(int)spell] );
         return (int.Parse((scaling[(int)spell][2]).ToString()));
         
     }

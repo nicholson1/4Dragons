@@ -139,6 +139,8 @@ namespace ImportantStuff
             Health,
             CritChance,
             
+            None,
+            
 
 
         }

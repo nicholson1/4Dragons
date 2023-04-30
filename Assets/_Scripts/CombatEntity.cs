@@ -233,7 +233,8 @@ public class CombatEntity : MonoBehaviour
         {
             return;
         }
-        
+
+        lastSpellCastTargeted = Weapon.SpellTypes.None;
 
         if (myCharacter.isPlayerCharacter)
         {
@@ -460,20 +461,39 @@ public class CombatEntity : MonoBehaviour
         Spells = new List<(Weapon.SpellTypes, Weapon)>();
         
         (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = myCharacter.GetWeaponSpells();
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScrolls = myCharacter.GetScollSpells();
+        //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScrolls = myCharacter.GetScollSpells();
 
-        Spells.Add((weaponSpells.Item1, weaponSpells.Item3));
-        Spells.Add((weaponSpells.Item2, weaponSpells.Item4));
-        Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
-        Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
+        List<(Weapon.SpellTypes, Weapon)> spellScrolls = myCharacter.GetSpells();
+
+
+
+        if (weaponSpells.Item1 != Weapon.SpellTypes.None)
+        {
+            Spells.Add((weaponSpells.Item1, weaponSpells.Item3));
+        }
+
+        if (weaponSpells.Item2 != Weapon.SpellTypes.None)
+        {
+            Spells.Add((weaponSpells.Item2, weaponSpells.Item4));
+        }
+        
+        foreach (var spell in spellScrolls)
+        {
+            Spells.Add((spell.Item1, spell.Item2));
+        }
+        Debug.Log(Spells.Count + " spell count");
+        //Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
+        //Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
     }
     
     
 
     public List<(Weapon.SpellTypes spell, Weapon weapon)> SetMyIntentions()
     {
+        
         IntentionsRunning = true;
-
+        if(AddingIntents != null)
+            StopCoroutine(AddingIntents);
         GetMySpells();
         List<(Weapon.SpellTypes, Weapon)> intent = new List<(Weapon.SpellTypes, Weapon)>();
         //get max energy
@@ -487,6 +507,9 @@ public class CombatEntity : MonoBehaviour
             {
                 // donot remove energy
                 Debug.Log("we are not removing energy");
+                RemoveAllIntent(myCharacter);
+                Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+
             }
             else
             {
@@ -511,7 +534,7 @@ public class CombatEntity : MonoBehaviour
             //make sure energy is <= energy
             // add spell + wep to intention
             // subtract energy
-            int roll = Random.Range(0, 4);
+            int roll = Random.Range(0, Spells.Count);
             
             // we need spell energy;
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
@@ -595,7 +618,7 @@ public class CombatEntity : MonoBehaviour
             infiniteStop += 1;
         }
 
-        StartCoroutine(AddIntents());
+        AddingIntents = StartCoroutine(AddIntents());
         Intentions = intent;
         if (isMyTurn)
         {
@@ -608,6 +631,7 @@ public class CombatEntity : MonoBehaviour
 
     }
 
+    private Coroutine AddingIntents;
     private IEnumerator AddIntents()
     {
         yield return new WaitForSeconds(1);
@@ -617,6 +641,8 @@ public class CombatEntity : MonoBehaviour
             yield return new WaitForSeconds(.25f);
 
         }
+
+        AddingIntents = null;
     }
 
     public void CastAbility(int index)

@@ -54,6 +54,15 @@ public class SelectionManager : MonoBehaviour
         while (index.Count < 4)
         {
             int temp = Random.Range(0, c._equipment.Count);
+
+            if (c.isDragon)
+            {
+                if (c._equipment[temp].isWeapon)
+                {
+                    continue;
+                }
+            }
+            
             if (!index.Contains(temp))
             {
                 index.Add(temp);

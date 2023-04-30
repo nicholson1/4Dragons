@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -19,6 +20,8 @@ public class Character : MonoBehaviour
     [SerializeField] public Animator _am;
 
     public bool isPlayerCharacter;
+    public bool isDragon;
+
     public int inventorySize = 6;
     public List<Equipment> _equipment = new List<Equipment>();
     public List<Equipment> _inventory = new List<Equipment>();
@@ -34,7 +37,7 @@ public class Character : MonoBehaviour
 
     Dictionary<Equipment.Stats, int> _stats;
 
-    private EquipmentCreator EC;
+    public EquipmentCreator EC;
 
     [SerializeField] public CombatEntity _combatEntity;
 
@@ -54,7 +57,7 @@ public class Character : MonoBehaviour
         showHelm = !showHelm;
         EqMM.UpdateHead();
     }
-    private void Start()
+    protected virtual void Start()
     {
         EC = FindObjectOfType<EquipmentCreator>();
         CombatController.ActivateCombatEntities += ActivateCombatEntity;
@@ -79,59 +82,73 @@ public class Character : MonoBehaviour
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
             // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Dagger3));
-            //_weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature3));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Fire4));
+            _weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, Weapon.SpellTypes.Sword3));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood1));
+            _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood2));
         }
         else
         {
-            EqMM.RandomCharacter();
-            //_weapons = EC.CreateAllWeapons(_level);
-            //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-            _equipment = EC.CreateAllEquipment(_level);
+            if (isDragon)
+            {
+                //gameObject.GetComponent<Dragon>().InitializeDragon();
+            }
+            else
+            {
+                EqMM.RandomCharacter();
+                //_weapons = EC.CreateAllWeapons(_level);
+                //_spellScrolls = EC.CreateAllSpellScrolls(_level);
+                _equipment = EC.CreateAllEquipment(_level);
 
            
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-            if (_level <= 5)
-            {
-                _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
-            }
-            else
-            {
-                _weapons.Add(EC.CreateRandomWeapon(_level, false));
+                _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+                _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+                //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
 
-            }
+                if (_level <= 5)
+                {
+                    _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                }
+                else
+                {
+                    _weapons.Add(EC.CreateRandomWeapon(_level, false));
 
-            if (!HasDamageSpell(_spellScrolls) && !HasDamageSpell(_weapons))
-            {
-                // if we have no damage abilitys yet, give em one
-                _weapons.Add(EC.CreateRandomWeaponWithSpell(_level,
-                    (Weapon.SpellTypes)GetRandomDamageSpell()));
-            }
-            else
-            {
-                _weapons.Add(EC.CreateRandomWeapon(_level, false));
+                }
+
+                if (!HasDamageSpell(_spellScrolls) && !HasDamageSpell(_weapons))
+                {
+                    // if we have no damage abilitys yet, give em one
+                    _weapons.Add(EC.CreateRandomWeaponWithSpell(_level,
+                        (Weapon.SpellTypes)GetRandomDamageSpell()));
+                }
+                else
+                {
+                    _weapons.Add(EC.CreateRandomWeapon(_level, false));
+                }
+            
+                EqMM.UpdateWeapon(_weapons[0], _weapons[1]);
+                //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
+                //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
+                //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood1));
+                //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature4));
+
+                _gold = _level * 2 + (Random.Range(-_level, _level+1));
             }
             
-            EqMM.UpdateWeapon(_weapons[0], _weapons[1]);
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
-            //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood1));
-            //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature4));
-
-            _gold = _level * 2 + (Random.Range(-_level, _level+1));
 
         }
 
-        foreach (var eq in _equipment)
+        if (!isDragon)
         {
-            EqMM.UpdateSlot(eq, showHelm);
+            foreach (var eq in _equipment)
+            {
+                EqMM.UpdateSlot(eq, showHelm);
+            }
+        
+        
+            _equipment.AddRange(_weapons);
+            _equipment.AddRange(_spellScrolls);
         }
         
-        
-        _equipment.AddRange(_weapons);
-        _equipment.AddRange(_spellScrolls);
         UpdateStats();
         _currentHealth = _maxHealth;
 
@@ -173,6 +190,17 @@ public class Character : MonoBehaviour
         }
 
         return spells;
+    }
+
+    public List<(Weapon.SpellTypes, Weapon)> GetSpells()
+    {
+        List<(Weapon.SpellTypes, Weapon)> Spells = new List<(Weapon.SpellTypes, Weapon)>();
+        foreach (var scroll in _spellScrolls)
+        {
+            Spells.Add((scroll.GetSpellTypes().Item1, scroll));
+        }
+
+        return Spells;
     }
 
     public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetScollSpells()
@@ -548,7 +576,20 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
-                    SelectionManager._instance.RandomSelectionFromEquipment(this);
+                    if (CombatController._instance.Player._level == 30)
+                    {
+                        // victory
+                        UIController._instance.ActivateVictoryScreen();
+                        UIController._instance.ToggleInventoryUI(0);
+
+                    }
+                    else
+                    {
+                        UIController._instance.ToggleInventoryUI(1);
+                        SelectionManager._instance.RandomSelectionFromEquipment(this);
+                        NotificationGold(ErrorMessageManager.Errors.GetGold, _gold);
+                        Notification(ErrorMessageManager.Errors.Victory);
+                    }
                     CombatController._instance.Player._level += 1;
                     CombatController._instance.Player._currentHealth += 50;
                     CombatController._instance.Player._currentEnergy = 0;
@@ -563,12 +604,11 @@ public class Character : MonoBehaviour
                     
                     Destroy(_combatEntity);
 
-                    CombatController._instance.EndCombat();
                     CombatController._instance.Player._gold += _gold;
-                    NotificationGold(ErrorMessageManager.Errors.GetGold, _gold);
 
-                    Notification(ErrorMessageManager.Errors.Victory);
-                    UIController._instance.ToggleInventoryUI(1);
+                    CombatController._instance.EndCombat();
+                    
+                    
                     StartCoroutine(WaitThenDestroy());
                 }
                 
@@ -576,6 +616,7 @@ public class Character : MonoBehaviour
             else
             {
                 //GameOver
+                CombatController._instance.entitiesInCombat[1].myCharacter._am.SetTrigger("Victory");
                 Notification(ErrorMessageManager.Errors.YouHaveDied);
                 UIController._instance.ToggleInventoryUI(0);
                 _am.SetTrigger("die");
@@ -701,7 +742,15 @@ public class Character : MonoBehaviour
 
     private void SetMaxHealth()
     {
-        int hp = 75 * _level + 25;
+        int hp = 0;
+        if (isDragon)
+        {
+            hp = 150 * _level;
+        }
+        else
+        {
+            hp = 75 * _level + 25;
+        }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
         hp += hpFromStats;

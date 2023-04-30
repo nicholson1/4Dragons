@@ -47,6 +47,8 @@ public class ShopManager : MonoBehaviour
         // FullHalfPrice,
         InitializeShop(Random.Range(0,4));
         UIController._instance.ToggleShopUI();
+        UIController._instance.ToggleInventoryUI(1);
+
     }
 
     public void InitializeShop(int i)
@@ -56,10 +58,11 @@ public class ShopManager : MonoBehaviour
 
     public void ReRollShop()
     {
-        InitializeShop(ShopType);
         CombatController._instance.Player._gold -= shopPrice;
-        CombatController._instance.Player.UpdateStats();
+
         shopPrice += 25;
+        InitializeShop(ShopType);
+        CombatController._instance.Player.UpdateStats();
 
 
     }
@@ -91,56 +94,24 @@ public class ShopManager : MonoBehaviour
         {
             case InventorySlot.SellShopType.Weapons:
 
-                e = EC.CreateRandomWeaponWithRarity(level, 0);
+                e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
-                e = EC.CreateRandomWeaponWithRarity(level, 1);
+                e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
-                e = EC.CreateRandomWeaponWithRarity(level, 2);
+                e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
-                e = EC.CreateRandomWeaponWithRarity(level, 3);
+                e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
             case InventorySlot.SellShopType.Scrolls:
 
-                e = EC.CreateRandomSpellScrollWithRarity(level, 0);
+                e = EC.CreateRandomSpellScroll(level);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
-                e = EC.CreateRandomSpellScrollWithRarity(level, 1);
-
-                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
-                
-                e = EC.CreateRandomSpellScrollWithRarity(level, 2);
-
-                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
-                
-                e = EC.CreateRandomSpellScrollWithRarity(level, 3);
-
-                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
-                break;
-            case InventorySlot.SellShopType.Armor:
-                e = EC.CreateRandomArmorWithRarity(level, 0);
-                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
-                
-                e = EC.CreateRandomArmorWithRarity(level, 1);
-
-                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
-                
-                e = EC.CreateRandomArmorWithRarity(level, 2);
-
-                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
-                
-                e = EC.CreateRandomArmorWithRarity(level, 3);
-
-                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
-                break;
-            case InventorySlot.SellShopType.FullHalfPrice:
-                e = EC.CreateRandomWeapon(level, false);
-                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
-                
-                e = EC.CreateRandomArmorWithRarity(level, Random.Range(1,4));
+                e = EC.CreateRandomSpellScroll(level);
 
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
@@ -148,8 +119,40 @@ public class ShopManager : MonoBehaviour
 
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
-                // todo create random potion
-                e = EC.CreateRandomArmorWithRarity(level, 2);
+                e = EC.CreateRandomSpellScroll(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
+                break;
+            case InventorySlot.SellShopType.Armor:
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
+                
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
+                
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
+                
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
+                break;
+            case InventorySlot.SellShopType.FullHalfPrice:
+                e = EC.CreateRandomWeapon(level, false);
+                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
+                
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
+                
+                e = EC.CreateRandomSpellScroll(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
+                
+                e = EC.CreateRandomArmor(level);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
             

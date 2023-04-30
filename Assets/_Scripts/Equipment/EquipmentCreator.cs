@@ -183,6 +183,14 @@ public class EquipmentCreator : MonoBehaviour
     // rare = 2         Power level 15 * level
     // epic = 3         Power level 20 * level
 
+    public Equipment CreateRandomArmor(int level)
+    {
+        // get random slot
+        int rarity = GetRarity(level);
+        int slotIndex = Random.Range(0, 6);
+        return CreateArmor(level, (Equipment.Slot)slotIndex, rarity);
+
+    }
     public Equipment CreateRandomArmorWithRarity(int level, int rarity)
     {
         // get random slot
@@ -190,7 +198,7 @@ public class EquipmentCreator : MonoBehaviour
         return CreateArmor(level, (Equipment.Slot)slotIndex, rarity);
 
     }
-    public Equipment CreateArmor(int level, Equipment.Slot slot, int rarity = -1)
+    public Equipment CreateArmor(int level, Equipment.Slot slot, int rarity = -1, Equipment.Stats stat1 = Equipment.Stats.None, Equipment.Stats stat2 = Equipment.Stats.None)
     {
         if (rarity == -1)
         {
@@ -217,7 +225,7 @@ public class EquipmentCreator : MonoBehaviour
         
         //Add other stats....
         
-        GenerateStats(PB-defAndModelIndex.Item1);
+        GenerateStats(PB-defAndModelIndex.Item1, stat1, stat2);
 
         
         
@@ -447,19 +455,28 @@ public class EquipmentCreator : MonoBehaviour
         return level * ((3 * (rarity + 1)) + 2);
     }
 
-    private void GenerateStats(int powerBudget)
+    private void GenerateStats(int powerBudget,Equipment.Stats stat1 = Equipment.Stats.None,Equipment.Stats stat2 = Equipment.Stats.None  )
     {
         if (powerBudget == 0)
         {
             name = "Exquisite " + name;
             return;
         }
-        
+
+       
     
         var v = Enum.GetValues (typeof (Equipment.Stats));
-        Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length));
-        Equipment.Stats b = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length));
+        Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length-1));
+        Equipment.Stats b = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length-1));
 
+        if (stat1 != Equipment.Stats.None)
+        {
+            a = stat1;
+        }
+        if (stat2 != Equipment.Stats.None)
+        {
+            b = stat2;
+        }
         
         //todo: two handers might want to exclude states for other weapons, ie a long sword shouldnt have axe stats on it.
         

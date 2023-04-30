@@ -10,6 +10,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
     [SerializeField] private GameObject SettingUI;
+    [SerializeField] private GameObject VictoryUI;
+    [SerializeField] private GameObject TitleScreen;
+
 
 
     [SerializeField] private GameObject CustomizeUI;
@@ -42,7 +45,7 @@ public class UIController : MonoBehaviour
 
     public void LeaveMainMenu()
     {
-        CustomizeButton.SetActive(false);
+        TitleScreen.SetActive(false);
     }
 
 
@@ -50,6 +53,16 @@ public class UIController : MonoBehaviour
     {
         StartCoroutine(TransitionToUiCamera(1, 1));
     }
+    
+    public void DeactivateVictoryScreen()
+    {
+        StartCoroutine(TransitionToMainCameraFromVictory(1, 1));
+    }
+    public void ActivateVictoryScreen()
+    {
+        StartCoroutine(TransitionToVictoryUiCamera(1, 1));
+    }
+    
 
     public void ActivateMainMenu()
     {
@@ -58,8 +71,8 @@ public class UIController : MonoBehaviour
 
     private IEnumerator TransitionToUiCamera(float moveTime, float rotateTime)
     {
-        BeginAdventureButton.SetActive(false);
-        CustomizeButton.SetActive(false);
+        TitleScreen.SetActive(false);
+            
 
         //deactivate main camera
         MainCamera.gameObject.SetActive(false);
@@ -84,9 +97,40 @@ public class UIController : MonoBehaviour
         CustomizeUI.SetActive(true);
 
     }
-    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime)
+    private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime)
     {
-        CustomizeUI.SetActive(false);
+        CombatController._instance.NextCombatButton.gameObject.SetActive(false);
+
+        
+
+        //deactivate main camera
+        MainCamera.gameObject.SetActive(false);
+        // activate transition camera
+        TransitionCamera.gameObject.SetActive(true);
+        // move transition camera to combat cam position
+        float elapsedTime = 0;
+
+        while (elapsedTime < moveTime)
+        {
+            TransitionCamera.transform.position = Vector3.Lerp(MainCamera.transform.position,
+                UiCamera.transform.position, (elapsedTime / moveTime));
+            TransitionCamera.transform.rotation = Quaternion.Lerp(MainCamera.transform.rotation,
+                UiCamera.transform.rotation, (elapsedTime / rotateTime));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        TransitionCamera.gameObject.SetActive(false);
+        UiCamera.gameObject.SetActive(true);
+        VictoryUI.SetActive(true);
+        CombatController._instance.Player._am.SetTrigger("Victory");
+
+    }
+    private IEnumerator TransitionToMainCameraFromVictory(float moveTime, float rotateTime)
+    {
+        VictoryUI.SetActive(false);
+
 
         //deactivate main camera
         UiCamera.gameObject.SetActive(false);
@@ -108,9 +152,40 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         MainCamera.gameObject.SetActive(true);
-        BeginAdventureButton.SetActive(true);
-        CustomizeButton.SetActive(true);
+        
+        CombatController._instance.NextCombatButton.gameObject.SetActive(true);
+        CombatController._instance.Player._am.SetTrigger("Reset");
 
+
+    }
+    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime)
+    {
+        CustomizeUI.SetActive(false);
+
+
+        //deactivate main camera
+        UiCamera.gameObject.SetActive(false);
+        // activate transition camera
+        TransitionCamera.gameObject.SetActive(true);
+        // move transition camera to combat cam position
+        float elapsedTime = 0;
+
+        while (elapsedTime < moveTime)
+        {
+            TransitionCamera.transform.position = Vector3.Lerp(UiCamera.transform.position,
+                MainCamera.transform.position, (elapsedTime / moveTime));
+            TransitionCamera.transform.rotation = Quaternion.Lerp(UiCamera.transform.rotation,
+                MainCamera.transform.rotation, (elapsedTime / rotateTime));
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        TransitionCamera.gameObject.SetActive(false);
+        MainCamera.gameObject.SetActive(true);
+        TitleScreen.SetActive(true);
+
+ 
 
     }
 

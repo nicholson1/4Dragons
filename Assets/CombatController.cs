@@ -20,6 +20,8 @@ public class CombatController : MonoBehaviour
     [SerializeField] private GameObject _healthBarPrefab;
 
     [SerializeField] private Character EnemeyPrefab;
+    [SerializeField] private Character DragonPrefab;
+
     [SerializeField] private Transform SpawnPos;
 
     public List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
@@ -59,13 +61,10 @@ public class CombatController : MonoBehaviour
 
     public void DecideShopOrCombat()
     {
-        if (Player._level > 5)
-        {
-            ShopChancePercent += 10;
-        }
+        
         
         //do we hit a shop
-        int roll = Random.Range(0, 100);
+        int roll = Random.Range(1, 100);
         if (roll < ShopChancePercent)
         {
             ShopChancePercent = 0;
@@ -74,6 +73,11 @@ public class CombatController : MonoBehaviour
         else
         {
             StartRandomCombat();
+        }
+        
+        if (Player._level > 5)
+        {
+            ShopChancePercent += 10;
         }
 
     }
@@ -241,8 +245,12 @@ public class CombatController : MonoBehaviour
         //Debug.Log(turnCounter + " turn counter");
         if (turnCounter > 30)
         {
-            Tie();
-            return;
+            if (!entitiesInCombat[1].myCharacter.isDragon)
+            {
+                Tie();
+                return;
+            }
+            
         }
 
         turnCounter += 1;
@@ -377,10 +385,26 @@ public class CombatController : MonoBehaviour
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);
+
+        Character enemy;
+        if (Player._level == 10 || Player._level == 20 || Player._level == 25 || Player._level == 30 || (Player._level > 30 && Player._level % 5 == 0))
+        {
+            enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
+
+        }
+        else
+        {
+            enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+
+        }
         
-        Character enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
         enemy.transform.LookAt(Player.transform.position);
         enemy._level = Player._level;
+
+        if (enemy.isDragon)
+        {
+            enemy.GetComponent<Dragon>().InitializeDragon();
+        }
 
         turnCounter = 0;
         StartCoroutine(waitTheStartCombat(Player, enemy));

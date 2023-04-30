@@ -87,7 +87,7 @@ public class HealthBar : MonoBehaviour
 
     private void FixBars()
     {
-        StartCoroutine(FixTheBar(displayCharacter._currentHealth, bar.value, .5f));
+        //StartCoroutine(FixTheBar(displayCharacter._currentHealth, bar.value, .5f));
 
     }
 
@@ -197,11 +197,15 @@ public class HealthBar : MonoBehaviour
         if (c != displayCharacter)
             return;
 
+
         for (int i = intentDisplay.childCount - 1 ; i >= 0; i--)
         {
-            intentDisplay.GetChild(i).gameObject.SetActive(false);
+            //Debug.Log("removing all intents");
+
             UIPooler._instance.IntentPool.Add(intentDisplay.GetChild(i).gameObject);
+            intentDisplay.GetChild(i).gameObject.SetActive(false);
             intentDisplay.GetChild(i).SetParent(UIPooler._instance.transform);
+
 
         }
     }
@@ -414,17 +418,20 @@ public class HealthBar : MonoBehaviour
         st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff, this);
     }
 
+    private Coroutine MovingBar;
+
     private void GetHealed(Character c, int heal)
     {
         //Debug.Log("we are doing the healing with the bar no?");
-        StopAllCoroutines();
+        if(MovingBar != null)
+            StopCoroutine(MovingBar);
         if (c != displayCharacter)
             return;
 
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = HealColor;
 
         tempBar.value = c._currentHealth;
-        StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
+        MovingBar = StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
 
         StatusText st = GetStatus();
@@ -437,7 +444,8 @@ public class HealthBar : MonoBehaviour
     private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
     {
 
-        StopAllCoroutines();
+        if(MovingBar != null)
+            StopCoroutine(MovingBar);
         if (c != displayCharacter)
             return;
         
@@ -451,7 +459,7 @@ public class HealthBar : MonoBehaviour
             return;
         }
         //Debug.Log("Active? "+gameObject.activeInHierarchy);
-        StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
+        MovingBar = StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
         text.text = c._currentHealth + "/" + c._maxHealth;
 
         StatusText st = GetStatus();
@@ -471,6 +479,7 @@ public class HealthBar : MonoBehaviour
         }
 
         tempBar.value = end;
+        MovingBar = null;
 
     }
 
@@ -486,6 +495,8 @@ public class HealthBar : MonoBehaviour
         }
 
         bar.value = end;
+        MovingBar = null;
+
 
     }
     IEnumerator FixTheBar(float currentHP, float BarHP, float timeToMove)
