@@ -436,7 +436,6 @@ public class HealthBar : MonoBehaviour
     
     private void Update()
     {
-        Debug.Log(MoveBar + " " + MoveTempBar);
         if (waitTimer > 0)
         {
             waitTimer -= Time.deltaTime;
