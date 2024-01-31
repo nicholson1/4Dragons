@@ -17,8 +17,8 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI level;
     [SerializeField] private StatDisplay[] stats;
 
-    [SerializeField] private Button equip;
-    [SerializeField] private Button  inventory;
+    [SerializeField] private MultiImageButton equip;
+    [SerializeField] private MultiImageButton  inventory;
     [SerializeField] private ToolTip _toolTip;
     [SerializeField] private Image icon;
 

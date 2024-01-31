@@ -406,7 +406,7 @@ public class HealthBar : MonoBehaviour
 
             if (!found)
             {
-                Debug.Log("making a new one");
+                //Debug.Log("making a new one");
                 BuffDebuffElement icon = GetBuffDebuff();
 
                 icon.InitializeDisplay(debuff, turns, amount);
@@ -416,6 +416,62 @@ public class HealthBar : MonoBehaviour
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 350, 0);
         st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff, this);
+    }
+
+    private bool MoveBar = false;
+    private bool MoveTempBar = false;
+
+    private float TargetValue;
+    private float TargetValueStart;
+    private float timer = 0;
+    
+    private float TempBarTarget;
+    private float TempBarStart;
+    private float tempTimer = 0;
+
+    private float waitTimer = 1.5f;
+    
+    private float ratio;
+
+    
+    private void Update()
+    {
+        Debug.Log(MoveBar + " " + MoveTempBar);
+        if (waitTimer > 0)
+        {
+            waitTimer -= Time.deltaTime;
+            return;
+        }
+        
+        if (MoveBar)
+        {
+            timer += Time.deltaTime;
+            bar.value = Mathf.Lerp(TargetValueStart, TargetValue, timer );
+            if (bar.value >= TargetValue)
+            {
+                bar.value = TargetValue;
+                MoveBar = false;
+                timer = 0;
+                TargetValueStart = 0;
+                TempBarStart = 0;
+
+            }
+        }
+        if (MoveTempBar)
+        {
+            tempTimer += Time.deltaTime;
+            tempBar.value = Mathf.Lerp(TempBarStart, TempBarTarget, tempTimer );
+            if (tempBar.value <= TempBarTarget)
+            {
+                tempBar.value = TempBarTarget;
+                MoveTempBar = false;
+                tempTimer = 0;
+                TempBarStart = 0;
+                timer = 0;
+
+                
+            }
+        }
     }
 
     private Coroutine MovingBar;
@@ -430,9 +486,18 @@ public class HealthBar : MonoBehaviour
 
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = HealColor;
 
-        tempBar.value = c._currentHealth;
-        MovingBar = StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
+        tempBar.value = c._currentHealth * ratio;
+        //MovingBar = StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
+        MoveBar = true;
+        TargetValue = c._currentHealth * ratio;
+        if(TargetValueStart == 0)
+            TargetValueStart = bar.value;
+        
         text.text = c._currentHealth + "/" + c._maxHealth;
+        waitTimer = 1.5f;
+        timer = 0;
+        MoveTempBar = false;
+        TempBarStart = 0;
 
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 350, 0);
@@ -449,7 +514,7 @@ public class HealthBar : MonoBehaviour
         if (c != displayCharacter)
             return;
         
-        bar.value = bar.value - amount;
+        bar.value = bar.value - amount * ratio;
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = DamageColor;
 
 
@@ -459,8 +524,20 @@ public class HealthBar : MonoBehaviour
             return;
         }
         //Debug.Log("Active? "+gameObject.activeInHierarchy);
-        MovingBar = StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
+        //MovingBar = StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
+        if(TempBarStart == 0)
+            TempBarStart = (c._currentHealth + amount) * ratio;
+        TempBarTarget = c._currentHealth * ratio;
+        //Debug.Log("start: "+TempBarStart + " target: " + TempBarTarget +" "+ bar.value);
+        waitTimer = 1.5f;
+        tempTimer = 0;
+
+
+        MoveTempBar = true;
         text.text = c._currentHealth + "/" + c._maxHealth;
+
+        TargetValueStart = 0;
+        MoveBar = false;
 
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 350, 0);
@@ -552,12 +629,14 @@ public class HealthBar : MonoBehaviour
 
         Vector3 screenPos = cam.WorldToScreenPoint(c.transform.position) - new Vector3(0, 50, 0);
         this.transform.position = screenPos;
-        bar.maxValue = c._maxHealth;
-        bar.value = c._currentHealth;
+
+        ratio = 100f / c._maxHealth;
+        //bar.maxValue = c._maxHealth;
+        bar.value = c._currentHealth * ratio;
         text.text = c._currentHealth + "/" + c._maxHealth;
 
-        tempBar.maxValue = c._maxHealth;
-        tempBar.value = c._currentHealth;
+        //tempBar.maxValue = c._maxHealth;
+        tempBar.value = c._currentHealth * ratio;
 
 
     }

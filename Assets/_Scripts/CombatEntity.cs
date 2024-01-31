@@ -678,7 +678,7 @@ public class CombatEntity : MonoBehaviour
     {
         // use spell book to determine targets, effect, and quantity
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
-        Debug.Log(spell);
+        //Debug.Log(spell);
         List<int> powerValues = TheSpellBook._instance.GetPowerValues(spell, weapon, this);
         string trigger = ((TheSpellBook.AnimationTriggerNames)powerValues[2]).ToString();
         myCharacter._am.SetTrigger(trigger);

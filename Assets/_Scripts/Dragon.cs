@@ -16,7 +16,7 @@ public class Dragon : MonoBehaviour
 
    
 
-   private List<int> PhysicalSpellIndexes =  new List<int>() { 1, 2, 4, 5, 7, 8, 10, 11, 13, 14 };
+   private List<int> PhysicalSpellIndexes =  new List<int>() { 1, 2, 5, 7, 8, 10, 11, 13, 14 };
    private List<int> MagicSpellIndexes =  new List<int>() {};
 
 
@@ -69,6 +69,8 @@ public class Dragon : MonoBehaviour
    private List<Weapon> GetDragonSpells(int level, int rarity, SpellType spellSchool, DragonType dragType )
    {
       List<Weapon> Spells = new List<Weapon>();
+      
+      Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)4)); // all dragons get block
       int physicalSpellCount = 0;
       int magicSpellCount = 0;
 
@@ -104,22 +106,22 @@ public class Dragon : MonoBehaviour
       switch (dragType)
       {
          case DragonType.Nightmare:
-            physicalSpellCount = 4;
+            physicalSpellCount = 3;
             magicSpellCount = 1;
             modelIndex = 0;
             break;
          case DragonType.TerrorBringer:
-            physicalSpellCount = 3;
+            physicalSpellCount = 2;
             magicSpellCount = 2;
             modelIndex = 1;
             break;
          case DragonType.SoulEater:
-            physicalSpellCount = 2;
+            physicalSpellCount = 1;
             magicSpellCount = 3;
             modelIndex = 2;
             break;
          case DragonType.Usurper:
-            physicalSpellCount = 1;
+            physicalSpellCount = 0;
             magicSpellCount = 4;
             modelIndex = 3;
             break;

@@ -186,7 +186,7 @@ public class EquipmentModelManager : MonoBehaviour
         if (wep2 != null)
         {
             newIndex2 = wep2.modelIndex;
-            Debug.Log(wep2.name + " " + newIndex2);
+            //Debug.Log(wep2.name + " " + newIndex2);
 
 
         }
@@ -194,7 +194,7 @@ public class EquipmentModelManager : MonoBehaviour
         if (wep1 != null)
         {
             newIndex1 = wep1.modelIndex;
-            Debug.Log(wep1.name + " " + newIndex1);
+            //Debug.Log(wep1.name + " " + newIndex1);
 
 
         }

@@ -25,8 +25,8 @@ public class CombatController : MonoBehaviour
     [SerializeField] private Transform SpawnPos;
 
     public List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
-    public Button NextCombatButton;
-    public Button EndTurnButton;
+    public MultiImageButton NextCombatButton;
+    public MultiImageButton EndTurnButton;
 
     public Vector3 playerOffset = new Vector3();
 

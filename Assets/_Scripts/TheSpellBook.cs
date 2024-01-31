@@ -820,7 +820,7 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Fire5:
                 casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
-                turn = 1;
+                turn = 2;
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
             case Weapon.SpellTypes.Ice1:

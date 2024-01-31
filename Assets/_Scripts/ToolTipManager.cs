@@ -47,6 +47,7 @@ public class ToolTipManager : MonoBehaviour
       }
    }
 
+   
    private void Start()
    {
       
@@ -68,11 +69,11 @@ public class ToolTipManager : MonoBehaviour
       //Debug.Log((Screen.width - Input.mousePosition.x) + " X");
 
       _rt.pivot = new Vector2(.5f, .5f);
-      if (Screen.height - Input.mousePosition.y < 130)
+      if (Screen.height - Input.mousePosition.y < Screen.height/3.5f)
       {
          _rt.pivot += new Vector2(0, 3);
       }
-      if (Screen.width - Input.mousePosition.x < 150)
+      if (Screen.width - Input.mousePosition.x < Screen.width/5f)
       {
          _rt.pivot += new Vector2(5, 0);
          //LayoutGroup.reverseArrangement = true;

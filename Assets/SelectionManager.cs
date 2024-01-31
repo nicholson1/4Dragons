@@ -14,7 +14,7 @@ public class SelectionManager : MonoBehaviour
     
     public int selectionsLeft = 2;
     public static SelectionManager _instance;
-    public Button SkipButton;
+    public MultiImageButton SkipButton;
 
     private bool startingSelections = true;
 

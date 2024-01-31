@@ -12,7 +12,7 @@ public class SpellButton : MonoBehaviour
     [SerializeField] private CombatEntity myCharacter;
     public Weapon.SpellTypes spell;
     public Weapon weapon;
-    public Sprite SpellSprite;
+    public Image SpellIcon;
     public TextMeshProUGUI SpellText;
    
     [SerializeField]private ToolTip _toolTip;
@@ -107,6 +107,11 @@ public class SpellButton : MonoBehaviour
 
         _toolTip.e = w;
 
+
+        (string, Sprite, Color, string) iconInfo = StatDisplayManager._instance.GetValuesFromSpell(s);
+        SpellIcon.sprite = iconInfo.Item2;
+        SpellIcon.color = iconInfo.Item3;
+        SpellText.color =iconInfo.Item3;
 
         //Debug.Log(SpellText.text = DataTable[(int)spell][0].ToString());
 
