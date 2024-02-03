@@ -65,6 +65,7 @@ public class BuffDebuffElement : MonoBehaviour
 
         }
         turnCounter.text = _turns.ToString();
+
         
     }
 

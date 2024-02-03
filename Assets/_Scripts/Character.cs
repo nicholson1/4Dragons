@@ -245,7 +245,7 @@ public class Character : MonoBehaviour
 
     public void UsePrepStack()
     {
-        Debug.Log("use prep");
+        //Debug.Log("use prep");
         UsePrep(this);
     }
     
@@ -298,7 +298,10 @@ public class Character : MonoBehaviour
                 }
                 else
                 {
-                    Buffs[i] = (buff, Buffs[i].Item2 + turns, amount + Buffs[i].Item3);
+                    float tempAmount = Buffs[i].Item3;
+                    if (amount > tempAmount)
+                        tempAmount = amount;
+                    Buffs[i] = (buff, Buffs[i].Item2 + turns, tempAmount);
                     
                     if (Buffs[i].Item3 <=0)
                     {
@@ -749,7 +752,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-            hp = 75 * _level + 25;
+            hp = 50 * _level + 50;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);

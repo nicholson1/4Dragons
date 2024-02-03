@@ -497,7 +497,7 @@ public class ToolTipManager : MonoBehaviour
    {
       message = message.Replace("$", turns.ToString());
       message = message.Replace("@", amount.ToString());
-      message = message.Replace("#", (Mathf.RoundToInt(amount/4)*4).ToString());
+      message = message.Replace("#", (Mathf.FloorToInt(amount/4)*4).ToString());
         
 
       return message;

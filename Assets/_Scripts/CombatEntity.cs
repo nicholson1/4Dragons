@@ -183,7 +183,8 @@ public class CombatEntity : MonoBehaviour
         while (Intentions.Count > 0)
         {
             CastTheAbility(Intentions.Last().Item1,Intentions.Last().Item2 );
-            RemoveIntent(myCharacter);
+            if(myCharacter != null)
+                RemoveIntent(myCharacter);
             Intentions.RemoveAt(Intentions.Count -1);
             yield return new WaitForSeconds(1f);
             

@@ -231,6 +231,7 @@ public class CombatController : MonoBehaviour
         // activate next button
         NextCombatButton.gameObject.SetActive(true);
         // deactivate enemy
+        //todo pool
         Destroy(entitiesInCombat[1].gameObject);
         
         

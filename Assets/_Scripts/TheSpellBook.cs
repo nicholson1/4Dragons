@@ -402,7 +402,7 @@ public class TheSpellBook : MonoBehaviour
         int Amount = power[0];
         if (buff == CombatEntity.BuffTypes.Rejuvenate)
         {
-            Amount = Amount / 2;
+            Amount = Amount;
         }
 
         if (buff == CombatEntity.BuffTypes.Prepared)
@@ -417,7 +417,7 @@ public class TheSpellBook : MonoBehaviour
 
         target.lastSpellCastTargeted = spell;
 
-        caster.Buff(target, buff, power[1], Mathf.RoundToInt(Amount));
+        caster.Buff(target, buff, power[1], Mathf.FloorToInt(Amount));
 
     }
     public void WeakenTarget(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)

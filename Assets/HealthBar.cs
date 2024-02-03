@@ -330,10 +330,11 @@ public class HealthBar : MonoBehaviour
                         }
                     }
 
-                    if (buff == CombatEntity.BuffTypes.Rejuvenate || buff == CombatEntity.BuffTypes.Thorns)
+                    if (buff == CombatEntity.BuffTypes.Thorns)
                     {
                         b._amount += amount;
                     }
+                    //if(buff == CombatEntity.BuffTypes.Rejuvenate || 
                     b._turns += turns;
                     b.UpdateValues();
                     found = true;
@@ -456,7 +457,7 @@ public class HealthBar : MonoBehaviour
 
             }
         }
-        if (MoveTempBar)
+        else if (MoveTempBar)
         {
             tempTimer += Time.deltaTime;
             tempBar.value = Mathf.Lerp(TempBarStart, TempBarTarget, tempTimer );
@@ -470,6 +471,11 @@ public class HealthBar : MonoBehaviour
 
                 
             }
+        }
+        else if(!Mathf.Approximately(tempBar.value,bar.value))
+        {
+            MoveTempBar = true;
+            TempBarTarget = bar.value;
         }
     }
 
