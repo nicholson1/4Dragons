@@ -396,7 +396,8 @@ public class CombatController : MonoBehaviour
         else
         {
             enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
-
+            //ALWAYS DRAGON
+            //enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
         }
         
         enemy.transform.LookAt(Player.transform.position);

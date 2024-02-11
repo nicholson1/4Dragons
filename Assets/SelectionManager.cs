@@ -55,12 +55,9 @@ public class SelectionManager : MonoBehaviour
         {
             int temp = Random.Range(0, c._equipment.Count);
 
-            if (c.isDragon)
+            if (c._equipment[temp].canBeLoot == false)
             {
-                if (c._equipment[temp].isWeapon)
-                {
-                    continue;
-                }
+                continue;
             }
             
             if (!index.Contains(temp))

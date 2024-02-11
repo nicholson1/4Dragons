@@ -117,8 +117,7 @@ public class Character : MonoBehaviour
                 if (!HasDamageSpell(_spellScrolls) && !HasDamageSpell(_weapons))
                 {
                     // if we have no damage abilitys yet, give em one
-                    _weapons.Add(EC.CreateRandomWeaponWithSpell(_level,
-                        (Weapon.SpellTypes)GetRandomDamageSpell()));
+                    _weapons.Add(EC.CreateRandomWeaponWithSpell(_level, (Weapon.SpellTypes)GetRandomDamageSpell()));
                 }
                 else
                 {
@@ -390,15 +389,7 @@ public class Character : MonoBehaviour
                 }
                 break;
         }
-        
-        
-        
-
-
     }
-
-   
-
     public int GetIndexOfBuff(CombatEntity.BuffTypes buff)
     {
         int i = -1;
@@ -532,11 +523,7 @@ public class Character : MonoBehaviour
 
                 }
                 break;
-
         }
-        
-        
-        
     }
 
     private void GetHealed(Character c, int healAmount)

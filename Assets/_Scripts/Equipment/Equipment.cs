@@ -12,6 +12,7 @@ namespace ImportantStuff
         private Sprite _icon;
         private bool _isWeapon = false;
         private int _modelIndex;
+        private bool _canBeLoot = true;
 
         public string name // the Name property
         {
@@ -27,6 +28,12 @@ namespace ImportantStuff
         {
             get => _modelIndex;
             set => _modelIndex = value;
+        }
+        
+        public bool canBeLoot // the Name property
+        {
+            get => _canBeLoot;
+            set => _canBeLoot = value;
         }
         
 
@@ -72,13 +79,14 @@ namespace ImportantStuff
 
 
 
-        public Equipment(string name, Slot slot, Dictionary<Stats, int> stats, Sprite icon, int modelIndex)
+        public Equipment(string name, Slot slot, Dictionary<Stats, int> stats, Sprite icon, int modelIndex, bool canBeLoot = true)
         {
             _name = name;
             _stats = stats;
             _slot = slot;
             _icon = icon;
             _modelIndex = modelIndex;
+            _canBeLoot = canBeLoot;
         }
 
         public enum Slot

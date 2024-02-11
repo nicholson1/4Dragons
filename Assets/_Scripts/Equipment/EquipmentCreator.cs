@@ -366,7 +366,7 @@ public class EquipmentCreator : MonoBehaviour
         return w;
     }
     
-    public Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType)
+    public Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType, bool canBeLooted = true)
     {
         name = "";
         
@@ -385,7 +385,7 @@ public class EquipmentCreator : MonoBehaviour
 
         // maybe swap order and do it based off if it starts with a space or not
         
-        Weapon scroll = new Weapon(name, Equipment.Slot.Scroll, equipmentStats, spellType, Weapon.SpellTypes.None, icon);
+        Weapon scroll = new Weapon(name, Equipment.Slot.Scroll, equipmentStats, spellType, Weapon.SpellTypes.None, icon, canBeLoot:canBeLooted);
         
         AddWeaponScaling(scroll,spellType, Weapon.SpellTypes.None );
         //todo spell scaling
@@ -525,9 +525,7 @@ public class EquipmentCreator : MonoBehaviour
             List<object> scaling2 = scaling[spell2.GetHashCode()];
             
             weapon.scalingInfo2 = scaling2;
-
         }
-
     }
         
         

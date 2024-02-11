@@ -25,6 +25,7 @@ public class Dragon : MonoBehaviour
 
    public void InitializeDragon()
    {
+      //RARITY OF SPELLS 0 = COMMON, 1 = UNCOMMON, 2 = RARE, 3 = EPIC
       int rarity = -1;
       //randomSpellType
       spellType = (SpellType)Random.Range(0, 5);
@@ -70,7 +71,7 @@ public class Dragon : MonoBehaviour
    {
       List<Weapon> Spells = new List<Weapon>();
       
-      Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)4)); // all dragons get block
+      Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)4, canBeLooted:false)); // all dragons get block
       int physicalSpellCount = 0;
       int magicSpellCount = 0;
 
@@ -132,7 +133,7 @@ public class Dragon : MonoBehaviour
       for (int i = 0; i < physicalSpellCount; i++)
       {
          roll = PhysicalSpellIndexes[Random.Range(0, PhysicalSpellIndexes.Count)];
-         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll));
+         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll, canBeLooted:false));
          Debug.Log((Weapon.SpellTypes)roll);
          PhysicalSpellIndexes.Remove(roll);
          //physicalSpellCount -= 1;
@@ -143,7 +144,7 @@ public class Dragon : MonoBehaviour
       for (int i = 0; i < magicSpellCount; i++)
       {
          roll = MagicSpellIndexes[Random.Range(0, MagicSpellIndexes.Count)];
-         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll));
+         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll,canBeLooted:false));
          Debug.Log((Weapon.SpellTypes)roll);
          MagicSpellIndexes.Remove(roll);
          //magicSpellCount -= 1;
