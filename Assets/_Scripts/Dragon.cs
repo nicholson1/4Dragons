@@ -134,18 +134,14 @@ public class Dragon : MonoBehaviour
       {
          roll = PhysicalSpellIndexes[Random.Range(0, PhysicalSpellIndexes.Count)];
          Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll, canBeLooted:false));
-         Debug.Log((Weapon.SpellTypes)roll);
          PhysicalSpellIndexes.Remove(roll);
          //physicalSpellCount -= 1;
       }
-        
-      Debug.Log(spellType);
-      Debug.Log(MagicSpellIndexes.Count);
+      
       for (int i = 0; i < magicSpellCount; i++)
       {
          roll = MagicSpellIndexes[Random.Range(0, MagicSpellIndexes.Count)];
          Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll,canBeLooted:false));
-         Debug.Log((Weapon.SpellTypes)roll);
          MagicSpellIndexes.Remove(roll);
          //magicSpellCount -= 1;
          

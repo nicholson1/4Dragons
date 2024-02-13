@@ -74,7 +74,7 @@ public class CombatButtonController : MonoBehaviour
 
     private void UpdateSpellButtons(Character player)
     {
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = player.GetWeaponSpells();
+        List<(Weapon.SpellTypes, Weapon)> weaponSpells = player.GetWeaponSpells();
         //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
 
         List<(Weapon.SpellTypes, Weapon)> spellScrolls = player.GetSpells();
@@ -114,14 +114,26 @@ public class CombatButtonController : MonoBehaviour
                 
         }
 
-
-       
+        switch (weaponSpells.Count)
+        {
+            case 0:
+                weapon1.UpdateSpell(Weapon.SpellTypes.None, null);
+                weapon2.UpdateSpell(Weapon.SpellTypes.None, null);
+                break;
+            case 1:
+                weapon1.UpdateSpell(weaponSpells[0].Item1, weaponSpells[0].Item2);
+                weapon2.UpdateSpell(Weapon.SpellTypes.None, null);
+                break;
+            case 2:
+                weapon1.UpdateSpell(weaponSpells[0].Item1, weaponSpells[0].Item2);
+                weapon2.UpdateSpell(weaponSpells[1].Item1, weaponSpells[1].Item2);
+                break;
+            default:
+                Debug.LogWarning("WE HAVE weird number of weapon SPELLS");
+                break;
+        }
         
-        weapon1.UpdateSpell(weaponSpells.Item1, weaponSpells.Item3);
-        weapon2.UpdateSpell(weaponSpells.Item2, weaponSpells.Item4);
 
-        
-     
         CheckIfSpellCanBeUsed(weapon1, player);
         CheckIfSpellCanBeUsed(weapon2, player);
         CheckIfSpellCanBeUsed(scroll1, player);

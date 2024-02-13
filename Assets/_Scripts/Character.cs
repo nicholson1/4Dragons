@@ -21,6 +21,8 @@ public class Character : MonoBehaviour
 
     public bool isPlayerCharacter;
     public bool isDragon;
+    public bool isElite;
+
 
     public int inventorySize = 6;
     public List<Equipment> _equipment = new List<Equipment>();
@@ -92,6 +94,10 @@ public class Character : MonoBehaviour
             {
                 //gameObject.GetComponent<Dragon>().InitializeDragon();
             }
+            else if( isElite)
+            {
+                //elite
+            }
             else
             {
                 EqMM.RandomCharacter();
@@ -136,7 +142,7 @@ public class Character : MonoBehaviour
 
         }
 
-        if (!isDragon)
+        if (!isDragon && !isElite)
         {
             foreach (var eq in _equipment)
             {
@@ -153,42 +159,46 @@ public class Character : MonoBehaviour
 
 
     }
-    public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetWeaponSpells()
+    public List<(Weapon.SpellTypes, Weapon)> GetWeaponSpells()
     {
         //spell 1, spell2, weapon1, weapon2
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spells = (Weapon.SpellTypes.None, Weapon.SpellTypes.None, null, null);
+        List<(Weapon.SpellTypes, Weapon)> Spells = new List<(Weapon.SpellTypes, Weapon)>();
 
-
-        switch (_weapons.Count)
+        foreach (var weapon in _weapons)
         {
-            case 0:
-                break;
-            case 1:
-                if (_weapons[0].slot == Equipment.Slot.TwoHander)
-                {
-                    spells.Item1 = _weapons[0].GetSpellTypes().Item1;
-                    spells.Item2 = _weapons[0].GetSpellTypes().Item2;
-                    spells.Item3 = _weapons[0];
-                    spells.Item4 = _weapons[0];
-                }
-                else
-                {
-                    spells.Item1 = _weapons[0].GetSpellTypes().Item1;
-                    spells.Item3 = _weapons[0];
-                }
-                break;
-            case 2:
-                spells.Item1 = _weapons[0].GetSpellTypes().Item1;
-                spells.Item3 = _weapons[0];
-                spells.Item2 = _weapons[1].GetSpellTypes().Item1;
-                spells.Item4 = _weapons[1];
-
-                break;
-                
-                
+            Spells.Add((weapon.GetSpellTypes().Item1, weapon));
         }
+        
+        // switch (_weapons.Count)
+        // {
+        //     case 0:
+        //         break;
+        //     case 1:
+        //         if (_weapons[0].slot == Equipment.Slot.TwoHander)
+        //         {
+        //             spells.Item1 = _weapons[0].GetSpellTypes().Item1;
+        //             spells.Item2 = _weapons[0].GetSpellTypes().Item2;
+        //             spells.Item3 = _weapons[0];
+        //             spells.Item4 = _weapons[0];
+        //         }
+        //         else
+        //         {
+        //             spells.Item1 = _weapons[0].GetSpellTypes().Item1;
+        //             spells.Item3 = _weapons[0];
+        //         }
+        //         break;
+        //     case 2:
+        //         spells.Item1 = _weapons[0].GetSpellTypes().Item1;
+        //         spells.Item3 = _weapons[0];
+        //         spells.Item2 = _weapons[1].GetSpellTypes().Item1;
+        //         spells.Item4 = _weapons[1];
+        //
+        //         break;
+        //         
+        //         
+        // }
 
-        return spells;
+        return Spells;
     }
 
     public List<(Weapon.SpellTypes, Weapon)> GetSpells()
@@ -736,6 +746,10 @@ public class Character : MonoBehaviour
         if (isDragon)
         {
             hp = 150 * _level;
+        }
+        else if (isElite)
+        {
+            hp = 75 * _level;
         }
         else
         {

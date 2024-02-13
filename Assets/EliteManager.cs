@@ -28,6 +28,7 @@ public class EliteManager : MonoBehaviour
             EncounteredElites = new List<int>();
         }
         
+        //todo back up if they somehow run into more than 5 elites in 1 trial
         while (typeIndex == -1)
         {
             int i = 0;
@@ -63,7 +64,7 @@ public enum EliteType
     Ranger,
     Woodsman,
     Gladiator,
-    Warlock,
+    Cultist,
     Knight,
     
     //Trial 2
@@ -71,7 +72,7 @@ public enum EliteType
     Druid,
     Witchdoctor,
     Pyromancer,
-    ThornBush,
+    Bloodbender,
     
     //Trial 3
     HillGiant,

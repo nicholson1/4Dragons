@@ -275,14 +275,16 @@ public class EquipmentCreator : MonoBehaviour
 
     }
     
-    public Weapon CreateRandomWeaponWithSpell(int level, Weapon.SpellTypes spell)
+    public Weapon CreateRandomWeaponWithSpell(int level, Weapon.SpellTypes spell, int rarity = -1, Equipment.Stats stat1 = Equipment.Stats.None, Equipment.Stats stat2 = Equipment.Stats.None ,bool canBeLooted = true)
     {
-        int rarity = GetRarity(level);
-        
+        int weaponRarity = rarity;
+        if(rarity == -1)
+            weaponRarity = GetRarity(level);
+
         bool isTwoHand = false;
         Equipment.Slot slot = Equipment.Slot.OneHander;
         
-        return CreateWeapon(level, rarity, slot, spell);
+        return CreateWeapon(level, weaponRarity, slot, spell, stat1, stat2, canBeLooted:canBeLooted);
 
         //return CreateWeapon(level, rarity, slot, Weapon.SpellTypes.Shield2);
     }
@@ -315,7 +317,7 @@ public class EquipmentCreator : MonoBehaviour
     }
     
     
-    public Weapon CreateWeapon(int level, int rarity,  Equipment.Slot slot, Weapon.SpellTypes weaponType)
+    public Weapon CreateWeapon(int level, int rarity,  Equipment.Slot slot, Weapon.SpellTypes weaponType, Equipment.Stats stat1 = Equipment.Stats.None, Equipment.Stats stat2 = Equipment.Stats.None, bool canBeLooted = true)
     {
         name = "";
         
@@ -344,7 +346,7 @@ public class EquipmentCreator : MonoBehaviour
             }
             
         }
-        GenerateStats(PB);
+        GenerateStats(PB, stat1, stat2);
         Sprite icon = AddWeaponSlotName(slot, weaponType);
 
 
@@ -353,7 +355,7 @@ public class EquipmentCreator : MonoBehaviour
         
         // maybe swap order and do it based off if it starts with a space or not
         name= name.Replace("\r", "");
-        Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2, icon, modelIndex);
+        Weapon w = new Weapon(name, slot, equipmentStats, weaponType, spell2, icon, modelIndex, canBeLoot:canBeLooted);
         //w.spellDescription1 = GetSpellDescription(weaponType);
         //w.spellDescription2 = GetSpellDescription(spell2);
        
@@ -369,6 +371,8 @@ public class EquipmentCreator : MonoBehaviour
     public Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType, bool canBeLooted = true)
     {
         name = "";
+        if(rarity == -1)
+            rarity = GetRarity(level);
         
         equipmentStats = new Dictionary<Equipment.Stats, int>();
         equipmentStats.Add(Equipment.Stats.ItemLevel, level);

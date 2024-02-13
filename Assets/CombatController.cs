@@ -21,6 +21,8 @@ public class CombatController : MonoBehaviour
 
     [SerializeField] private Character EnemeyPrefab;
     [SerializeField] private Character DragonPrefab;
+    [SerializeField] private Character ElitePrefab;
+
 
     [SerializeField] private Transform SpawnPos;
 
@@ -382,7 +384,6 @@ public class CombatController : MonoBehaviour
     public void StartRandomCombat()
     {
         
-        
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);
@@ -392,6 +393,10 @@ public class CombatController : MonoBehaviour
         {
             enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
 
+        }
+        else if (Player._level % 3 == 0)
+        {
+            enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation);
         }
         else
         {
@@ -406,6 +411,10 @@ public class CombatController : MonoBehaviour
         if (enemy.isDragon)
         {
             enemy.GetComponent<Dragon>().InitializeDragon();
+        }
+        if (enemy.isElite)
+        {
+            enemy.GetComponent<Elite>().InitializeElite();
         }
 
         turnCounter = 0;

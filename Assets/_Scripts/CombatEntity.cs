@@ -461,22 +461,26 @@ public class CombatEntity : MonoBehaviour
         //Debug.Log(" spells gooten **************");
         Spells = new List<(Weapon.SpellTypes, Weapon)>();
         
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = myCharacter.GetWeaponSpells();
+        //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = myCharacter.GetWeaponSpells();
+        List<(Weapon.SpellTypes, Weapon)> weaponSpells = myCharacter.GetWeaponSpells();
         //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScrolls = myCharacter.GetScollSpells();
 
         List<(Weapon.SpellTypes, Weapon)> spellScrolls = myCharacter.GetSpells();
 
-
-
-        if (weaponSpells.Item1 != Weapon.SpellTypes.None)
+        foreach (var spell in weaponSpells)
         {
-            Spells.Add((weaponSpells.Item1, weaponSpells.Item3));
+            Spells.Add((spell.Item1, spell.Item2));
         }
 
-        if (weaponSpells.Item2 != Weapon.SpellTypes.None)
-        {
-            Spells.Add((weaponSpells.Item2, weaponSpells.Item4));
-        }
+        // if (weaponSpells.Item1 != Weapon.SpellTypes.None)
+        // {
+        //     Spells.Add((weaponSpells.Item1, weaponSpells.Item3));
+        // }
+        //
+        // if (weaponSpells.Item2 != Weapon.SpellTypes.None)
+        // {
+        //     Spells.Add((weaponSpells.Item2, weaponSpells.Item4));
+        // }
         
         foreach (var spell in spellScrolls)
         {
