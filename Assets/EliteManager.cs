@@ -5,6 +5,7 @@ using UnityEngine;
 public class EliteManager : MonoBehaviour
 {
     public static EliteManager _instance;
+    public GameObject[] elites;
     private List<int> EncounteredElites = new List<int>();
 
     private void Awake()
@@ -78,8 +79,8 @@ public enum EliteType
     HillGiant,
     FireGiant,
     FrostGiant,
-    VoidGiant,
     BloodGiant,
+    VoidGiant,
     
     //Trial 4
     FireKing,

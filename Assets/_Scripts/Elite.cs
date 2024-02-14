@@ -11,8 +11,6 @@ public class Elite : MonoBehaviour
     [SerializeField] private Character c;
     public EliteType EliteType;
     
-    [SerializeField] private GameObject[] Models;
-
     public void InitializeElite()
     {
         c.EC = FindObjectOfType<EquipmentCreator>();
@@ -20,9 +18,10 @@ public class Elite : MonoBehaviour
         EliteType = EliteManager._instance.GetEliteType(c._level);
         
         //select model prefab
-        Models[(int)EliteType].SetActive(true);
+        GameObject model = Instantiate(EliteManager._instance.elites[(int)EliteType], this.transform);
+        c._am = model.GetComponent<Animator>();
         
-        GiantModelSelector giantModelSelector = Models[(int)EliteType].gameObject.GetComponent<GiantModelSelector>();
+        GiantModelSelector giantModelSelector = model.GetComponent<GiantModelSelector>();
         
         if (giantModelSelector != null)
         {
@@ -137,6 +136,7 @@ public class Elite : MonoBehaviour
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature3, rarity, stat1, stat2));
+                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature5));
                 break;
             case EliteType.FireGiant:
                 stat1 = Equipment.Stats.Health;
@@ -229,6 +229,9 @@ public class Elite : MonoBehaviour
 
         c._weapons = weapons;
         c._spellScrolls = spells;
+        
+        generatedEquipment.AddRange(weapons);
+        generatedEquipment.AddRange(spells);
 
         return generatedEquipment;
     }

@@ -394,7 +394,7 @@ public class CombatController : MonoBehaviour
             enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
 
         }
-        else if (Player._level % 3 == 0)
+        else if (Player._level % 6 == 0)
         {
             enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation);
         }
