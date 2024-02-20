@@ -12,6 +12,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject SettingUI;
     [SerializeField] private GameObject VictoryUI;
     [SerializeField] private GameObject TitleScreen;
+    [SerializeField] private GameObject MapUI;
+
 
 
 
@@ -241,6 +243,34 @@ public class UIController : MonoBehaviour
         //ToggleShopUI();
         
     }
+    bool mapMoving = false;
+    private bool MapOn;
+
+    public void ToggleMapUI(int force = -1)
+    {
+        if (force == 0)
+        {
+            if (MapOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (MapOn == true)
+            {
+                return;
+            }
+        }
+        
+        if (!mapMoving)
+        {
+            MapOn = !MapOn;
+            StartCoroutine(MoveMapObject(MapUI));
+        }
+        //ToggleShopUI();
+        
+    }
     bool shopMoving = false;
 
     public void ToggleShopUI(int force = -1)
@@ -268,6 +298,27 @@ public class UIController : MonoBehaviour
         moveObj.transform.position = endpos;
 
         moving = false;
+    }
+    IEnumerator MoveMapObject(GameObject moveObj)
+    { 
+        moving = true;
+        RectTransform rt = moveObj.GetComponent<RectTransform>();
+        Vector2 startpos = rt.anchoredPosition;
+        Vector2 endpos = new Vector2(startpos.x, -startpos.y);
+        
+        Debug.Log(startpos.y + " == " + endpos.y);
+            
+        float t = 0;
+        while (t < 1)
+        {
+            rt.anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        rt.anchoredPosition = endpos;
+
+        mapMoving = false;
     }
     IEnumerator MoveShopObject(GameObject moveObj)
     {
