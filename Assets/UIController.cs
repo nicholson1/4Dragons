@@ -224,8 +224,6 @@ public class UIController : MonoBehaviour
         {
             InventoryOn = !InventoryOn;
             StartCoroutine(MoveObject(inventoryUI));
-            
-
         }
         
         if (!haveInitializedEquipmentItems)

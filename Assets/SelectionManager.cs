@@ -27,6 +27,7 @@ public class SelectionManager : MonoBehaviour
 
 
     [SerializeField] public LootButtonManager LootManager;
+    [SerializeField] public Image Background;
 
 
     private void Awake()
@@ -73,6 +74,8 @@ public class SelectionManager : MonoBehaviour
             SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
             item.InitializeSelectionItem(c._equipment[i]);
         }
+
+        StartCoroutine(FadeImage(.75f));
     }
 
     public void SelectionsFromList(List<Equipment> equipments)
@@ -83,6 +86,8 @@ public class SelectionManager : MonoBehaviour
             SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
             item.InitializeSelectionItem(i);
         }
+        StartCoroutine(FadeImage(.75f));
+
     }
 
     public void SelectionMade(SelectionItem si)
@@ -122,17 +127,18 @@ public class SelectionManager : MonoBehaviour
 
         if (selectionsLeft == 2)
         {
-            UIController._instance.ToggleInventoryUI();
+           // UIController._instance.ToggleInventoryUI();
 
         }
         selectionsLeft = 2;
         SkipButton.gameObject.SetActive(false);
 
 
-        UIController._instance.ToggleLootUI();
+        //UIController._instance.ToggleLootUI();
         selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
-        
+        StartCoroutine(FadeImage(0f));
+
     }
 
     public void CreateEquipmentListsStart()
@@ -179,15 +185,16 @@ public class SelectionManager : MonoBehaviour
                 selection1.Add(eq);
                 spellCount += 1;
             }
+        }
 
-            equipments.Add(selection1);
+        equipments.Add(selection1);
             ///////////////////////////////////////////////////////////////////////////////////
 
             spellCount = 0;
             selectionText.text = "Selection (2/4)";
             while (spellCount < 4)
             {
-                eq = EC.CreateRandomSpellScroll(level);
+                Equipment eq = EC.CreateRandomSpellScroll(level);
 
                 if (spellCount == 3)
                 {
@@ -197,9 +204,9 @@ public class SelectionManager : MonoBehaviour
                     }
                 }
 
-                w = (Weapon)eq;
+                Weapon w = (Weapon)eq;
 
-                hasSpell = false;
+                bool hasSpell = false;
                 foreach (var equipment in selection2)
                 {
                     Weapon wep = (Weapon)equipment;
@@ -241,9 +248,9 @@ public class SelectionManager : MonoBehaviour
 
 
             LootManager.SetLootButtons(equipments, new List<int>(){25});
-        }
-
     }
+
+    
     public void RandomSelectionBegging()
     {
         //get level from character
@@ -381,6 +388,44 @@ public class SelectionManager : MonoBehaviour
         
         
 
+    }
+    
+    public float fadeDuration = 1f;
+    IEnumerator FadeImage(float targetAlpha)
+    {
+            
+        Background.gameObject.SetActive(true);
+        
+        // Set the initial alpha value 
+        float startingAlpha = Background.color.a;
+
+        Color startColor = Background.color;
+        Color endColor = startColor;
+        endColor.a = targetAlpha;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            // Calculate the current alpha value based on the elapsed time
+            float alpha = Mathf.Lerp(startingAlpha, targetAlpha, elapsedTime / fadeDuration);
+
+            // Set the alpha value of the image
+            Background.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+
+            // Increment the elapsed time
+            elapsedTime += Time.deltaTime;
+
+            // Wait for the next frame
+            yield return null;
+        }
+
+        // Ensure the alpha value is exactly 1 at the end
+        Background.color = endColor;
+        if (targetAlpha == 0)
+        {
+            Background.gameObject.SetActive(false);
+        }
     }
 
     bool HasDamageSpell(List<Equipment> equipments)

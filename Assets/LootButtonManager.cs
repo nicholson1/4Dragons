@@ -52,9 +52,8 @@ public class LootButtonManager : MonoBehaviour
 
     public void EquipmentSelect(int i)
     {
-        Debug.Log(i);
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
-        UIController._instance.ToggleLootUI(-1);
+        UIController._instance.ToggleInventoryUI(1);
         EquipmentButtons[i].SetActive(false);
     }
     public void GoldSelect(int i)
