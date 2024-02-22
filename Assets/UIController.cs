@@ -209,6 +209,7 @@ public class UIController : MonoBehaviour
         {
             if (InventoryOn == false)
             {
+                //Debug.Log("inventory is off, forced");
                 return;
             }
         }
@@ -216,6 +217,7 @@ public class UIController : MonoBehaviour
         {
             if (InventoryOn == true)
             {
+                //Debug.Log("inventory is on, forced");
                 return;
             }
         }
@@ -224,6 +226,8 @@ public class UIController : MonoBehaviour
         {
             InventoryOn = !InventoryOn;
             StartCoroutine(MoveObject(inventoryUI));
+            //Debug.Log("starting coroutine " + InventoryOn);
+
         }
         
         if (!haveInitializedEquipmentItems)
@@ -305,7 +309,7 @@ public class UIController : MonoBehaviour
     }
     IEnumerator MoveMapObject(GameObject moveObj)
     { 
-        moving = true;
+        mapMoving = true;
         RectTransform rt = moveObj.GetComponent<RectTransform>();
         Vector2 startpos = rt.anchoredPosition;
         Vector2 endpos = new Vector2(startpos.x, -startpos.y);
