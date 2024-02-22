@@ -26,6 +26,7 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selectionText;
 
 
+    [SerializeField] public LootButtonManager LootManager;
 
 
     private void Awake()
@@ -72,7 +73,16 @@ public class SelectionManager : MonoBehaviour
             SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
             item.InitializeSelectionItem(c._equipment[i]);
         }
-        
+    }
+
+    public void SelectionsFromList(List<Equipment> equipments)
+    {
+        SkipButton.gameObject.SetActive(true);
+        foreach (var i in equipments)
+        {
+            SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
+            item.InitializeSelectionItem(i);
+        }
     }
 
     public void SelectionMade(SelectionItem si)
@@ -119,17 +129,121 @@ public class SelectionManager : MonoBehaviour
         SkipButton.gameObject.SetActive(false);
 
 
-        if (startingSelections)
-        {
-            RandomSelectionBegging();
-        }
-        else
-        {
-            selectionScreen.SetActive(false);
-            CombatController._instance.NextCombatButton.gameObject.SetActive(true);
-        }
+        UIController._instance.ToggleLootUI();
+        selectionScreen.SetActive(false);
+        //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
+        
     }
-    
+
+    public void CreateEquipmentListsStart()
+    {
+        List<List<Equipment>> equipments = new List<List<Equipment>>();
+
+        List<Equipment> selection1 = new List<Equipment>();
+        List<Equipment> selection2 = new List<Equipment>();
+
+        List<Equipment> selection3 = new List<Equipment>();
+        List<Equipment> selection4 = new List<Equipment>();
+
+        int level = CombatController._instance.Player._level;
+        selection1.Add(EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
+        // present 4 spells
+        int spellCount = 1;
+        while (spellCount < 4)
+        {
+            Equipment eq = EC.CreateRandomWeapon(level, false);
+
+            if (spellCount == 3)
+            {
+                if (!HasDamageSpell(selection1))
+                {
+                    eq = EC.CreateWeapon(level, 0, Equipment.Slot.OneHander,
+                        (Weapon.SpellTypes)GetRandomDamagePhysicalSpellInt());
+                }
+            }
+
+            Weapon w = (Weapon)eq;
+
+            bool hasSpell = false;
+            foreach (var equipment in selection1)
+            {
+                Weapon wep = (Weapon)equipment;
+                if (wep.spellType1 == w.spellType1)
+                {
+                    hasSpell = true;
+                }
+            }
+
+            if (hasSpell == false)
+            {
+                selection1.Add(eq);
+                spellCount += 1;
+            }
+
+            equipments.Add(selection1);
+            ///////////////////////////////////////////////////////////////////////////////////
+
+            spellCount = 0;
+            selectionText.text = "Selection (2/4)";
+            while (spellCount < 4)
+            {
+                eq = EC.CreateRandomSpellScroll(level);
+
+                if (spellCount == 3)
+                {
+                    if (!HasDamageSpell(selection2))
+                    {
+                        eq = EC.CreateSpellScroll(level, 0, (Weapon.SpellTypes)GetRandomDamageSpellInt());
+                    }
+                }
+
+                w = (Weapon)eq;
+
+                hasSpell = false;
+                foreach (var equipment in selection2)
+                {
+                    Weapon wep = (Weapon)equipment;
+                    if (wep.spellType1 == w.spellType1)
+                    {
+                        hasSpell = true;
+                    }
+                }
+
+                if (hasSpell == false)
+                {
+                    selection2.Add(eq);
+                    spellCount += 1;
+                }
+            }
+
+            equipments.Add(selection2);
+            ///////////////////////////////////////////////////////////////////////////////////
+            selection3.Add(EC.CreateArmor(level, Equipment.Slot.Head));
+            selection3.Add(EC.CreateArmor(level, Equipment.Slot.Shoulders));
+            selection3.Add(EC.CreateArmor(level, Equipment.Slot.Chest));
+            selection3.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+            equipments.Add(selection3);
+            
+            ///////////////////////////////////////////////////////////////////////////////////
+            selection4.Add(EC.CreateArmor(level, Equipment.Slot.Gloves));
+            selection4.Add(EC.CreateArmor(level, Equipment.Slot.Legs));
+            selection4.Add(EC.CreateArmor(level, Equipment.Slot.Boots));
+            selection4.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+            equipments.Add(selection4);
+
+            foreach (var VARIABLE in equipments)
+            {
+                foreach (var v in VARIABLE)
+                {
+                    Debug.Log(v.name);
+                }
+            }
+
+
+            LootManager.SetLootButtons(equipments, new List<int>(){25});
+        }
+
+    }
     public void RandomSelectionBegging()
     {
         //get level from character
@@ -202,9 +316,6 @@ public class SelectionManager : MonoBehaviour
                         eq = EC.CreateSpellScroll(level, 0, (Weapon.SpellTypes)GetRandomDamageSpellInt());
                     }
                 }
-
-                
-
                 Weapon w = (Weapon)eq;
 
                 bool hasSpell = false;
@@ -216,7 +327,6 @@ public class SelectionManager : MonoBehaviour
                         hasSpell = true;
                     }
                 }
-                
 
                 if (hasSpell == false)
                 {

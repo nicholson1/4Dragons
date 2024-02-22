@@ -31,6 +31,26 @@ namespace Map
         private float mouseDownTime;
 
         private const float MaxClickDuration = 0.5f;
+        
+        public Transform iconTransform;
+        public float scaleFactor = 0.1f; // Scale factor to adjust the scaling speed
+        public float pingPongSpeed = 1.0f; // Speed of the ping-pong animation
+        private Vector3 initialScaleIcon;
+        private bool isPingPongingScale = false;
+        private Color BaseColor;
+        public Color pingPongColor;
+        private bool isPingPongingColor = false;
+
+        
+
+        
+        void Start()
+        {
+            iconTransform = this.transform;
+            initialScaleIcon = iconTransform.localScale;
+            BaseColor = image.color;
+        }
+        
 
         public void SetUp(Node node, NodeBlueprint blueprint)
         {
@@ -69,12 +89,16 @@ namespace Map
                     {
                         //sr.DOKill();
                         sr.color = MapView.Instance.lockedColor;
+                        isPingPongingScale = false;
+                        isPingPongingColor = false;
                     }
 
                     if (image != null)
                     {
                         //image.DOKill();
                         image.color = MapView.Instance.lockedColor;
+                        isPingPongingScale = false;
+                        isPingPongingColor = false;
                     }
 
                     break;
@@ -83,12 +107,18 @@ namespace Map
                     {
                         //sr.DOKill();
                         sr.color = MapView.Instance.visitedColor;
+                        isPingPongingScale = false;
+                        isPingPongingColor = false;
+
                     }
                     
                     if (image != null)
                     {
                         //image.DOKill();
                         image.color = MapView.Instance.visitedColor;
+                        isPingPongingScale = false;
+                        isPingPongingColor = false;
+                        
                     }
                     
                     if (visitedCircle != null) visitedCircle.gameObject.SetActive(true);
@@ -99,6 +129,8 @@ namespace Map
                     if (sr != null)
                     {
                         sr.color = MapView.Instance.lockedColor;
+                        isPingPongingScale = true;
+                        isPingPongingColor = true;
                         //sr.DOKill();
                         //sr.DOColor(MapView.Instance.visitedColor, 0.5f).SetLoops(-1, LoopType.Yoyo);
                     }
@@ -106,6 +138,8 @@ namespace Map
                     if (image != null)
                     {
                         image.color = MapView.Instance.lockedColor;
+                        isPingPongingScale = true;
+                        isPingPongingColor = true;
                         //image.DOKill();
                         //image.DOColor(MapView.Instance.visitedColor, 0.5f).SetLoops(-1, LoopType.Yoyo);
                     }
@@ -169,6 +203,36 @@ namespace Map
             visitedCircleImage.fillAmount = 0;
 
             //DOTween.To(() => visitedCircleImage.fillAmount, x => visitedCircleImage.fillAmount = x, 1f, fillDuration);
+        }
+
+        private void Update()
+        {
+            if (isPingPongingScale)
+            {
+                ScalePingPong();
+            }
+
+            if (isPingPongingColor)
+            {
+                ColorPingPong();
+            }
+        }
+
+
+        private void ScalePingPong()
+        {
+            // Calculate the new scale using ping-pong function
+            float scale = Mathf.PingPong(Time.time * pingPongSpeed, 1.0f) * scaleFactor + 1.0f;
+            //Debug.Log(scale);
+            // Apply the new scale
+            iconTransform.localScale = initialScaleIcon * scale;
+            
+        }
+        private void ColorPingPong()
+        {
+            var pingPong = Mathf.PingPong(Time.time, 1);
+            var c = Color.Lerp(BaseColor, pingPongColor, pingPong);
+            image.color = c;
         }
     }
 }

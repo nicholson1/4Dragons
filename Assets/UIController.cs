@@ -13,9 +13,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject VictoryUI;
     [SerializeField] private GameObject TitleScreen;
     [SerializeField] private GameObject MapUI;
-
-
-
+    
+    [SerializeField] private GameObject LootUI;
 
     [SerializeField] private GameObject CustomizeUI;
 
@@ -278,6 +277,13 @@ public class UIController : MonoBehaviour
         if(!shopMoving)
             StartCoroutine(MoveShopObject(ShopUI));
     }
+    bool LootMoving = false;
+
+    public void ToggleLootUI(int force = -1)
+    {
+        if(!LootMoving)
+            StartCoroutine(MoveShopObject(LootUI));
+    }
 
     IEnumerator MoveObject(GameObject moveObj)
     { 
@@ -306,7 +312,7 @@ public class UIController : MonoBehaviour
         Vector2 startpos = rt.anchoredPosition;
         Vector2 endpos = new Vector2(startpos.x, -startpos.y);
         
-        Debug.Log(startpos.y + " == " + endpos.y);
+        //Debug.Log(startpos.y + " == " + endpos.y);
             
         float t = 0;
         while (t < 1)
