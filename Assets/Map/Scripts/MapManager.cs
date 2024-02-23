@@ -11,6 +11,19 @@ namespace Map
 
         public Map CurrentMap { get; private set; }
 
+        public static MapManager _instance;
+        private void Awake()
+        {
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+        }
+
         private void Start()
         {
             if (PlayerPrefs.HasKey("Map"))
@@ -40,12 +53,13 @@ namespace Map
         {
             var map = MapGenerator.GetMap(config);
             CurrentMap = map;
-            Debug.Log(map.ToJson());
+            //Debug.Log(map.ToJson());
             view.ShowMap(map);
         }
 
         public void SaveMap()
         {
+            return;
             if (CurrentMap == null) return;
 
             var json = JsonConvert.SerializeObject(CurrentMap, Formatting.Indented,

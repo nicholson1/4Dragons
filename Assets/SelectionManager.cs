@@ -26,7 +26,6 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selectionText;
 
 
-    [SerializeField] public LootButtonManager LootManager;
     [SerializeField] public Image Background;
 
 
@@ -44,38 +43,41 @@ public class SelectionManager : MonoBehaviour
     
     public void RandomSelectionFromEquipment(Character c)
     {
-        SkipButton.gameObject.SetActive(true);
+        //SkipButton.gameObject.SetActive(true);
         // get 4 random ints 0-c.equip.count
-        List<int> index = new List<int>();
+        List<Equipment> equipments = new List<Equipment>();
         // force a spell or weapon that has not been selected
-        int forcedWep = Random.Range(c._equipment.Count - 4, c._equipment.Count);
+        Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
 
-        index.Add(forcedWep);
+        equipments.Add(forcedWep);
         
         // fill the rest with 3 random
-        while (index.Count < 4)
+        while (equipments.Count < 4)
         {
-            int temp = Random.Range(0, c._equipment.Count);
+            Equipment temp = c._equipment[Random.Range(0, c._equipment.Count)];
 
-            if (c._equipment[temp].canBeLoot == false)
+            if (temp.canBeLoot == false)
             {
                 continue;
             }
             
-            if (!index.Contains(temp))
+            if (!equipments.Contains(temp))
             {
-                index.Add(temp);
+                equipments.Add(temp);
             }
         }
         
+        LootButtonManager._instance.SetLootButtons(new List<List<Equipment>>(){equipments}, new List<int>(){c._gold});
+        UIController._instance.ToggleLootUI(1);
+        UIController._instance.ToggleInventoryUI(1);
         
-        foreach (var i in index)
-        {
-            SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
-            item.InitializeSelectionItem(c._equipment[i]);
-        }
-
-        StartCoroutine(FadeImage(.75f));
+        // foreach (var i in equipments)
+        // {
+        //     SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
+        //     item.InitializeSelectionItem(c._equipment[i]);
+        // }
+        //
+        // StartCoroutine(FadeImage(.75f));
     }
 
     public void SelectionsFromList(List<Equipment> equipments)
@@ -108,8 +110,6 @@ public class SelectionManager : MonoBehaviour
 
     public void ClearSelections()
     {
-        
-        
         SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
         foreach (var si in selectionItems)
         {
@@ -138,7 +138,6 @@ public class SelectionManager : MonoBehaviour
         selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
         StartCoroutine(FadeImage(0f));
-
     }
 
     public void CreateEquipmentListsStart()
@@ -238,16 +237,15 @@ public class SelectionManager : MonoBehaviour
             selection4.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection4);
 
-            foreach (var VARIABLE in equipments)
-            {
-                foreach (var v in VARIABLE)
-                {
-                    Debug.Log(v.name);
-                }
-            }
-
-
-            LootManager.SetLootButtons(equipments, new List<int>(){25});
+            // foreach (var VARIABLE in equipments)
+            // {
+            //     foreach (var v in VARIABLE)
+            //     {
+            //         Debug.Log(v.name);
+            //     }
+            // }
+            
+            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){25});
     }
 
     

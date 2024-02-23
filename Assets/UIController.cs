@@ -18,8 +18,8 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private GameObject CustomizeUI;
 
-    [SerializeField] private GameObject BeginAdventureButton;
-    [SerializeField] private GameObject CustomizeButton;
+    [SerializeField] private GameObject InventoryButton;
+    [SerializeField] private GameObject MapButton;
 
     [SerializeField] private GameObject MainCamera;
     [SerializeField] private GameObject TransitionCamera;
@@ -47,6 +47,8 @@ public class UIController : MonoBehaviour
     public void LeaveMainMenu()
     {
         TitleScreen.SetActive(false);
+        InventoryButton.SetActive(true);
+        MapButton.SetActive(true);
     }
 
 
@@ -273,18 +275,55 @@ public class UIController : MonoBehaviour
         
     }
     bool shopMoving = false;
-
+    private bool shopOn = false;
     public void ToggleShopUI(int force = -1)
     {
+        if (force == 0)
+        {
+            if (shopOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (shopOn == true)
+            {
+                return;
+            }
+        }
+
         if(!shopMoving)
+        {
+            shopOn = !shopOn;
             StartCoroutine(MoveShopObject(ShopUI));
+        }
     }
     bool LootMoving = false;
+    private bool lootOn = false;
 
     public void ToggleLootUI(int force = -1)
     {
+        if (force == 0)
+        {
+            if (lootOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (lootOn == true)
+            {
+                return;
+            }
+        }
+
         if(!LootMoving)
-            StartCoroutine(MoveShopObject(LootUI));
+        {
+            lootOn = !lootOn;
+            StartCoroutine(MoveLootObject(LootUI));
+        }
     }
 
     IEnumerator MoveObject(GameObject moveObj)
@@ -350,6 +389,29 @@ public class UIController : MonoBehaviour
         moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
 
         shopMoving = false;
+    }
+    IEnumerator MoveLootObject(GameObject moveObj)
+    {
+        
+        LootMoving = true;
+        
+        Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 endpos = new Vector2(-startpos.x, startpos.y);
+        
+        //Debug.Log(startpos);
+        //Debug.Log(endpos);
+            
+        float t = 0;
+        while (t < 1)
+        {
+            moveObj.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
+
+        LootMoving = false;
     }
 
 

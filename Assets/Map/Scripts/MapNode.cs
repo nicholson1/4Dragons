@@ -187,10 +187,19 @@ namespace Map
 
         public void OnPointerUp(PointerEventData data)
         {
+            if (!CombatController._instance.MapCanBeClicked)
+            {
+                return;
+            }
             if (Time.time - mouseDownTime < MaxClickDuration)
             {
                 // user clicked on this node:
                 MapPlayerTracker.Instance.SelectNode(this);
+                CombatController._instance.MapNodeClicked(this.Node.nodeType);
+                UIController._instance.ToggleMapUI(0);
+                UIController._instance.ToggleInventoryUI(0);
+                UIController._instance.ToggleLootUI(0);
+                UIController._instance.ToggleShopUI(0);
             }
         }
 

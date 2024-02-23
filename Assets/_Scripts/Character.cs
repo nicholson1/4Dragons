@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
+using Map;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -587,10 +588,10 @@ public class Character : MonoBehaviour
                     {
                         UIController._instance.ToggleInventoryUI(1);
                         SelectionManager._instance.RandomSelectionFromEquipment(this);
-                        NotificationGold(ErrorMessageManager.Errors.GetGold, _gold);
+                        //NotificationGold(ErrorMessageManager.Errors.GetGold, _gold);
                         Notification(ErrorMessageManager.Errors.Victory);
                     }
-                    CombatController._instance.Player._level += 1;
+                    //CombatController._instance.Player._level += 1;
                     CombatController._instance.Player._currentHealth += 50;
                     CombatController._instance.Player._currentEnergy = 0;
 
@@ -601,10 +602,15 @@ public class Character : MonoBehaviour
                     CombatController._instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
                     
                     CombatController._instance.Player.UpdateStats();
+
+                    if (isDragon)
+                    {
+                        MapManager._instance.GenerateNewMap();
+                    }
                     
                     Destroy(_combatEntity);
 
-                    CombatController._instance.Player._gold += _gold;
+                    //CombatController._instance.Player._gold += _gold;
 
                     CombatController._instance.EndCombat();
                     
@@ -745,11 +751,11 @@ public class Character : MonoBehaviour
         int hp = 0;
         if (isDragon)
         {
-            hp = 150 * _level;
+            hp = 150 * _level + 150;
         }
         else if (isElite)
         {
-            hp = 75 * _level;
+            hp = 75 * _level + 75;
         }
         else
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Map;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -23,6 +24,7 @@ public class CombatController : MonoBehaviour
     [SerializeField] private Character DragonPrefab;
     [SerializeField] private Character ElitePrefab;
 
+    [SerializeField] private GameObject StartChest;
 
     [SerializeField] private Transform SpawnPos;
 
@@ -48,6 +50,10 @@ public class CombatController : MonoBehaviour
     private int CurrentTurnIndex = 0;
 
     private int ShopChancePercent = 0;
+
+    public bool MapCanBeClicked = true;
+
+    public bool ClickedFirstNode = false;
     
     private void Awake()
     {
@@ -63,8 +69,6 @@ public class CombatController : MonoBehaviour
 
     public void DecideShopOrCombat()
     {
-        
-        
         //do we hit a shop
         int roll = Random.Range(1, 100);
         if (roll < ShopChancePercent)
@@ -74,14 +78,61 @@ public class CombatController : MonoBehaviour
         }
         else
         {
-            StartRandomCombat();
+            //StartRandomCombat();
         }
         
         if (Player._level > 5)
         {
             ShopChancePercent += 10;
         }
+    }
 
+    public void ActivateStartChest()
+    {
+        StartChest.gameObject.SetActive(true);
+    }
+
+    public void MapNodeClicked(NodeType nodeType)
+    {
+        //unless its first node
+        if(ClickedFirstNode)
+            Player._level += 1;
+        else
+        {
+            StartChest.gameObject.SetActive(false);
+            ClickedFirstNode = true;
+        }
+        
+        MapCanBeClicked = false;
+        //clear current level remove shops, treasure chests, bodies
+        switch (nodeType)
+        {
+            case NodeType.MinorEnemy:
+                StartRandomCombat(nodeType);
+                break;
+            case NodeType.EliteEnemy:
+                StartRandomCombat(nodeType);
+                break;
+            case NodeType.Boss:
+                StartRandomCombat(nodeType);
+                break;
+            case NodeType.Store:
+                ShopManager._instance.RandomShop();
+                break;
+            case NodeType.Treasure:
+                StartRandomCombat(NodeType.MinorEnemy);
+                //todo spawn a chest with a relic and some gold
+                break;
+            case NodeType.Mystery:
+                StartRandomCombat(NodeType.MinorEnemy);
+                //todo spawn a random enemy shop or treasure
+                break;
+        }
+    }
+
+    public void SetMapCanBeClicked(bool mapCanBeClicked)
+    {
+        MapCanBeClicked = mapCanBeClicked;
     }
     
     private void TransitionToCombat(Vector3 DirVect)
@@ -381,7 +432,7 @@ public class CombatController : MonoBehaviour
         return Vector3.zero;
     }
 
-    public void StartRandomCombat()
+    public void StartRandomCombat(NodeType nodeType)
     {
         
         UIController._instance.ToggleInventoryUI(0);
@@ -389,21 +440,39 @@ public class CombatController : MonoBehaviour
         NextCombatButton.gameObject.SetActive(false);
 
         Character enemy;
-        if (Player._level == 10 || Player._level == 20 || Player._level == 25 || Player._level == 30 || (Player._level > 30 && Player._level % 5 == 0))
-        {
-            enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
 
-        }
-        else if (Player._level % 6 == 0)
+        switch (nodeType)
         {
-            enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation);
+            case NodeType.MinorEnemy:
+                enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+                break;
+            case NodeType.EliteEnemy:
+                enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation);
+                break;
+            case NodeType.Boss:
+                enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
+                break;
+            default:
+                Debug.LogError("NO NODE TYPE FOR COMBAT");
+                enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+                break;
+            
         }
-        else
-        {
-            enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
-            //ALWAYS DRAGON
-            //enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
-        }
+        // if (Player._level == 10 || Player._level == 20 || Player._level == 25 || Player._level == 30 || (Player._level > 30 && Player._level % 5 == 0))
+        // {
+        //     enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
+        //
+        // }
+        // else if (Player._level % 6 == 0)
+        // {
+        //     enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation);
+        // }
+        // else
+        // {
+        //     enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+        //     //ALWAYS DRAGON
+        //     //enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
+        // }
         
         enemy.transform.LookAt(Player.transform.position);
         enemy._level = Player._level;

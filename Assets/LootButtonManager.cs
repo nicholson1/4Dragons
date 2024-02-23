@@ -17,6 +17,28 @@ public class LootButtonManager : MonoBehaviour
     public List<List<Equipment>> EquipmentLists = new List<List<Equipment>>();
     public List<int> GoldList = new List<int>();
 
+    public static LootButtonManager _instance;
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
+    public bool HasItems()
+    {
+        if (EquipmentLists.Count > 0)
+            return true;
+        if (GoldList.Count > 0)
+            return true;
+        return false;
+
+    }
 
     public void SetLootButtons(List<List<Equipment>> equipments = null, List<int> Golds = null)
     {

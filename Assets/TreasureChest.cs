@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TreasureChest : MonoBehaviour
 {
@@ -14,26 +15,40 @@ public class TreasureChest : MonoBehaviour
     private bool isRotating = false;
 
     public bool startingChest;
+    public int force;
     private void OnMouseDown()
     {
-        if(isOpen)
+        if(EventSystem.current.IsPointerOverGameObject())
             return;
+        
+        if (startingChest && !isOpen)
+        {
+            SelectionManager._instance.CreateEquipmentListsStart();
+        }
+        
+        //Debug.Log(!LootButtonManager._instance.HasItems());
+        if(!LootButtonManager._instance.HasItems())
+            return;
+        
         if (!isOpen)
         {
             isRotating = true;
         }
 
-        if (startingChest)
-        {
-            SelectionManager._instance.CreateEquipmentListsStart();
-        }
+        
+
         UIController._instance.ToggleLootUI(1);
         UIController._instance.ToggleInventoryUI(1);
+        
+        isOpen = true;
+        //StartCoroutine(WaitThenDisable());
     }
     
     void Start()
     {
         initialRotation = Lid.transform.localRotation;
+        GetComponent<Rigidbody>().AddForce(Vector3.down * force,ForceMode.Impulse);
+        //add focre down to rigdid body
     }
 
     void Update()
@@ -42,8 +57,14 @@ public class TreasureChest : MonoBehaviour
         {
             // Interpolate between the current rotation and the target rotation
             Lid.transform.localRotation = Quaternion.Lerp(Lid.transform.localRotation, Quaternion.Euler(targetRotation, 0, 0), rotationSpeed * Time.deltaTime);
-
-            isOpen = true;
         }
+        
+        
+    }
+
+    private IEnumerator WaitThenDisable()
+    {
+        yield return new WaitForSeconds(5);
+        gameObject.SetActive(false);
     }
 }
