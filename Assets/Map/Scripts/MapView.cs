@@ -184,6 +184,13 @@ namespace Map
                     if (mapNode != null)
                         mapNode.SetState(NodeStates.Attainable);
                 }
+
+                if (RelicManager._instance.CheckRelic(RelicType.Relic27))
+                {
+                    foreach (var node in MapNodes.Where(n => n.Node.point.y == currentPoint.y +1))
+                        node.SetState(NodeStates.Attainable);
+                }
+                
             }
         }
 

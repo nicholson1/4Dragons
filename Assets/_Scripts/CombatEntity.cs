@@ -31,8 +31,6 @@ public class CombatEntity : MonoBehaviour
     public static event Action<Character, Weapon.SpellTypes> AddIntent;
     public static event Action<Character> RemoveIntent;
     public static event Action<Character> RemoveAllIntent;
-
-
     public static event Action<Character> ReduceDebuffCount;
     public static event Action<Character, bool> ReduceBuffCount;
 
@@ -879,17 +877,7 @@ public class CombatEntity : MonoBehaviour
     public void DeBuff(CombatEntity target, DeBuffTypes deBuff, int turns, float amount, float crit = 0)
     {
         // for certain debuffs check if they crit, bleed/burn
-
-        // we dont need to do this? dots dont crit
-        // if (deBuff == DeBuffTypes.Bleed || deBuff == DeBuffTypes.Burn)
-        // {
-        //     if (CriticalHit(crit))
-        //     {
-        //         float critModifier = 1.5f;
-        //         amount = Mathf.RoundToInt(amount * critModifier);
-        //         Debug.Log("CRITICAL HIT");
-        //     }
-        // }
+        
         if (myCharacter.isPlayerCharacter)
         {
             if (RelicManager._instance.CheckRelic(RelicType.DragonRelic4))

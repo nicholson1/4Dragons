@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Map;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -105,6 +106,13 @@ public class RelicDisplay : MonoBehaviour
             if(RelicManager._instance.CheckRelic(RelicType.DragonRelic14))
             {
                 CombatController._instance.Player._maxEnergy += 3;
+            }
+        }
+        if (relic.relicType == RelicType.Relic27)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.Relic27))
+            {
+                MapView.Instance.SetAttainableNodes();
             }
         }
     }

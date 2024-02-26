@@ -41,8 +41,6 @@ public class CombatController : MonoBehaviour
 
     public static event Action<Character, Character> UpdateUIButtons;
     public static event Action<Character, Character> ActivateCombatEntities;
-
-
     public static event Action<ErrorMessageManager.Errors> CombatNotifications;
 
     public Character Player;
@@ -124,10 +122,62 @@ public class CombatController : MonoBehaviour
                 //todo spawn a chest with a relic and some gold
                 break;
             case NodeType.Mystery:
-                StartRandomCombat(NodeType.MinorEnemy);
+               MysterySelect();
                 //todo spawn a random enemy shop or treasure
                 break;
         }
+    }
+
+    public void MysterySelect()
+    {
+        int roll = Random.Range(0, 11);
+        NodeType nt;
+
+        if (roll >= 10)
+        {
+            //spawn treausre room
+            nt = NodeType.MinorEnemy;
+        }
+
+        else if (roll >= 8)
+        {
+            //spawn shop
+            nt = NodeType.Store;
+        }
+
+        else if (roll >= 5)
+        {
+            //event
+            nt = NodeType.Store;
+        }
+        else
+        {
+            //else just a random enemy
+            nt = NodeType.MinorEnemy;
+        }
+
+        if (nt == NodeType.MinorEnemy)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic27))
+            {
+                //todo roll again for treasure store event
+                nt = NodeType.Store;
+            }
+        }
+
+        switch (nt)
+        {
+            case NodeType.MinorEnemy:
+                StartRandomCombat(NodeType.MinorEnemy);
+                break;
+            case NodeType.Store:
+                ShopManager._instance.RandomShop();
+                break;
+            //case NodeType.Treasure:
+                //do treaure
+            break;
+        }
+
     }
 
     public void SetMapCanBeClicked(bool mapCanBeClicked)
@@ -239,11 +289,52 @@ public class CombatController : MonoBehaviour
         }
 
         ActivateCombatEntities(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
-        UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
         EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
 
-        //StartCombatEvent();
-        yield return 1;
+        UpdateUIButtons(entitiesInCombat[0].myCharacter, entitiesInCombat[1].myCharacter);
+
+        yield return new WaitForSeconds(.5f);
+        
+        if (RelicManager._instance.CheckRelic(RelicType.Relic22))
+        {
+            entitiesInCombat[1].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
+        }
+        if (RelicManager._instance.CheckRelic(RelicType.Relic17))
+        {
+            entitiesInCombat[1].DeBuff(entitiesInCombat[1], CombatEntity.DeBuffTypes.Chilled, 1,1);
+        }
+
+        if (entitiesInCombat[1].myCharacter.isElite)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic15))
+            {
+                //Debug.LogWarning(Mathf.RoundToInt(entitiesInCombat[1].myCharacter._maxHealth * .25f));
+                entitiesInCombat[1].myCharacter._combatEntity.LoseHPDirect(entitiesInCombat[1].myCharacter._combatEntity,Mathf.RoundToInt(entitiesInCombat[1].myCharacter._maxHealth * .25f));
+            }
+        }
+        
+        if (RelicManager._instance.CheckRelic(RelicType.Relic11))
+        {
+            Player.UpdateEnergyCount(1);;
+        }
+
+        RelicManager._instance.UsedRelic19 = false;
+        RelicManager._instance.UsedRelic20 = false;
+        RelicManager._instance.UsedRelic24 = false;
+        RelicManager._instance.UsedRelic8 = false;
+        
+        
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic13))
+        {
+            Player.UpdateEnergyCount(-Player._currentEnergy);
+        }
+        
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic14))
+        {
+            RelicManager._instance.UnstableEnergyCoreCounter = 0;
+        }
+
+
 
     }
 
@@ -516,47 +607,6 @@ public class CombatController : MonoBehaviour
         //StartCoroutine(RotatePlayer(Player.transform, 1, DirVect));
         Vector3 lookDirection = player.transform.position + DirVect;
         Player.transform.LookAt(new Vector3(lookDirection.x, Player.transform.position.y, lookDirection.z));
-
-
-        if (RelicManager._instance.CheckRelic(RelicType.Relic17))
-        {
-            enemy._combatEntity.DeBuff(enemy._combatEntity, CombatEntity.DeBuffTypes.Chilled, 1,1);
-        }
-
-        if (enemy.isElite)
-        {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic15))
-            {
-                Debug.LogWarning(Mathf.RoundToInt(enemy._maxHealth * .25f));
-                enemy._combatEntity.LoseHPDirect(enemy._combatEntity,Mathf.RoundToInt(enemy._maxHealth * .25f));
-            }
-        }
-
-        if (RelicManager._instance.CheckRelic(RelicType.Relic17))
-        {
-            player._currentEnergy += 1;
-        }
-        if (RelicManager._instance.CheckRelic(RelicType.Relic22))
-        {
-            enemy._combatEntity.Buff(player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
-        }
-
-        RelicManager._instance.UsedRelic19 = false;
-        RelicManager._instance.UsedRelic20 = false;
-        RelicManager._instance.UsedRelic24 = false;
-        RelicManager._instance.UsedRelic8 = false;
-
-
-        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic13))
-        {
-            player._currentEnergy = 0;
-        }
-        
-        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic14))
-        {
-            RelicManager._instance.UnstableEnergyCoreCounter = 0;
-        }
-
 
 
     }

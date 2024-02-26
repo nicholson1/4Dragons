@@ -1086,6 +1086,14 @@ public class TheSpellBook : MonoBehaviour
                         power += Mathf.RoundToInt(caster.myCharacter.Buffs[blockCheck].Item3);
                     }
                 }
+
+                if (caster.myCharacter._gold > 0)
+                {
+                    if (RelicManager._instance.CheckRelic(RelicType.DragonRelic3))
+                    {
+                        power += Mathf.RoundToInt(caster.myCharacter._gold/2f);
+                    }
+                }
             }
         }
         

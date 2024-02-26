@@ -62,8 +62,18 @@ public class Character : MonoBehaviour
         showHelm = !showHelm;
         EqMM.UpdateHead();
     }
+
+    private bool StartRun = false;
+
+    public void MakeSureStartRuns()
+    {
+        Start();
+    }
+
     protected virtual void Start()
     {
+        if(StartRun)
+            return;
         EC = FindObjectOfType<EquipmentCreator>();
         CombatController.ActivateCombatEntities += ActivateCombatEntity;
         CombatTrigger.EndCombat += DeactivateCombatEntity;
@@ -159,7 +169,7 @@ public class Character : MonoBehaviour
         
         UpdateStats();
         _currentHealth = _maxHealth;
-
+        StartRun = true;
 
     }
     public List<(Weapon.SpellTypes, Weapon)> GetWeaponSpells()
@@ -201,6 +211,7 @@ public class Character : MonoBehaviour
         //         
         // }
 
+        
         return Spells;
     }
 
@@ -279,6 +290,9 @@ public class Character : MonoBehaviour
     {
         if(c != this)
             return;
+        
+        Debug.Log("HIT WITH BUFF + " + c.name);
+
 
         int i = GetIndexOfBuff(buff);
         switch (buff)
@@ -438,6 +452,7 @@ public class Character : MonoBehaviour
         if(c != this)
             return;
 
+        Debug.Log("HIT WITH DEBUFF + " + c.name);
         int i = GetIndexOfDebuff(deBuff);
         switch (deBuff)
         {
@@ -691,6 +706,7 @@ public class Character : MonoBehaviour
             _combatEntity.enabled = true;
             _combatEntity.Target = enemy._combatEntity;
             UpdateEnergyCount(_maxEnergy);
+            
 
         }
         else if (enemy == this)
@@ -702,7 +718,7 @@ public class Character : MonoBehaviour
             
             //activate friends and set their target to the player
         }
-        
+
     }
     private void DeactivateCombatEntity()
     {
