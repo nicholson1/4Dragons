@@ -26,6 +26,7 @@ public class Relic : Equipment
 
     private String[] RelicNames =
     {
+        "none",
         "Scrollmaster's Amulet",
         "Swiftsteel Medallion",
         "Manaforge Crystal",
@@ -79,6 +80,7 @@ public class Relic : Equipment
 
     private String[] RelicDescription =
     {
+        "none",
         "Swapping scrolls takes no energy",
         "Swapping weapons takes no energy",
         "Everytime you cast a spell this fight increase your SP by 2% (resets each fight)",
