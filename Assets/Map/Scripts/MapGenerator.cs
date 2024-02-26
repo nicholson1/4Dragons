@@ -16,6 +16,7 @@ namespace Map
         // ALL nodes by layer:
         private static readonly List<List<Node>> nodes = new List<List<Node>>();
 
+        private static int ElitesThisMap = 0;
         public static Map GetMap(MapConfig conf)
         {
             if (conf == null)
@@ -26,6 +27,8 @@ namespace Map
 
             config = conf;
             nodes.Clear();
+
+            ElitesThisMap = 0;
 
             GenerateLayerDistances();
 
@@ -72,13 +75,23 @@ namespace Map
 
             for (var i = 0; i < config.GridWidth; i++)
             {
-                var nodeType = Random.Range(0f, 1f) < layer.randomizeNodes ? GetRandomNode() : layer.nodeType;
+                var nodeType = Random.Range(0f, 1f) < layer.randomizeNodes ? GetRandomNode(nodesOnThisLayer) : layer.nodeType;
+                
+                if (layerIndex >= 5 && ElitesThisMap == 0 && nodesOnThisLayer.Count > 0 )
+                {
+                    //Debug.Log("force elite");
+                    nodeType = NodeType.EliteEnemy;
+                    ElitesThisMap += 1;
+                }
+                
                 var blueprintName = config.nodeBlueprints.Where(b => b.nodeType == nodeType).ToList().Random().name;
                 var node = new Node(nodeType, blueprintName, new Point(i, layerIndex))
                 {
                     position = new Vector2(-offset + i * layer.nodesApartDistance, GetDistanceToLayer(layerIndex))
                 };
+                
                 nodesOnThisLayer.Add(node);
+                
             }
 
             nodes.Add(nodesOnThisLayer);
@@ -271,9 +284,56 @@ namespace Map
             return path;
         }
 
-        private static NodeType GetRandomNode()
+        private static NodeType GetRandomNode(List<Node> nodesOnThisLayer)
         {
-            return RandomNodes[Random.Range(0, RandomNodes.Count)];
+            int[] nodeTypeWeights = new[] { 2, 1, 5, 2 };
+            int totalWeight = 0;
+            foreach (var item in nodeTypeWeights)
+            {
+                totalWeight += item;
+            }
+
+            NodeType nt = NodeType.MinorEnemy;
+            int roll = Random.Range(0, totalWeight + 1);
+
+            int sum = 0;
+            for (int i = 0; i < nodeTypeWeights.Length; i++)
+            {
+                sum += nodeTypeWeights[i];
+                if (sum >= roll)
+                {
+                    nt = RandomNodes[i];
+                    //Debug.Log(roll + " "+ nt);
+                    break;
+                }
+            }
+            
+
+            // if there is only 1 node width no elites allowed, if elite placed dont place another
+            if (nt == NodeType.EliteEnemy && (nodesOnThisLayer.Count == 0 || ThisLayerHasElite(nodesOnThisLayer) || ElitesThisMap >= 3))
+            {
+                nt =RandomNodes[Random.Range(0, RandomNodes.Count-1)];
+            }
+
+            if (nt == NodeType.EliteEnemy)
+            {
+                ElitesThisMap += 1;
+            }
+
+            return nt;
+        }
+
+        private static bool ThisLayerHasElite(List<Node> nodesOnThisLayer)
+        {
+            foreach (var node in nodesOnThisLayer)
+            {
+                if (node.nodeType == NodeType.EliteEnemy)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

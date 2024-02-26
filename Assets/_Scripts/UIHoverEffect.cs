@@ -71,6 +71,12 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
     private IEnumerator BlinkScale()
     {
+        if(!setOnce)
+        {
+            initialScale = transform.localScale;
+            initialRotation = transform.localRotation;
+            setOnce = true;
+        }
         LeanTween.cancel(gameObject);
         LeanTween.scale(gameObject, initialScale * hoverScale, 0.1f).setEaseInOutQuad();
         yield return new WaitForSeconds(.5f);

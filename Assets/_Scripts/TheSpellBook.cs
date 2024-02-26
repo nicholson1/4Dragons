@@ -1029,6 +1029,11 @@ public class TheSpellBook : MonoBehaviour
             {
                 adjustment = .5f;
             }
+
+            if (caster.myCharacter.isElite)
+            {
+                adjustment = .33f;
+            }
             
             power = Mathf.RoundToInt(power * adjustment);
            
