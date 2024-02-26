@@ -527,7 +527,8 @@ public class CombatController : MonoBehaviour
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic15))
             {
-                enemy._combatEntity.DirectTakeDamage(Mathf.RoundToInt(enemy._maxHealth * .25f));
+                Debug.LogWarning(Mathf.RoundToInt(enemy._maxHealth * .25f));
+                enemy._combatEntity.LoseHPDirect(enemy._combatEntity,Mathf.RoundToInt(enemy._maxHealth * .25f));
             }
         }
 
@@ -543,8 +544,18 @@ public class CombatController : MonoBehaviour
         RelicManager._instance.UsedRelic19 = false;
         RelicManager._instance.UsedRelic20 = false;
         RelicManager._instance.UsedRelic24 = false;
+        RelicManager._instance.UsedRelic8 = false;
 
 
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic13))
+        {
+            player._currentEnergy = 0;
+        }
+        
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic14))
+        {
+            RelicManager._instance.UnstableEnergyCoreCounter = 0;
+        }
 
 
 

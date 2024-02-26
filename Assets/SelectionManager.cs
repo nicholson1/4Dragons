@@ -103,7 +103,7 @@ public class SelectionManager : MonoBehaviour
 
             if (RelicManager._instance.CheckRelic(RelicType.DragonRelic5))
             {
-                relics.Clear();
+                relics = new List<Equipment>();
                 relics.Add(RelicManager._instance.GetCommonRelic());
                 relics.Add(RelicManager._instance.GetCommonRelic());
                 relics.Add(RelicManager._instance.GetCommonRelic());
@@ -198,14 +198,15 @@ public class SelectionManager : MonoBehaviour
         {
             Destroy(selectionItems[i].gameObject);
         }
-        
 
-        if (selectionsLeft == 2)
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic8))
         {
-           // UIController._instance.ToggleInventoryUI();
-
+            selectionsLeft = 1;
         }
-        selectionsLeft = 2;
+        else
+        {
+            selectionsLeft = 2;
+        }
         SkipButton.gameObject.SetActive(false);
 
 

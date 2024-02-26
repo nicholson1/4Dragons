@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -154,7 +155,6 @@ public class CombatButtonController : MonoBehaviour
         int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
         
         
-        
         //Debug.Log(energyAmount);
         if (energyAmount > currentEnergy)
         {
@@ -164,6 +164,14 @@ public class CombatButtonController : MonoBehaviour
         else
         {
             b.interactable = true;
+        }
+        
+        if (b.interactable && energyAmount == 1)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic10))
+            {
+                b.interactable = false;
+            }
         }
     }
 }

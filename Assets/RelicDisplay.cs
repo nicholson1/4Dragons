@@ -33,13 +33,79 @@ public class RelicDisplay : MonoBehaviour
         
         UIHoverEffect.FlashScale();
 
+        
+        CheckRelicForOnPickupEffect(relic);
+        
+
     }
+    
 
     private void UseRelic(RelicType r)
     {
         if (Relic.relicType == r)
         {
             UIHoverEffect.FlashScale();
+        }
+    }
+
+    private void CheckRelicForOnPickupEffect(Relic relic)
+    {
+        Start();
+        if (relic.relicType == RelicType.Relic16)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.Relic16))
+            {
+                CombatController._instance.Player.GetGold(500);
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic8)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic8))
+            {
+                CombatController._instance.Player._maxEnergy += 1;
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic9)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic9))
+            {
+                CombatController._instance.Player._maxEnergy += 1;
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic10)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic10))
+            {
+                CombatController._instance.Player._maxEnergy += 2;
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic11)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic11))
+            {
+                CombatController._instance.Player._maxEnergy += 2;
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic12)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic12))
+            {
+                CombatController._instance.Player._maxEnergy += 2;
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic13)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic13))
+            {
+                CombatController._instance.Player._maxEnergy += 2;
+            }
+        }
+        if (relic.relicType == RelicType.DragonRelic14)
+        {
+            if(RelicManager._instance.CheckRelic(RelicType.DragonRelic14))
+            {
+                CombatController._instance.Player._maxEnergy += 3;
+            }
         }
     }
 }

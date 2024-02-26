@@ -249,11 +249,10 @@ public class Character : MonoBehaviour
     {
         
         _currentEnergy += amount;
-        
-        
 
-        
-        
+        if (_currentEnergy < 0)
+            _currentEnergy = 0;
+
         UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
     }
 
@@ -555,6 +554,10 @@ public class Character : MonoBehaviour
 
     public void GetGold(int amount)
     {
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic11))
+        {
+            return;
+        }
         _gold += amount;
         NotificationGold(ErrorMessageManager.Errors.GetGold, amount);
         UpdateStats();
@@ -575,11 +578,12 @@ public class Character : MonoBehaviour
 
         _currentHealth -= amount;
 
-        if (_currentHealth < _maxHealth / 2f)
+        if (_currentHealth < _maxHealth / 2f && !RelicManager._instance.UsedRelic8)
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic8))
             {
-                _combatEntity.Buff(_combatEntity, CombatEntity.BuffTypes.Block, 1, _maxHealth);
+                _combatEntity.Buff(_combatEntity, CombatEntity.BuffTypes.Block, 1, Mathf.RoundToInt(_maxHealth/4f));
+                RelicManager._instance.UsedRelic8 = true;
             }
         }
 
@@ -589,6 +593,7 @@ public class Character : MonoBehaviour
             {
                 _currentHealth = 0;
                 _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
+                _combatEntity.Buff(_combatEntity,CombatEntity.BuffTypes.Invulnerable, 1, 1);
                 RelicManager._instance.UsedRelic23 = true;
             }
             

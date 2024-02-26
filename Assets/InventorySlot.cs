@@ -93,7 +93,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         if (item.canBeDragged == false)
         {
             
-            Debug.Log("reset");
+            //Debug.Log("reset");
             //notification
             CombatMove(ErrorMessageManager.Errors.CombatMove);
             return;

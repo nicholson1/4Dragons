@@ -173,6 +173,11 @@ public class HealthBar : MonoBehaviour
         if (c != displayCharacter)
             return;
 
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic12))
+        {
+            return;
+        }
+
         IntentDisplay intent = GetIntent();
         intent.UpdateInfo(spell);
     }

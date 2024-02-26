@@ -204,6 +204,7 @@ public class CombatEntity : MonoBehaviour
             if (myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic14))
             {
                 //keep our block
+                GetBuffed(this, BuffTypes.Block, 1, 0);
             }
             else
             {
@@ -224,6 +225,12 @@ public class CombatEntity : MonoBehaviour
             {
                 // if it is my turn and chill is at 1 turn, dont remove eneregy
                 myCharacter.UpdateEnergyCount(-1);
+            }
+
+            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic14))
+            {
+                myCharacter.UpdateEnergyCount(-RelicManager._instance.UnstableEnergyCoreCounter);
+                RelicManager._instance.UnstableEnergyCoreCounter += 1;
             }
             // if chilled reduce current energy by 1
             // activate end turn button
@@ -267,7 +274,7 @@ public class CombatEntity : MonoBehaviour
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic21))
             {
-                GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .05f));
+                GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .1f));
             }
         }
 
@@ -382,33 +389,35 @@ public class CombatEntity : MonoBehaviour
                     critModifier *= 2;
                 }
             }
-
-            if (RelicManager._instance.CheckRelic(RelicType.Relic12))
-            {
-                Character c = CombatController._instance.Player;
-                c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.01f), 0);
-            }
-            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic7))
-            {
-                Character c = CombatController._instance.Player;
-                c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.05f), 0);
-            }
-            if (RelicManager._instance.CheckRelic(RelicType.Relic13))
-            {
-                Character c = CombatController._instance.Player;
-                //blessing +1 max hp
-            }
-            if (RelicManager._instance.CheckRelic(RelicType.Relic9))
-            {
-                Character c = CombatController._instance.Player;
-                c.GetGold(1);
-            }
         }
         
         
         //figure if it is a crit
         if (CriticalHit(crit))
         {
+            if (!myCharacter.isPlayerCharacter)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic12))
+                {
+                    Character c = CombatController._instance.Player;
+                    c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.01f), 0);
+                }
+                if (RelicManager._instance.CheckRelic(RelicType.DragonRelic7))
+                {
+                    Character c = CombatController._instance.Player;
+                    c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.05f), 0);
+                }
+                if (RelicManager._instance.CheckRelic(RelicType.Relic13))
+                {
+                    Character c = CombatController._instance.Player;
+                    //blessing +1 max hp
+                }
+                if (RelicManager._instance.CheckRelic(RelicType.Relic9))
+                {
+                    Character c = CombatController._instance.Player;
+                    c.GetGold(1);
+                }
+            }
             damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
             //Debug.Log("CRITICAL HIT");
             Notification(ErrorMessageManager.Errors.CriticalHit);
@@ -623,7 +632,7 @@ public class CombatEntity : MonoBehaviour
             if (isMyTurn && myCharacter.DeBuffs[chilled].Item2 == 1)
             {
                 // donot remove energy
-                Debug.Log("we are not removing energy");
+                //Debug.Log("we are not removing energy");
                 RemoveAllIntent(myCharacter);
                 Intentions = new List<(Weapon.SpellTypes, Weapon)>();
 

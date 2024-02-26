@@ -135,6 +135,7 @@ public class Relic : Equipment
 }
 public enum RelicType
 {
+    None,
     Relic1, //implemented in Drag Item
     Relic2, //implemented in Drag Item
     Relic3,
@@ -183,5 +184,4 @@ public enum RelicType
     DragonRelic12,
     DragonRelic13,
     DragonRelic14,
-    None,
 }

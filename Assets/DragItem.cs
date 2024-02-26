@@ -295,7 +295,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         {
             return;
         }
-        if (CombatController._instance.entitiesInCombat.Count < 1)
+        if (CombatController._instance.entitiesInCombat.Count <= 1)
         {
             canBeDragged = true;
             return;

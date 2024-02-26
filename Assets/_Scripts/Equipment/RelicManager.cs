@@ -24,11 +24,14 @@ public class RelicManager : MonoBehaviour
     private int FirstDragonRelicIndex = 30;
     public static RelicManager _instance;
 
-    private bool UsedRelic16 = false; // money
     public bool UsedRelic23 = false; // resurect
     public bool UsedRelic19 = false; // prevent first spell damage
     public bool UsedRelic20 = false; // prevent first physical damage
     public bool UsedRelic24 = false; // first buff free
+    public bool UsedRelic8 = false; // first buff free
+
+
+    public int UnstableEnergyCoreCounter = 0;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -65,10 +68,20 @@ public class RelicManager : MonoBehaviour
     {
         if (PickedRelics.Contains(r))
         {
+            Debug.Log(r.ToString() + "relic used");
             UseRelic(r);
             return true;
         }
         return false;
+    }
+    
+    public void GetRelic(int i)
+    {
+        RelicType t = (RelicType)i;
+        Relic r = new Relic(t, sprite:relicIcons[(int)t]);
+        SeenRelics.Add(r.relicType);
+
+        SelectRelic( r);
     }
 
     public void SelectRelic(Equipment relic)
@@ -87,15 +100,6 @@ public class RelicManager : MonoBehaviour
         //add to display
         RelicDisplay relicDisplay = Instantiate(RelicDisplayPrefab, RelicDisplayHolder);
         relicDisplay.SetRelicUI(r);
-
-        if (UsedRelic16 == false)
-        {
-            if(CheckRelic(RelicType.Relic16))
-            {
-                CombatController._instance.Player.GetGold(500);
-                UsedRelic16 = true;
-            }
-        }
 
     }
 

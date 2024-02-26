@@ -123,11 +123,30 @@ public class TheSpellBook : MonoBehaviour
 
     public void CastAbility(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
-
-        
         // get the scaling
         //IList scaling = (IList)WeaponScalingTable[(int)spell][1];
-        
+
+        //if its a buff
+        if (caster.myCharacter.isPlayerCharacter && (spell == Weapon.SpellTypes.Shield3 ||
+                                                     spell == Weapon.SpellTypes.Sword2 ||
+                                                     spell == Weapon.SpellTypes.Hammer3 ||
+                                                     spell == Weapon.SpellTypes.Nature1 ||
+                                                     spell == Weapon.SpellTypes.Nature3 ||
+                                                     spell == Weapon.SpellTypes.Nature5 ||
+                                                     spell == Weapon.SpellTypes.Fire5 ||
+                                                     spell == Weapon.SpellTypes.Ice2 ||
+                                                     spell == Weapon.SpellTypes.Blood4))
+        {
+            if (!RelicManager._instance.UsedRelic24)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic24))
+                {
+                    caster.myCharacter.UpdateEnergyCount(int.Parse(WeaponScalingTable[(int)spell][2].ToString()));
+                    RelicManager._instance.UsedRelic24 = true;
+                }
+            }
+        }
+
         caster.myCharacter.UpdateEnergyCount(-int.Parse(WeaponScalingTable[(int)spell][2].ToString()));
 
         switch (spell)
