@@ -158,7 +158,7 @@ public class CombatController : MonoBehaviour
 
         if (nt == NodeType.MinorEnemy)
         {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic27))
+            if (RelicManager._instance.CheckRelic(RelicType.Relic25))
             {
                 //todo roll again for treasure store event
                 nt = NodeType.Store;
