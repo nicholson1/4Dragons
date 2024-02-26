@@ -456,7 +456,6 @@ public class CombatController : MonoBehaviour
                 Debug.LogError("NO NODE TYPE FOR COMBAT");
                 enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
                 break;
-            
         }
         // if (Player._level == 10 || Player._level == 20 || Player._level == 25 || Player._level == 30 || (Player._level > 30 && Player._level % 5 == 0))
         // {
@@ -487,6 +486,7 @@ public class CombatController : MonoBehaviour
         }
 
         turnCounter = 0;
+
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
 
@@ -495,7 +495,6 @@ public class CombatController : MonoBehaviour
         CombatNotifications(ErrorMessageManager.Errors.NewFoe);
         yield return new WaitForSeconds(.5f);
         StartCombat(p, e);
-        Debug.Log("hide tool tip at begining of combat");
         ToolTipManager._instance.HideToolTipAll();
     }
 
@@ -517,6 +516,36 @@ public class CombatController : MonoBehaviour
         //StartCoroutine(RotatePlayer(Player.transform, 1, DirVect));
         Vector3 lookDirection = player.transform.position + DirVect;
         Player.transform.LookAt(new Vector3(lookDirection.x, Player.transform.position.y, lookDirection.z));
+
+
+        if (RelicManager._instance.CheckRelic(RelicType.Relic17))
+        {
+            enemy._combatEntity.DeBuff(enemy._combatEntity, CombatEntity.DeBuffTypes.Chilled, 1,1);
+        }
+
+        if (enemy.isElite)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic15))
+            {
+                enemy._combatEntity.DirectTakeDamage(Mathf.RoundToInt(enemy._maxHealth * .25f));
+            }
+        }
+
+        if (RelicManager._instance.CheckRelic(RelicType.Relic17))
+        {
+            player._currentEnergy += 1;
+        }
+        if (RelicManager._instance.CheckRelic(RelicType.Relic22))
+        {
+            enemy._combatEntity.Buff(player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
+        }
+
+        RelicManager._instance.UsedRelic19 = false;
+        RelicManager._instance.UsedRelic20 = false;
+        RelicManager._instance.UsedRelic24 = false;
+
+
+
 
 
     }

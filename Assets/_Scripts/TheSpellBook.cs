@@ -896,6 +896,14 @@ public class TheSpellBook : MonoBehaviour
 
         }
 
+        if (caster.myCharacter.isPlayerCharacter && turn > 0)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic28))
+            {
+                turn += 1;
+            }
+        }
+
         int cost = int.Parse(WeaponScalingTable[(int)spell][2].ToString());
 
         if (cost == 0)
@@ -1046,6 +1054,23 @@ public class TheSpellBook : MonoBehaviour
 
             power = Amount;
         }
+
+        if (caster.myCharacter.isPlayerCharacter)
+        {
+            if ((int)spell <= 14)
+            {
+                int blockCheck = caster.myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
+                if (blockCheck != -1)
+                {
+                    if (RelicManager._instance.CheckRelic(RelicType.Relic18))
+                    {
+                        power += Mathf.RoundToInt(caster.myCharacter.Buffs[blockCheck].Item3);
+                    }
+                }
+            }
+        }
+        
+        
 
         //Debug.Log(power + " " + spell.ToString());
 

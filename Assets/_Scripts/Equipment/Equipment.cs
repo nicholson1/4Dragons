@@ -11,6 +11,7 @@ namespace ImportantStuff
         private string _name;
         private Sprite _icon;
         private bool _isWeapon = false;
+        private bool _isRelic = false;
         private int _modelIndex;
         private bool _canBeLoot = true;
 
@@ -23,6 +24,16 @@ namespace ImportantStuff
         {
             get => _isWeapon;
             set => _isWeapon = value;
+        }
+        public bool isRelic // the Name property
+        {
+            get => _isRelic;
+            set => _isRelic = value;
+        }
+        public Sprite getIcon // the Name property
+        {
+            get => _icon;
+            set => _icon = value;
         }
         public int modelIndex // the Name property
         {
@@ -112,7 +123,7 @@ namespace ImportantStuff
             Drop,
             Sell,
             Upgrade,
-
+            Relic,
         }
 
 
@@ -148,10 +159,8 @@ namespace ImportantStuff
             CritChance,
             
             None,
-            
-
-
         }
+        
 
     }
 }

@@ -28,6 +28,8 @@ public class Character : MonoBehaviour
     public int inventorySize = 6;
     public List<Equipment> _equipment = new List<Equipment>();
     public List<Equipment> _inventory = new List<Equipment>();
+    public List<Equipment> _Relics = new List<Equipment>();
+
 
     public List<Weapon> _weapons = new List<Weapon>();
     public List<Weapon> _spellScrolls = new List<Weapon>();
@@ -247,6 +249,8 @@ public class Character : MonoBehaviour
     {
         
         _currentEnergy += amount;
+        
+        
 
         
         
@@ -549,6 +553,13 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void GetGold(int amount)
+    {
+        _gold += amount;
+        NotificationGold(ErrorMessageManager.Errors.GetGold, amount);
+        UpdateStats();
+    }
+
     private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
     {
         if(c != this)
@@ -563,7 +574,25 @@ public class Character : MonoBehaviour
         }
 
         _currentHealth -= amount;
-        
+
+        if (_currentHealth < _maxHealth / 2f)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic8))
+            {
+                _combatEntity.Buff(_combatEntity, CombatEntity.BuffTypes.Block, 1, _maxHealth);
+            }
+        }
+
+        if (_currentHealth <= 0 && isPlayerCharacter)
+        {
+            if (!RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
+            {
+                _currentHealth = 0;
+                _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
+                RelicManager._instance.UsedRelic23 = true;
+            }
+            
+        }
         
         if (_currentHealth <= 0)
         {
@@ -596,7 +625,7 @@ public class Character : MonoBehaviour
                     CombatController._instance.Player._currentEnergy = 0;
 
                     
-                    //todo just for this test
+                    
                     CombatController._instance.Player._currentHealth = CombatController._instance.Player._maxHealth;
                     CombatController._instance.Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
                     CombatController._instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();

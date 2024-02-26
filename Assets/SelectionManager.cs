@@ -45,6 +45,7 @@ public class SelectionManager : MonoBehaviour
     {
         //SkipButton.gameObject.SetActive(true);
         // get 4 random ints 0-c.equip.count
+        List<List<Equipment>> EquipmentSelection = new List<List<Equipment>>();
         List<Equipment> equipments = new List<Equipment>();
         // force a spell or weapon that has not been selected
         Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
@@ -66,8 +67,82 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(temp);
             }
         }
+        EquipmentSelection.Add(equipments);
+
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic6))
+        {
+
+            List<Equipment> possible = new List<Equipment>();
+            foreach (var e in c._equipment)
+            {
+                if (!equipments.Contains(e) && e.canBeLoot)
+                {
+                    possible.Add(e);
+                }
+            }
+            if(possible.Count > 4)
+            {
+                while (possible.Count > 4)
+                {
+                    possible.RemoveAt(Random.Range(0, possible.Count));
+                }
+            }
+            
+            EquipmentSelection.Add(possible);
+            
+        }
+
+        List<List<Equipment>> RelicSelections = new List<List<Equipment>>();
+        if (c.isElite)
+        {
+            List<Equipment> relics = new List<Equipment>();
+            relics.Add(RelicManager._instance.GetCommonRelic());
+            relics.Add(RelicManager._instance.GetCommonRelic());
+            relics.Add(RelicManager._instance.GetCommonRelic());
+            RelicSelections.Add(relics);
+
+            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic5))
+            {
+                relics.Clear();
+                relics.Add(RelicManager._instance.GetCommonRelic());
+                relics.Add(RelicManager._instance.GetCommonRelic());
+                relics.Add(RelicManager._instance.GetCommonRelic());
+                RelicSelections.Add(relics);
+            }
+        }
+        if (c.isDragon)
+        {
+            List<Equipment> relics = new List<Equipment>();
+            relics.Add(RelicManager._instance.GetDragonRelic());
+            relics.Add(RelicManager._instance.GetDragonRelic());
+            relics.Add(RelicManager._instance.GetDragonRelic());
+            RelicSelections.Add(relics);
+        }
+
+        if (RelicSelections.Count == 0)
+        {
+            RelicSelections = null;
+        }
+        if (EquipmentSelection.Count == 0)
+        {
+            EquipmentSelection = null;
+        }
+
+        List<int> GoldSelections = new List<int>();
+
+        if (RelicManager._instance.CheckRelic(RelicType.Relic34))
+        {
+            c._gold += Mathf.RoundToInt(c._gold * .25f);
+        }
         
-        LootButtonManager._instance.SetLootButtons(new List<List<Equipment>>(){equipments}, new List<int>(){c._gold});
+        GoldSelections.Add(c._gold);
+        
+        if (RelicManager._instance.CheckRelic(RelicType.Relic26))
+        {
+            GoldSelections.Add(Mathf.RoundToInt(CombatController._instance.Player._gold * .05f));
+        }
+
+        LootButtonManager._instance.SetLootButtons(EquipmentSelection, GoldSelections, RelicSelections);
         UIController._instance.ToggleLootUI(1);
         UIController._instance.ToggleInventoryUI(1);
         
@@ -88,7 +163,7 @@ public class SelectionManager : MonoBehaviour
             SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
             item.InitializeSelectionItem(i);
         }
-        StartCoroutine(FadeImage(.75f));
+        StartCoroutine(FadeImage(1,.75f));
 
     }
 
@@ -137,7 +212,7 @@ public class SelectionManager : MonoBehaviour
         //UIController._instance.ToggleLootUI();
         selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
-        StartCoroutine(FadeImage(0f));
+        StartCoroutine(FadeImage(.5f,0f));
     }
 
     public void CreateEquipmentListsStart()
@@ -244,8 +319,12 @@ public class SelectionManager : MonoBehaviour
             //         Debug.Log(v.name);
             //     }
             // }
+            List<Equipment> relics = new List<Equipment>();
+            relics.Add(RelicManager._instance.GetCommonRelic());
+            relics.Add(RelicManager._instance.GetCommonRelic());
+            relics.Add(RelicManager._instance.GetCommonRelic());
             
-            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){25});
+            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){25}, new List<List<Equipment>>(){relics});
     }
 
     
@@ -388,8 +467,7 @@ public class SelectionManager : MonoBehaviour
 
     }
     
-    public float fadeDuration = 1f;
-    IEnumerator FadeImage(float targetAlpha)
+    IEnumerator FadeImage(float fadeDuration, float targetAlpha)
     {
             
         Background.gameObject.SetActive(true);

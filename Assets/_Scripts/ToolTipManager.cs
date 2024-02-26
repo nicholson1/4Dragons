@@ -14,6 +14,7 @@ public class ToolTipManager : MonoBehaviour
 
    public ToolTipDisplay MainTip;
    public ToolTipDisplay SpellTip;
+   public ToolTipDisplay RelicTip;
    public ToolTipDisplay ItemTip;
    public ToolTipDisplay Comparison1tip;
    public ToolTipDisplay Comparison2tip;
@@ -87,7 +88,7 @@ public class ToolTipManager : MonoBehaviour
 
    }
 
-   public void SetAndShowToolTip(string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip)
+   public void SetAndShowToolTip(string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
    {
       transform.position = Input.mousePosition;
 
@@ -110,22 +111,29 @@ public class ToolTipManager : MonoBehaviour
 
       }
 
+      if (is_relic)
+      {
+         UpdateRelicTip(RelicTip, equip);
+      }
+      else
+      {
+         RelicTip.gameObject.SetActive(false);
+      }
+
       if (is_item)
       {
          UpdateItemTipDisplay(ItemTip, title , itemLvl, itemRarity, equip);
          UpdateComparisonTip(equip);
-
-
       }
       else
       {
          ItemTip.gameObject.SetActive(false);
       }
 
-      if (!is_Spell && !is_item)
+      if (!is_Spell && !is_item && !is_relic)
       {
-         UpdateTipDisplay(MainTip, title, message, cost, itemLvl, itemRarity, i, c, is_Spell, is_item);
 
+         UpdateTipDisplay(MainTip, title, message, cost, itemLvl, itemRarity, i, c, is_Spell, is_item);
       }
       else
       {
@@ -326,9 +334,20 @@ public class ToolTipManager : MonoBehaviour
       current.iLvl.text = "Lvl: " +e.stats[Equipment.Stats.ItemLevel].ToString();
       current.iLvl.color = rarityColors[e.stats[Equipment.Stats.Rarity]];
       gameObject.SetActive(true);
+   }
+   private void UpdateRelicTip(ToolTipDisplay current, Equipment e)
+   {
+      RelicTip.gameObject.SetActive(true);
 
+      //Debug.Log("Updating spell tip");
+      Relic r = (Relic) e;
 
-
+      current.tiptext.text = r.relicDescription;
+        
+      current.tiptitle.text = r.name;
+      current.tiptitle.color = rarityColors[4];
+      current.icon.sprite = r.getIcon;
+      gameObject.SetActive(true);
    }
    private void UpdateTipDisplay(ToolTipDisplay current, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c,  bool is_Spell, bool is_item)
    {

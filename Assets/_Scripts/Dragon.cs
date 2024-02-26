@@ -141,7 +141,7 @@ public class Dragon : MonoBehaviour
       for (int i = 0; i < magicSpellCount; i++)
       {
          roll = MagicSpellIndexes[Random.Range(0, MagicSpellIndexes.Count)];
-         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll,canBeLooted:false));
+         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll,canBeLooted:true));
          MagicSpellIndexes.Remove(roll);
          //magicSpellCount -= 1;
          

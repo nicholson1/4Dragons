@@ -10,11 +10,14 @@ public class LootButtonManager : MonoBehaviour
     public GameObject[] EquipmentButtons;
     public GameObject[] GoldButtons;
     public GameObject[] RelicButtons;
+    [SerializeField] private Sprite[] EquipmentSprites;
     [SerializeField] private Transform layoutgroup;
 
     public List<GameObject> CurrentButtons = new List<GameObject>();
 
     public List<List<Equipment>> EquipmentLists = new List<List<Equipment>>();
+    public List<List<Equipment>> RelicLists = new List<List<Equipment>>();
+
     public List<int> GoldList = new List<int>();
 
     public static LootButtonManager _instance;
@@ -37,23 +40,74 @@ public class LootButtonManager : MonoBehaviour
         if (GoldList.Count > 0)
             return true;
         return false;
-
     }
 
-    public void SetLootButtons(List<List<Equipment>> equipments = null, List<int> Golds = null)
+    public void SetLootButtons(List<List<Equipment>> equipments = null, List<int> Golds = null, List<List<Equipment>> relics = null)
     {
         ClearAll();
         EquipmentLists = equipments;
         GoldList = Golds;
-        for (int i = 0; i < equipments.Count; i++)
+        RelicLists = relics;
+        if(equipments != null)
         {
-            EquipmentButtons[i].SetActive(true);
+            for (int i = 0; i < equipments.Count; i++)
+            {
+                EquipmentButtons[i].SetActive(true);
+                AdjustTextAndIcon( EquipmentButtons[i], equipments[i]);
+            }
         }
-        for (int i = 0; i < Golds.Count; i++)
+        if(relics != null)
         {
-            GoldButtons[i].SetActive(true);
-            GoldButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Golds[i] + " Gold";
+            for (int i = 0; i < relics.Count; i++)
+            {
+                RelicButtons[i].SetActive(true);
+            }
         }
+        if(Golds != null)
+        {
+            for (int i = 0; i < Golds.Count; i++)
+            {
+                GoldButtons[i].SetActive(true);
+                GoldButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Golds[i] + " Gold";
+            }
+        }
+    }
+
+    private void AdjustTextAndIcon(GameObject Button, List<Equipment> equipments)
+    {
+        bool allWeap = true;
+        bool allScoll = true;
+        foreach (var e in equipments)
+        {
+            if (e.slot != Equipment.Slot.Scroll)
+            {
+                allScoll = false;
+            }
+            if (e.slot != Equipment.Slot.OneHander)
+            {
+                allWeap = false;
+            }
+        }
+
+        if (allWeap)
+        {
+            Button.GetComponentInChildren<TextMeshProUGUI>().text = "Weapon";
+            Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[2];
+            return;
+        }
+
+        if (allScoll)
+        {
+            Button.GetComponentInChildren<TextMeshProUGUI>().text = "Scroll";
+            Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[1];
+            return;
+        }
+        
+        Button.GetComponentInChildren<TextMeshProUGUI>().text = "Equipment";
+        Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[0];
+        return;
+
+        
     }
 
     public void ClearAll()
@@ -61,14 +115,17 @@ public class LootButtonManager : MonoBehaviour
         foreach (var button in EquipmentButtons)
         {
             button.SetActive(false);
+            button.GetComponent<Button>().interactable = true;
         }
         foreach (var button in GoldButtons)
         {
             button.SetActive(false);
+            button.GetComponent<Button>().interactable = true;
         }
         foreach (var button in RelicButtons)
         {
             button.SetActive(false);
+            button.GetComponent<Button>().interactable = true;
         }
     }
 
@@ -76,13 +133,19 @@ public class LootButtonManager : MonoBehaviour
     {
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         UIController._instance.ToggleInventoryUI(1);
-        EquipmentButtons[i].SetActive(false);
+        EquipmentButtons[i].GetComponent<Button>().interactable = false;
+    }
+    public void RelicSelect(int i)
+    {
+        SelectionManager._instance.SelectionsFromList(RelicLists[i]);
+        UIController._instance.ToggleInventoryUI(1);
+        RelicButtons[i].GetComponent<Button>().interactable = false;
     }
     public void GoldSelect(int i)
     {
-        CombatController._instance.Player._gold += GoldList[i];
-        CombatController._instance.Player.UpdateStats();
-        GoldButtons[i].SetActive(false);
+        CombatController._instance.Player.GetGold(GoldList[i]);
+        GoldButtons[i].GetComponent<Button>().interactable = false;
+
     }
 
    

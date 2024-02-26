@@ -14,11 +14,15 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI rarity;
     [SerializeField] private TextMeshProUGUI slot;
+    [SerializeField] private TextMeshProUGUI RelicDescription;
+
     [SerializeField] private TextMeshProUGUI level;
     [SerializeField] private StatDisplay[] stats;
 
     [SerializeField] private MultiImageButton equip;
     [SerializeField] private MultiImageButton  inventory;
+    [SerializeField] private MultiImageButton  selectRelic;
+
     [SerializeField] private ToolTip _toolTip;
     [SerializeField] private Image icon;
 
@@ -29,6 +33,11 @@ public class SelectionItem : MonoBehaviour
 
     public void InitializeSelectionItem(Equipment e)
     {
+        RelicDescription.gameObject.SetActive(false);
+        selectRelic.gameObject.SetActive(false);
+        equip.gameObject.SetActive(true);
+        inventory.gameObject.SetActive(true);
+
         equip.interactable = true;
         inventory.interactable = true;
         Cardback.SetActive(true);
@@ -54,8 +63,6 @@ public class SelectionItem : MonoBehaviour
         {
             //Weapon x = (Weapon)e;
             slot.text = e.slot.ToString();
-
-
         }
         SetRarityText(e.stats[Equipment.Stats.Rarity], e);
 
@@ -80,9 +87,6 @@ public class SelectionItem : MonoBehaviour
             stats[i].gameObject.SetActive(false);
 
         }
-        
-        
-        
 
         if (e.isWeapon)
         {
@@ -116,15 +120,27 @@ public class SelectionItem : MonoBehaviour
         {
             _spellDisplay.gameObject.SetActive(false);
         }
-        
-        _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
+        if(e.stats.ContainsKey(Equipment.Stats.ItemLevel))
+            _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
         _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
         _toolTip.Cost = "";
         _toolTip.Title = e.name;
         _toolTip.e = e;
-        foreach (var stat in stats)
+
+        if (e.isRelic)
         {
-            //_toolTip.Message += stat.text + "\n";
+            _toolTip.is_item = false;
+            _toolTip.is_relic = true;
+            selectRelic.interactable = true;
+            inventory.gameObject.SetActive(false);
+            equip.gameObject.SetActive(false);
+            selectRelic.gameObject.SetActive(true);
+            slot.color = title.color;
+            Relic r = (Relic)e;
+            _toolTip.Message = r.relicDescription;
+            RelicDescription.text = r.relicDescription;
+            RelicDescription.gameObject.SetActive(true);
+
         }
 
 
@@ -219,12 +235,18 @@ public class SelectionItem : MonoBehaviour
                 rarity.color = ToolTipManager._instance.rarityColors[3];
 
                 break;
+            case 4:
+                //rarity.text = "relic";
+                rarity.color = ToolTipManager._instance.rarityColors[4];
+
+                break;
             case -1 :
                 rarity.text = "";
                 break;
             
         }
-       rarity.text += " Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+        if(e.stats.ContainsKey(Equipment.Stats.ItemLevel))
+            rarity.text += " Lvl: " + e.stats[Equipment.Stats.ItemLevel];
     }
     
     // public void UpdateToolTipWeapon(Weapon.SpellTypes s, Weapon w)
@@ -263,6 +285,16 @@ public class SelectionItem : MonoBehaviour
 
     }
 
+    public void SelectRelic()
+    {
+        //clear selections
+        SelectionManager._instance.ClearSelections();
+        // add to character
+        CombatController._instance.Player._Relics.Add(item);
+        //remove relic from seen relic list
+        RelicManager._instance.SelectRelic(item);
+    }
+
     public void AddToInventory()
     {
         EquipmentManager._instance.AddItemToInventoryFromSelection(item, this);
@@ -287,6 +319,7 @@ public class SelectionItem : MonoBehaviour
     {
         equip.interactable = false;
         inventory.interactable = false;
+        selectRelic.interactable = false;
     }
 
     // public void SpellToolTip(Weapon.SpellTypes s, Weapon w, int index)

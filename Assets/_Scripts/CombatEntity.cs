@@ -196,11 +196,21 @@ public class CombatEntity : MonoBehaviour
     {
         // if chilled reduce this value by 1;
         myCharacter.UpdateEnergyCount(myCharacter._maxEnergy);
+        
+        
         int block =myCharacter.GetIndexOfBuff(BuffTypes.Block);
         if (block != -1)
         {
-            GetBuffed(this, BuffTypes.Block, -1, -myCharacter.Buffs[block].Item3);
+            if (myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic14))
+            {
+                //keep our block
+            }
+            else
+            {
+                GetBuffed(this, BuffTypes.Block, -1, -myCharacter.Buffs[block].Item3);
+            }
         }
+        
         TriggerAllBuffs();
         isMyTurn = true;
 
@@ -236,13 +246,13 @@ public class CombatEntity : MonoBehaviour
         }
 
         lastSpellCastTargeted = Weapon.SpellTypes.None;
-
+        
         if (myCharacter.isPlayerCharacter)
         {
             disableDoubleClick = true;
             // disable end turn 
             //isMyTurn = false;
-            Debug.Log("ran twice");
+            //Debug.Log("ran twice");
             TriggerAllDebuffs();
         }
         else
@@ -251,7 +261,24 @@ public class CombatEntity : MonoBehaviour
             SetMyIntentions();
 
         }
-        myCharacter.UpdateEnergyCount(-myCharacter._currentEnergy);
+        
+        int blockCheck = myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
+        if (blockCheck == -1)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic21))
+            {
+                GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .05f));
+            }
+        }
+
+        if (RelicManager._instance.CheckRelic(RelicType.Relic10))
+        {
+            // do not reset mana
+        }
+        else
+        {
+            myCharacter.UpdateEnergyCount(-myCharacter._currentEnergy);
+        }
         
         
         
@@ -315,17 +342,76 @@ public class CombatEntity : MonoBehaviour
 
         int damagePreReduction = damage;
         float critModifier = 1.5f;
+
+        if (myCharacter.isPlayerCharacter)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic31))
+            {
+                crit = 0;
+            }
+
+            if (dt == AbilityTypes.SpellAttack && !RelicManager._instance.UsedRelic19)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic19))
+                {
+                    damagePreReduction = 0;
+                    RelicManager._instance.UsedRelic19 = true;
+                }
+            }
+            if (dt == AbilityTypes.PhysicalAttack && !RelicManager._instance.UsedRelic20)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic20))
+                {
+                    damagePreReduction = 0;
+                    RelicManager._instance.UsedRelic20 = true;
+                }
+            }
+        }
+        if (!myCharacter.isPlayerCharacter)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic32))
+            {
+                critModifier += .5f;
+            }
+            
+            int chilled = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
+            if (chilled != -1)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic30))
+                {
+                    critModifier *= 2;
+                }
+            }
+
+            if (RelicManager._instance.CheckRelic(RelicType.Relic12))
+            {
+                Character c = CombatController._instance.Player;
+                c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.01f), 0);
+            }
+            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic7))
+            {
+                Character c = CombatController._instance.Player;
+                c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.05f), 0);
+            }
+            if (RelicManager._instance.CheckRelic(RelicType.Relic13))
+            {
+                Character c = CombatController._instance.Player;
+                //blessing +1 max hp
+            }
+            if (RelicManager._instance.CheckRelic(RelicType.Relic9))
+            {
+                Character c = CombatController._instance.Player;
+                c.GetGold(1);
+            }
+        }
         
-        
-        //todo adjust crit mod via buff or title
         
         //figure if it is a crit
         if (CriticalHit(crit))
         {
             damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
-            Debug.Log("CRITICAL HIT");
+            //Debug.Log("CRITICAL HIT");
             Notification(ErrorMessageManager.Errors.CriticalHit);
-
         }
         
         //figure out damage reduction
@@ -364,7 +450,27 @@ public class CombatEntity : MonoBehaviour
             //if we have block  reduce block before attack
             float blockAmount = myCharacter.Buffs[blockCheck].Item3;
 
+            if (!myCharacter.isPlayerCharacter)
+            {
+                if(dt == AbilityTypes.SpellAttack)
+                {
+                    if (RelicManager._instance.CheckRelic(RelicType.Relic29))
+                    {
+                        blockAmount /= 2;
+                    }
+                }
+                if(dt == AbilityTypes.PhysicalAttack)
+                {
+                    if (RelicManager._instance.CheckRelic(RelicType.Relic33))
+                    {
+                        blockAmount /= 2;
+                    }
+                }
+            }
+            
             float blockAfterDamage = blockAmount - attackDamage;
+
+            
 
             if (blockAfterDamage <= 0)
             {
@@ -412,6 +518,12 @@ public class CombatEntity : MonoBehaviour
             //Debug.Log("hey im healing because it was a blood spell " + lastSpellCastTargeted);
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
+
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic2))
+        {
+            attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
+        }
+        
         if (lastSpellCastTargeted == Weapon.SpellTypes.Sword3)
         {
             attacker.Buff(attacker, CombatEntity.BuffTypes.Block, 1, Mathf.RoundToInt(attackDamage/(float)2));
@@ -741,6 +853,14 @@ public class CombatEntity : MonoBehaviour
     public void Buff(CombatEntity target, BuffTypes buff, int turns, float amount)
     {
 
+        if (myCharacter.isPlayerCharacter)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic4))
+            {
+                amount *= 2;
+            }
+        }
+
         target.attacker = this;
         BuffEvent(target, buff, turns, amount);
     }
@@ -761,6 +881,13 @@ public class CombatEntity : MonoBehaviour
         //         Debug.Log("CRITICAL HIT");
         //     }
         // }
+        if (myCharacter.isPlayerCharacter)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic4))
+            {
+                amount *= 2;
+            }
+        }
         target.attacker = this;
         DeBuffEvent(target, deBuff, turns, amount);
     }
@@ -846,6 +973,11 @@ public class CombatEntity : MonoBehaviour
         float reductionPercent = ((float)armorOrMagicResistAmount / (armorOrMagicResistAmount + 100)) * reductionMax;
         return reductionPercent;
     }
+
+    public void DirectTakeDamage(int amount)
+    {
+        GetHitWithAttack(myCharacter, AbilityTypes.PhysicalAttack, amount, 0);
+    }
     
 
     public enum AbilityTypes
@@ -870,6 +1002,11 @@ public class CombatEntity : MonoBehaviour
         Prepared,
         None,
         
+    }
+    public enum BlessingTypes
+    {
+        
+        None,
     }
     
     public enum DeBuffTypes

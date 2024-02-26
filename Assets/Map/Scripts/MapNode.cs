@@ -40,9 +40,8 @@ namespace Map
         private Color BaseColor;
         public Color pingPongColor;
         private bool isPingPongingColor = false;
-
         
-
+        private ToolTip toolTip;
         
         void Start()
         {
@@ -75,12 +74,16 @@ namespace Map
             }
             
             SetState(NodeStates.Locked);
+            
+            SetNodeToolTip(node);
         }
 
         public void SetState(NodeStates state)
         {
             if (visitedCircle != null) visitedCircle.gameObject.SetActive(false);
             if (circleImage != null) circleImage.gameObject.SetActive(false);
+            
+            Node.SetState(state);
             
             switch (state)
             {
@@ -160,6 +163,7 @@ namespace Map
 
             if (image != null)
             {
+                image.color = MapView.Instance.visitedColor;
                 //image.transform.DOKill();
                 //image.transform.DOScale(initialScale * HoverScaleFactor, 0.3f);
             }
@@ -175,6 +179,11 @@ namespace Map
 
             if (image != null)
             {
+                if(Node.State == NodeStates.Visited)
+                    image.color = MapView.Instance.visitedColor;
+                if(Node.State == NodeStates.Locked)
+                    image.color = MapView.Instance.lockedColor;
+
                 //image.transform.DOKill();
                 //image.transform.DOScale(initialScale, 0.3f);
             }
@@ -187,7 +196,7 @@ namespace Map
 
         public void OnPointerUp(PointerEventData data)
         {
-            if (!CombatController._instance.MapCanBeClicked)
+            if (!CombatController._instance.MapCanBeClicked || Node.State != NodeStates.Attainable)
             {
                 return;
             }
@@ -242,6 +251,38 @@ namespace Map
             var pingPong = Mathf.PingPong(Time.time, 1);
             var c = Color.Lerp(BaseColor, pingPongColor, pingPong);
             image.color = c;
+        }
+
+        private void SetNodeToolTip(Node n)
+        {
+            if (toolTip == null)
+                toolTip = GetComponent<ToolTip>();
+
+            toolTip.rarity = -1;
+            switch (n.nodeType)
+            {
+                case NodeType.MinorEnemy:
+                    toolTip.Title = "Combat";
+                    toolTip.Message = "Duel against an adventurer";
+                    break;
+                case NodeType.EliteEnemy:
+                    toolTip.Title = "Elite";
+                    toolTip.Message = "Duel against a powerful adventurer, Defeating them will reward a relic";
+                    break;
+                case NodeType.Store:
+                    toolTip.Title = "Shop";
+                    toolTip.Message = "Spend your gold and sell your items here";
+                    break;
+                case NodeType.Mystery:
+                    toolTip.Title = "Unknown";
+                    toolTip.Message = "You dont know what will be here";
+                    break;
+                case NodeType.Boss:
+                    toolTip.Title = "Dragon";
+                    toolTip.Message = "A powerful dragon lives here, Defeating them will reward a dragon relic";
+                    break;
+                    
+            }
         }
     }
 }

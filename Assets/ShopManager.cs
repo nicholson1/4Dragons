@@ -60,7 +60,16 @@ public class ShopManager : MonoBehaviour
     {
         CombatController._instance.Player._gold -= shopPrice;
 
-        shopPrice += 25;
+        
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic3))
+        {
+            // do not increase the price of reroll
+        }
+        else
+        {
+            shopPrice += 25;
+        }
+
         InitializeShop(ShopType);
         CombatController._instance.Player.UpdateStats();
 
@@ -200,8 +209,10 @@ public class ShopManager : MonoBehaviour
 
     public void Leave()
     {
-        UIController._instance.ToggleShopUI();
-        CombatController._instance.NextCombatButton.gameObject.SetActive(true);
+        UIController._instance.ToggleShopUI(0);
+        UIController._instance.ToggleMapUI(1);
+
+        //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
 
     }
 

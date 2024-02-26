@@ -87,9 +87,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, 1, 1,1);
+        //AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
 
-        if (canBeDragged == false)
+        DragItem item = eventData.pointerDrag.GetComponent<DragItem>();
+        if (item.canBeDragged == false)
         {
             
             Debug.Log("reset");
@@ -119,9 +120,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 // calculate gold
                 int gold = CalculateGold(di.e, this);
                 //character add gold
-                CombatController._instance.Player._gold += gold;
-                CombatController._instance.Player.UpdateStats();
-
+                CombatController._instance.Player.GetGold(gold);
                 //trigger notification event
                 SellItem(ErrorMessageManager.Errors.GetGold, gold);
 
@@ -158,7 +157,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 // if we do - gold
                 CombatController._instance.Player._gold -= cost;
                 SellItem(ErrorMessageManager.Errors.LoseGold, -cost);
-                Debug.Log("why not here");
 
 
             }

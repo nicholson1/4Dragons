@@ -18,6 +18,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Color IconColor;
     public bool is_spell = false;
     public bool is_item = false;
+    public bool is_relic = false;
+
 
     public Equipment e = null;
     
@@ -62,8 +64,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e);
-
+                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
             }
         }
         if (count1)
@@ -71,9 +72,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e);
-
-
+                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
             }
         }
     }

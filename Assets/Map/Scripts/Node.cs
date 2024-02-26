@@ -15,6 +15,7 @@ namespace Map
         public readonly NodeType nodeType;
         public readonly string blueprintName;
         public Vector2 position;
+        public NodeStates State;
 
         public Node(NodeType nodeType, string blueprintName, Point point)
         {
@@ -52,6 +53,11 @@ namespace Map
         public bool HasNoConnections()
         {
             return incoming.Count == 0 && outgoing.Count == 0;
+        }
+
+        public void SetState(NodeStates nodeState)
+        {
+            this.State = nodeState;
         }
     }
 }

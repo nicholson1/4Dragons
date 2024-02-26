@@ -5,6 +5,7 @@ using ImportantStuff;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EquipmentManager : MonoBehaviour
 {
@@ -24,8 +25,6 @@ public class EquipmentManager : MonoBehaviour
 
     [SerializeField] private StatDisplay[] _statDisplays;
     
-    
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -65,27 +64,6 @@ public class EquipmentManager : MonoBehaviour
         goldText.text = c._gold.ToString();
 
     }
-
-    // private void UpdateStats(Character c)
-    // {
-    //     if (!c.isPlayerCharacter)
-    //     {
-    //         return;
-    //     }
-    //
-    //     stats.text = "Stats:\n";
-    //     stats.text += "Level: " + c._level+ "\n";
-    //     stats.text += "Max HP: " + c._maxHealth + "\n";
-    //
-    //     foreach (var kvp in c.GetStats())
-    //     {
-    //         if (kvp.Key != Equipment.Stats.Rarity)
-    //         {
-    //             stats.text += kvp.Key + ": " + kvp.Value +"\n";
-    //
-    //         }
-    //     }
-    // }
 
     public void EquipItemFromSelection(Equipment e, SelectionItem si)
     {

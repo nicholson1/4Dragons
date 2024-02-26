@@ -152,6 +152,9 @@ public class CombatButtonController : MonoBehaviour
             return;
         }
         int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
+        
+        
+        
         //Debug.Log(energyAmount);
         if (energyAmount > currentEnergy)
         {

@@ -86,6 +86,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4875178070476784358}
   - component: {fileID: 1204196883122898727}
+  - component: {fileID: 4598343617303328266}
+  - component: {fileID: 2245539952846961617}
   m_Layer: 0
   m_Name: UINode
   m_TagString: Untagged
@@ -136,6 +138,42 @@ MonoBehaviour:
   scaleFactor: 0.25
   pingPongSpeed: 2
   pingPongColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &4598343617303328266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5037388882644343366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f50db497a7c2246bc94469defcf2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.5
+  shakeAmount: 10
+  shakeSpeed: 10
+--- !u!114 &2245539952846961617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5037388882644343366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7cd2af8a5ded64eb496cd538ea9cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Title: 
+  Message: 
+  Cost: 
+  iLvl: 
+  rarity: 0
+  icon: {fileID: 0}
+  IconColor: {r: 1, g: 1, b: 1, a: 1}
+  is_spell: 0
+  is_item: 0
 --- !u!1 &5457925393264097316
 GameObject:
   m_ObjectHideFlags: 0

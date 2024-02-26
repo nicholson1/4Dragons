@@ -92,7 +92,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void OnPointerDown(PointerEventData eventData)
     {
         //Debug.Log("OnPointerDown");
-        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, 1, 1,1);
+        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -133,9 +133,10 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
+        Debug.Log("dropping");
         if (canBeDragged == false)
         {
-            Debug.Log("reset");
+            Debug.Log("Cannot drag in combat");
             //notification
             CombatMove(ErrorMessageManager.Errors.CombatMove);
             return;
@@ -149,8 +150,6 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             {
                 return;
             }
-            
-
             
             if (slotType == di.slotType || currentLocation.Slot == di.currentLocation.Slot)
             {
@@ -296,10 +295,19 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         {
             return;
         }
-        if (CombatController._instance.entitiesInCombat.Count >1)
+        if (CombatController._instance.entitiesInCombat.Count < 1)
         {
             canBeDragged = true;
             return;
+        }
+
+        if (e.slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
+        {
+            cur = 1;
+        }
+        if (e.slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
+        {
+            cur = 1;
         }
         
         if (cur <= 0)
