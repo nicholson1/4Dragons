@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 
 namespace Map
 {
@@ -26,27 +26,27 @@ namespace Map
 
         private void Start()
         {
-            if (PlayerPrefs.HasKey("Map"))
-            {
-                var mapJson = PlayerPrefs.GetString("Map");
-                var map = JsonConvert.DeserializeObject<Map>(mapJson);
-                // using this instead of .Contains()
-                if (map.path.Any(p => p.Equals(map.GetBossNode().point)))
-                {
-                    // payer has already reached the boss, generate a new map
-                    GenerateNewMap();
-                }
-                else
-                {
-                    CurrentMap = map;
-                    // player has not reached the boss yet, load the current map
-                    view.ShowMap(map);
-                }
-            }
-            else
-            {
-                GenerateNewMap();
-            }
+            // if (PlayerPrefs.HasKey("Map"))
+            // {
+            //     var mapJson = PlayerPrefs.GetString("Map");
+            //     // map = JsonConvert.DeserializeObject<Map>(mapJson);
+            //     // using this instead of .Contains()
+            //     if (map.path.Any(p => p.Equals(map.GetBossNode().point)))
+            //     {
+            //         // payer has already reached the boss, generate a new map
+            //         GenerateNewMap();
+            //     }
+            //     else
+            //     {
+            //         CurrentMap = map;
+            //         // player has not reached the boss yet, load the current map
+            //         view.ShowMap(map);
+            //     }
+            // }
+            // else
+            // {
+            //     GenerateNewMap();
+            // }
         }
 
         public void GenerateNewMap()
@@ -60,12 +60,12 @@ namespace Map
         public void SaveMap()
         {
             return;
-            if (CurrentMap == null) return;
-
-            var json = JsonConvert.SerializeObject(CurrentMap, Formatting.Indented,
-                new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
-            PlayerPrefs.SetString("Map", json);
-            PlayerPrefs.Save();
+            // if (CurrentMap == null) return;
+            //
+            // var json = JsonConvert.SerializeObject(CurrentMap, Formatting.Indented,
+            //     new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+            // PlayerPrefs.SetString("Map", json);
+            // PlayerPrefs.Save();
         }
 
         private void OnApplicationQuit()
