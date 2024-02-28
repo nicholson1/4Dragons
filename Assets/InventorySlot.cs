@@ -196,11 +196,19 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         {
             return;
         }
-
-        if (CombatController._instance.entitiesInCombat.Count >1)
+        if (CombatController._instance.entitiesInCombat.Count <= 1)
         {
             canBeDragged = true;
             return;
+        }
+
+        if (Slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
+        {
+            cur = 1;
+        }
+        if (Slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
+        {
+            cur = 1;
         }
         
         if (cur <= 0)

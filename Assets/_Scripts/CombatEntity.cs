@@ -267,16 +267,19 @@ public class CombatEntity : MonoBehaviour
 
         }
         
-        int blockCheck = myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
-        if (blockCheck == -1)
+        if(myCharacter.isPlayerCharacter)
         {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic21))
+            int blockCheck = myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
+            if (blockCheck == -1)
             {
-                GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .1f));
+                if (RelicManager._instance.CheckRelic(RelicType.Relic21))
+                {
+                    GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .1f));
+                }
             }
         }
 
-        if (RelicManager._instance.CheckRelic(RelicType.Relic10))
+        if (myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic10))
         {
             // do not reset mana
         }

@@ -1094,7 +1094,7 @@ public class TheSpellBook : MonoBehaviour
 
                 if (caster.myCharacter._gold > 0)
                 {
-                    if (RelicManager._instance.CheckRelic(RelicType.DragonRelic3))
+                    if (RelicManager._instance.CheckRelic(RelicType.DragonRelic1))
                     {
                         power += Mathf.RoundToInt(caster.myCharacter._gold/2f);
                     }

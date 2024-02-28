@@ -129,9 +129,9 @@ public class RelicManager : MonoBehaviour
         int index = 0;
         if (UnSeenDragonRelics.Count > 0)
         {
-            RelicType r =  UnSeenDragonRelics[Random.Range(0, UnSeenRelics.Count)];
-            SeenRelics.Add(r);
-            UnSeenRelics.Remove(r);
+            RelicType r =  UnSeenDragonRelics[Random.Range(0, UnSeenDragonRelics.Count)];
+            SeenDragonRelics.Add(r);
+            UnSeenDragonRelics.Remove(r);
             
             if (UnSeenDragonRelics.Count == 0)
             {

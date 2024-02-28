@@ -33,9 +33,9 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Transform intentDisplay;
     [SerializeField] private Transform statusDisplay;
 
-
-   
-
+    [SerializeField] private GameObject normalFrame;
+    [SerializeField] private GameObject eliteFrame;
+    [SerializeField] private GameObject dragonFrame;
 
     private void Start()
     {
@@ -648,6 +648,20 @@ public class HealthBar : MonoBehaviour
         //tempBar.maxValue = c._maxHealth;
         tempBar.value = c._currentHealth * ratio;
 
+        normalFrame.gameObject.SetActive(false);
+        eliteFrame.gameObject.SetActive(false);
+        dragonFrame.gameObject.SetActive(false);
+        if (c.isElite)
+        {
+            eliteFrame.gameObject.SetActive(true);
+        }else if (c.isDragon)
+        {
+            dragonFrame.gameObject.SetActive(true);
+        }
+        else
+        {
+            normalFrame.gameObject.SetActive(true);
+        }
 
     }
 
