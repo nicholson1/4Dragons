@@ -81,6 +81,7 @@ public class Relic : Equipment
     private String[] RelicDescription =
     {
         "none",
+        "Swapping scrolls takes no energy",
         "Swapping weapons takes no energy",
         "Everytime you cast a spell this fight increase your SP by 2% (resets each fight)",
         "If you have 4 unique spell schools, gain SP",

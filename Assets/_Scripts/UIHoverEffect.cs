@@ -63,6 +63,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             .setEaseInOutQuad()
             .setDelay(shakeTime / 2)
             .setLoopPingPong(1);
+        
     }
 
     public void FlashScale()

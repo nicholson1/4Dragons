@@ -43,8 +43,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         if (Item != null)
         {
             SlotLable.gameObject.SetActive(false);
-            background.color = ToolTipManager._instance.rarityColors[Item.e.stats[Equipment.Stats.Rarity]];
-            background.color = new Color(background.color.r, background.color.g,background.color.b, baseColor.a);
+            //background.color = ToolTipManager._instance.rarityColors[Item.e.stats[Equipment.Stats.Rarity]];
+            //background.color = new Color(background.color.r, background.color.g,background.color.b, baseColor.a);
             Item._rectTransform.localScale = _rt.localScale;
 
 

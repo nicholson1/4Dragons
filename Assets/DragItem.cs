@@ -13,6 +13,14 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public InventorySlot currentLocation;
     private InventorySlot temp;
     public Image icon;
+    public Image Background;
+    public Image Glow;
+
+
+    [SerializeField] private Sprite[] BackgroundSprites;
+    [SerializeField] private Sprite[] GlowSprites;
+
+
     public Equipment.Slot slotType;
     public TextMeshProUGUI LvlText;
     
@@ -38,6 +46,16 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _rectTransform.localScale = currentLocation._rt.localScale;
         currentLocation.LabelCheck();
         icon.sprite = e.icon;
+        Background.sprite = BackgroundSprites[e.stats[Equipment.Stats.Rarity]];
+        Glow.sprite = GlowSprites[e.stats[Equipment.Stats.Rarity]];
+        if (e.stats[Equipment.Stats.Rarity] == 0)
+        {
+            Glow.gameObject.SetActive(false);
+        }
+        else
+        {
+            Glow.gameObject.SetActive(true);
+        }
         slotType = e.slot;
 
         if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All)
