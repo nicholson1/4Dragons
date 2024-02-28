@@ -30,7 +30,7 @@ public class CombatController : MonoBehaviour
 
     public List<CombatEntity> entitiesInCombat = new List<CombatEntity>();
     public MultiImageButton NextCombatButton;
-    public MultiImageButton EndTurnButton;
+    public Button EndTurnButton;
 
     public Vector3 playerOffset = new Vector3();
 

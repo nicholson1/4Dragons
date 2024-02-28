@@ -42,7 +42,8 @@ public class StatDisplay : MonoBehaviour
         icon.color = info.Item3;
         if (LossOrGain == 1)
         {
-            text.text = info.Item1 + ": +" + v;
+            //text.text = info.Item1 + ": +" + v;
+            text.text ="+" + v;
 
         }
         else
@@ -72,6 +73,7 @@ public class StatDisplay : MonoBehaviour
 
         if (LossOrGain == -1)
         {
+            text.text = v.ToString();
             text.color -= new Color(0, 0, 0, .3f);
             icon.color -= new Color(0, 0, 0, .3f);
         }

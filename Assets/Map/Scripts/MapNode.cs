@@ -57,7 +57,8 @@ namespace Map
             Blueprint = blueprint;
             if (sr != null) sr.sprite = blueprint.sprite;
             if (image != null) image.sprite = blueprint.sprite;
-            if (node.nodeType == NodeType.Boss) transform.localScale *= 1.5f;
+            if (node.nodeType == NodeType.Boss) transform.localScale *= 3f;
+            else transform.localScale *= 1.5f;
             if (sr != null) initialScale = sr.transform.localScale.x;
             if (image != null) initialScale = image.transform.localScale.x;
 
@@ -131,18 +132,18 @@ namespace Map
                     // start pulsating from visited to locked color:
                     if (sr != null)
                     {
-                        sr.color = MapView.Instance.lockedColor;
+                        sr.color = MapView.Instance.visitedColor;
                         isPingPongingScale = true;
-                        isPingPongingColor = true;
+                        //isPingPongingColor = true;
                         //sr.DOKill();
                         //sr.DOColor(MapView.Instance.visitedColor, 0.5f).SetLoops(-1, LoopType.Yoyo);
                     }
                     
                     if (image != null)
                     {
-                        image.color = MapView.Instance.lockedColor;
+                        image.color = MapView.Instance.visitedColor;
                         isPingPongingScale = true;
-                        isPingPongingColor = true;
+                        //isPingPongingColor = true;
                         //image.DOKill();
                         //image.DOColor(MapView.Instance.visitedColor, 0.5f).SetLoops(-1, LoopType.Yoyo);
                     }
