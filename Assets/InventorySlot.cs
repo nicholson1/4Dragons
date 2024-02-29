@@ -76,12 +76,9 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             SlotLable.gameObject.SetActive(true);
 
             background.color = baseColor;
-
-
-
-
-
         }
+
+        timer = 2f;
 
     }
 
@@ -246,6 +243,25 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         None,
 
 
+    }
+
+    private float timer = -1;
+    private void LateUpdate()
+    {
+        if (timer < 0)
+            return;
+        if(Item == null)
+            return;
+        if (Item._rectTransform.localScale != _rt.localScale)
+        {
+            timer -= Time.deltaTime;
+            if (timer <= 0)
+            {
+                Item._rectTransform.localScale = _rt.localScale;
+                Item.GetComponent<UIHoverEffect>().ResetScale();
+            }
+        }
+        
     }
 
     int CalculateGold(Equipment e, InventorySlot SellButton)

@@ -1,16 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class IntentDisplay : MonoBehaviour
+public class IntentDisplay : MonoBehaviour, IPointerExitHandler
 {
     [SerializeField]private Image intent0;
     [SerializeField]private Image intent1;
 
     [SerializeField] private ToolTip _toolTip;
-     
 
+
+    public float bounceHeight;
+    private RectTransform rt;
     public void UpdateInfo(Weapon.SpellTypes spell)
     {
         (Sprite, Sprite) sprites = TheSpellBook._instance.GetAbilityTypeIcons(spell);
@@ -50,4 +54,41 @@ public class IntentDisplay : MonoBehaviour
         
     }
 
+    private Vector3 startPosition;
+    void Start()
+    {
+        rt = GetComponent<RectTransform>();
+        //startPosition = rt.localPosition;
+        // Start the infinite pingpong animation
+        StartPingPongAnimation();
+    }
+
+    void StartPingPongAnimation()
+    {
+        float target = rt.anchoredPosition.y + bounceHeight;
+        //rt.localPosition = startPosition;
+        // Create a loop for the pingpong animation
+        LeanTween.moveY(rt, target , 2)
+            .setEaseInOutSine()
+            .setLoopPingPong();
+    }
+
+    private void FixedUpdate()
+    {
+        if (timer < 0)
+            return;
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            StartPingPongAnimation();
+
+        }
+    }
+
+    private float timer = -1;
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        timer = 2;
+
+    }
 }

@@ -608,7 +608,6 @@ public class CombatEntity : MonoBehaviour
         {
             Spells.Add((spell.Item1, spell.Item2));
         }
-        Debug.Log(Spells.Count + " spell count");
         //Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
         //Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
     }

@@ -917,6 +917,7 @@ public class TheSpellBook : MonoBehaviour
 
         if (caster.myCharacter.isPlayerCharacter && turn > 0)
         {
+            Debug.Log(turn.ToString() + " : "+ spell);
             if (RelicManager._instance.CheckRelic(RelicType.Relic28))
             {
                 turn += 1;

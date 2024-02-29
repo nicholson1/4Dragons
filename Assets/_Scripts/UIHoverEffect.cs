@@ -15,11 +15,11 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField]public bool shakeUI = true;
     
     private bool setOnce = false;
-    
-    void Start()
-    {
-        
 
+    public void ResetScale()
+    {
+        initialScale = transform.localScale;
+        initialRotation = transform.localRotation;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

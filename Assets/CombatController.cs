@@ -92,6 +92,7 @@ public class CombatController : MonoBehaviour
 
     public void MapNodeClicked(NodeType nodeType)
     {
+        RotateAroundMap._instance.RandomRotate();
         //unless its first node
         if(ClickedFirstNode)
             Player._level += 1;
@@ -535,17 +536,17 @@ public class CombatController : MonoBehaviour
         switch (nodeType)
         {
             case NodeType.MinorEnemy:
-                enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+                enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation, SpawnPos);
                 break;
             case NodeType.EliteEnemy:
-                enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation);
+                enemy = Instantiate(ElitePrefab, SpawnPos.position, ElitePrefab.transform.rotation, SpawnPos);
                 break;
             case NodeType.Boss:
-                enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation);
+                enemy = Instantiate(DragonPrefab, SpawnPos.position, DragonPrefab.transform.rotation, SpawnPos);
                 break;
             default:
                 Debug.LogError("NO NODE TYPE FOR COMBAT");
-                enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation);
+                enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation, SpawnPos);
                 break;
         }
         // if (Player._level == 10 || Player._level == 20 || Player._level == 25 || Player._level == 30 || (Player._level > 30 && Player._level % 5 == 0))
