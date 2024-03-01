@@ -95,6 +95,11 @@ public class ShopManager : MonoBehaviour
         ClearItem(Item3);
         ClearItem(Item4);
 
+        foreach (var buyButton in relicBuyButtons)
+        {
+            buyButton.gameObject.SetActive(false);
+        }
+
         ShopTitle.text = GetShopName(type);
         
         switch (type)
