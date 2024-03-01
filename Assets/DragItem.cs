@@ -63,14 +63,25 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             //Debug.Log(slotType + " "+ currentLocation.Slot);
             Debug.Log("I think we fudged this one up bud");
         }
-        
-        _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
-        _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
-        _toolTip.Cost = "";
-        _toolTip.Title = e.name;
-        _toolTip.e = e;
+        if(e.slot != Equipment.Slot.Relic)
+        {
+            _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
+            _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
+            _toolTip.Cost = "";
+            _toolTip.Title = e.name;
+            _toolTip.e = e;
 
-        LvlText.text = "Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+            LvlText.text = "Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+        }
+        else
+        {
+            _toolTip.is_relic = true;
+            _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
+            _toolTip.Title = e.name;
+            _toolTip.e = e;
+            canBeDragged = false;
+            _toolTip.is_item = false;
+        }
         //LvlText.color = ToolTipManager._instance.rarityColors[e.stats[Equipment.Stats.Rarity]];
         if (!e.isWeapon)
         {
@@ -110,12 +121,15 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void OnPointerDown(PointerEventData eventData)
     {
         //Debug.Log("OnPointerDown");
+        if(e.isRelic)
+            return;
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        
+        if(e.isRelic)
+            return;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = .6f;
     }
@@ -336,6 +350,11 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         {
             canBeDragged = true;
 
+        }
+
+        if (e.isRelic)
+        {
+            canBeDragged = false;
         }
     }
    

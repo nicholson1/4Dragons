@@ -148,12 +148,12 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 int cost = (di.e.stats[Equipment.Stats.Rarity] + 1) * 60;
                 if (currentGold < cost)
                 {
-                    NotEnoughGold(ErrorMessageManager.Errors.NotEnoughGold);
+                    NotEnoughGoldEvent();
                     return;
                 }
                 // if we do - gold
                 CombatController._instance.Player._gold -= cost;
-                SellItem(ErrorMessageManager.Errors.LoseGold, -cost);
+                BuyItemEvent(-cost);
 
 
             }
@@ -184,6 +184,16 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             LabelCheck();
         }
+    }
+
+    public void NotEnoughGoldEvent()
+    {
+        NotEnoughGold(ErrorMessageManager.Errors.NotEnoughGold);
+    }
+
+    public void BuyItemEvent(int i)
+    {
+        SellItem(ErrorMessageManager.Errors.LoseGold, -i);
     }
 
     public bool canBeDragged = true;
@@ -239,6 +249,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         Scrolls,
         Weapons,
         FullHalfPrice,
+        Relics,
         Potions,
         None,
 

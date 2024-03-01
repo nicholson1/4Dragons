@@ -374,9 +374,10 @@ public class CombatController : MonoBehaviour
         // trigger its a tie
         CombatNotifications(ErrorMessageManager.Errors.Tie);
         // activate next button
-        NextCombatButton.gameObject.SetActive(true);
+        UIController._instance.ToggleMapUI(1);
+        MapCanBeClicked = true;
+        //NextCombatButton.gameObject.SetActive(true);
         // deactivate enemy
-        //todo pool
         Destroy(entitiesInCombat[1].gameObject);
         
         

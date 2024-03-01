@@ -19,6 +19,7 @@ public class ShopManager : MonoBehaviour
     public TextMeshProUGUI RerollButton;
     public TextMeshProUGUI ShopTitle;
 
+    public GameObject[] relicBuyButtons;
 
     public EquipmentCreator EC;
 
@@ -45,7 +46,7 @@ public class ShopManager : MonoBehaviour
         // Scrolls,
         // Weapons,
         // FullHalfPrice,
-        InitializeShop(Random.Range(0,4));
+        InitializeShop(Random.Range(0,5));
         UIController._instance.ToggleShopUI();
         UIController._instance.ToggleInventoryUI(1);
 
@@ -88,9 +89,6 @@ public class ShopManager : MonoBehaviour
         // create drag items
 
         RerollButton.text = "Reroll - " + shopPrice;
-        
-        
-        
 
         ClearItem(Item1);
         ClearItem(Item2);
@@ -161,8 +159,29 @@ public class ShopManager : MonoBehaviour
 
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
-                e = EC.CreateRandomArmor(level);
+                e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
+                relicBuyButtons[3].gameObject.SetActive(true);
+                break;
+            case InventorySlot.SellShopType.Relics:
+                e = RelicManager._instance.GetCommonRelic();
+                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
+                relicBuyButtons[0].gameObject.SetActive(true);
+
+                
+                e = RelicManager._instance.GetCommonRelic();
+                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
+                relicBuyButtons[1].gameObject.SetActive(true);
+
+                
+                e = RelicManager._instance.GetCommonRelic();
+                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
+                relicBuyButtons[2].gameObject.SetActive(true);
+
+                
+                e = RelicManager._instance.GetCommonRelic();
+                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
+                relicBuyButtons[3].gameObject.SetActive(true);
                 break;
             
         }
@@ -175,8 +194,16 @@ public class ShopManager : MonoBehaviour
 
     void AdjustGoldText(InventorySlot slot)
     {
-        slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text =
-            ((slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60).ToString();
+        
+        TextMeshProUGUI goldText = slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>() ;
+        goldText.text = ((slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60).ToString();
+        goldText.gameObject.SetActive(true);
+
+        if (slot.Item.e.isRelic)
+        {
+            goldText.gameObject.SetActive(false);
+
+        }
     }
 
     void ClearItem(InventorySlot slot)
@@ -187,6 +214,8 @@ public class ShopManager : MonoBehaviour
         }
         Destroy(slot.Item.gameObject);
         slot.Item = null;
+        slot.transform.GetChild(0).gameObject.SetActive(true);
+
     }
 
     private string GetShopName(InventorySlot.SellShopType type)
@@ -202,6 +231,8 @@ public class ShopManager : MonoBehaviour
                 return "The Armory";
             case InventorySlot.SellShopType.Scrolls:
                 return "The Scribe";
+            case InventorySlot.SellShopType.Relics:
+                return "The Antiquitist";
         }
 
         return "";
@@ -214,6 +245,43 @@ public class ShopManager : MonoBehaviour
 
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
 
+    }
+
+    public void BuyRelic(int index)
+    {
+        int currentGold = CombatController._instance.Player._gold;
+        int cost = 300;
+        if (currentGold < cost)
+        {
+            Item1.NotEnoughGoldEvent();
+            return;
+        }
+        // if we do - gold
+        CombatController._instance.Player._gold -= cost;
+        Item1.BuyItemEvent(-cost);
+        switch (index)
+        {
+            case 0:
+                RelicManager._instance.SelectRelic(Item1.Item.e);
+                ClearItem(Item1);
+                relicBuyButtons[0].SetActive(false);
+                break;
+            case 1:
+                RelicManager._instance.SelectRelic(Item2.Item.e);
+                relicBuyButtons[1].SetActive(false);
+                ClearItem(Item2);
+                break;
+            case 2:
+                RelicManager._instance.SelectRelic(Item3.Item.e);
+                relicBuyButtons[2].SetActive(false);
+                ClearItem(Item3);
+                break;
+            case 3:
+                RelicManager._instance.SelectRelic(Item4.Item.e);
+                relicBuyButtons[3].SetActive(false);
+                ClearItem(Item4);
+                break;
+        }
     }
 
     private void UpdateRerollButton(Character c)
