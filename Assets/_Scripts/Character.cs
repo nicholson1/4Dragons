@@ -607,9 +607,12 @@ public class Character : MonoBehaviour
             if (!RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
             {
                 _currentHealth = 0;
+                Debug.Log(Mathf.RoundToInt(c._maxHealth/2f));
+                
                 _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
                 _combatEntity.Buff(_combatEntity,CombatEntity.BuffTypes.Invulnerable, 1, 1);
                 RelicManager._instance.UsedRelic23 = true;
+                Debug.Log(_currentHealth);
             }
             
         }
@@ -626,7 +629,7 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
-                    if (CombatController._instance.Player._level == 30)
+                    if (CombatController._instance.Player._level == 40)
                     {
                         // victory
                         UIController._instance.ActivateVictoryScreen();

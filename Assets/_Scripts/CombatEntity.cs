@@ -855,8 +855,6 @@ public class CombatEntity : MonoBehaviour
         //Debug.Log(time);
         yield return new WaitForSeconds(time);
         AttackEvent(target, attackType, Mathf.RoundToInt(damage * CalculateDamageAdjustments()), crit);
-
-
     }
 
     public void Buff(CombatEntity target, BuffTypes buff, int turns, float amount)

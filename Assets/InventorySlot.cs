@@ -89,11 +89,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         DragItem item = eventData.pointerDrag.GetComponent<DragItem>();
         if (item.canBeDragged == false)
         {
-            
-            //Debug.Log("reset");
-            //notification
-            CombatMove(ErrorMessageManager.Errors.CombatMove);
-            return;
+            if (CombatController._instance.entitiesInCombat.Count > 1)
+            {
+                CombatMove(ErrorMessageManager.Errors.CombatMove);
+                return;
+            }
         }
         if (CanDropHere == false)
         {
@@ -196,48 +196,48 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         SellItem(ErrorMessageManager.Errors.LoseGold, -i);
     }
 
-    public bool canBeDragged = true;
-    private void AdjustDragabilityBasedOnEnergy( Character c, int cur, int max, int amount)
-    {
-        if (!c.isPlayerCharacter)
-        {
-            return;
-        }
-        if (CombatController._instance.entitiesInCombat.Count <= 1)
-        {
-            canBeDragged = true;
-            return;
-        }
-
-        if (Slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
-        {
-            cur = 1;
-        }
-        if (Slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
-        {
-            cur = 1;
-        }
-        
-        if (cur <= 0)
-        {
-            canBeDragged = false;
-        }
-        else
-        {
-            canBeDragged = true;
-
-        }
-    }
+    // public bool canBeDragged = true;
+    // private void AdjustDragabilityBasedOnEnergy( Character c, int cur, int max, int amount)
+    // {
+    //     if (!c.isPlayerCharacter)
+    //     {
+    //         return;
+    //     }
+    //     if (CombatController._instance.entitiesInCombat.Count <= 1)
+    //     {
+    //         canBeDragged = true;
+    //         return;
+    //     }
+    //
+    //     if (Slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
+    //     {
+    //         cur = 1;
+    //     }
+    //     if (Slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
+    //     {
+    //         cur = 1;
+    //     }
+    //     
+    //     if (cur <= 0)
+    //     {
+    //         canBeDragged = false;
+    //     }
+    //     else
+    //     {
+    //         canBeDragged = true;
+    //
+    //     }
+    // }
    
     private void Start()
     {
-        Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
+        //Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         LabelCheck();
         //CombatController.EndCombatEvent += EndCombat;
     }
     private void OnDestroy()
     {
-        Character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;
+        //Character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;
 
         //CombatController.EndCombatEvent -= EndCombat;
 

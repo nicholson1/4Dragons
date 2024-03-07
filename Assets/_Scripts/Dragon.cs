@@ -41,12 +41,12 @@ public class Dragon : MonoBehaviour
          dragonType = DragonType.TerrorBringer;
 
       }
-      else if (c._level == 25)
+      else if (c._level == 30)
       {
          rarity = 3;
          dragonType = DragonType.SoulEater;
       }
-      else if (c._level == 30)
+      else if (c._level == 40)
       {
          rarity = 3;
          dragonType = DragonType.Usurper;

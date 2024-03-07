@@ -165,13 +165,15 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("dropping");
         if (canBeDragged == false)
         {
-            Debug.Log("Cannot drag in combat");
             //notification
-            CombatMove(ErrorMessageManager.Errors.CombatMove);
-            return;
+            if (CombatController._instance.entitiesInCombat.Count > 1)
+            {
+                Debug.Log("Cannot drag in combat");
+                CombatMove(ErrorMessageManager.Errors.CombatMove);
+                return;
+            }
         }
         if (eventData.pointerDrag != null)
         {
