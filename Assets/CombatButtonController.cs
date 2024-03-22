@@ -158,7 +158,12 @@ public class CombatButtonController : MonoBehaviour
         //Debug.Log(energyAmount);
         if (energyAmount > currentEnergy)
         {
-            b.interactable = false;
+            // if relic 24 is unsued and the spell is a buff
+            if(TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.Buff, button.spell) && !RelicManager._instance.UsedRelic24 && RelicManager._instance.CheckRelic(RelicType.Relic24))
+                b.interactable = true;
+                
+            else
+                b.interactable = false;
         }
 
         else

@@ -804,15 +804,15 @@ public class Character : MonoBehaviour
         int hp = 0;
         if (isDragon)
         {
-            hp = 150 * _level + 150;
+            hp = 200 * _level + 200;
         }
         else if (isElite)
         {
-            hp = 75 * _level + 75;
+            hp = 150 * _level + 150;
         }
         else
         {
-            hp = 50 * _level + 50;
+            hp = 100 * _level + 100;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);

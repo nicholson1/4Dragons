@@ -28,7 +28,7 @@ public class RelicManager : MonoBehaviour
     public bool UsedRelic19 = false; // prevent first spell damage
     public bool UsedRelic20 = false; // prevent first physical damage
     public bool UsedRelic24 = false; // first buff free
-    public bool UsedRelic8 = false; // first buff free
+    public bool UsedRelic8 = false; //  drop below 50% gain armor
 
 
     public int UnstableEnergyCoreCounter = 0;

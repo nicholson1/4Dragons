@@ -1203,6 +1203,23 @@ public class TheSpellBook : MonoBehaviour
         VeryBigSpell,
         SmallSpellTravel
     }
+
+    public enum SpellClass
+    {
+        PhysicalAttack = 0,
+        SpellAttack = 1,
+        Buff = 2,
+        Debuff = 3,
+        Heal = 4,
+        Defensive = 5,
+    }
+    public bool IsSpellType(SpellClass spellClass, Weapon.SpellTypes spell)
+    {
+        List<int> sc = (List<int>)WeaponScalingTable[(int)spell][4];
+        if (sc.Contains((int)spellClass))
+            return true;
+        return false;
+    }
     
     // public CombatEntity.DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)
     // {
