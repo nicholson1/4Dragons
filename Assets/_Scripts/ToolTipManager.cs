@@ -12,6 +12,8 @@ public class ToolTipManager : MonoBehaviour
 {
    public static ToolTipManager _instance;
 
+   [SerializeField] private UIHoverEffect uiHoverEffect;
+   
    public ToolTipDisplay MainTip;
    public ToolTipDisplay SpellTip;
    public ToolTipDisplay RelicTip;
@@ -143,6 +145,7 @@ public class ToolTipManager : MonoBehaviour
       activated = true;
 
       //Debug.Log("hello");
+      uiHoverEffect.FlashScale(.25f);
 
 
    }

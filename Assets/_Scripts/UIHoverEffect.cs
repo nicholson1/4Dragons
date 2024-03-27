@@ -66,11 +66,11 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         
     }
 
-    public void FlashScale()
+    public void FlashScale(float time = .5f)
     {
-        StartCoroutine(BlinkScale());
+        StartCoroutine(BlinkScale(time));
     }
-    private IEnumerator BlinkScale()
+    private IEnumerator BlinkScale(float time = .5f)
     {
         if(!setOnce)
         {
@@ -80,7 +80,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         LeanTween.cancel(gameObject);
         LeanTween.scale(gameObject, initialScale * hoverScale, 0.1f).setEaseInOutQuad();
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(time);
         LeanTween.scale(gameObject, initialScale, 0.1f).setEaseInOutQuad();
 
     }

@@ -230,11 +230,14 @@ MonoBehaviour:
   turnCounter: {fileID: 2035395256299144831}
   icon: {fileID: 4974440383155763487}
   toolTip: {fileID: 6367269937916222629}
+  uiHoverEffect: {fileID: 6617487141389375993}
   isDebuff: 0
+  isBlessing: 0
   _turns: 0
   _amount: 0
   _debuff: 6
   _buff: 8
+  _blessing: 0
 --- !u!114 &6367269937916222629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,6 +259,7 @@ MonoBehaviour:
   IconColor: {r: 1, g: 1, b: 1, a: 1}
   is_spell: 0
   is_item: 0
+  is_relic: 0
 --- !u!114 &6617487141389375993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,5 +273,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hoverScale: 1.1
-  shakeAmount: 10
-  shakeSpeed: 10
+  shakeUI: 1

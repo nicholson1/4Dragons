@@ -11,6 +11,7 @@ public class BuffDebuffElement : MonoBehaviour
     [SerializeField] private TextMeshProUGUI turnCounter;
     [SerializeField] private Image icon;
     [SerializeField] private ToolTip toolTip;
+    [SerializeField] private UIHoverEffect uiHoverEffect;
 
     public bool isDebuff = false;
     public bool isBlessing = false;
@@ -36,6 +37,8 @@ public class BuffDebuffElement : MonoBehaviour
         toolTip.rarity = -1;
         isDebuff = true;
         toolTip.IconColor = Color.white;
+        uiHoverEffect.FlashScale();
+
     }
 
     public void InitializeDisplay(CombatEntity.BuffTypes buff, int turns, float amount)
@@ -52,6 +55,8 @@ public class BuffDebuffElement : MonoBehaviour
         toolTip.rarity = -1;
         isDebuff = false;
         toolTip.IconColor = Color.white;
+        uiHoverEffect.FlashScale();
+
     }
     
     public void InitializeDisplay(CombatEntity.BlessingTypes blessing, int turns, float amount)
@@ -72,10 +77,13 @@ public class BuffDebuffElement : MonoBehaviour
         isDebuff = false;
         isBlessing = true;
         toolTip.IconColor = info.Item2;
+        uiHoverEffect.FlashScale();
+
     }
 
     public void UpdateValues()
     {
+        uiHoverEffect.FlashScale();
         if (isBlessing)
         {
             toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(_blessing), _turns, _amount);

@@ -238,6 +238,17 @@ public class EquipmentModelManager : MonoBehaviour
         }
         Hair[hairIndex].SetActive(true);
     }
+
+    public void RandomFaceAndHair()
+    {
+        Hair[hairIndex].SetActive(false);
+        hairIndex = Random.Range(0, Hair.Length);
+        Hair[hairIndex].SetActive(true);
+
+        Faces[faceIndex].SetActive(false);
+        faceIndex = Random.Range(0, Faces.Length);
+        Faces[faceIndex].SetActive(true);
+    }
     
     
 }
