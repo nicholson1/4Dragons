@@ -24,7 +24,7 @@ public class CombatEntity : MonoBehaviour
     public static event Action<Character, int> GetHealed;
     public static event Action<Character, BuffTypes, int, float> GetHitWithBuff;
     public static event Action<Character, DeBuffTypes, int, float> GetHitWithDeBuff;
-
+    public static event Action<Character, BlessingTypes, int, float> GetHitWithBlessing;
     public static event Action<CombatEntity, BuffTypes, int, float> BuffEvent;
     public static event Action<CombatEntity, DeBuffTypes, int, float> DeBuffEvent;
     
@@ -408,15 +408,16 @@ public class CombatEntity : MonoBehaviour
                     Character c = CombatController._instance.Player;
                     c._combatEntity.Heal(c._combatEntity, Mathf.RoundToInt(c._maxHealth *.05f), 0);
                 }
-                if (RelicManager._instance.CheckRelic(RelicType.Relic13))
-                {
-                    Character c = CombatController._instance.Player;
-                    //blessing +1 max hp
-                }
                 if (RelicManager._instance.CheckRelic(RelicType.Relic9))
                 {
                     Character c = CombatController._instance.Player;
                     c.GetGold(1);
+                }
+                if (RelicManager._instance.CheckRelic(RelicType.Relic13))
+                {
+                    Character c = CombatController._instance.Player;
+                    GetHitWithBlessing(c, BlessingTypes.Health, 1, .5f);
+                    RelicManager._instance.HeartSeekersCounter += .5f;
                 }
             }
             damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
@@ -811,6 +812,26 @@ public class CombatEntity : MonoBehaviour
         
         ParticleManager._instance.SpawnParticle(this, Target, spell);
         
+        //determine if it is a spell or physical
+        if(!myCharacter.isPlayerCharacter)
+            return;
+        
+        if(TheSpellBook._instance.IsSpellNotPhysical(spell))
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic3))
+            {
+                GetHitWithBlessing(myCharacter, BlessingTypes.SpellPower, 1, 2);
+            }
+        }
+        else
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.Relic5))
+            {
+                GetHitWithBlessing(myCharacter, BlessingTypes.Strength, 1, 2);
+            }
+        }
+            
+        
         
     }
     
@@ -975,6 +996,11 @@ public class CombatEntity : MonoBehaviour
     {
         GetHitWithAttack(myCharacter, AbilityTypes.PhysicalAttack, amount, 0);
     }
+    public void GetHitWithBlessingDirect(BlessingTypes blessing, int turns, float amount)
+    {
+        GetHitWithBlessing(myCharacter, blessing, turns, amount);
+    }
+    
     
 
     public enum AbilityTypes
@@ -1002,7 +1028,26 @@ public class CombatEntity : MonoBehaviour
     }
     public enum BlessingTypes
     {
-        
+        // Base stats used as bleesings
+        ItemLevel,
+        Rarity,
+        Armor, // (physical)
+        MagicResist, // (spell)
+        Strength,
+        Swords,
+        Axes,
+        Daggers,
+        Shields,
+        Hammers,
+        SpellPower,
+        NaturePower,
+        FirePower,
+        IcePower,
+        BloodPower,
+        ShadowPower,
+        Health,
+        CritChance,
+        // NON base Stats to be used for future blessings
         None,
     }
     

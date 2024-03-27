@@ -42,6 +42,8 @@ public class HealthBar : MonoBehaviour
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
         CombatEntity.GetHitWithBuff += GetHitWithBuff;
         CombatEntity.GetHitWithDeBuff += GetHitWithDeBuff;
+        CombatEntity.GetHitWithBlessing += GetHitWithBlessing;
+
 
         CombatEntity.GetHealed += GetHealed;
         Character.UpdateBlock += UpdateBlock;
@@ -65,7 +67,9 @@ public class HealthBar : MonoBehaviour
         CombatEntity.GetHitWithBuff -= GetHitWithBuff;
         CombatEntity.GetHitWithAttack -= GetHitWithAttack;
         CombatEntity.GetHitWithDeBuff -= GetHitWithDeBuff;
+        CombatEntity.GetHitWithBlessing -= GetHitWithBlessing;
 
+        
         CombatEntity.GetHealed -= GetHealed;
         Character.UpdateBlock -= UpdateBlock;
         Character.UsePrep -= UsePrepared;
@@ -99,7 +103,7 @@ public class HealthBar : MonoBehaviour
         {
             BuffDebuffElement debuff = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
 
-            if (debuff.isDebuff)
+            if (debuff.isDebuff && !debuff.isBlessing)
             {
                 debuff._turns -= 1;
                 debuff.UpdateValues();
@@ -133,7 +137,7 @@ public class HealthBar : MonoBehaviour
             
             
 
-            if (!buff.isDebuff)
+            if (!buff.isDebuff && !buff.isBlessing)
             {
                 if (buff._buff == CombatEntity.BuffTypes.Block)
                 {
@@ -304,7 +308,7 @@ public class HealthBar : MonoBehaviour
 
         //decide if we make new or add to existing
         // make the icon
-        if (MakeNewOne(buff, CombatEntity.DeBuffTypes.None))
+        if (MakeNewOne(buff, CombatEntity.DeBuffTypes.None, CombatEntity.BlessingTypes.None))
         {
             BuffDebuffElement icon = GetBuffDebuff();
             icon.InitializeDisplay(buff, turns, amount);
@@ -367,7 +371,7 @@ public class HealthBar : MonoBehaviour
 
 
         // make the icon
-        if (MakeNewOne(CombatEntity.BuffTypes.None,debuff ))
+        if (MakeNewOne(CombatEntity.BuffTypes.None,debuff , CombatEntity.BlessingTypes.None))
         {
             BuffDebuffElement icon = GetBuffDebuff();
 
@@ -422,6 +426,58 @@ public class HealthBar : MonoBehaviour
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, 350, 0);
         st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff, this);
+    }
+    
+    private void GetHitWithBlessing(Character c, CombatEntity.BlessingTypes blessing, int turns, float amount)
+    {
+        if (c != displayCharacter)
+            return;
+
+
+        // make the icon
+        if (MakeNewOne(CombatEntity.BuffTypes.None,CombatEntity.DeBuffTypes.None,blessing ))
+        {
+            BuffDebuffElement icon = GetBuffDebuff();
+
+            icon.InitializeDisplay(blessing, turns, amount);
+        }
+        else
+        {
+            bool found = false;
+            // find the instance, add 1 to the turns
+            for (int i = 0; i < buffDebuffLayoutGroup.childCount; i++)
+            {
+                BuffDebuffElement b = buffDebuffLayoutGroup.GetChild(i).GetComponent<BuffDebuffElement>();
+                if (b._blessing == blessing)
+                {
+                    b._amount += amount;
+                    //b._turns += turns;
+                    b.UpdateValues();
+                    found = true;
+                    if (b._amount <= 0)
+                    {
+                        UIPooler._instance.buffDebuffPool.Add(b.gameObject);
+                        b.transform.SetParent(UIPooler._instance.transform);
+                        b.gameObject.SetActive(false);
+                    }
+                }
+                
+                
+            }
+
+            if (!found)
+            {
+                //Debug.Log("making a new one");
+                BuffDebuffElement icon = GetBuffDebuff();
+
+                icon.InitializeDisplay(blessing, turns, amount);
+            }
+        }
+
+        //todo blessing status text?
+        //StatusText st = GetStatus();
+        //st.transform.localPosition += new Vector3(0, 350, 0);
+        //st.InitializeStatusText(turns, Mathf.RoundToInt(amount), blessing, this);
     }
 
     private bool MoveBar = false;
@@ -665,7 +721,7 @@ public class HealthBar : MonoBehaviour
 
     }
 
-    public bool MakeNewOne(CombatEntity.BuffTypes buff, CombatEntity.DeBuffTypes debuff)
+    public bool MakeNewOne(CombatEntity.BuffTypes buff, CombatEntity.DeBuffTypes debuff, CombatEntity.BlessingTypes blessing)
     {
         if (buff != CombatEntity.BuffTypes.None)
         {
@@ -703,6 +759,14 @@ public class HealthBar : MonoBehaviour
                 case CombatEntity.DeBuffTypes.Chilled:
                     return false;
                 case CombatEntity.DeBuffTypes.Exposed:
+                    return false;
+            }
+        }
+        if (blessing != CombatEntity.BlessingTypes.None)
+        {
+            switch (blessing)
+            {
+                default:
                     return false;
             }
         }

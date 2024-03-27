@@ -323,7 +323,18 @@ public class CombatController : MonoBehaviour
         RelicManager._instance.UsedRelic20 = false;
         RelicManager._instance.UsedRelic24 = false;
         RelicManager._instance.UsedRelic8 = false;
-        
+        RelicManager._instance.UsedRelic7 = false;
+        RelicManager._instance.UsedRelic6 = false;
+        RelicManager._instance.HasRelic4Buff = false;
+
+
+        //clear blessings
+        Player.Blessings = new List<(CombatEntity.BlessingTypes, int, float)>();
+        //add back permanent blessings
+        if (RelicManager._instance.CheckRelic(RelicType.Relic13))
+        {
+            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Health, 1, RelicManager._instance.HeartSeekersCounter);
+        }
         
         if (RelicManager._instance.CheckRelic(RelicType.DragonRelic13))
         {

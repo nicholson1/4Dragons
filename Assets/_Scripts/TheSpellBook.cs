@@ -20,6 +20,10 @@ public class TheSpellBook : MonoBehaviour
     [SerializeField] private String[] BuffDescriptions;
     [SerializeField] private Sprite[] DeBuffSprites;
     [SerializeField] private String[] DeBuffDescriptions;
+    [SerializeField] private String[] BlessingDescriptions;
+    [SerializeField] private Sprite[] BlessingSprites;
+
+
     
     
     public Color[] abilityColors;
@@ -49,6 +53,19 @@ public class TheSpellBook : MonoBehaviour
     public Sprite GetSprite(CombatEntity.BuffTypes buff)
     {
         return BuffSprites[(int)buff];
+    }
+    public (Sprite, Color) GetSprite(CombatEntity.BlessingTypes blessing)
+    {
+        if ((int)blessing <= 17)
+        {
+            //we are just a stat
+            (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues((Equipment.Stats)blessing);
+            return (info.Item2, info.Item3);
+        }
+        else
+        {
+            return (BuffSprites[(int)blessing], Color.white);
+        }
     }
     public Sprite GetSprite(CombatEntity.DeBuffTypes deBuff)
     {
@@ -113,6 +130,10 @@ public class TheSpellBook : MonoBehaviour
     public String GetDesc(CombatEntity.DeBuffTypes debuff)
     {
         return DeBuffDescriptions[(int)debuff];
+    }
+    public String GetDesc(CombatEntity.BlessingTypes blessing)
+    {
+        return BlessingDescriptions[(int)blessing];
     }
 
     private void Start()
@@ -1218,6 +1239,15 @@ public class TheSpellBook : MonoBehaviour
         List<int> sc = (List<int>)WeaponScalingTable[(int)spell][4];
         if (sc.Contains((int)spellClass))
             return true;
+        return false;
+    }
+    public bool IsSpellNotPhysical(Weapon.SpellTypes spell)
+    {
+        if ((int)spell > 14) //14 is based on the 15 physical abilities
+        {
+            return true;
+        }
+
         return false;
     }
     

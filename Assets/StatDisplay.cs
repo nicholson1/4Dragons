@@ -61,10 +61,6 @@ public class StatDisplay : MonoBehaviour
             v = Mathf.RoundToInt(crit * 100);
             text.text = info.Item1 + ": " + v + "%";
             //Debug.Log("update crit: " + text.text + " :" +v);
-            
-            
-            
-        
         }
         //Debug.Log(toolTip);
         toolTip.Title = stat.ToString();

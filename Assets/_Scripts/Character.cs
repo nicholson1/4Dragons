@@ -36,6 +36,7 @@ public class Character : MonoBehaviour
 
     public List<(CombatEntity.BuffTypes, int, float)> Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
     public List<(CombatEntity.DeBuffTypes, int, float)> DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
+    public List<(CombatEntity.BlessingTypes, int, float)> Blessings = new List<(CombatEntity.BlessingTypes, int, float)>();
 
     public bool showHelm = true;
 
@@ -81,6 +82,8 @@ public class Character : MonoBehaviour
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
         CombatEntity.GetHitWithBuff += GetHitWithBuff;
         CombatEntity.GetHitWithDeBuff += GetHitWithDeBuff;
+        CombatEntity.GetHitWithBlessing += GetHitWithBlessing;
+
         
         CombatEntity.GetHealed += GetHealed;
 
@@ -280,6 +283,8 @@ public class Character : MonoBehaviour
         CombatController.ActivateCombatEntities -= ActivateCombatEntity;
         CombatTrigger.EndCombat -= DeactivateCombatEntity;
         CombatEntity.GetHitWithAttack -= GetHitWithAttack;
+        CombatEntity.GetHitWithBlessing -= GetHitWithBlessing;
+
         CombatEntity.GetHealed -= GetHealed;
         
         CombatEntity.GetHitWithBuff -= GetHitWithBuff;
@@ -447,6 +452,51 @@ public class Character : MonoBehaviour
         return i;
     }
     
+    public int GetIndexOfBlessing(CombatEntity.BlessingTypes blessing)
+    {
+        int i = -1;
+        for (int j = 0; j < Blessings.Count; j++)
+        {
+            if (Blessings[j].Item1 == blessing)
+            {
+                i = j;
+                break;
+            }
+        }
+
+        return i;
+    }
+    private void GetHitWithBlessing(Character c, CombatEntity.BlessingTypes blessing, int turns, float amount)
+    {
+        if(c != this)
+            return;
+
+        Debug.Log("HIT WITH Blessing + " + blessing +" " + c.name);
+        int i = GetIndexOfBlessing(blessing);
+        switch (blessing)
+        {
+            default:
+                if (i == -1)
+                {
+                    Blessings.Add((blessing,turns,amount));
+                }
+                else
+                {
+                    Blessings[i] = (blessing, Blessings[i].Item2 + turns, amount + Blessings[i].Item3);
+                
+                    if (Blessings[i].Item3 <=0)
+                    {
+                        Blessings.RemoveAt(i);
+                    }
+                }
+                break;
+
+        }
+        // update the stats
+        UpdateStats();
+
+    }
+    
     private void GetHitWithDeBuff(Character c, CombatEntity.DeBuffTypes deBuff, int turns, float amount)
     {
         if(c != this)
@@ -593,12 +643,34 @@ public class Character : MonoBehaviour
 
         _currentHealth -= amount;
 
-        if (_currentHealth < _maxHealth / 2f && !RelicManager._instance.UsedRelic8)
+        if(_currentHealth < _maxHealth / 2f )
         {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic8))
+            if (!RelicManager._instance.UsedRelic8)
             {
-                _combatEntity.Buff(_combatEntity, CombatEntity.BuffTypes.Block, 1, Mathf.RoundToInt(_maxHealth/4f));
-                RelicManager._instance.UsedRelic8 = true;
+                if (RelicManager._instance.CheckRelic(RelicType.Relic8))
+                {
+                    _combatEntity.Buff(_combatEntity, CombatEntity.BuffTypes.Block, 1,
+                        Mathf.RoundToInt(_maxHealth / 4f));
+                    RelicManager._instance.UsedRelic8 = true;
+                }
+            }
+            if (!RelicManager._instance.UsedRelic7)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic7))
+                {
+                    _combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, _level * 5);
+                    _combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, _level * 5);
+                    RelicManager._instance.UsedRelic7 = true;
+                }
+            }
+            if (!RelicManager._instance.UsedRelic6)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic6))
+                {
+                    _combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.MagicResist, 1, _level * 10);
+                    _combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Armor, 1, _level * 10);
+                    RelicManager._instance.UsedRelic6 = true;
+                }
             }
         }
 
@@ -743,8 +815,6 @@ public class Character : MonoBehaviour
             //Debug.Log((Equipment.Stats)i);
             _stats.Add((Equipment.Stats)i, 0);
         }
-        
-        
 
         foreach (Equipment e in _equipment)
         {
@@ -758,15 +828,22 @@ public class Character : MonoBehaviour
                 {
                     _stats.Add(stat.Key, stat.Value);
                 }
+
+                int blessingIndex = GetIndexOfBlessing((CombatEntity.BlessingTypes)stat.Key);
+                if ( blessingIndex != -1)
+                {
+                    Debug.Log("we have this blessing lets do something about it");
+                    Debug.Log(_stats[stat.Key] + " + ");
+                    Debug.Log(Blessings[blessingIndex].Item3);
+                    _stats[stat.Key] += Mathf.RoundToInt(stat.Value * Blessings[blessingIndex].Item3);
+                    Debug.Log( " = " + _stats[stat.Key] );
+                }
             }
         }
-        
-        //PrintEquip();
-        
+
         // max health = 50 * level + 50 + hp from stats
         SetMaxHealth();
-        //_currentEnergy = 0;
-        //UpdateEnergyCount(_currentEnergy);
+        
         
         PrettyPrintStats();
         UpdateStatsEvent(this);
@@ -804,15 +881,15 @@ public class Character : MonoBehaviour
         int hp = 0;
         if (isDragon)
         {
-            hp = 200 * _level + 200;
+            hp = 200 * _level;
         }
         else if (isElite)
         {
-            hp = 150 * _level + 150;
+            hp = 150 * _level;
         }
         else
         {
-            hp = 100 * _level + 100;
+            hp = 100 * _level;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);

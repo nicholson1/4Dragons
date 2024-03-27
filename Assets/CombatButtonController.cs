@@ -19,6 +19,7 @@ public class CombatButtonController : MonoBehaviour
     [SerializeField] private DataReader _dataReader;
     private List<List<object>> DataTable;
     private int currentEnergy = 0;
+    
     private void Start()
     {
         //CombatTrigger.TriggerCombat += UpdateCombatUI;
@@ -139,6 +140,29 @@ public class CombatButtonController : MonoBehaviour
         CheckIfSpellCanBeUsed(weapon2, player);
         CheckIfSpellCanBeUsed(scroll1, player);
         CheckIfSpellCanBeUsed(scroll2, player);
+        
+        //check if all spells are in different spell schools
+        if (CheckForUniqueSpellSchools(new[] { weapon1.spell, weapon2.spell, scroll1.spell, scroll2.spell }))
+        {
+            if(!RelicManager._instance.HasRelic4Buff && RelicManager._instance.CheckRelic(RelicType.Relic4))
+            {
+                //if we dont have the blessing give the player one
+                Debug.Log("add blessing");
+                CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 50);
+                RelicManager._instance.HasRelic4Buff = true;
+            }
+        }
+        else
+        {
+            if (RelicManager._instance.HasRelic4Buff)
+            {
+                //remove blessing
+                Debug.Log("remove blessing");
+
+                CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, -50);
+                RelicManager._instance.HasRelic4Buff = false;
+            }
+        }
 
     }
 
@@ -179,4 +203,54 @@ public class CombatButtonController : MonoBehaviour
             }
         }
     }
+
+    private bool CheckForUniqueSpellSchools(Weapon.SpellTypes[] spells)
+    {
+        List<string> types = new List<string>();
+        foreach (var spell in spells)
+        {
+            if (spell == Weapon.SpellTypes.None)
+                return false;
+            if ((int)spell < 15)
+                return false;
+
+            string s = spell.ToString().Substring(0, 3);
+            if (!types.Contains(s))
+            {
+                types.Add(s);
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+    private bool CheckForUniquePhysicalSchools(Weapon.SpellTypes[] spells)
+    {
+        List<string> types = new List<string>();
+        foreach (var spell in spells)
+        {
+            if (spell == Weapon.SpellTypes.None)
+                return false;
+            if ((int)spell > 14)
+                return false;
+
+            string s = spell.ToString().Substring(0, 3);
+            if (!types.Contains(s))
+            {
+                types.Add(s);
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+    
 }

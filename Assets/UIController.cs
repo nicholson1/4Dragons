@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -25,6 +26,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject TransitionCamera;
     [SerializeField] private GameObject UiCamera;
     
+    [SerializeField] private GameObject RelicTester;
+
     
     
     public GameObject RestartButton;
@@ -415,4 +418,11 @@ public class UIController : MonoBehaviour
     }
 
 
+    private void FixedUpdate()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.R))
+        {
+            RelicTester.gameObject.SetActive(true);
+        }
+    }
 }

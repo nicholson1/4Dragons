@@ -3429,6 +3429,26 @@ MonoBehaviour:
   - Reduce damage done by @% for the next $ turns
   - Starts turn with 1 less Energy, for the next $ turns
   - Increase damage received by @% for the next $ turns
+  BlessingDescriptions:
+  - ilvl
+  - rarity
+  - Increase Armor by @% until the end of combat
+  - Increase Magic Resistance by @% until the end of combat
+  - Increase Strength by @% until the end of combat
+  - swords
+  - axes
+  - daggers
+  - sheilds
+  - hammers
+  - Increase Spell Power by @% until the end of combat
+  - nature
+  - fire
+  - blood
+  - shadow
+  - Increase Health by @% until the end of combat
+  - Increase Crit Chance by @% until the end of combat
+  - 
+  BlessingSprites: []
   abilityColors:
   - {r: 0.6886792, g: 0.009745443, b: 0.009745443, a: 1}
   - {r: 0, g: 0.6981132, b: 0.6981132, a: 1}
@@ -3699,6 +3719,10 @@ MonoBehaviour:
   UsedRelic20: 0
   UsedRelic24: 0
   UsedRelic8: 0
+  UsedRelic6: 0
+  UsedRelic7: 0
+  HeartSeekersCounter: 0
+  HasRelic4Buff: 0
   UnstableEnergyCoreCounter: 0
 --- !u!1001 &124902492
 PrefabInstance:
@@ -4440,7 +4464,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.892881e+23, y: 1.2711921e+31, z: 1.1626355e+27, w: -3.0460022e+30}
+  m_BoundingSphereOverride: {x: 1.02e-43, y: 0, z: 0, w: 8.7176956e-14}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -51865,6 +51889,7 @@ MonoBehaviour:
   MainCamera: {fileID: 1086910816}
   TransitionCamera: {fileID: 170437362}
   UiCamera: {fileID: 1632673875}
+  RelicTester: {fileID: 1576741201}
   RestartButton: {fileID: 822181647}
 --- !u!1 &1187426786015170 stripped
 GameObject:
