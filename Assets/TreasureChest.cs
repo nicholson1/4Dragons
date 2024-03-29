@@ -16,6 +16,8 @@ public class TreasureChest : MonoBehaviour
 
     public bool startingChest;
     public int force;
+    public bool forceRelic = false;
+
     private void OnMouseDown()
     {
         if(EventSystem.current.IsPointerOverGameObject())
@@ -24,6 +26,10 @@ public class TreasureChest : MonoBehaviour
         if (startingChest && !isOpen)
         {
             SelectionManager._instance.CreateEquipmentListsStart();
+        }
+        if (!startingChest && !isOpen)
+        {
+            SelectionManager._instance.CreateChestReward(forceRelic);
         }
         
         //Debug.Log(!LootButtonManager._instance.HasItems());
@@ -58,8 +64,13 @@ public class TreasureChest : MonoBehaviour
             // Interpolate between the current rotation and the target rotation
             Lid.transform.localRotation = Quaternion.Lerp(Lid.transform.localRotation, Quaternion.Euler(targetRotation, 0, 0), rotationSpeed * Time.deltaTime);
         }
-        
-        
+    }
+
+    public void Reset()
+    {
+        Lid.transform.localRotation = initialRotation;
+        isOpen = false;
+        Start();
     }
 
     private IEnumerator WaitThenDisable()

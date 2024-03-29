@@ -23,8 +23,12 @@ public class CombatController : MonoBehaviour
     [SerializeField] private Character EnemeyPrefab;
     [SerializeField] private Character DragonPrefab;
     [SerializeField] private Character ElitePrefab;
+    [SerializeField] private TreasureChest TreausreChestPrefab;
+
 
     [SerializeField] private GameObject StartChest;
+    private GameObject rewardChest = null;
+
 
     [SerializeField] private Transform SpawnPos;
 
@@ -35,6 +39,7 @@ public class CombatController : MonoBehaviour
     public Vector3 playerOffset = new Vector3();
 
     public int turnCounter = 0;
+    public int TrialCounter = 1;
     public static event Action EndTurn;
     // public static event Action EndCombatEvent;
     // public static event Action StartCombatEvent;
@@ -95,7 +100,11 @@ public class CombatController : MonoBehaviour
         RotateAroundMap._instance.RandomRotate();
         //unless its first node
         if(ClickedFirstNode)
+        {
             Player._level += 1;
+            if(rewardChest != null)
+                rewardChest.gameObject.SetActive(false);
+        }
         else
         {
             StartChest.gameObject.SetActive(false);
@@ -119,8 +128,7 @@ public class CombatController : MonoBehaviour
                 ShopManager._instance.RandomShop();
                 break;
             case NodeType.Treasure:
-                StartRandomCombat(NodeType.MinorEnemy);
-                //todo spawn a chest with a relic and some gold
+                TreasureNodeClicked(true);
                 break;
             case NodeType.Mystery:
                MysterySelect();
@@ -137,7 +145,7 @@ public class CombatController : MonoBehaviour
         if (roll >= 10)
         {
             //spawn treausre room
-            nt = NodeType.MinorEnemy;
+            nt = NodeType.Treasure;
         }
 
         else if (roll >= 8)
@@ -165,7 +173,7 @@ public class CombatController : MonoBehaviour
                 nt = NodeType.Store;
             }
         }
-
+        
         switch (nt)
         {
             case NodeType.MinorEnemy:
@@ -174,11 +182,28 @@ public class CombatController : MonoBehaviour
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
                 break;
-            //case NodeType.Treasure:
-                //do treaure
-            break;
+            case NodeType.Treasure:
+                TreasureNodeClicked(false);
+                break;
         }
 
+    }
+
+    private void TreasureNodeClicked(bool forceRelic)
+    {
+        if(rewardChest == null)
+        {
+            TreasureChest t = Instantiate(TreausreChestPrefab, SpawnPos.position + (Vector3.up * 10),
+                SpawnPos.transform.rotation, SpawnPos);
+            t.forceRelic = forceRelic;
+            rewardChest = t.gameObject;
+        }
+        else
+        {
+            rewardChest.transform.position += (Vector3.up * 10);
+            rewardChest.SetActive(true);
+            rewardChest.GetComponent<TreasureChest>().Reset();
+        }
     }
 
     public void SetMapCanBeClicked(bool mapCanBeClicked)
@@ -635,6 +660,10 @@ public class CombatController : MonoBehaviour
                     combatEntity.DirectTakeDamage(999999);
                 }
             }
+        }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.G))
+        {
+            Player.GetGold(999);
         }
     }
 

@@ -282,6 +282,10 @@ namespace Map
                     toolTip.Title = "Dragon";
                     toolTip.Message = "A powerful dragon lives here, Defeating them will reward a dragon relic";
                     break;
+                case NodeType.Treasure:
+                    toolTip.Title = "Treasure";
+                    toolTip.Message = "You will find a relic here";
+                    break;
                     
             }
         }

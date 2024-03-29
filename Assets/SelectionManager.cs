@@ -216,6 +216,97 @@ public class SelectionManager : MonoBehaviour
         StartCoroutine(FadeImage(.5f,0f));
     }
 
+    public void CreateChestReward(bool forceRelic = false)
+    {
+        List<List<Equipment>> relics = new List<List<Equipment>>();
+        List<List<Equipment>> equipments = new List<List<Equipment>>();
+        List<int> golds = new List<int>();
+
+        
+        (ChestType, ChestType) selectionType = SelectChestType();
+
+        if (forceRelic)
+        {
+            selectionType.Item1 = ChestType.Relic;
+            selectionType.Item2 = ChestType.None;
+        }
+
+        int level = CombatController._instance.Player._level;
+
+        List<Equipment> selection = new List<Equipment>();
+
+        switch (selectionType.Item1)
+        {
+            case ChestType.Relic:
+                relics.Add(new List<Equipment> {RelicManager._instance.GetCommonRelic()});
+                break;
+            case ChestType.Gold:
+                golds.Add(Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter);
+                break;
+            case ChestType.Equipment:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                equipments.Add(selection);
+                break;
+            case ChestType.Weapon:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                equipments.Add(selection);
+                break;
+            case ChestType.Scroll:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                equipments.Add(selection);
+                break;
+        }
+        switch (selectionType.Item2)
+        {
+            case ChestType.Gold:
+                golds.Add(Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter);
+                break;
+            case ChestType.Equipment:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                equipments.Add(selection);
+                break;
+            case ChestType.Weapon:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                selection.Add(EC.CreateRandomWeapon(level, false));
+                equipments.Add(selection);
+                break;
+            case ChestType.Scroll:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                selection.Add(EC.CreateRandomSpellScroll(level));
+                equipments.Add(selection);
+                break;
+        }
+        golds.Add(Random.Range(-5, 10) + 50 * CombatController._instance.TrialCounter);
+
+
+        if (relics.Count == 0)
+            relics = null;
+
+        LootButtonManager._instance.SetLootButtons(equipments, golds, relics);
+    }
+
     public void CreateEquipmentListsStart()
     {
         List<List<Equipment>> equipments = new List<List<Equipment>>();
@@ -534,5 +625,26 @@ public class SelectionManager : MonoBehaviour
     {
         int[] damageSpells = new[] { 0,1,2,3,6,7,8,9,10,11,12,13,14 };
         return damageSpells[Random.Range(0, damageSpells.Length)];
+    }
+
+    private (ChestType, ChestType) SelectChestType()
+    {
+        int roll1 = Random.Range(0, 5);
+        if (roll1 == 0)
+        {
+            return (ChestType.Relic, ChestType.None);
+        }
+        int roll2 = Random.Range(1, 5);
+        return ((ChestType)roll1, (ChestType)roll2);
+    }
+
+    enum ChestType
+    {
+        Relic,
+        Gold,
+        Scroll,
+        Weapon, 
+        Equipment,
+        None,
     }
 }

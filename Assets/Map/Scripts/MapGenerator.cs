@@ -9,7 +9,7 @@ namespace Map
         private static MapConfig config;
         
         private static readonly List<NodeType> RandomNodes = new List<NodeType>
-        {NodeType.Mystery, NodeType.Store, NodeType.MinorEnemy, NodeType.EliteEnemy};
+        {NodeType.Mystery, NodeType.Store, NodeType.MinorEnemy, NodeType.EliteEnemy, NodeType.Treasure};
 
         private static List<float> layerDistances;
         private static List<List<Point>> paths;
@@ -17,6 +17,8 @@ namespace Map
         private static readonly List<List<Node>> nodes = new List<List<Node>>();
 
         private static int ElitesThisMap = 0;
+        private static int ChestsThisMap = 0;
+
         public static Map GetMap(MapConfig conf)
         {
             if (conf == null)
@@ -29,6 +31,7 @@ namespace Map
             nodes.Clear();
 
             ElitesThisMap = 0;
+            ChestsThisMap = 0;
 
             GenerateLayerDistances();
 
@@ -79,11 +82,18 @@ namespace Map
                 
                 if (layerIndex >= 5 && ElitesThisMap == 0 && nodesOnThisLayer.Count > 0 )
                 {
-                    //Debug.Log("force elite");
                     nodeType = NodeType.EliteEnemy;
-                    ElitesThisMap += 1;
+                }
+                else if (layerIndex >= 6 && ChestsThisMap == 0)
+                {
+                    nodeType = NodeType.Treasure;
                 }
                 
+                if(nodeType == NodeType.EliteEnemy)
+                    ElitesThisMap += 1;
+                if (nodeType == NodeType.Treasure)
+                    ChestsThisMap += 1;
+
                 var blueprintName = config.nodeBlueprints.Where(b => b.nodeType == nodeType).ToList().Random().name;
                 var node = new Node(nodeType, blueprintName, new Point(i, layerIndex))
                 {
@@ -286,7 +296,7 @@ namespace Map
 
         private static NodeType GetRandomNode(List<Node> nodesOnThisLayer)
         {
-            int[] nodeTypeWeights = new[] { 2, 1, 5, 2 };
+            int[] nodeTypeWeights = new[] { 2, 1, 5, 2, 1};
             int totalWeight = 0;
             foreach (var item in nodeTypeWeights)
             {
@@ -307,7 +317,7 @@ namespace Map
                     break;
                 }
             }
-            
+
 
             // if there is only 1 node width no elites allowed, if elite placed dont place another
             if (nt == NodeType.EliteEnemy && (nodesOnThisLayer.Count == 0 || ThisLayerHasElite(nodesOnThisLayer) || ElitesThisMap >= 3))
@@ -315,9 +325,10 @@ namespace Map
                 nt =RandomNodes[Random.Range(0, RandomNodes.Count-1)];
             }
 
-            if (nt == NodeType.EliteEnemy)
+            if (nt == NodeType.Treasure)
             {
-                ElitesThisMap += 1;
+                if (ChestsThisMap > 0)
+                    nt = NodeType.Mystery;
             }
 
             return nt;

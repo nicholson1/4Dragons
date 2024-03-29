@@ -21,7 +21,7 @@ public class RelicManager : MonoBehaviour
     
     public static event Action<RelicType> UseRelic; 
     
-    private int FirstDragonRelicIndex = 30;
+    private int FirstDragonRelicIndex = 36;
     public static RelicManager _instance;
 
     public bool UsedRelic23 = false; // resurect

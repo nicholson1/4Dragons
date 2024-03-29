@@ -730,6 +730,7 @@ public class Character : MonoBehaviour
                     if (isDragon)
                     {
                         MapManager._instance.GenerateNewMap();
+                        CombatController._instance.TrialCounter += 1;
                     }
                     
                     Destroy(_combatEntity);
@@ -756,9 +757,6 @@ public class Character : MonoBehaviour
 
                 //UI controller place restart button on screen
 
-                
-
-                
             }
             
         }
@@ -766,7 +764,7 @@ public class Character : MonoBehaviour
 
     private IEnumerator WaitThenDestroy()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1.5f);
         
         Destroy(this.gameObject);
 
