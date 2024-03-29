@@ -172,7 +172,7 @@ namespace UnityEngine.UI.Extensions
 			// scale based on the size of the rect or use absolute, this is switchable
 			var sizeX = !relativeSize ? 1 : rectTransform.rect.width;
 			var sizeY = !relativeSize ? 1 : rectTransform.rect.height;
-			var offsetX = -rectTransform.pivot.x * sizeX;
+			var offsetX = -rectTransform.pivot.x * sizeX + 20;
 			var offsetY = -rectTransform.pivot.y * sizeY;
 
 			// Generate the quads that make up the wide line

@@ -624,7 +624,20 @@ public class CombatController : MonoBehaviour
 
     }
 
-    
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.K))
+        {
+            foreach (var combatEntity in entitiesInCombat)
+            {
+                if (!combatEntity.myCharacter.isPlayerCharacter)
+                {
+                    combatEntity.DirectTakeDamage(999999);
+                }
+            }
+        }
+    }
+
     private void Start()
     {
         CombatTrigger.TriggerCombat += StartCombat;
