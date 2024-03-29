@@ -12,7 +12,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Vector3 initialScale = new Vector3(1,1,1); // Initial scale of the UI element
     private Quaternion initialRotation = Quaternion.identity; // Initial scale of the UI element
 
-    [SerializeField]public bool shakeUI = true;
+    [SerializeField]public bool shakeUI = false;
     
     private bool setOnce = false;
 

@@ -4466,7 +4466,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 7.095706e+22, y: 7.0366745e+22, z: 1.8969995e+28, w: 4.5449738e+30}
+  m_BoundingSphereOverride: {x: 0, y: -1.1389252e-36, z: 8.16e-43, w: -1.1962268e-38}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -23802,6 +23802,8 @@ GameObject:
   - component: {fileID: 939455342}
   - component: {fileID: 939455344}
   - component: {fileID: 939455343}
+  - component: {fileID: 939455346}
+  - component: {fileID: 939455345}
   m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
@@ -23868,6 +23870,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 939455341}
   m_CullTransparentMesh: 1
+--- !u!114 &939455345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939455341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7cd2af8a5ded64eb496cd538ea9cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Title: Gold
+  Message: You can spend your gold at shops to purchase goods.
+  Cost: 
+  iLvl: 
+  rarity: -1
+  icon: {fileID: 0}
+  IconColor: {r: 1, g: 1, b: 1, a: 1}
+  is_spell: 0
+  is_item: 0
+  is_relic: 0
+--- !u!114 &939455346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939455341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f50db497a7c2246bc94469defcf2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  shakeUI: 1
 --- !u!1 &942519281
 GameObject:
   m_ObjectHideFlags: 0
@@ -40086,6 +40124,8 @@ GameObject:
   - component: {fileID: 1700173902}
   - component: {fileID: 1700173901}
   - component: {fileID: 1700173900}
+  - component: {fileID: 1700173904}
+  - component: {fileID: 1700173903}
   m_Layer: 5
   m_Name: DropTheItem
   m_TagString: Untagged
@@ -40170,6 +40210,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1700173898}
   m_CullTransparentMesh: 1
+--- !u!114 &1700173903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700173898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f50db497a7c2246bc94469defcf2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  shakeUI: 1
+--- !u!114 &1700173904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700173898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7cd2af8a5ded64eb496cd538ea9cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Title: Drop Item
+  Message: Drag an item here to remove it permanently
+  Cost: 
+  iLvl: 
+  rarity: -1
+  icon: {fileID: 0}
+  IconColor: {r: 1, g: 1, b: 1, a: 1}
+  is_spell: 0
+  is_item: 0
+  is_relic: 0
 --- !u!1 &1704158130 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1394585723121557147, guid: 2e5701230b5f141439d3e44366f577a1, type: 3}
