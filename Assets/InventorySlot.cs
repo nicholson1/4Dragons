@@ -285,7 +285,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         {
             case SellShopType.Armor:
                 costReduction = .5f;
-                if (e.slot == Equipment.Slot.Potion || e.slot == Equipment.Slot.Scroll || e.slot == Equipment.Slot.OneHander)
+                if (e.slot == Equipment.Slot.Consumable || e.slot == Equipment.Slot.Scroll || e.slot == Equipment.Slot.OneHander)
                 {
                     costReduction = .25f;
                 }
@@ -304,7 +304,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 }
                 break;
             case SellShopType.Potions:
-                if (e.slot == Equipment.Slot.Potion)
+                if (e.slot == Equipment.Slot.Consumable)
                 {
                     costReduction = .5f;
                 }

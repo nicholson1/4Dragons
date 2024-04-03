@@ -653,15 +653,16 @@ public class CombatController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.K))
         {
-            foreach (var combatEntity in entitiesInCombat)
+            for (int i = entitiesInCombat.Count -1; i > 0; i--)
             {
-                if (!combatEntity.myCharacter.isPlayerCharacter)
+                if (!entitiesInCombat[i].myCharacter.isPlayerCharacter)
                 {
-                    combatEntity.DirectTakeDamage(999999);
+                    entitiesInCombat[i].DirectTakeDamage(999999);
                 }
             }
         }
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.G))
+        
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha4))
         {
             Player.GetGold(999);
         }

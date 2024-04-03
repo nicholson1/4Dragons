@@ -63,19 +63,22 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             //Debug.Log(slotType + " "+ currentLocation.Slot);
             Debug.Log("I think we fudged this one up bud");
         }
-        if(e.slot != Equipment.Slot.Relic)
+        if(e.slot != Equipment.Slot.Relic && e.slot != Equipment.Slot.Consumable)
         {
             _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
+            LvlText.text = "Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+            
+
             _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
             _toolTip.Cost = "";
             _toolTip.Title = e.name;
             _toolTip.e = e;
 
-            LvlText.text = "Lvl: " + e.stats[Equipment.Stats.ItemLevel];
         }
         else
         {
-            _toolTip.is_relic = true;
+            if(e.slot == Equipment.Slot.Relic)
+                _toolTip.is_relic = true;
             _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
             _toolTip.Title = e.name;
             _toolTip.e = e;

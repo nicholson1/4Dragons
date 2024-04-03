@@ -131,6 +131,7 @@ public class ToolTipManager : MonoBehaviour
       {
          ItemTip.gameObject.SetActive(false);
       }
+      
 
       if (!is_Spell && !is_item && !is_relic)
       {
@@ -139,6 +140,12 @@ public class ToolTipManager : MonoBehaviour
       }
       else
       {
+         MainTip.gameObject.SetActive(false);
+      }
+      
+      if(equip != null && equip.slot == Equipment.Slot.Consumable)
+      {
+         UpdateConsumableTip(RelicTip, equip);
          MainTip.gameObject.SetActive(false);
       }
 
@@ -350,6 +357,20 @@ public class ToolTipManager : MonoBehaviour
       current.tiptitle.text = r.name;
       current.tiptitle.color = rarityColors[4];
       current.icon.sprite = r.getIcon;
+      gameObject.SetActive(true);
+   }
+   private void UpdateConsumableTip(ToolTipDisplay current, Equipment e)
+   {
+      RelicTip.gameObject.SetActive(true);
+
+      //Debug.Log("Updating spell tip");
+      Consumable c = (Consumable) e;
+
+      current.tiptext.text = c.description;
+        
+      current.tiptitle.text = c.name;
+      current.tiptitle.color = rarityColors[c.stats[Equipment.Stats.Rarity]];
+      current.icon.sprite = c.getIcon;
       gameObject.SetActive(true);
    }
    private void UpdateTipDisplay(ToolTipDisplay current, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c,  bool is_Spell, bool is_item)

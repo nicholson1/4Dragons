@@ -118,15 +118,13 @@ namespace ImportantStuff
             Scroll,
             
             //other
-            Potion,
+            Consumable,
             All,
             Drop,
             Sell,
             Upgrade,
             Relic,
         }
-
-
 
 
         public enum Stats

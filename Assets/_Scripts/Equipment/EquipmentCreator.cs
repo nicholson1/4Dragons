@@ -316,6 +316,30 @@ public class EquipmentCreator : MonoBehaviour
         
     }
     
+    public Consumable CreateRandomPotion(int level)
+    {
+        int rarity = GetRarity(level);
+        Consumables type = Consumables.None;
+        
+        switch (rarity)
+        {
+            case 0:
+                type = Consumables.WeakHealingPotion;
+                break;
+            case 1:
+                type = (Consumables)Random.Range(1, 5);
+                break;
+            case 2:
+                type = (Consumables)Random.Range(5, 7);
+                break;
+            case 3:
+                type = (Consumables)Random.Range(7, 8);
+                break;
+        }
+
+        return CreatePotion(type);
+    }
+    
     
     public Weapon CreateWeapon(int level, int rarity,  Equipment.Slot slot, Weapon.SpellTypes weaponType, Equipment.Stats stat1 = Equipment.Stats.None, Equipment.Stats stat2 = Equipment.Stats.None, bool canBeLooted = true)
     {
@@ -366,6 +390,12 @@ public class EquipmentCreator : MonoBehaviour
         PrettyPrintWeapon(w);
         
         return w;
+    }
+
+    public Consumable CreatePotion(Consumables potionType)
+    {
+        Consumable c = new Consumable(potionType, sprite: ConsumableSprites[(int)potionType]);
+        return c;
     }
     
     public Weapon CreateSpellScroll(int level, int rarity, Weapon.SpellTypes spellType, bool canBeLooted = true)
@@ -1734,6 +1764,8 @@ public class EquipmentCreator : MonoBehaviour
     [SerializeField] private Sprite[] hammerSprites;
     [SerializeField] private Sprite[] magicAttackSprites;
     [SerializeField] private Sprite[] magicSupportSprites;
+    [SerializeField] private Sprite[] ConsumableSprites;
+
 
 
 

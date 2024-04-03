@@ -82,6 +82,12 @@ public class ShopManager : MonoBehaviour
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        //TODO REMOVE THIS ITS ONLY FOR TESTING THE POTIONS
+        type = InventorySlot.SellShopType.Potions;
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        
         ShopType = type;
         SellButton.SellType = type;
         int level = CombatController._instance.Player._level;
@@ -188,6 +194,19 @@ public class ShopManager : MonoBehaviour
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 relicBuyButtons[3].gameObject.SetActive(true);
                 break;
+            case InventorySlot.SellShopType.Potions:
+                e = EC.CreateRandomPotion(level);
+                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
+                
+                e = EC.CreateRandomPotion(level);
+                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
+                
+                e = EC.CreateRandomPotion(level);
+                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
+                
+                e = EC.CreateRandomPotion(level);
+                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
+                break;
             
         }
         AdjustGoldText(Item1);
@@ -207,7 +226,6 @@ public class ShopManager : MonoBehaviour
         if (slot.Item.e.isRelic)
         {
             goldText.gameObject.SetActive(false);
-
         }
     }
 
@@ -238,6 +256,8 @@ public class ShopManager : MonoBehaviour
                 return "The Scribe";
             case InventorySlot.SellShopType.Relics:
                 return "The Antiquitist";
+            case InventorySlot.SellShopType.Potions:
+                return "The Alchemist";
         }
 
         return "";
