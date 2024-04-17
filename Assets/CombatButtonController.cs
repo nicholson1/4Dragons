@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
 public class CombatButtonController : MonoBehaviour
@@ -148,7 +149,7 @@ public class CombatButtonController : MonoBehaviour
             {
                 //if we dont have the blessing give the player one
                 Debug.Log("add blessing");
-                CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 50);
+                CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 10 * CombatController._instance.Player._level);
                 RelicManager._instance.HasRelic4Buff = true;
             }
         }
@@ -159,7 +160,8 @@ public class CombatButtonController : MonoBehaviour
                 //remove blessing
                 Debug.Log("remove blessing");
 
-                CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, -50);
+                int blessingIndex = CombatController._instance.Player.GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
+                CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, -CombatController._instance.Player.Blessings[blessingIndex].Item3 );
                 RelicManager._instance.HasRelic4Buff = false;
             }
         }

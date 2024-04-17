@@ -828,14 +828,18 @@ public class CombatEntity : MonoBehaviour
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic3))
             {
-                GetHitWithBlessing(myCharacter, BlessingTypes.SpellPower, 1, 2);
+                myCharacter.GetStats().TryGetValue(Equipment.Stats.SpellPower, out int sp);
+                float min = Mathf.Clamp((sp * .02f),.5f, (sp * .02f) );
+                GetHitWithBlessing(myCharacter, BlessingTypes.SpellPower, 1,min );
             }
         }
         else
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic5))
             {
-                GetHitWithBlessing(myCharacter, BlessingTypes.Strength, 1, 2);
+                myCharacter.GetStats().TryGetValue(Equipment.Stats.Strength, out int sp);
+                float min = Mathf.Clamp((sp * .02f),.5f, (sp * .02f) );
+                GetHitWithBlessing(myCharacter, BlessingTypes.Strength, 1, sp * .02f);
             }
         }
             

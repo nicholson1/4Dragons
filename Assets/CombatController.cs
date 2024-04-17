@@ -251,6 +251,16 @@ public class CombatController : MonoBehaviour
     }
     private IEnumerator TransitionFromCombatCamera(float moveTime, float rotateTime)
     {
+        if (RelicManager._instance.HasRelic4Buff)
+        {
+            //remove blessing
+            Debug.Log("remove blessing");
+
+            int blessingIndex = CombatController._instance.Player.GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
+            CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, -CombatController._instance.Player.Blessings[blessingIndex].Item3 );
+            RelicManager._instance.HasRelic4Buff = false;
+        }
+        
         CombatUI.SetActive(false);
         CurrentTurnIndex = 0;
 
@@ -371,8 +381,7 @@ public class CombatController : MonoBehaviour
             RelicManager._instance.UnstableEnergyCoreCounter = 0;
         }
 
-
-
+        UpdateUiButtons();
     }
 
     public void UpdateUiButtons()

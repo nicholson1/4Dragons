@@ -30,6 +30,7 @@ public class BuffDebuffElement : MonoBehaviour
         _amount = amount;
         turnCounter.text = turns.ToString();
         icon.sprite =TheSpellBook._instance.GetSprite(deBuff);
+        icon.color = Color.white;
         toolTip.iLvl = "";
         toolTip.Title = deBuff.ToString();
         toolTip.Message = TheSpellBook._instance.GetDesc(deBuff);
@@ -48,6 +49,7 @@ public class BuffDebuffElement : MonoBehaviour
         _amount = amount;
         turnCounter.text = turns.ToString();
         icon.sprite =TheSpellBook._instance.GetSprite(buff);
+        icon.color = Color.white;
         toolTip.iLvl = "";
         toolTip.Title = buff.ToString();
         toolTip.Message = TheSpellBook._instance.GetDesc(buff);

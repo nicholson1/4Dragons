@@ -659,7 +659,7 @@ public class Character : MonoBehaviour
 
         _currentHealth -= amount;
 
-        if(_currentHealth < _maxHealth / 2f )
+        if(_currentHealth < _maxHealth / 2f && isPlayerCharacter)
         {
             if (!RelicManager._instance.UsedRelic8)
             {
@@ -846,11 +846,10 @@ public class Character : MonoBehaviour
                 int blessingIndex = GetIndexOfBlessing((CombatEntity.BlessingTypes)stat.Key);
                 if ( blessingIndex != -1)
                 {
-                    Debug.Log("we have this blessing lets do something about it");
-                    Debug.Log(_stats[stat.Key] + " + ");
-                    Debug.Log(Blessings[blessingIndex].Item3);
-                    _stats[stat.Key] += Mathf.RoundToInt(stat.Value * Blessings[blessingIndex].Item3);
-                    Debug.Log( " = " + _stats[stat.Key] );
+                    //Debug.Log("we have this blessing lets do something about it");
+                    //Debug.Log(_stats[stat.Key] + " + " + Blessings[blessingIndex].Item3);
+                    _stats[stat.Key] = Mathf.RoundToInt(stat.Value + Blessings[blessingIndex].Item3);
+                    //Debug.Log( " = " + _stats[stat.Key] );
                 }
             }
         }
