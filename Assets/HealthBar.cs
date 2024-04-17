@@ -37,6 +37,8 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private GameObject eliteFrame;
     [SerializeField] private GameObject dragonFrame;
 
+    public int YValueStatusText = 550;
+
     private void Start()
     {
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
@@ -117,7 +119,7 @@ public class HealthBar : MonoBehaviour
                 }
                 StatusText st = GetStatus();
 
-                st.transform.localPosition += new Vector3(0, 350, 0);
+                st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
                 st.InitializeStatusText(-1, -1, debuff._debuff, this);
             }
            
@@ -163,7 +165,7 @@ public class HealthBar : MonoBehaviour
                 
                 StatusText st = GetStatus();
 
-                st.transform.localPosition += new Vector3(0, 350, 0);
+                st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
                 st.InitializeStatusText(-1, -1, buff._buff, this);
                 
 
@@ -238,7 +240,7 @@ public class HealthBar : MonoBehaviour
 
         StatusText st = GetStatus();
 
-        st.transform.localPosition += new Vector3(0, 350, 0);
+        st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         // we really want the change
         st.InitializeStatusText(1, change, CombatEntity.BuffTypes.Block, this);
 
@@ -253,7 +255,7 @@ public class HealthBar : MonoBehaviour
 
         StatusText st = GetStatus();
 
-        st.transform.localPosition += new Vector3(0, 350, 0);
+        st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         // we really want the change
         st.InitializeStatusText(-1, -1, CombatEntity.BuffTypes.Prepared, this);
         
@@ -360,7 +362,7 @@ public class HealthBar : MonoBehaviour
         }
 
         StatusText st = GetStatus();
-        st.transform.localPosition += new Vector3(0, 350, 0);
+        st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         st.InitializeStatusText(turns, Mathf.RoundToInt(amount), buff, this);
     }
 
@@ -424,7 +426,7 @@ public class HealthBar : MonoBehaviour
         }
 
         StatusText st = GetStatus();
-        st.transform.localPosition += new Vector3(0, 350, 0);
+        st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         st.InitializeStatusText(turns, Mathf.RoundToInt(amount), debuff, this);
     }
     
@@ -566,7 +568,7 @@ public class HealthBar : MonoBehaviour
         TempBarStart = 0;
 
         StatusText st = GetStatus();
-        st.transform.localPosition += new Vector3(0, 350, 0);
+        st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this);
 
 
@@ -606,7 +608,7 @@ public class HealthBar : MonoBehaviour
         MoveBar = false;
 
         StatusText st = GetStatus();
-        st.transform.localPosition += new Vector3(0, 350, 0);
+        st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         st.InitializeStatusText(amount, abilityTypes, this,reduction);
     }
 

@@ -341,7 +341,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -1022,7 +1022,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 
 
 			//#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/Varyings.hlsl"
@@ -1421,7 +1421,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -1859,7 +1859,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -2278,7 +2278,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 
@@ -2762,7 +2762,7 @@ Shader "Polytope Studio/PT_Water_Shader"
 				int _PassValue;
 			#endif
 
-			uniform float4 _CameraDepthTexture_TexelSize;
+			//uniform float4 _CameraDepthTexture_TexelSize;
 			sampler2D _NormalMapTexture;
 
 

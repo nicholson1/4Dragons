@@ -214,6 +214,14 @@ public class Character : MonoBehaviour
         //         
         // }
 
+        for (int i = 0; i < 2; i++)
+        {
+            if (Spells.Count < 2)
+            {
+                Spells.Add((Weapon.SpellTypes.None,null));
+            }
+        }
+
         
         return Spells;
     }
@@ -224,6 +232,14 @@ public class Character : MonoBehaviour
         foreach (var scroll in _spellScrolls)
         {
             Spells.Add((scroll.GetSpellTypes().Item1, scroll));
+        }
+        
+        for (int i = 0; i < 2; i++)
+        {
+            if (Spells.Count < 2)
+            {
+                Spells.Add((Weapon.SpellTypes.None,null));
+            }
         }
 
         return Spells;
