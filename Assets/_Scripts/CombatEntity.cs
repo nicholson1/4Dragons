@@ -647,8 +647,16 @@ public class CombatEntity : MonoBehaviour
             }
             
         }
-    
-        
+
+        for (int i = Spells.Count - 1; i > 0; i--)
+        {
+            if (Spells[i].Item1 == Weapon.SpellTypes.None)
+            {
+                Spells.RemoveAt(i);
+            }
+        }
+
+
         //todo modify it with titles
 
         int bloodpactcount = 0;

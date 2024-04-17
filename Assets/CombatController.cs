@@ -323,14 +323,14 @@ public class CombatController : MonoBehaviour
         
         if (RelicManager._instance.CheckRelic(RelicType.Relic22))
         {
-            entitiesInCombat[1].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
+            entitiesInCombat[0].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
         }
         if (RelicManager._instance.CheckRelic(RelicType.Relic17))
         {
             entitiesInCombat[1].DeBuff(entitiesInCombat[1], CombatEntity.DeBuffTypes.Chilled, 1,1);
         }
 
-        if (entitiesInCombat[1].myCharacter.isElite)
+        if (entitiesInCombat.Count > 1 && entitiesInCombat[1].myCharacter.isElite)
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic15))
             {
