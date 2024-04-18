@@ -592,7 +592,8 @@ public class CombatEntity : MonoBehaviour
 
         foreach (var spell in weaponSpells)
         {
-            Spells.Add((spell.Item1, spell.Item2));
+            if(spell.Item1 != Weapon.SpellTypes.None)
+                Spells.Add((spell.Item1, spell.Item2));
         }
 
         // if (weaponSpells.Item1 != Weapon.SpellTypes.None)
@@ -607,10 +608,12 @@ public class CombatEntity : MonoBehaviour
         
         foreach (var spell in spellScrolls)
         {
-            Spells.Add((spell.Item1, spell.Item2));
+            if(spell.Item1 != Weapon.SpellTypes.None)
+                Spells.Add((spell.Item1, spell.Item2));
         }
         //Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
         //Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
+        
     }
     
     
@@ -673,6 +676,7 @@ public class CombatEntity : MonoBehaviour
             
             // we need spell energy;
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
+
             if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow1)
             {
                 if ((energy != myCharacter._maxEnergy ||  (chilled != -1 && energy != myCharacter._maxEnergy -1)) && myCharacter._currentHealth > myCharacter._maxHealth * .25f && tapcount < 2)

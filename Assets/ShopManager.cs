@@ -46,7 +46,18 @@ public class ShopManager : MonoBehaviour
         // Scrolls,
         // Weapons,
         // FullHalfPrice,
-        InitializeShop(Random.Range(0,5));
+
+        int roll;
+        if (CombatController._instance.Player._gold < 200)
+        {
+            roll = Random.Range(0, 4);
+        }
+        else
+        {
+            roll = Random.Range(0, 5);
+        }
+        
+        InitializeShop(roll);
         UIController._instance.ToggleShopUI();
         UIController._instance.ToggleInventoryUI(1);
 

@@ -170,7 +170,11 @@ public class CombatController : MonoBehaviour
             if (RelicManager._instance.CheckRelic(RelicType.Relic25))
             {
                 //todo roll again for treasure store event
-                nt = NodeType.Store;
+                roll = Random.Range(0, 2);
+                if (roll == 1)
+                    nt = NodeType.Store;
+                else
+                    nt = NodeType.Treasure;
             }
         }
         

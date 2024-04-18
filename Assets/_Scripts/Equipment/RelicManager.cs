@@ -113,7 +113,7 @@ public class RelicManager : MonoBehaviour
         int index = 0;
         if (UnSeenRelics.Count > 0)
         {
-            RelicType r =  UnSeenRelics[Random.Range(1, UnSeenRelics.Count)];
+            RelicType r =  UnSeenRelics[Random.Range(0, UnSeenRelics.Count)];
             SeenRelics.Add(r);
             UnSeenRelics.Remove(r);
 

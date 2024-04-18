@@ -76,6 +76,11 @@ public class TheSpellBook : MonoBehaviour
     
     public (Sprite, Sprite) GetAbilityTypeIcons(Weapon.SpellTypes spell)
     {
+        if (spell == Weapon.SpellTypes.None)
+        {
+            Debug.Log("Spell is none still");
+        }
+        
         List<List<object>> scaling = WeaponScalingTable;
         IList abilities = (IList)scaling[(int)spell][4];
 
