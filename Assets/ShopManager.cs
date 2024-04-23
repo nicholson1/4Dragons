@@ -54,7 +54,7 @@ public class ShopManager : MonoBehaviour
         }
         else
         {
-            roll = Random.Range(0, 5);
+            roll = Random.Range(0, 6);
         }
         
         InitializeShop(roll);
@@ -95,7 +95,7 @@ public class ShopManager : MonoBehaviour
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
         //TODO REMOVE THIS ITS ONLY FOR TESTING THE POTIONS
-        //type = InventorySlot.SellShopType.Potions;
+        //type = InventorySlot.SellShopType.Relics;
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         
@@ -173,8 +173,7 @@ public class ShopManager : MonoBehaviour
                 e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
-                e = EC.CreateRandomArmor(level);
-
+                e = EC.CreateRandomPotion(level);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
                 e = EC.CreateRandomSpellScroll(level);
@@ -199,11 +198,9 @@ public class ShopManager : MonoBehaviour
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 relicBuyButtons[2].gameObject.SetActive(true);
-
                 
-                e = RelicManager._instance.GetCommonRelic();
+                e = EC.CreateRandomPotion(level);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
-                relicBuyButtons[3].gameObject.SetActive(true);
                 break;
             case InventorySlot.SellShopType.Potions:
                 e = EC.CreateRandomPotion(level);
@@ -318,6 +315,8 @@ public class ShopManager : MonoBehaviour
                 ClearItem(Item4);
                 break;
         }
+        CombatController._instance.Player.UpdateStats();
+
     }
 
     private void UpdateRerollButton(Character c)

@@ -124,6 +124,7 @@ namespace ImportantStuff
             Sell,
             Upgrade,
             Relic,
+            Sold,
         }
 
 

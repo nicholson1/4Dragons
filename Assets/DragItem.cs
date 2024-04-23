@@ -58,7 +58,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         }
         slotType = e.slot;
 
-        if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All)
+        if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All && currentLocation.Slot != Equipment.Slot.Sold)
         {
             //Debug.Log(slotType + " "+ currentLocation.Slot);
             Debug.Log("I think we fudged this one up bud");
@@ -180,13 +180,15 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         }
         if (eventData.pointerDrag != null)
         {
-            //Debug.Log("ji");
             DragItem di = eventData.pointerDrag.GetComponent<DragItem>();
 
             if (currentLocation.Slot != di.slotType && currentLocation.Slot != Equipment.Slot.All)
             {
                 return;
             }
+            
+            if(di.currentLocation.Slot == Equipment.Slot.Sold)
+                return;
             
             if (slotType == di.slotType || currentLocation.Slot == di.currentLocation.Slot)
             {

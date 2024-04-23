@@ -10,6 +10,7 @@ public class LootButtonManager : MonoBehaviour
     public GameObject[] EquipmentButtons;
     public GameObject[] GoldButtons;
     public GameObject[] RelicButtons;
+
     [SerializeField] private Sprite[] EquipmentSprites;
     [SerializeField] private Transform layoutgroup;
 
@@ -76,6 +77,8 @@ public class LootButtonManager : MonoBehaviour
     private void AdjustTextAndIcon(GameObject Button, List<Equipment> equipments)
     {
         bool allWeap = true;
+        bool allPotion = true;
+
         bool allScoll = true;
         foreach (var e in equipments)
         {
@@ -86,6 +89,10 @@ public class LootButtonManager : MonoBehaviour
             if (e.slot != Equipment.Slot.OneHander)
             {
                 allWeap = false;
+            }
+            if (e.slot != Equipment.Slot.Consumable)
+            {
+                allPotion = false;
             }
         }
 
@@ -100,6 +107,12 @@ public class LootButtonManager : MonoBehaviour
         {
             Button.GetComponentInChildren<TextMeshProUGUI>().text = "Scroll";
             Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[1];
+            return;
+        }
+        if (allPotion)
+        {
+            Button.GetComponentInChildren<TextMeshProUGUI>().text = "Potion";
+            Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[3];
             return;
         }
         

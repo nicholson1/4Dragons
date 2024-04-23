@@ -128,7 +128,7 @@ public class CombatController : MonoBehaviour
                 ShopManager._instance.RandomShop();
                 break;
             case NodeType.Treasure:
-                TreasureNodeClicked(true);
+                TreasureNodeClicked(false);
                 break;
             case NodeType.Mystery:
                MysterySelect();

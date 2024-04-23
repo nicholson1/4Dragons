@@ -22,6 +22,8 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private Transform inventoryTransform;
     
     public static event Action<ErrorMessageManager.Errors> InventoryNotifications;
+    public static event Action<Equipment> PotionCollected;
+
 
     [SerializeField] private StatDisplay[] _statDisplays;
     
@@ -439,6 +441,12 @@ public class EquipmentManager : MonoBehaviour
             c._inventory.Add(e);
             
             si.RemoveSelection();
+
+            if (di.slotType == Equipment.Slot.Consumable)
+            {
+                Debug.LogWarning("POTION COLLECTED");
+                //PotionCollected(e);
+            }
 
         }
     }

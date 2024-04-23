@@ -72,5 +72,23 @@ namespace Map
         {
             SaveMap();
         }
+        
+        private void Update()
+        {
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
+            {
+                foreach (var node in CurrentMap.nodes)
+                {
+                    node.SetState(NodeStates.Attainable);
+                }
+
+                CombatController._instance.MapCanBeClicked = true;
+            }
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.J))
+            {
+                GenerateNewMap();
+                CombatController._instance.MapCanBeClicked = true;
+            }
+        }
     }
 }

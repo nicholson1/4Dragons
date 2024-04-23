@@ -267,6 +267,15 @@ public class SelectionManager : MonoBehaviour
                 selection.Add(EC.CreateRandomSpellScroll(level));
                 equipments.Add(selection);
                 break;
+            case ChestType.Potion:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomPotion(level));
+                equipments.Add(selection);
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomPotion(level));
+                equipments.Add(selection);
+                break;
+            
         }
         switch (selectionType.Item2)
         {
@@ -295,6 +304,14 @@ public class SelectionManager : MonoBehaviour
                 selection.Add(EC.CreateRandomSpellScroll(level));
                 selection.Add(EC.CreateRandomSpellScroll(level));
                 selection.Add(EC.CreateRandomSpellScroll(level));
+                equipments.Add(selection);
+                break;
+            case ChestType.Potion:
+                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomPotion(level));
+                selection.Add(EC.CreateRandomPotion(level));
+                selection.Add(EC.CreateRandomPotion(level));
+                selection.Add(EC.CreateRandomPotion(level));
                 equipments.Add(selection);
                 break;
         }
@@ -629,13 +646,18 @@ public class SelectionManager : MonoBehaviour
 
     private (ChestType, ChestType) SelectChestType()
     {
-        int roll1 = Random.Range(0, 5);
+        
+        int roll1 = Random.Range(0, 6);
+        
+        //return ((ChestType)roll1, ChestType.Potion);
+
         if (roll1 == 0)
         {
             return (ChestType.Relic, ChestType.None);
         }
-        int roll2 = Random.Range(1, 5);
+        int roll2 = Random.Range(1, 6);
         return ((ChestType)roll1, (ChestType)roll2);
+
     }
 
     enum ChestType
@@ -645,6 +667,7 @@ public class SelectionManager : MonoBehaviour
         Scroll,
         Weapon, 
         Equipment,
+        Potion,
         None,
     }
 }

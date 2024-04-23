@@ -114,6 +114,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             }
             if (Slot == Equipment.Slot.Sell)
             {
+                if(item.currentLocation.Slot == Equipment.Slot.Sold)
+                    return;
                 // calculate gold
                 int gold = CalculateGold(di.e, this);
                 //character add gold
@@ -137,13 +139,18 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             {
                 return;
             }
-            
-            
 
-            if (!di.currentLocation.CanDropHere)
+            if (di.currentLocation.Slot == Equipment.Slot.Sold)
             {
                 // if item is coming from shop
                 // check if we have enough gold if we dont return
+                if (Item != null)
+                {
+                    Debug.Log(Item.name);
+                    return;
+                }
+                    
+                
                 int currentGold = CombatController._instance.Player._gold;
                 int cost = (di.e.stats[Equipment.Stats.Rarity] + 1) * 60;
                 if (currentGold < cost)
@@ -154,14 +161,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 // if we do - gold
                 CombatController._instance.Player._gold -= cost;
                 BuyItemEvent(-cost);
-
-
             }
             
             if (Item == null)
             {
-                
-                
                 di.transform.SetParent(_rt.parent);
                 di._rectTransform.anchoredPosition = _rt.anchoredPosition;
                 di._rectTransform.localScale = _rt.localScale;
