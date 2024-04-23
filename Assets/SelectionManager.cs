@@ -270,8 +270,8 @@ public class SelectionManager : MonoBehaviour
             case ChestType.Potion:
                 selection = new List<Equipment>();
                 selection.Add(EC.CreateRandomPotion(level));
-                equipments.Add(selection);
-                selection = new List<Equipment>();
+                selection.Add(EC.CreateRandomPotion(level));
+                selection.Add(EC.CreateRandomPotion(level));
                 selection.Add(EC.CreateRandomPotion(level));
                 equipments.Add(selection);
                 break;
