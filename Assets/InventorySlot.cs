@@ -184,6 +184,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                     // unequip
                     EquipmentManager._instance.UnEquipItem(Item.e);
                 }
+
+                if (di.slotType == Equipment.Slot.Consumable)
+                {
+                    Debug.Log("from inventory slot potion");
+                    EquipmentManager._instance.AddPotionToPotionBar((Consumable)di.e);
+                }
+                
             }
             LabelCheck();
         }

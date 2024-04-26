@@ -142,6 +142,9 @@ public class SelectionItem : MonoBehaviour
             RelicDescription.gameObject.SetActive(true);
 
         }
+        if(e.slot == Equipment.Slot.Consumable)
+            _toolTip.is_item = false;
+
 
 
         StartCoroutine(RotateObjectForward());

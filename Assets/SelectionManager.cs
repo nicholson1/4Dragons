@@ -420,6 +420,14 @@ public class SelectionManager : MonoBehaviour
             selection4.Add(EC.CreateArmor(level, Equipment.Slot.Boots));
             selection4.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection4);
+            
+            List<Equipment> selection5 = new List<Equipment>();
+            selection5.Add(EC.CreateRandomPotion(level));
+            selection5.Add(EC.CreateRandomPotion(level));
+            selection5.Add(EC.CreateRandomPotion(level));
+            selection5.Add(EC.CreateRandomPotion(level));
+            equipments.Add(selection5);
+            
 
             // foreach (var VARIABLE in equipments)
             // {

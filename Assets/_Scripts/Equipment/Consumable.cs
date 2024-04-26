@@ -46,8 +46,8 @@ public class Consumable : Equipment
         "Energy Potion",
         "Power Potion",
         
-        "Strong Healing Potion",
         "Invulnerability Potion",
+        "Strong Healing Potion",
         
         "Epic Healing Potion",
 
@@ -63,8 +63,8 @@ public class Consumable : Equipment
         "Target gains 2 Energy",
         "Increase the damage your target deals by 50% for 3 turns",
         
-        "Heal 75% of your max health",
         "Target becomes Invulnerable for 1 turn",
+        "Heal 75% of your max health",
         
         "Heal 100% of your max health",
         

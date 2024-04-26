@@ -1255,6 +1255,51 @@ public class TheSpellBook : MonoBehaviour
 
         return false;
     }
+
+    public void UsePotion(CombatEntity target, Consumables type)
+    {
+        switch (type)
+        {
+            
+            case Consumables.WeakHealingPotion:
+                target.Heal(target, Mathf.RoundToInt(target.myCharacter._maxHealth*.25f), 0);
+                // heal 25% max - common
+                break;
+            case Consumables.HealingPotion:
+                target.Heal(target, Mathf.RoundToInt(target.myCharacter._maxHealth*.5f), 0);
+                // heal 50% max - uncommon 
+                break;
+            case Consumables.PotionOfWeakness:
+                target.DeBuff(target, CombatEntity.DeBuffTypes.Weakened,3, 50);
+                // apply weakness 50% for 3 turns - Uncommon
+                break;
+            case Consumables.EnergyPotion:
+                target.myCharacter.UpdateEnergyCount(2);
+                // gain 2 energy - uncommon
+                break;
+            case Consumables.PowerPotion:
+                target.Buff(target, CombatEntity.BuffTypes.Empowered,3, 50);
+                // apply empower 50% for 3 turns - Uncommon
+                break;
+            case Consumables.invulnerabilityPotion:
+                target.Buff(target, CombatEntity.BuffTypes.Invulnerable,1, 1);
+                // apply invunverable for 1 turn - rare
+                break;
+            case Consumables.StrongHealingPotion:
+                target.Heal(target, Mathf.RoundToInt(target.myCharacter._maxHealth*.75f), 0);
+                // heal 75% - rare 
+                break;
+            case Consumables.EpicHealingPotion:
+                target.Heal(target, Mathf.RoundToInt(target.myCharacter._maxHealth*1f), 0);
+                // heal 100% - Epic
+                break;
+            case Consumables.None:
+                break;
+            default:
+                // Handle unknown potion type
+                break;
+        }
+    }
     
     // public CombatEntity.DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)
     // {

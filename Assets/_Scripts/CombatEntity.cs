@@ -567,12 +567,6 @@ public class CombatEntity : MonoBehaviour
             //Debug.Log(lastSpellCastTargeted + " " + cost);
             CameraShake._instance.GetHit(TheSpellBook._instance.GetEnergy(lastSpellCastTargeted));
         }
-        
-
-        
-        
-        
-
     }
     
     // get spells from wep slots, get spells from spell slots
@@ -926,6 +920,11 @@ public class CombatEntity : MonoBehaviour
         DeBuffEvent(target, deBuff, turns, amount);
     }
 
+    public void HitWithPotion(Consumables type)
+    {
+        TheSpellBook._instance.UsePotion(this ,type);
+    }
+    
     public void LoseHPDirect(CombatEntity target, int amount)
     {
         int exposed = target.myCharacter.GetIndexOfDebuff(DeBuffTypes.Exposed);
@@ -1016,8 +1015,8 @@ public class CombatEntity : MonoBehaviour
     {
         GetHitWithBlessing(myCharacter, blessing, turns, amount);
     }
-    
-    
+
+
 
     public enum AbilityTypes
     {

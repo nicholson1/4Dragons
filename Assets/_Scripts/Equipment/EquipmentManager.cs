@@ -26,7 +26,9 @@ public class EquipmentManager : MonoBehaviour
 
 
     [SerializeField] private StatDisplay[] _statDisplays;
-    
+    [SerializeField] private GameObject _potionHolder;
+    [SerializeField] private PotionDrag PotionPrefab;
+    private List<PotionDrag> PotionPool = new List<PotionDrag>();
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -444,8 +446,8 @@ public class EquipmentManager : MonoBehaviour
 
             if (di.slotType == Equipment.Slot.Consumable)
             {
-                Debug.LogWarning("POTION COLLECTED");
-                //PotionCollected(e);
+                Debug.Log("WE ADDED A POTION");
+                AddPotionToPotionBar((Consumable)e);
             }
 
         }
@@ -519,7 +521,34 @@ public class EquipmentManager : MonoBehaviour
             //Debug.Log("three times?");
             c.UpdateEnergyCount(-1);
         }
+    }
 
+    public void AddPotionToPotionBar(Consumable consume)
+    {
+        PotionDrag p = GetPotionDrag();
+        p.InitializePotion(consume);
+    }
+
+    private PotionDrag GetPotionDrag()
+    {
+        PotionDrag p;
+        if (PotionPool.Count > 0)
+        {
+            p = PotionPool[0];
+            PotionPool.RemoveAt(0);
+            p.gameObject.SetActive(true);
+        }
+        else
+        {
+            p = Instantiate(PotionPrefab, _potionHolder.transform);
+        }
+        return p;
+    }
+
+    public void PoolPotion(PotionDrag p)
+    {
+        PotionPool.Add(p);
+        p.gameObject.SetActive(false);
     }
 
     
