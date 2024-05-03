@@ -410,6 +410,8 @@ public class EquipmentManager : MonoBehaviour
     public void CreateDragItemInShop(Equipment e, InventorySlot slot)
     {
         
+        //todo POOL THESE YOU GOOF
+        
         DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
         di.InitializeDragItem(e, slot);
         di.transform.SetParent(slot._rt.parent);
@@ -548,6 +550,24 @@ public class EquipmentManager : MonoBehaviour
     public void PoolPotion(PotionDrag p)
     {
         PotionPool.Add(p);
+        
+        c._inventory.Remove(p.potion);
+        foreach (var slot in InventorySlots)
+        {
+            if(slot.Item == null)
+                continue;
+            if (slot.Item.e == p.potion)
+            {
+                DragItem DI = slot.Item;
+                //we found the potion
+                slot.Item.currentLocation.Item = null;
+                slot.LabelCheck();
+                DropItem(DI.e);
+                Destroy(DI.gameObject);
+                break;
+            }
+        }
+
         p.gameObject.SetActive(false);
     }
 

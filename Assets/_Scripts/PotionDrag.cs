@@ -67,6 +67,7 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
                      if (CE != null)
                      {
                             CE.HitWithPotion(potion.ConsumableType);
+                            EquipmentManager._instance.PoolPotion(this);
                      }
               }
 
