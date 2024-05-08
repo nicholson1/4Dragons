@@ -22,6 +22,7 @@ public class Consumable : Equipment
         this.icon = sprite;
         this.canBeLoot = false;
         this.isRelic = false;
+        this.isPotion = true;
     }
 
     private int[] ConsumableRarities =

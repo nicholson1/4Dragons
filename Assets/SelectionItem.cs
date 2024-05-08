@@ -30,6 +30,8 @@ public class SelectionItem : MonoBehaviour
     //[SerializeField] private ToolTip[] SpellToolTips;
     [SerializeField] private SpellDisplay _spellDisplay;
     [SerializeField] private GameObject Cardback;
+    [SerializeField] private Image CardFront;
+
 
     public void InitializeSelectionItem(Equipment e)
     {
@@ -142,9 +144,18 @@ public class SelectionItem : MonoBehaviour
             RelicDescription.gameObject.SetActive(true);
 
         }
-        if(e.slot == Equipment.Slot.Consumable)
-            _toolTip.is_item = false;
 
+        if (e.slot == Equipment.Slot.Consumable)
+        {
+            _toolTip.is_item = false;
+            equip.gameObject.SetActive(false);
+            slot.color = title.color;
+            RelicDescription.text = ((Consumable)e).description;
+            RelicDescription.gameObject.SetActive(true);
+        }
+
+        if(e.stats[Equipment.Stats.Rarity] != 0)
+            CardFront.color = title.color;
 
 
         StartCoroutine(RotateObjectForward());

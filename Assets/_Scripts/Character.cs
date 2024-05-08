@@ -277,7 +277,6 @@ public class Character : MonoBehaviour
 
     public void UpdateEnergyCount(int amount)
     {
-        
         _currentEnergy += amount;
 
         if (_currentEnergy < 0)
@@ -312,7 +311,7 @@ public class Character : MonoBehaviour
         if(c != this)
             return;
         
-        Debug.Log("HIT WITH BUFF + " + c.name);
+        //Debug.Log("HIT WITH BUFF + " + c.name);
 
 
         int i = GetIndexOfBuff(buff);
@@ -487,7 +486,7 @@ public class Character : MonoBehaviour
         if(c != this)
             return;
 
-        Debug.Log("HIT WITH Blessing + " + blessing +" " + c.name);
+        //Debug.Log("HIT WITH Blessing + " + blessing +" " + c.name);
         int i = GetIndexOfBlessing(blessing);
         switch (blessing)
         {
@@ -518,7 +517,7 @@ public class Character : MonoBehaviour
         if(c != this)
             return;
 
-        Debug.Log("HIT WITH DEBUFF + " + c.name);
+        //Debug.Log("HIT WITH DEBUFF + " + c.name);
         int i = GetIndexOfDebuff(deBuff);
         switch (deBuff)
         {

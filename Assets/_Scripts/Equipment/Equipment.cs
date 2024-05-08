@@ -14,6 +14,8 @@ namespace ImportantStuff
         private bool _isRelic = false;
         private int _modelIndex;
         private bool _canBeLoot = true;
+        private bool _isPotion = false;
+
 
         public string name // the Name property
         {
@@ -45,6 +47,11 @@ namespace ImportantStuff
         {
             get => _canBeLoot;
             set => _canBeLoot = value;
+        }
+        public bool isPotion // the Name property
+        {
+            get => _isPotion;
+            set => _isPotion = value;
         }
         
 

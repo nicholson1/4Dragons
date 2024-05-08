@@ -355,7 +355,7 @@ public class EquipmentManager : MonoBehaviour
         c.EqMM.UpdateSlot(e);
 
         // if incombat
-        if (CombatController._instance.entitiesInCombat.Count > 1)
+        if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
         {
             UpdateUi();
 
@@ -399,10 +399,9 @@ public class EquipmentManager : MonoBehaviour
         }
         
         c.UpdateStats();
-        if (CombatController._instance.entitiesInCombat.Count > 1)
+        if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
         {
             UpdateUi();
-
         }
         
         

@@ -24,9 +24,11 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private GameObject inventoryButton;
     [SerializeField] private GameObject selectionScreen;
     [SerializeField] private TextMeshProUGUI selectionText;
-
-
     [SerializeField] public Image Background;
+
+    private float potionChance = .33f;
+    private int combatSincePotions = 0;
+    private int forcePotionAfter = 4;
 
 
     private void Awake()
@@ -117,6 +119,19 @@ public class SelectionManager : MonoBehaviour
             relics.Add(RelicManager._instance.GetDragonRelic());
             relics.Add(RelicManager._instance.GetDragonRelic());
             RelicSelections.Add(relics);
+        }
+
+        bool potionRoll = potionChance < Random.Range(0, 1f);
+        if (potionRoll || combatSincePotions >= forcePotionAfter)
+        {
+            List<Equipment> potions = new List<Equipment>();
+            potions.Add(EC.CreateRandomPotion(c._level));
+            combatSincePotions = 0;
+            EquipmentSelection.Add(potions);
+        }
+        else
+        {
+            combatSincePotions += 1;
         }
 
         if (RelicSelections.Count == 0)
@@ -421,12 +436,12 @@ public class SelectionManager : MonoBehaviour
             selection4.Add(EC.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection4);
             
-            List<Equipment> selection5 = new List<Equipment>();
-            selection5.Add(EC.CreateRandomPotion(level));
-            selection5.Add(EC.CreateRandomPotion(level));
-            selection5.Add(EC.CreateRandomPotion(level));
-            selection5.Add(EC.CreateRandomPotion(level));
-            equipments.Add(selection5);
+            // List<Equipment> selection5 = new List<Equipment>();
+            // selection5.Add(EC.CreateRandomPotion(level));
+            // selection5.Add(EC.CreateRandomPotion(level));
+            // selection5.Add(EC.CreateRandomPotion(level));
+            // selection5.Add(EC.CreateRandomPotion(level));
+            // equipments.Add(selection5);
             
 
             // foreach (var VARIABLE in equipments)
