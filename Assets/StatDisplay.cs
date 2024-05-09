@@ -51,6 +51,8 @@ public class StatDisplay : MonoBehaviour
             text.text = info.Item1 + ": " + v;
         }
         text.color = info.Item3;
+        
+        
         stat = s;
         if (s == Equipment.Stats.CritChance && charStats)
         {
@@ -72,6 +74,14 @@ public class StatDisplay : MonoBehaviour
             text.text = v.ToString();
             text.color -= new Color(0, 0, 0, .3f);
             icon.color -= new Color(0, 0, 0, .3f);
+        }
+        
+        if (v == 0)
+        {
+            Color t = text.color;
+            t.a = .3f;
+            text.color = t;
+            icon.color = t;
         }
 
         toolTip.Message = AdjustDescriptionValues(info.Item4, s);
