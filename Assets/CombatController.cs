@@ -128,7 +128,7 @@ public class CombatController : MonoBehaviour
                 ShopManager._instance.RandomShop();
                 break;
             case NodeType.Treasure:
-                TreasureNodeClicked(false);
+                TreasureNodeClicked(true);
                 break;
             case NodeType.Mystery:
                MysterySelect();
@@ -384,6 +384,12 @@ public class CombatController : MonoBehaviour
         {
             RelicManager._instance.UnstableEnergyCoreCounter = 0;
         }
+        
+        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic9))
+        {
+            entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 5* entitiesInCombat[1].myCharacter._level  );
+            entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, 5* entitiesInCombat[1].myCharacter._level  );
+        }
 
         UpdateUiButtons();
     }
@@ -409,6 +415,7 @@ public class CombatController : MonoBehaviour
 
     public void Tie()
     {
+       
         ToolTipManager._instance.HideToolTipAll();
         Player._currentHealth = Player._maxHealth;
         Player._currentEnergy = 0;
@@ -427,9 +434,11 @@ public class CombatController : MonoBehaviour
         MapCanBeClicked = true;
         //NextCombatButton.gameObject.SetActive(true);
         // deactivate enemy
-        Destroy(entitiesInCombat[1].gameObject);
         
-        
+        StartCoroutine(entitiesInCombat[1].myCharacter.WaitThenDestroy());
+        entitiesInCombat.Clear();
+
+
 
     }
 
@@ -445,6 +454,15 @@ public class CombatController : MonoBehaviour
             {
                 Tie();
                 return;
+            }
+            else
+            {
+                if (CurrentTurnIndex == 0)
+                {
+                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 1* entitiesInCombat[1].myCharacter._level  );
+                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, 1* entitiesInCombat[1].myCharacter._level  );
+                }
+                
             }
             
         }
@@ -679,6 +697,14 @@ public class CombatController : MonoBehaviour
         {
             Player.GetGold(999);
         }
+        
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.D))
+        {
+            if(entitiesInCombat.Count == 0)
+                return;
+            Tie();
+        }
+        
     }
 
     private void Start()

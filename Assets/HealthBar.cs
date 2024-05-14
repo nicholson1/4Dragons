@@ -542,22 +542,22 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    private Coroutine MovingBar;
+    //private Coroutine MovingBar;
 
     private void GetHealed(Character c, int heal)
     {
         //Debug.Log("we are doing the healing with the bar no?");
-        if(MovingBar != null)
-            StopCoroutine(MovingBar);
+        // if(MovingBar != null)
+        //     StopCoroutine(MovingBar);
         if (c != displayCharacter)
             return;
 
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = HealColor;
 
-        tempBar.value = c._currentHealth * ratio;
+        tempBar.value = c._currentHealth;
         //MovingBar = StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
         MoveBar = true;
-        TargetValue = c._currentHealth * ratio;
+        TargetValue = c._currentHealth;
         if(TargetValueStart == 0)
             TargetValueStart = bar.value;
         
@@ -577,12 +577,12 @@ public class HealthBar : MonoBehaviour
     private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
     {
 
-        if(MovingBar != null)
-            StopCoroutine(MovingBar);
+        // if(MovingBar != null)
+        //     StopCoroutine(MovingBar);
         if (c != displayCharacter)
             return;
-        
-        bar.value = bar.value - amount * ratio;
+        bar.value -= amount;
+
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = DamageColor;
 
 
@@ -594,8 +594,8 @@ public class HealthBar : MonoBehaviour
         //Debug.Log("Active? "+gameObject.activeInHierarchy);
         //MovingBar = StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
         if(TempBarStart == 0)
-            TempBarStart = (c._currentHealth + amount) * ratio;
-        TempBarTarget = c._currentHealth * ratio;
+            TempBarStart = (c._currentHealth + amount);
+        TempBarTarget = c._currentHealth;
         //Debug.Log("start: "+TempBarStart + " target: " + TempBarTarget +" "+ bar.value);
         waitTimer = 1.5f;
         tempTimer = 0;
@@ -624,7 +624,7 @@ public class HealthBar : MonoBehaviour
         }
 
         tempBar.value = end;
-        MovingBar = null;
+        //MovingBar = null;
 
     }
 
@@ -640,7 +640,7 @@ public class HealthBar : MonoBehaviour
         }
 
         bar.value = end;
-        MovingBar = null;
+        //MovingBar = null;
 
 
     }
@@ -698,13 +698,14 @@ public class HealthBar : MonoBehaviour
         Vector3 screenPos = cam.WorldToScreenPoint(c.transform.position) - new Vector3(0, 50, 0);
         this.transform.position = screenPos;
 
-        ratio = 100f / c._maxHealth;
-        //bar.maxValue = c._maxHealth;
-        bar.value = c._currentHealth * ratio;
+        
+        //ratio = 100f / c._maxHealth;
+        bar.maxValue = c._maxHealth;
+        bar.value = c._currentHealth;
         text.text = c._currentHealth + "/" + c._maxHealth;
 
-        //tempBar.maxValue = c._maxHealth;
-        tempBar.value = c._currentHealth * ratio;
+        tempBar.maxValue = c._maxHealth;
+        tempBar.value = c._currentHealth;
 
         normalFrame.gameObject.SetActive(false);
         eliteFrame.gameObject.SetActive(false);

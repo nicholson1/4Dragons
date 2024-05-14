@@ -54,6 +54,7 @@ public class RelicManager : MonoBehaviour
         //Debug.Log("unseen relic counts " + UnSeenRelics.Count);
         UnSeenDragonRelics.AddRange(UnSeenRelics.GetRange(FirstDragonRelicIndex, UnSeenRelics.Count - FirstDragonRelicIndex));
         UnSeenRelics.RemoveRange(FirstDragonRelicIndex, UnSeenRelics.Count - FirstDragonRelicIndex);
+        UnSeenRelics.RemoveAt(0); // remove none relic
     }
 
     public Relic GetCommonRelic()

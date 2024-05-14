@@ -29,6 +29,8 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private GameObject _potionHolder;
     [SerializeField] private PotionDrag PotionPrefab;
     private List<PotionDrag> PotionPool = new List<PotionDrag>();
+    private List<PotionDrag> ActivePotions = new List<PotionDrag>();
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -358,7 +360,6 @@ public class EquipmentManager : MonoBehaviour
         if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
         {
             UpdateUi();
-
         }
 
     }
@@ -398,11 +399,24 @@ public class EquipmentManager : MonoBehaviour
             }
         }
         
-        c.UpdateStats();
-        if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
+        if (e.isPotion)
         {
-            UpdateUi();
+            foreach (var potionDrag in ActivePotions)
+            {
+                if (potionDrag.potion == e)
+                {
+                    PoolPotion(potionDrag);
+                    break;
+                }
+            }
         }
+
+        
+        c.UpdateStats();
+        // if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
+        // {
+        //     UpdateUi();
+        // }
         
         
     }
@@ -447,7 +461,6 @@ public class EquipmentManager : MonoBehaviour
 
             if (di.slotType == Equipment.Slot.Consumable)
             {
-                Debug.Log("WE ADDED A POTION");
                 AddPotionToPotionBar((Consumable)e);
             }
 
@@ -527,6 +540,7 @@ public class EquipmentManager : MonoBehaviour
     public void AddPotionToPotionBar(Consumable consume)
     {
         PotionDrag p = GetPotionDrag();
+        ActivePotions.Add(p);
         p.InitializePotion(consume);
     }
 
@@ -549,7 +563,8 @@ public class EquipmentManager : MonoBehaviour
     public void PoolPotion(PotionDrag p)
     {
         PotionPool.Add(p);
-        
+        ActivePotions.Remove(p);
+
         c._inventory.Remove(p.potion);
         foreach (var slot in InventorySlots)
         {

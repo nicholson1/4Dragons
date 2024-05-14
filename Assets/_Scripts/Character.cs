@@ -694,12 +694,12 @@ public class Character : MonoBehaviour
             if (!RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
             {
                 _currentHealth = 0;
-                Debug.Log(Mathf.RoundToInt(c._maxHealth/2f));
+                //Debug.Log(Mathf.RoundToInt(c._maxHealth/2f));
                 
                 _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
                 _combatEntity.Buff(_combatEntity,CombatEntity.BuffTypes.Invulnerable, 1, 1);
                 RelicManager._instance.UsedRelic23 = true;
-                Debug.Log(_currentHealth);
+                //Debug.Log(_currentHealth);
             }
             
         }
@@ -777,7 +777,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitThenDestroy()
+    public IEnumerator WaitThenDestroy()
     {
         yield return new WaitForSeconds(1.5f);
         
@@ -893,15 +893,15 @@ public class Character : MonoBehaviour
         int hp = 0;
         if (isDragon)
         {
-            hp = 200 * _level;
+            hp = 150 * _level;
         }
         else if (isElite)
         {
-            hp = 150 * _level;
+            hp = 100 * _level;
         }
         else
         {
-            hp = 100 * _level;
+            hp = 75 * _level;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
@@ -909,10 +909,10 @@ public class Character : MonoBehaviour
         _maxHealth = hp;
 
         _stats[Equipment.Stats.Health] += hp;
-
-        _currentHealth = _maxHealth;
-
-
+        
+        //only set current health if we are out of combat
+        if(CombatController._instance.entitiesInCombat.Count <= 1)
+            _currentHealth = _maxHealth;
     }
     
     private void PrettyPrintStats()

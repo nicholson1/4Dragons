@@ -121,7 +121,7 @@ public class SelectionManager : MonoBehaviour
             RelicSelections.Add(relics);
         }
 
-        bool potionRoll = potionChance < Random.Range(0, 1f);
+        bool potionRoll = potionChance > Random.Range(0, 1f);
         if (potionRoll || combatSincePotions >= forcePotionAfter)
         {
             List<Equipment> potions = new List<Equipment>();

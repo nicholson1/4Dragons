@@ -68,7 +68,7 @@ public class CombatEntity : MonoBehaviour
     {
         for (int i = myCharacter.DeBuffs.Count-1; i >= 0; i--)
         {
-            Debug.Log(myCharacter.DeBuffs.Count + "count");
+            //Debug.Log(myCharacter.DeBuffs.Count + "count");
 
             TheSpellBook._instance.DoDebuffEffect( myCharacter.DeBuffs[i], this);
             myCharacter.DeBuffs[i] = (myCharacter.DeBuffs[i].Item1, myCharacter.DeBuffs[i].Item2 - 1, myCharacter.DeBuffs[i].Item3);
@@ -425,33 +425,29 @@ public class CombatEntity : MonoBehaviour
             Notification(ErrorMessageManager.Errors.CriticalHit);
         }
         
+        int exposed = myCharacter.GetIndexOfDebuff(DeBuffTypes.Exposed);
+        if (exposed != -1)
+        {
+            //get the value
+            float exposedAmount = myCharacter.DeBuffs[exposed].Item3;
+            damagePreReduction = Mathf.RoundToInt(damagePreReduction * (1+ exposedAmount/100));
+        }
+        
+        
         //figure out damage reduction
         int reductionAmount = 0;
         if (dt == AbilityTypes.PhysicalAttack)
         {
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
-            
         }
         else if (dt == AbilityTypes.SpellAttack)
         {
             reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
-
         }
         
         
         
         int attackDamage = damagePreReduction - reductionAmount;
-        
-        int exposed = myCharacter.GetIndexOfDebuff(DeBuffTypes.Exposed);
-        if (exposed != -1)
-        {
-            // if we have exposed increase damage taken by 50%
-            
-            //get the value
-            float exposedAmount = myCharacter.DeBuffs[exposed].Item3;
-            Debug.Log(exposedAmount +" " + (1+ exposedAmount/100));
-            attackDamage = Mathf.RoundToInt(attackDamage * (1+ exposedAmount/100));
-        }
 
 
         //check for block
@@ -530,7 +526,7 @@ public class CombatEntity : MonoBehaviour
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
 
-        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic2))
+        if (!myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.DragonRelic2))
         {
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
@@ -560,13 +556,17 @@ public class CombatEntity : MonoBehaviour
         
         //return 1;
         //Debug.Log(spell);
-        if (lastSpellCastTargeted != null)
+        if (lastSpellCastTargeted != Weapon.SpellTypes.None)
         {
             
             //int cost =(int.Parse((scaling[(int)lastSpellCastTargeted][2]).ToString()));
             //Debug.Log(lastSpellCastTargeted + " " + cost);
             CameraShake._instance.GetHit(TheSpellBook._instance.GetEnergy(lastSpellCastTargeted));
         }
+
+        lastSpellCastTargeted = Weapon.SpellTypes.None;
+
+
     }
     
     // get spells from wep slots, get spells from spell slots

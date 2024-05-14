@@ -1059,7 +1059,12 @@ public class TheSpellBook : MonoBehaviour
 
             if (caster.myCharacter.isElite)
             {
-                adjustment = .33f;
+                adjustment = .5f;
+            }
+            
+            if (caster.myCharacter.isDragon)
+            {
+                adjustment = .5f;
             }
             
             power = Mathf.RoundToInt(power * adjustment);
@@ -1138,6 +1143,8 @@ public class TheSpellBook : MonoBehaviour
     }
     public float FigureOutHowMuchCrit(CombatEntity caster)
     {
+        if (!caster.myCharacter.isPlayerCharacter)
+            return 0;
         
         casterStats = caster.myCharacter.GetStats();
 

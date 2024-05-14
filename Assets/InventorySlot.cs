@@ -87,7 +87,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         //AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
 
         DragItem item = eventData.pointerDrag.GetComponent<DragItem>();
-        if (item.canBeDragged == false)
+        if (item.canBeDragged == false && (Slot != Equipment.Slot.Drop || Slot != Equipment.Slot.Sell))
         {
             if (CombatController._instance.entitiesInCombat.Count > 1)
             {
@@ -128,6 +128,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 di.currentLocation.Item = null;
                 di.currentLocation.LabelCheck();
                 EquipmentManager._instance.DropItem(di.e);
+                
+                
                 Destroy(di.gameObject);
                 
                 

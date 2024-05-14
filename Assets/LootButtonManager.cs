@@ -147,6 +147,11 @@ public class LootButtonManager : MonoBehaviour
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         UIController._instance.ToggleInventoryUI(1);
         EquipmentButtons[i].GetComponent<Button>().interactable = false;
+
+        if (EquipmentLists[i].Count == 1)
+        {
+            SelectionManager._instance.selectionsLeft = 1;
+        }
     }
     public void RelicSelect(int i)
     {
