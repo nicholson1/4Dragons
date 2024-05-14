@@ -41,8 +41,6 @@ public class TreasureChest : MonoBehaviour
             isRotating = true;
         }
 
-        
-
         UIController._instance.ToggleLootUI(1);
         UIController._instance.ToggleInventoryUI(1);
         
@@ -63,13 +61,16 @@ public class TreasureChest : MonoBehaviour
         {
             // Interpolate between the current rotation and the target rotation
             Lid.transform.localRotation = Quaternion.Lerp(Lid.transform.localRotation, Quaternion.Euler(targetRotation, 0, 0), rotationSpeed * Time.deltaTime);
+            if (Lid.transform.eulerAngles.x + 1 < targetRotation)
+                isRotating = false;
         }
     }
 
     public void Reset()
     {
-        Lid.transform.localRotation = initialRotation;
+        Lid.transform.SetLocalPositionAndRotation(Lid.transform.localPosition , initialRotation);
         isOpen = false;
+        isRotating = false;
         Start();
     }
 
