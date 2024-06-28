@@ -29,24 +29,26 @@ public class Dragon : MonoBehaviour
       int rarity = -1;
       //randomSpellType
       spellType = (SpellType)Random.Range(0, 5);
+
+      int DragonSelector = CombatController._instance.TrialCounter;
       //random drag depending on level
-      if (c._level == 10)
+      if (DragonSelector == 1)
       {
          dragonType = DragonType.Nightmare;
          rarity = 1;
       }
-      else if (c._level == 20)
+      else if (DragonSelector == 2)
       {
          rarity = 2;
          dragonType = DragonType.TerrorBringer;
 
       }
-      else if (c._level == 30)
+      else if (DragonSelector == 3)
       {
          rarity = 3;
          dragonType = DragonType.SoulEater;
       }
-      else if (c._level == 40)
+      else if (DragonSelector == 4)
       {
          rarity = 3;
          dragonType = DragonType.Usurper;
@@ -54,10 +56,8 @@ public class Dragon : MonoBehaviour
       }
       else
       {
-         dragonType = (DragonType)Random.Range(0, 4);
+         dragonType = (DragonType)Random.Range(0, 5);
          //dragonType = DragonType.Usurper;
-
-
       }
 
       c._equipment = CreateAllDragonEquipment(c._level, rarity);

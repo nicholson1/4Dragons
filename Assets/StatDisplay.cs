@@ -78,11 +78,14 @@ public class StatDisplay : MonoBehaviour
         
         if (v == 0)
         {
+
             Color t = text.color;
-            t.a = .3f;
+            t.a = .2f;
             text.color = t;
             icon.color = t;
         }
+        this.gameObject.SetActive(true);
+
 
         toolTip.Message = AdjustDescriptionValues(info.Item4, s);
         
