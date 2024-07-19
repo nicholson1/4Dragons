@@ -529,7 +529,10 @@ public class Character : MonoBehaviour
                 }
                 else
                 {
-                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount + DeBuffs[i].Item3);
+                    float tempAmount = DeBuffs[i].Item3;
+                    if (amount > tempAmount)
+                        tempAmount = amount;
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, tempAmount);
                 
                     if (DeBuffs[i].Item3 <=0)
                     {
@@ -544,7 +547,10 @@ public class Character : MonoBehaviour
                 }
                 else
                 {
-                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, amount + DeBuffs[i].Item3);
+                    float tempAmount = DeBuffs[i].Item3;
+                    if (amount > tempAmount)
+                        tempAmount = amount;
+                    DeBuffs[i] = (deBuff, DeBuffs[i].Item2 + turns, tempAmount);
                 
                     if (DeBuffs[i].Item3 <=0)
                     {

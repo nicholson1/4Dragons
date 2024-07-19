@@ -75,7 +75,7 @@ public class Elite : MonoBehaviour
             case EliteType.Cultist:
                 stat1 = Equipment.Stats.Daggers;
                 stat2 = Equipment.Stats.ShadowPower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow1));
+                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow2));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
@@ -134,7 +134,6 @@ public class Elite : MonoBehaviour
                 stat2 = Equipment.Stats.NaturePower;
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature3, rarity, stat1, stat2));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature5));
                 break;
@@ -143,7 +142,7 @@ public class Elite : MonoBehaviour
                 stat2 = Equipment.Stats.FirePower;
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire1));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer2, rarity, stat1, stat2));
+                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire4, rarity, stat1, stat2));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire5, rarity, stat1, stat2));
                 break;
             case EliteType.FrostGiant:
@@ -159,15 +158,15 @@ public class Elite : MonoBehaviour
                 stat2 = Equipment.Stats.ShadowPower;
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow1));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
+                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow2, rarity, stat1, stat2));
+                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow4, rarity, stat1, stat2));
                 break;
             case EliteType.BloodGiant:
                 stat1 = Equipment.Stats.Health;
                 stat2 = Equipment.Stats.BloodPower;
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood1));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword3, rarity, stat1, stat2));
+                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood4, rarity, stat1, stat2));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood5, rarity, stat1, stat2));
                 break;
             case EliteType.FireKing:

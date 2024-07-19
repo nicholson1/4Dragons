@@ -65,10 +65,10 @@ public enum EliteType
     Ranger,
     Woodsman,
     Gladiator,
-    Cultist,
     Knight,
     
     //Trial 2
+    Cultist,
     Commander,
     Druid,
     Witchdoctor,

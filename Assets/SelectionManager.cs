@@ -126,6 +126,9 @@ public class SelectionManager : MonoBehaviour
         {
             List<Equipment> potions = new List<Equipment>();
             potions.Add(EC.CreateRandomPotion(c._level));
+            potions.Add(EC.CreateRandomPotion(c._level));
+            potions.Add(EC.CreateRandomPotion(c._level));
+
             combatSincePotions = 0;
             EquipmentSelection.Add(potions);
         }
@@ -363,8 +366,14 @@ public class SelectionManager : MonoBehaviour
                 {
                     eq = EC.CreateWeapon(level, 0, Equipment.Slot.OneHander,
                         (Weapon.SpellTypes)GetRandomDamagePhysicalSpellInt());
+
                 }
+                //test
+
+                //eq = EC.CreateWeapon(level, 0, Equipment.Slot.OneHander, Weapon.SpellTypes.Axe2);
+
             }
+
 
             Weapon w = (Weapon)eq;
 
@@ -400,8 +409,12 @@ public class SelectionManager : MonoBehaviour
                     {
                         eq = EC.CreateSpellScroll(level, 0, (Weapon.SpellTypes)GetRandomDamageSpellInt());
                     }
-                }
+                    //test
+                    
+                    //eq = EC.CreateSpellScroll(level, 0, Weapon.SpellTypes.Fire2);
 
+                }
+                
                 Weapon w = (Weapon)eq;
 
                 bool hasSpell = false;

@@ -372,6 +372,7 @@ public class HealthBar : MonoBehaviour
             return;
 
 
+        Debug.Log("turns are 3 = " + turns);
         // make the icon
         if (MakeNewOne(CombatEntity.BuffTypes.None,debuff , CombatEntity.BlessingTypes.None))
         {
@@ -398,7 +399,12 @@ public class HealthBar : MonoBehaviour
                     }
                     if (debuff == CombatEntity.DeBuffTypes.Burn || debuff == CombatEntity.DeBuffTypes.Bleed)
                     {
-                        b._amount += amount;
+                        
+                        
+                        float tempAmount = b._amount;
+                        if (amount > tempAmount)
+                            tempAmount = amount;
+                        b._amount = tempAmount;
                     }
                     if (debuff == CombatEntity.DeBuffTypes.Exposed)
                     {

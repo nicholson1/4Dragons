@@ -473,7 +473,7 @@ public class TheSpellBook : MonoBehaviour
 
         if (spell == Weapon.SpellTypes.Dagger3)
         {
-            caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[1]));
+            caster.DeBuff(target, Debuff,power[1], Mathf.RoundToInt(power[1]));
             return;
 
         }
@@ -498,7 +498,7 @@ public class TheSpellBook : MonoBehaviour
         
         if (spell == Weapon.SpellTypes.Hammer3)
         {
-            caster.Buff(target, buff,2, Mathf.RoundToInt(power[1]));
+            caster.Buff(target, buff,power[1], Mathf.RoundToInt(power[1]));
             return;
 
         }
@@ -529,14 +529,14 @@ public class TheSpellBook : MonoBehaviour
         if (abilityType == CombatEntity.AbilityTypes.SpellAttack)
         {
             // burn
-            caster.DeBuff(target, CombatEntity.DeBuffTypes.Burn, 2, Mathf.RoundToInt(power[0]/2f), crit);
+            caster.DeBuff(target, CombatEntity.DeBuffTypes.Burn, power[1], Mathf.RoundToInt(power[0]/2f), crit);
 
             
         }
         else if (abilityType == CombatEntity.AbilityTypes.PhysicalAttack)
         {
             //bleed
-            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,1, Mathf.RoundToInt(power[0]/2f), crit);
+            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,power[1], Mathf.RoundToInt(power[0]/2f), crit);
 
         }
 
@@ -947,6 +947,7 @@ public class TheSpellBook : MonoBehaviour
             if (RelicManager._instance.CheckRelic(RelicType.Relic28))
             {
                 turn += 1;
+                Debug.Log("we should do this incenerate");
             }
         }
 
