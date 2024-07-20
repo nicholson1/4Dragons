@@ -94,7 +94,6 @@ public class SpellButton : MonoBehaviour
         _toolTip.Message = info.Item4;
         _toolTip.Title = DataTable[(int)s][0].ToString();;
         
-        Debug.Log(power[1] + " "+ power[0]);
         _toolTip.Message = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
         _toolTip.Cost = DataTable[(int)s][2].ToString();
         
@@ -134,9 +133,7 @@ public class SpellButton : MonoBehaviour
         message = message.Replace("#", tempAmount);
         
         //Debug.Log($"amount = {amount}, amount/2 = {Mathf.RoundToInt(amount/2f)} ");
-        Debug.Log(message);
-        
-
+        //Debug.Log(message);
         return message;
 
     }

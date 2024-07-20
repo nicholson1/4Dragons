@@ -1052,20 +1052,16 @@ public class TheSpellBook : MonoBehaviour
         {
             //float adjustment = .05f * caster.myCharacter._level;
 
-            float adjustment = .5f;
-            if (adjustment < .5f)
-            {
-                adjustment = .5f;
-            }
+            float adjustment = CombatController._instance.NormalDamageMultiplier;
 
             if (caster.myCharacter.isElite)
             {
-                adjustment = .5f;
+                adjustment = CombatController._instance.EliteDamageMultiplier;
             }
             
             if (caster.myCharacter.isDragon)
             {
-                adjustment = .5f;
+                adjustment = CombatController._instance.DragonDamageMultipler;
             }
             
             power = Mathf.RoundToInt(power * adjustment);

@@ -39,7 +39,16 @@ public class CombatController : MonoBehaviour
     public Vector3 playerOffset = new Vector3();
 
     public int turnCounter = 0;
-    public int TrialCounter = 1;
+    public int TrialCounter => _trialCounter;
+    private int _trialCounter = 0;
+    private float _normalDamageMultiplier = .5f;    
+    private float _eliteDamageMultiplier = .5f;
+    private float _dragonDamageMultiplier = .5f;
+
+    public float DragonDamageMultipler => _dragonDamageMultiplier;
+    public float EliteDamageMultiplier => _eliteDamageMultiplier;
+    public float NormalDamageMultiplier => _normalDamageMultiplier;
+
     public static event Action EndTurn;
     // public static event Action EndCombatEvent;
     // public static event Action StartCombatEvent;
@@ -67,6 +76,37 @@ public class CombatController : MonoBehaviour
         else
         {
             _instance = this;
+        }
+        
+        IncreaseTrialCounter();
+    }
+    
+    public void IncreaseTrialCounter()
+    {
+        _trialCounter += 1;
+        switch (TrialCounter)
+        {
+            case 1:
+                _normalDamageMultiplier = .5f;
+                _eliteDamageMultiplier = .33f;
+                _dragonDamageMultiplier = .5f;
+                break;
+            case 2:
+                _normalDamageMultiplier = .75f;
+                _eliteDamageMultiplier = .5f;
+                _dragonDamageMultiplier = .75f;
+                break;
+            case 3:
+                _normalDamageMultiplier = 1f;
+                _eliteDamageMultiplier = .66f;
+                _dragonDamageMultiplier = 1f;
+                break;
+            case 4:
+                _normalDamageMultiplier = 1.25f;
+                _eliteDamageMultiplier = 1f;
+                _dragonDamageMultiplier = 1.25f;
+                break;
+
         }
     }
 

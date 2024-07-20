@@ -751,7 +751,7 @@ public class Character : MonoBehaviour
                     if (isDragon)
                     {
                         MapManager._instance.GenerateNewMap();
-                        CombatController._instance.TrialCounter += 1;
+                        CombatController._instance.IncreaseTrialCounter();
                     }
                     
                     Destroy(_combatEntity);

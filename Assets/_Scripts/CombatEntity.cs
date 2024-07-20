@@ -91,8 +91,6 @@ public class CombatEntity : MonoBehaviour
         disableDoubleClick = false;
         CombatController._instance.EndCurrentTurn();
         yield return null;
-
-
     }
 
     public void ReduceAllDebuffTurnCount(int amount)
