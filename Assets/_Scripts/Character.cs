@@ -713,7 +713,7 @@ public class Character : MonoBehaviour
         if (_currentHealth <= 0)
         {
             // die
-            _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Die.ToString());
+            
             _currentHealth = 0;
             if (!isPlayerCharacter)
             {
@@ -731,8 +731,8 @@ public class Character : MonoBehaviour
                     }
                     else
                     {
-                        UIController._instance.ToggleInventoryUI(1);
-                        SelectionManager._instance.RandomSelectionFromEquipment(this);
+                        // UIController._instance.ToggleInventoryUI(1);
+                        // SelectionManager._instance.RandomSelectionFromEquipment(this);
                         //NotificationGold(ErrorMessageManager.Errors.GetGold, _gold);
                         Notification(ErrorMessageManager.Errors.Victory);
                     }
@@ -758,10 +758,23 @@ public class Character : MonoBehaviour
 
                     //CombatController._instance.Player._gold += _gold;
 
-                    CombatController._instance.EndCombat();
                     
-                    
-                    StartCoroutine(WaitThenDestroy());
+                    if(isDragon || isElite)
+                    {
+                        _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Die.ToString());
+                        Destroy(_combatEntity);
+                        CombatController._instance.EndCombat();
+                    }
+                    else
+                    {
+                        CombatController._instance.Guide.MoveToCleanse(this.transform);
+                        this.GetComponent<DarknessController>().Cleanse();
+                        _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Dizzy.ToString());
+                        Destroy(_combatEntity);
+                        StartCoroutine(WaitThenDestroy(10));
+                        CombatController._instance.EndCombat();
+                        StartCoroutine(WaitThenEndCombat(8.5f));
+                    }
                 }
                 
             }
@@ -783,13 +796,18 @@ public class Character : MonoBehaviour
         }
     }
 
-    public IEnumerator WaitThenDestroy()
+    public IEnumerator WaitThenDestroy(float time = 1.5f)
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(time);
         
         Destroy(this.gameObject);
-
-        
+    }
+    
+    public IEnumerator WaitThenEndCombat(float time = 1.5f)
+    {
+        yield return new WaitForSeconds(time);
+        UIController._instance.ToggleInventoryUI(1);
+        SelectionManager._instance.RandomSelectionFromEquipment(this);
     }
 
     private void ActivateCombatEntity(Character player, Character enemy)

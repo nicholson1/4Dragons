@@ -45,6 +45,8 @@ public class CombatController : MonoBehaviour
     private float _eliteDamageMultiplier = .5f;
     private float _dragonDamageMultiplier = .5f;
 
+    public MoveAndSpin Guide;
+
     public float DragonDamageMultipler => _dragonDamageMultiplier;
     public float EliteDamageMultiplier => _eliteDamageMultiplier;
     public float NormalDamageMultiplier => _normalDamageMultiplier;

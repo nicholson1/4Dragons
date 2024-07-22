@@ -1231,7 +1231,9 @@ public class TheSpellBook : MonoBehaviour
         Reset,
         BigSpellRev,
         VeryBigSpell,
-        SmallSpellTravel
+        SmallSpellTravel,
+        Dizzy,
+        Cleanse,
     }
 
     public enum SpellClass
