@@ -5,6 +5,8 @@ using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
 using Map;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class Character : MonoBehaviour
@@ -764,6 +766,9 @@ public class Character : MonoBehaviour
                         _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Die.ToString());
                         Destroy(_combatEntity);
                         CombatController._instance.EndCombat();
+                        SelectionManager._instance.RandomSelectionFromEquipment(this);
+                        StartCoroutine(WaitThenDestroy(3));
+
                     }
                     else
                     {
@@ -773,7 +778,10 @@ public class Character : MonoBehaviour
                         Destroy(_combatEntity);
                         StartCoroutine(WaitThenDestroy(10));
                         CombatController._instance.EndCombat();
-                        StartCoroutine(WaitThenEndCombat(8.5f));
+                        WaitEndCombat = StartCoroutine(WaitThenEndCombat(7f));
+                        LootButtonManager._instance.SkipButton.gameObject.SetActive(true);
+                        LootButtonManager._instance.SkipButton.GetComponent<Button>().onClick.AddListener(SkipWaitEndCombat);
+
                     }
                 }
                 
@@ -808,6 +816,19 @@ public class Character : MonoBehaviour
         yield return new WaitForSeconds(time);
         UIController._instance.ToggleInventoryUI(1);
         SelectionManager._instance.RandomSelectionFromEquipment(this);
+        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
+    }
+
+    private Coroutine WaitEndCombat;
+    public void SkipWaitEndCombat()
+    {
+        if (WaitEndCombat != null)
+        {
+            StopCoroutine(WaitEndCombat);
+        }
+        UIController._instance.ToggleInventoryUI(1);
+        SelectionManager._instance.RandomSelectionFromEquipment(this);
+        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
     }
 
     private void ActivateCombatEntity(Character player, Character enemy)

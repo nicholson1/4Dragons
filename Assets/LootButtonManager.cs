@@ -21,6 +21,8 @@ public class LootButtonManager : MonoBehaviour
 
     public List<int> GoldList = new List<int>();
 
+    [SerializeField] public GameObject SkipButton;
+
     public static LootButtonManager _instance;
     private void Awake()
     {

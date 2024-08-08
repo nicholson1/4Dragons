@@ -238,6 +238,84 @@ public class EquipmentModelManager : MonoBehaviour
         }
         Hair[hairIndex].SetActive(true);
     }
+    public void ChestButton(int direction)
+        {
+            ChestModels[chestIndex].SetActive(false);
+            chestIndex += direction;
+            if (chestIndex > ChestModels.Length - 1 )
+            {
+                chestIndex = 0;
+            }else if (chestIndex < 0)
+            {
+                chestIndex = ChestModels.Length - 1;
+            }
+            ChestModels[chestIndex].SetActive(true);
+        }
+    public void ShoulderButton(int direction)
+    {
+        ShoulderModels[shoulderIndex].SetActive(false);
+        shoulderIndex += direction;
+        if (shoulderIndex > ShoulderModels.Length - 1 )
+        {
+            shoulderIndex = 0;
+        }else if (shoulderIndex < 0)
+        {
+            shoulderIndex = ShoulderModels.Length - 1;
+        }
+        ShoulderModels[shoulderIndex].SetActive(true);
+    }
+    public void BootsButton(int direction)
+    {
+        BootsModels[bootIndex].SetActive(false);
+        bootIndex += direction;
+        if (bootIndex > BootsModels.Length - 1 )
+        {
+            bootIndex = 0;
+        }else if (bootIndex < 0)
+        {
+            bootIndex = BootsModels.Length - 1;
+        }
+        BootsModels[bootIndex].SetActive(true);
+    }
+    public void GloveButton(int direction)
+    {
+        GloveModels[gloveIndex].SetActive(false);
+        gloveIndex += direction;
+        if (gloveIndex > GloveModels.Length - 1 )
+        {
+            gloveIndex = 0;
+        }else if (gloveIndex < 0)
+        {
+            gloveIndex = GloveModels.Length - 1;
+        }
+        GloveModels[gloveIndex].SetActive(true);
+    }
+    public void Weapon1Button(int direction)
+    {
+        LeftHandWep[LeftHandIndex].SetActive(false);
+        LeftHandIndex += direction;
+        if (LeftHandIndex > LeftHandWep.Length - 1 )
+        {
+            LeftHandIndex = 0;
+        }else if (LeftHandIndex < 0)
+        {
+            LeftHandIndex = LeftHandWep.Length - 1;
+        }
+        LeftHandWep[LeftHandIndex].SetActive(true);
+    }
+    public void Weapon2Button(int direction)
+    {
+        RightHandWep[rightHandIndex].SetActive(false);
+        rightHandIndex += direction;
+        if (rightHandIndex > RightHandWep.Length - 1 )
+        {
+            rightHandIndex = 0;
+        }else if (rightHandIndex < 0)
+        {
+            rightHandIndex = RightHandWep.Length - 1;
+        }
+        RightHandWep[rightHandIndex].SetActive(true);
+    }
 
     public void RandomFaceAndHair()
     {
