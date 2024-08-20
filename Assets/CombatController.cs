@@ -177,6 +177,7 @@ public class CombatController : MonoBehaviour
                 //todo spawn a random enemy shop or treasure
                 break;
         }
+        
     }
 
     public void MysterySelect()
@@ -688,6 +689,8 @@ public class CombatController : MonoBehaviour
         }
 
         turnCounter = 0;
+        
+        WeatherManager._instance.UpdateWeather((Player._level -1) %10);
 
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
