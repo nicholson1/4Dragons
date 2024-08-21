@@ -16,6 +16,8 @@ namespace Map
         public readonly string blueprintName;
         public Vector2 position;
         public NodeStates State;
+        public int specialNodeType = -1;
+
 
         public Node(NodeType nodeType, string blueprintName, Point point)
         {

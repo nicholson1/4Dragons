@@ -134,8 +134,9 @@ public class WeatherManager : MonoBehaviour
         }
     }
 
-    public void UpdateWeather(int level = 1, Dragon.SpellType spellClass = Dragon.SpellType.Blood)
+    public void UpdateWeather(int level = 1, SpellType spellClass = SpellType.Blood)
     {
+        Debug.Log(level);
         //Debug.Log(level);
         //turn to make the wind director look at the player
         // activate the correct weather object
@@ -147,7 +148,7 @@ public class WeatherManager : MonoBehaviour
 
         switch (spellClass)
         {
-            case Dragon.SpellType.Nature:
+            case SpellType.Nature:
                 for (int i = 0; i < natureEffects.Length; i++)
                 {
                     if(i ==0)
@@ -161,7 +162,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case Dragon.SpellType.Ice:
+            case SpellType.Ice:
                 for (int i = 0; i < frostEffects.Length; i++)
                 {
                     if(i ==0)
@@ -175,7 +176,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case Dragon.SpellType.Fire:
+            case SpellType.Fire:
                 for (int i = 0; i < fireEffects.Length; i++)
                 {
                     fireEffects[i].SetFloat(Shader.PropertyToID("Particle Rate"), fireEffectsParticleRates[level][i]);
@@ -187,7 +188,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case Dragon.SpellType.Shadow:
+            case SpellType.Shadow:
                 for (int i = 0; i < shadowEffects.Length; i++)
                 {
                     shadowEffects[i].SetFloat(Shader.PropertyToID("Particle Rate"), shadowEffectsParticleRates[level][i]);
@@ -199,7 +200,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case Dragon.SpellType.Blood:
+            case SpellType.Blood:
                 bloodRain.gameObject.SetActive(true);
                 var emission = bloodRain.emission;
                 emission.rateOverTime =(float)bloodEffectsParticleRates[level][0];

@@ -1,4 +1,5 @@
 ﻿using System;
+using ImportantStuff;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -22,6 +23,8 @@ namespace Map
         public SpriteRenderer visitedCircle;
         public Image circleImage;
         public Image visitedCircleImage;
+        public Image eliteType1;
+        public Image eliteType2;
 
         public Node Node { get; private set; }
         public NodeBlueprint Blueprint { get; private set; }
@@ -75,6 +78,22 @@ namespace Map
             }
             
             SetState(NodeStates.Locked);
+
+            if (Node.nodeType == NodeType.EliteEnemy)
+            {
+                //how do we get the correct level? node depth + 10 * trial counter?
+                
+                int i =(CombatController._instance.TrialCounter -1) * 10 + Node.point.y;
+                Debug.Log(i);
+
+                Node.specialNodeType = (int)EliteManager._instance.GetEliteType(i);
+            }
+
+            if (Node.nodeType == NodeType.Boss)
+            {
+                Node.specialNodeType = (int)EliteManager._instance.GetDragonType();
+                CombatController._instance.NextDragonType = (SpellType)Node.specialNodeType;
+            }
             
             SetNodeToolTip(node);
         }
@@ -205,7 +224,7 @@ namespace Map
             {
                 // user clicked on this node:
                 MapPlayerTracker.Instance.SelectNode(this);
-                CombatController._instance.MapNodeClicked(this.Node.nodeType);
+                CombatController._instance.MapNodeClicked(this.Node);
                 UIController._instance.ToggleMapUI(0);
                 UIController._instance.ToggleInventoryUI(0);
                 UIController._instance.ToggleLootUI(0);
@@ -267,8 +286,28 @@ namespace Map
                     toolTip.Message = "Duel against an adventurer";
                     break;
                 case NodeType.EliteEnemy:
+                    (Equipment.Stats, Equipment.Stats) stats = EliteManager._instance.GetStatTypesFromElite((EliteType)n.specialNodeType);
+                    (string, Sprite, Color, string) info1 = StatDisplayManager._instance.GetValues(stats.Item1);
+                    (string, Sprite, Color, string) info2 = StatDisplayManager._instance.GetValues(stats.Item2);
+
+                    eliteType1.sprite = info1.Item2;
+                    Color c = info1.Item3;
+                    c.a = .75f;
+                    eliteType1.color = c;
+                    eliteType1.gameObject.SetActive(true);
+                
+                    eliteType2.sprite = info2.Item2;
+                    c = info2.Item3;
+                    c.a = .75f;
+                    eliteType2.color = c;
+                    eliteType2.gameObject.SetActive(true);
+
+                    string[] split1 = info1.Item4.Split(" ");
+                    string[] split2 = info2.Item4.Split(" ");
+
+                    string type = $"specializing in {split1[0]} and {split2[0]}";
                     toolTip.Title = "Elite";
-                    toolTip.Message = "Duel against a powerful adventurer, Defeating them will reward a relic";
+                    toolTip.Message = $"Duel against a powerful adventurer {type}, Defeating them will reward a relic";
                     break;
                 case NodeType.Store:
                     toolTip.Title = "Shop";
@@ -279,8 +318,19 @@ namespace Map
                     toolTip.Message = "You dont know what will be here";
                     break;
                 case NodeType.Boss:
-                    toolTip.Title = "Dragon";
-                    toolTip.Message = "A powerful dragon lives here, Defeating them will reward a dragon relic";
+                    Equipment.Stats stat = EliteManager._instance.GetStatFromSpellType((SpellType)Node.specialNodeType);
+                    (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues(stat);
+                    
+                    string[] split = info.Item4.Split(" ");
+                    string DragType = $"{split[0]}";
+
+                    eliteType1.sprite = info.Item2;
+                    Color col = info.Item3;
+                    col.a = .75f;
+                    eliteType1.color = col;
+                    eliteType1.gameObject.SetActive(true);
+                    toolTip.Title = $"{DragType} Dragon";
+                    toolTip.Message = $"A powerful {DragType} dragon lives here, Defeating them will reward a dragon relic";
                     break;
                 case NodeType.Treasure:
                     toolTip.Title = "Treasure";

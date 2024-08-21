@@ -68,6 +68,8 @@ public class CombatController : MonoBehaviour
     public bool MapCanBeClicked = true;
 
     public bool ClickedFirstNode = false;
+
+    public SpellType NextDragonType = SpellType.Nature;
     
     private void Awake()
     {
@@ -137,7 +139,7 @@ public class CombatController : MonoBehaviour
         StartChest.gameObject.SetActive(true);
     }
 
-    public void MapNodeClicked(NodeType nodeType)
+    public void MapNodeClicked(Node node)
     {
         RotateAroundMap._instance.RandomRotate();
         //unless its first node
@@ -155,16 +157,16 @@ public class CombatController : MonoBehaviour
         
         MapCanBeClicked = false;
         //clear current level remove shops, treasure chests, bodies
-        switch (nodeType)
+        switch (node.nodeType)
         {
             case NodeType.MinorEnemy:
-                StartRandomCombat(nodeType);
+                StartRandomCombat(node);
                 break;
             case NodeType.EliteEnemy:
-                StartRandomCombat(nodeType);
+                StartRandomCombat(node);
                 break;
             case NodeType.Boss:
-                StartRandomCombat(nodeType);
+                StartRandomCombat(node);
                 break;
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
@@ -224,7 +226,8 @@ public class CombatController : MonoBehaviour
         switch (nt)
         {
             case NodeType.MinorEnemy:
-                StartRandomCombat(NodeType.MinorEnemy);
+                Node n = new Node(NodeType.MinorEnemy, "none", null);
+                StartRandomCombat(n);
                 break;
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
@@ -635,7 +638,7 @@ public class CombatController : MonoBehaviour
         return Vector3.zero;
     }
 
-    public void StartRandomCombat(NodeType nodeType)
+    public void StartRandomCombat(Node node)
     {
         
         UIController._instance.ToggleInventoryUI(0);
@@ -644,7 +647,7 @@ public class CombatController : MonoBehaviour
 
         Character enemy;
 
-        switch (nodeType)
+        switch (node.nodeType)
         {
             case NodeType.MinorEnemy:
                 enemy = Instantiate(EnemeyPrefab, SpawnPos.position, EnemeyPrefab.transform.rotation, SpawnPos);
@@ -681,16 +684,16 @@ public class CombatController : MonoBehaviour
 
         if (enemy.isDragon)
         {
-            enemy.GetComponent<Dragon>().InitializeDragon();
+            enemy.GetComponent<Dragon>().InitializeDragon( false);
         }
         if (enemy.isElite)
         {
-            enemy.GetComponent<Elite>().InitializeElite();
+            enemy.GetComponent<Elite>().InitializeElite((EliteType)node.specialNodeType);
         }
 
         turnCounter = 0;
         
-        WeatherManager._instance.UpdateWeather((Player._level -1) %10);
+        WeatherManager._instance.UpdateWeather(node.point.y, NextDragonType);
 
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }

@@ -11,11 +11,12 @@ public class Elite : MonoBehaviour
     [SerializeField] private Character c;
     public EliteType EliteType;
     
-    public void InitializeElite()
+    public void InitializeElite(EliteType type)
     {
         c.EC = FindObjectOfType<EquipmentCreator>();
         // select elite type
-        EliteType = EliteManager._instance.GetEliteType(c._level);
+        EliteType = type;
+        //EliteType = EliteManager._instance.GetEliteType(c._level);
         
         //select model prefab
         GameObject model = Instantiate(EliteManager._instance.elites[(int)EliteType], this.transform);
@@ -194,6 +195,8 @@ public class Elite : MonoBehaviour
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
                 break;
             case EliteType.Shaman:
+                stat1 = Equipment.Stats.SpellPower;
+                stat2 = Equipment.Stats.Axes;
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
                 spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
                 weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));

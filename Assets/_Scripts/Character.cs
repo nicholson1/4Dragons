@@ -807,7 +807,6 @@ public class Character : MonoBehaviour
     public IEnumerator WaitThenDestroy(float time = 1.5f)
     {
         yield return new WaitForSeconds(time);
-        
         Destroy(this.gameObject);
     }
     

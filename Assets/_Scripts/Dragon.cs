@@ -23,12 +23,16 @@ public class Dragon : MonoBehaviour
    [SerializeField] private GameObject[] Models;
    [SerializeField] private Material[] Materials;
 
-   public void InitializeDragon()
+   public void InitializeDragon( bool randomizeSchool = false)
    {
       //RARITY OF SPELLS 0 = COMMON, 1 = UNCOMMON, 2 = RARE, 3 = EPIC
       int rarity = -1;
       //randomSpellType
-      spellType = (SpellType)Random.Range(0, 5);
+
+      if (randomizeSchool)
+         spellType = (SpellType)Random.Range(0, 5);
+      else
+         spellType = CombatController._instance.NextDragonType;
 
       int DragonSelector = CombatController._instance.TrialCounter;
       //random drag depending on level
@@ -196,21 +200,21 @@ public class Dragon : MonoBehaviour
 
       return generatedEquipment;
    }
-
-   public enum SpellType
-   {
-      Nature,
-      Ice,
-      Fire,
-      Blood,
-      Shadow
-   }
    
-   public enum DragonType
-   {
-      Nightmare,
-      TerrorBringer,
-      SoulEater,
-      Usurper,
-   }
+}
+public enum SpellType
+{
+   Nature,
+   Ice,
+   Fire,
+   Blood,
+   Shadow
+}
+   
+public enum DragonType
+{
+   Nightmare,
+   TerrorBringer,
+   SoulEater,
+   Usurper,
 }
