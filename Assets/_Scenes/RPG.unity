@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.48311162, g: 0.5279228, b: 0.5974375, a: 1}
+  m_IndirectSpecularColor: {r: 0.4831128, g: 0.5279236, b: 0.59743947, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3342,6 +3342,7 @@ MonoBehaviour:
   Player: {fileID: 1887791475}
   MapCanBeClicked: 1
   ClickedFirstNode: 0
+  NextDragonType: 0
 --- !u!114 &112750801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4788,7 +4789,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 9.1835e-41, y: 7.43868e-39, z: 9.78048e-39, w: 1.37753e-40}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 1.06e-43}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -11841,6 +11842,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 192667657}
   visitedCircleImage: {fileID: 1774859396}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -15817,6 +15820,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 1460058808}
   visitedCircleImage: {fileID: 1860394894}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -17417,6 +17422,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 101054688}
   visitedCircleImage: {fileID: 830099627}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -19340,6 +19347,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 537819638}
   visitedCircleImage: {fileID: 1797846232}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -19935,6 +19944,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 1854188860}
   visitedCircleImage: {fileID: 1786040052}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -20462,6 +20473,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 1975173239}
   visitedCircleImage: {fileID: 446012472}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -21855,6 +21868,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 2071565888}
   visitedCircleImage: {fileID: 802562077}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -24342,6 +24357,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 146599824}
   visitedCircleImage: {fileID: 406229014}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -30102,6 +30119,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 60881566}
   visitedCircleImage: {fileID: 839085123}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -33082,6 +33101,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 1789585769}
   visitedCircleImage: {fileID: 1136667339}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -33554,6 +33575,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 1495873148}
   visitedCircleImage: {fileID: 180039426}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -36954,6 +36977,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 261397502}
   visitedCircleImage: {fileID: 1850709177}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -40886,6 +40911,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 583170593}
   visitedCircleImage: {fileID: 1759551347}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -42411,7 +42438,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 7.24.2024
+  m_text: 8.22.2024
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -54288,6 +54315,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 1828365524}
   visitedCircleImage: {fileID: 1201310888}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -54740,6 +54769,8 @@ MonoBehaviour:
   visitedCircle: {fileID: 0}
   circleImage: {fileID: 913277156}
   visitedCircleImage: {fileID: 187932980}
+  eliteType1: {fileID: 0}
+  eliteType2: {fileID: 0}
   iconTransform: {fileID: 0}
   scaleFactor: 0.1
   pingPongSpeed: 1
@@ -55709,6 +55740,10 @@ PrefabInstance:
       propertyPath: secondaryLight
       value: 
       objectReference: {fileID: 1323020241}
+    - target: {fileID: 5303631955433665952, guid: 8a1a97be04ba45b499bfe6a4fbe507c0, type: 3}
+      propertyPath: force
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5303631955433665955, guid: 8a1a97be04ba45b499bfe6a4fbe507c0, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0

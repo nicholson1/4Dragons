@@ -36,8 +36,10 @@ public class DarknessController : MonoBehaviour
 
     IEnumerator DisableDarkness(float wait)
     {
-        yield return new WaitForSeconds(wait);
-        LargeParticleSystem.Stop();
+        yield return new WaitForSeconds(wait/2);
+        var emission = LargeParticleSystem.emission;
+        emission.rateOverTime = 0f;
+        yield return new WaitForSeconds(wait/2);
         DarknessObj.gameObject.SetActive(false);
         yield return new WaitForSeconds(2);
         for (int i = 0; i < materialToSwap.Count; i++)

@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.VFX;
 
 public class WeatherManager : MonoBehaviour
 {
     public static WeatherManager _instance;
+    public int weatherLevel = 0;
 
     [SerializeField] private WindDirector _windDirector;
     
@@ -34,11 +34,11 @@ public class WeatherManager : MonoBehaviour
 
     private int[][] natureEffectsParticleRates = new int[][]
     {
-        new int[] { 5, 15, 10}, // new trial start
-        new int[] { 10, 20, 15},
-        new int[] { 15, 25, 20},
-        new int[] { 20, 30, 25},
-        new int[] { 25, 35, 30},
+        new int[] { 5, 5, 10}, // new trial start
+        new int[] { 10, 10, 15},
+        new int[] { 15, 15, 20},
+        new int[] { 20, 20, 25},
+        new int[] { 25, 30, 30},
         new int[] { 30, 40, 35},
         new int[] { 35, 50, 40},
         new int[] { 40, 60, 45},
@@ -86,7 +86,7 @@ public class WeatherManager : MonoBehaviour
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     };
     // shadow a little different
-    private int shadowWind = 15;
+    private int shadowWind = 2;
     // make winddirector point down
     
     private int[][] shadowEffectsParticleRates = new int[][]
@@ -136,6 +136,7 @@ public class WeatherManager : MonoBehaviour
 
     public void UpdateWeather(int level = 1, SpellType spellClass = SpellType.Blood)
     {
+        weatherLevel = level;
         Debug.Log("Weather Level:"+level);
         //Debug.Log(level);
         //turn to make the wind director look at the player

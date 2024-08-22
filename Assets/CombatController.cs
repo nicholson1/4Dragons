@@ -226,7 +226,7 @@ public class CombatController : MonoBehaviour
         switch (nt)
         {
             case NodeType.MinorEnemy:
-                Node n = new Node(NodeType.MinorEnemy, "none", null);
+                Node n = new Node(NodeType.MinorEnemy, "none", new Point(0,WeatherManager._instance.weatherLevel));
                 StartRandomCombat(n);
                 break;
             case NodeType.Store:
@@ -698,6 +698,7 @@ public class CombatController : MonoBehaviour
 
         turnCounter = 0;
         
+        //? node need to know depth
         WeatherManager._instance.UpdateWeather(node.point.y, NextDragonType);
 
         StartCoroutine(waitTheStartCombat(Player, enemy));
