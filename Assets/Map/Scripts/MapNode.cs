@@ -84,7 +84,6 @@ namespace Map
                 //how do we get the correct level? node depth + 10 * trial counter?
                 
                 int i =(CombatController._instance.TrialCounter -1) * 10 + Node.point.y;
-                Debug.Log(i);
 
                 Node.specialNodeType = (int)EliteManager._instance.GetEliteType(i);
             }

@@ -640,7 +640,12 @@ public class CombatController : MonoBehaviour
 
     public void StartRandomCombat(Node node)
     {
-        
+        for (int i = 1; i < entitiesInCombat.Count; i++)
+        {
+            GameObject.Destroy(entitiesInCombat[i].gameObject);
+            entitiesInCombat.RemoveAt(i);
+            Debug.Log("DESTRIYING GAME OBJECT");
+        }
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);

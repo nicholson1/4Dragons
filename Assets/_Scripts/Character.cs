@@ -828,6 +828,8 @@ public class Character : MonoBehaviour
         UIController._instance.ToggleInventoryUI(1);
         SelectionManager._instance.RandomSelectionFromEquipment(this);
         LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
+        StartCoroutine(WaitThenDestroy(1.5f));
+
     }
 
     private void ActivateCombatEntity(Character player, Character enemy)

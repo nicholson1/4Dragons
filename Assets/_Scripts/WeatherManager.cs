@@ -136,7 +136,7 @@ public class WeatherManager : MonoBehaviour
 
     public void UpdateWeather(int level = 1, SpellType spellClass = SpellType.Blood)
     {
-        Debug.Log(level);
+        Debug.Log("Weather Level:"+level);
         //Debug.Log(level);
         //turn to make the wind director look at the player
         // activate the correct weather object
