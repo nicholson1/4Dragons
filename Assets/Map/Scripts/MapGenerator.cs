@@ -18,6 +18,12 @@ namespace Map
 
         private static int ElitesThisMap = 0;
         private static int ChestsThisMap = 0;
+        private static int shopsThisMap = 0;
+
+        private static int maxElites = 3;
+        private static int maxShop = 3;
+
+
 
         public static Map GetMap(MapConfig conf)
         {
@@ -29,6 +35,11 @@ namespace Map
 
             config = conf;
             nodes.Clear();
+
+            if (CombatController._instance.Difficulty >= 6)
+            {
+                maxElites = 5;
+            }
 
             ElitesThisMap = 0;
             ChestsThisMap = 0;
@@ -93,6 +104,9 @@ namespace Map
                     ElitesThisMap += 1;
                 if (nodeType == NodeType.Treasure)
                     ChestsThisMap += 1;
+                if (nodeType == NodeType.Store)
+                    shopsThisMap += 1;
+                
 
                 var blueprintName = config.nodeBlueprints.Where(b => b.nodeType == nodeType).ToList().Random().name;
                 var node = new Node(nodeType, blueprintName, new Point(i, layerIndex))
@@ -296,12 +310,17 @@ namespace Map
 
         private static NodeType GetRandomNode(List<Node> nodesOnThisLayer)
         {
+            //{NodeType.Mystery, NodeType.Store, NodeType.MinorEnemy, NodeType.EliteEnemy, NodeType.Treasure};
+
             int[] nodeTypeWeights = new[] { 2, 1, 5, 2, 1};
             int totalWeight = 0;
             foreach (var item in nodeTypeWeights)
             {
                 totalWeight += item;
             }
+
+            if (CombatController._instance.Difficulty >= 6)
+                nodeTypeWeights[3] = 3;
 
             NodeType nt = NodeType.MinorEnemy;
             int roll = Random.Range(0, totalWeight + 1);
@@ -320,9 +339,15 @@ namespace Map
 
 
             // if there is only 1 node width no elites allowed, if elite placed dont place another
-            if (nt == NodeType.EliteEnemy && (nodesOnThisLayer.Count == 0 || ThisLayerHasElite(nodesOnThisLayer) || ElitesThisMap >= 3))
+            if (nt == NodeType.EliteEnemy && (nodesOnThisLayer.Count == 0 || ThisLayerHasElite(nodesOnThisLayer) || ElitesThisMap >= maxElites))
             {
                 nt =RandomNodes[Random.Range(0, RandomNodes.Count-1)];
+            }
+            
+            if (nt == NodeType.Store)
+            {
+                if (shopsThisMap > maxShop)
+                    nt = NodeType.Mystery;
             }
 
             if (nt == NodeType.Treasure)

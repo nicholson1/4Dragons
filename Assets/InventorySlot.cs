@@ -155,6 +155,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 
                 int currentGold = CombatController._instance.Player._gold;
                 int cost = (di.e.stats[Equipment.Stats.Rarity] + 1) * 60;
+
+                if (CombatController._instance.Difficulty >= 7)
+                    cost += Mathf.RoundToInt(cost * .2f);
+                
                 if (currentGold < cost)
                 {
                     NotEnoughGoldEvent();

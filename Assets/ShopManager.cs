@@ -228,7 +228,10 @@ public class ShopManager : MonoBehaviour
     {
         
         TextMeshProUGUI goldText = slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>() ;
-        goldText.text = ((slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60).ToString();
+        int cost = (slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60;
+        if (CombatController._instance.Difficulty >= 7)
+            cost += Mathf.RoundToInt(cost * .2f);  
+        goldText.text = (cost).ToString();
         goldText.gameObject.SetActive(true);
 
         if (slot.Item.e.isRelic)
@@ -283,7 +286,12 @@ public class ShopManager : MonoBehaviour
     public void BuyRelic(int index)
     {
         int currentGold = CombatController._instance.Player._gold;
+        
+        
         int cost = 300;
+        if (CombatController._instance.Difficulty >= 7)
+            cost += Mathf.RoundToInt(cost * .2f);
+        
         if (currentGold < cost)
         {
             Item1.NotEnoughGoldEvent();

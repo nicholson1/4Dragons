@@ -111,10 +111,19 @@ public class Character : MonoBehaviour
             if (isDragon)
             {
                 //gameObject.GetComponent<Dragon>().InitializeDragon();
+
+                if (CombatController._instance.Difficulty >= 10)
+                {
+                    _maxEnergy = 4 + CombatController._instance.TrialCounter;
+                }
             }
             else if( isElite)
             {
                 //elite
+                if (CombatController._instance.Difficulty >= 10)
+                {
+                    _maxEnergy = 3 + CombatController._instance.TrialCounter;
+                }
             }
             else
             {
@@ -155,6 +164,12 @@ public class Character : MonoBehaviour
                 //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature4));
 
                 _gold = _level * 2 + (Random.Range(-_level, _level+1));
+
+                if (CombatController._instance.Difficulty >= 3)
+                {
+                    _gold = Mathf.RoundToInt(_gold * .25f);
+                }
+                
             }
             
 
@@ -937,17 +952,41 @@ public class Character : MonoBehaviour
     private void SetMaxHealth()
     {
         int hp = 0;
+        int difficulty = CombatController._instance.Difficulty;
         if (isDragon)
         {
-            hp = 150 * _level;
+            if(difficulty >= 9)
+                hp = 175 * _level;
+            else if (difficulty >= 1)
+                hp = 150 * _level;
+            else
+                hp = 125 * _level;
         }
         else if (isElite)
         {
-            hp = 100 * _level;
+            if(difficulty >= 9)
+                hp = 120 * _level;
+            else if (difficulty >= 1)
+                hp = 100 * _level;
+            else
+                hp = 80 * _level;
+        }
+        else if (isPlayerCharacter)
+        {
+            //character
+            if(difficulty >= 4)
+                hp = 65 * _level;
+            else
+                hp = 75 * _level;
         }
         else
         {
-            hp = 75 * _level;
+            if(difficulty >= 9)
+                hp = 85 * _level;
+            else if (difficulty >= 1)
+                hp = 75 * _level;
+            else
+                hp = 65 * _level;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);

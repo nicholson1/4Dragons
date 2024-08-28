@@ -70,6 +70,18 @@ public class CombatController : MonoBehaviour
     public bool ClickedFirstNode = false;
 
     public SpellType NextDragonType = SpellType.Nature;
+
+    public int Difficulty = 0;
+    // Enemies have more health
+    // Reduce the chance you find a potion
+    // Enemies drop less gold
+    // You have less max Health
+    // Enemies do more damage
+    // Increase the chance of elites
+    // Shops are more expensive
+    // Enemies have even more health
+    // Enemies do even more damage
+    // Dragons are more difficult
     
     private void Awake()
     {
@@ -110,7 +122,19 @@ public class CombatController : MonoBehaviour
                 _eliteDamageMultiplier = 1f;
                 _dragonDamageMultiplier = 1.25f;
                 break;
+        }
 
+        if (Difficulty >= 9)
+        {
+            _normalDamageMultiplier += .2f;
+            _eliteDamageMultiplier += .2f;
+            _dragonDamageMultiplier += .2f;
+        }
+        else if (Difficulty < 5)
+        {
+            _normalDamageMultiplier -= .2f;
+            _eliteDamageMultiplier -= .2f;
+            _dragonDamageMultiplier -= .2f;
         }
     }
 
