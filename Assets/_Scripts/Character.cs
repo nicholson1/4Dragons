@@ -167,9 +167,9 @@ public class Character : MonoBehaviour
 
                 if (CombatController._instance.Difficulty >= 3)
                 {
-                    _gold = Mathf.RoundToInt(_gold * .25f);
+                    _gold = Mathf.CeilToInt(_gold * .25f);
                 }
-                
+
             }
             
 
@@ -974,7 +974,7 @@ public class Character : MonoBehaviour
         else if (isPlayerCharacter)
         {
             //character
-            if(difficulty >= 4)
+            if(difficulty >= 4) 
                 hp = 65 * _level;
             else
                 hp = 75 * _level;

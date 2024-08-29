@@ -126,15 +126,15 @@ public class CombatController : MonoBehaviour
 
         if (Difficulty >= 9)
         {
-            _normalDamageMultiplier += .2f;
+            _normalDamageMultiplier += .4f;
             _eliteDamageMultiplier += .2f;
             _dragonDamageMultiplier += .2f;
         }
         else if (Difficulty < 5)
         {
-            _normalDamageMultiplier -= .2f;
-            _eliteDamageMultiplier -= .2f;
-            _dragonDamageMultiplier -= .2f;
+            _normalDamageMultiplier -= .1f;
+            _eliteDamageMultiplier -= .1f;
+            _dragonDamageMultiplier -= .1f;
         }
     }
 
@@ -796,4 +796,5 @@ public class CombatController : MonoBehaviour
         CombatTrigger.EndCombat -= EndCombat;
 
     }
+
 }
