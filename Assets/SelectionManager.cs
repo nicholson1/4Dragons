@@ -26,9 +26,9 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selectionText;
     [SerializeField] public Image Background;
 
-    private float potionChance = .33f;
+    private float potionChance = .5f;
     private int combatSincePotions = 0;
-    private int forcePotionAfter = 4;
+    private int forcePotionAfter = 3;
 
 
     private void Awake()
@@ -119,6 +119,12 @@ public class SelectionManager : MonoBehaviour
             relics.Add(RelicManager._instance.GetDragonRelic());
             relics.Add(RelicManager._instance.GetDragonRelic());
             RelicSelections.Add(relics);
+        }
+
+        if (CombatController._instance.Difficulty >= 2)
+        {
+            potionChance = .33f;
+            forcePotionAfter = 4;
         }
 
         bool potionRoll = potionChance > Random.Range(0, 1f);

@@ -461,14 +461,29 @@ public class CombatEntity : MonoBehaviour
                 {
                     if (RelicManager._instance.CheckRelic(RelicType.Relic29))
                     {
-                        blockAmount /= 2;
+
+                        if (blockAmount >= attackDamage * 2)
+                        {
+                            attackDamage *= 2;
+                        }
+                        else
+                        {
+                            attackDamage = Mathf.CeilToInt(blockAmount + attackDamage - blockAmount / 2f);
+                        }
                     }
                 }
                 if(dt == AbilityTypes.PhysicalAttack)
                 {
                     if (RelicManager._instance.CheckRelic(RelicType.Relic33))
                     {
-                        blockAmount /= 2;
+                        if (blockAmount >= attackDamage * 2)
+                        {
+                            attackDamage *= 2;
+                        }
+                        else
+                        {
+                            attackDamage = Mathf.CeilToInt(blockAmount + attackDamage - blockAmount / 2f);
+                        }
                     }
                 }
             }
