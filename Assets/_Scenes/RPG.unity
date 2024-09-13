@@ -3207,6 +3207,7 @@ GameObject:
   - component: {fileID: 112750804}
   - component: {fileID: 112750805}
   - component: {fileID: 112750806}
+  - component: {fileID: 112750807}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3699,6 +3700,18 @@ MonoBehaviour:
   HeartSeekersCounter: 0
   HasRelic4Buff: 0
   UnstableEnergyCoreCounter: 0
+--- !u!114 &112750807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112750796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e0985482307724ab20bc211e75f740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &124902492
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4789,7 +4802,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 1.06e-43}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 1.05e-43}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

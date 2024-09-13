@@ -34,16 +34,16 @@ public class WeatherManager : MonoBehaviour
 
     private int[][] natureEffectsParticleRates = new int[][]
     {
-        new int[] { 5, 5, 10}, // new trial start
-        new int[] { 10, 10, 15},
-        new int[] { 15, 15, 20},
-        new int[] { 20, 20, 25},
-        new int[] { 25, 30, 30},
-        new int[] { 30, 40, 35},
-        new int[] { 35, 50, 40},
-        new int[] { 40, 60, 45},
-        new int[] { 45, 70, 50},
-        new int[] { 50, 100, 55}, // boss fight
+        new int[] { 1, 2, 10}, // new trial start
+        new int[] { 2, 2, 15},
+        new int[] { 2, 4, 20},
+        new int[] { 3, 4, 25},
+        new int[] { 4, 8, 30},
+        new int[] { 5, 16, 35},
+        new int[] { 10, 32, 40},
+        new int[] { 20, 60, 45},
+        new int[] { 40, 70, 50},
+        new int[] { 60, 100, 55}, // boss fight
     };
     private int[] natureEffectsWind = new[]
     {
@@ -51,16 +51,16 @@ public class WeatherManager : MonoBehaviour
     };
     private int[][] frostEffectsParticleRates = new int[][]
     {
-        new int[] { 5, 15, 10, 5}, // new trial start
-        new int[] { 10, 20, 15, 15},
-        new int[] { 15, 25, 20, 25},
-        new int[] { 20, 30, 25, 35},
-        new int[] { 25, 35, 30, 55},
-        new int[] { 30, 40, 35, 75},
-        new int[] { 35, 50, 40, 105},
-        new int[] { 40, 60, 45, 135},
-        new int[] { 45, 70, 50, 160},
-        new int[] { 50, 100, 55, 200}, // boss fight
+        new int[] { 1, 2, 10, 5}, // new trial start
+        new int[] { 2, 2, 15, 15},
+        new int[] { 2, 4, 20, 25},
+        new int[] { 3, 4, 25, 35},
+        new int[] { 4, 8, 30, 55},
+        new int[] { 5, 16, 35, 75},
+        new int[] { 10, 32, 40, 105},
+        new int[] { 20, 60, 45, 135},
+        new int[] { 40, 70, 50, 160},
+        new int[] { 60, 100, 55, 200}, // boss fight
     };
 
     private int[] frostEffectsWind = new[]
@@ -69,16 +69,16 @@ public class WeatherManager : MonoBehaviour
     };
     private int[][] fireEffectsParticleRates = new int[][]
     {
-        new int[] { 20, 20, 1, 1}, // new trial start
-        new int[] { 30, 30, 2, 2},
-        new int[] { 40, 40, 5, 5},
-        new int[] { 60, 60, 7, 7},
-        new int[] { 90, 90, 10, 10},
-        new int[] { 100, 100, 15, 15},
-        new int[] { 110, 110, 25, 25},
-        new int[] { 130, 130, 45, 45},
-        new int[] { 150, 150, 70, 70},
-        new int[] { 200, 100, 200, 200}, // boss fight
+        new int[] { 5, 5, 1, 1}, // new trial start
+        new int[] { 10, 10, 1, 1},
+        new int[] { 20, 20, 1, 1},
+        new int[] { 40, 40, 1, 1},
+        new int[] { 80, 80, 2, 2},
+        new int[] { 100, 100, 2, 2},
+        new int[] { 110, 110, 4, 4},
+        new int[] { 130, 130, 7, 7},
+        new int[] { 150, 150, 10, 10},
+        new int[] { 200, 200, 50, 50}, // boss fight
     };
 
     private int[] fireEffectsWind = new[]
@@ -91,16 +91,16 @@ public class WeatherManager : MonoBehaviour
     
     private int[][] shadowEffectsParticleRates = new int[][]
     {
-        new int[] { 20, 1, 1}, // new trial start
-        new int[] { 40, 2, 2},
-        new int[] { 60, 3, 3},
-        new int[] { 80, 5, 5},
-        new int[] { 100, 7, 7},
-        new int[] { 120, 15, 15},
-        new int[] { 140, 25, 25},
-        new int[] { 160, 45, 45},
-        new int[] { 180, 70, 70},
-        new int[] { 200, 75, 75}, // boss fight
+        new int[] { 5, 1, 1}, // new trial start
+        new int[] { 10, 1, 1},
+        new int[] { 20, 1, 1},
+        new int[] { 40, 1, 1},
+        new int[] { 80, 2, 2},
+        new int[] { 120, 2, 2},
+        new int[] { 140, 3, 3},
+        new int[] { 160, 5, 5},
+        new int[] { 180, 10, 10},
+        new int[] { 200, 50, 50}, // boss fight
     };
 
 
@@ -110,16 +110,16 @@ public class WeatherManager : MonoBehaviour
     
     private int[][] bloodEffectsParticleRates = new int[][]
     {
-        new int[] { 2, 15, 1, 1}, // new trial start
-        new int[] { 5, 30, 2, 2},
-        new int[] { 10, 40, 3, 3},
-        new int[] { 20, 60, 5, 5},
-        new int[] { 30, 90, 7, 7},
-        new int[] { 40, 100, 15, 15},
-        new int[] { 65, 110, 25, 25},
-        new int[] { 70, 130, 45, 45},
-        new int[] { 80, 150, 70, 70},
-        new int[] { 100, 200, 200, 200}, // boss fight
+        new int[] { 2, 5, 1, 1}, // new trial start
+        new int[] { 5, 10, 1, 1},
+        new int[] { 10, 20, 1, 1},
+        new int[] { 20, 40, 2, 2},
+        new int[] { 30, 80, 2, 2},
+        new int[] { 40, 100, 3, 3},
+        new int[] { 65, 110, 5, 5},
+        new int[] { 70, 130, 7, 7},
+        new int[] { 80, 150, 10, 10},
+        new int[] { 100, 200, 50, 50}, // boss fight
     };
     
     private void Awake()
