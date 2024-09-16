@@ -17,13 +17,15 @@ namespace Map
         public Vector2 position;
         public NodeStates State;
         public int specialNodeType = -1;
+        public int nodeSeed = -1;
 
 
-        public Node(NodeType nodeType, string blueprintName, Point point)
+        public Node(NodeType nodeType, string blueprintName, Point point, int seed)
         {
             this.nodeType = nodeType;
             this.blueprintName = blueprintName;
             this.point = point;
+            this.nodeSeed = seed;
         }
 
         public void AddIncoming(Point p)

@@ -12,6 +12,8 @@ namespace Map
         public Map CurrentMap { get; private set; }
 
         public static MapManager _instance;
+
+        private int nextMapSeed = -1;
         private void Awake()
         {
             if (_instance != null && _instance != this)
@@ -51,10 +53,22 @@ namespace Map
 
         public void GenerateNewMap()
         {
+            if (nextMapSeed == -1)
+            {
+                Random.InitState(Rand._i.Random.Next());
+            }
+            else
+            {
+                Random.InitState(nextMapSeed);
+            }
+            nextMapSeed = Rand._i.Random.Next();
+            
+            
             var map = MapGenerator.GetMap(config);
             CurrentMap = map;
             //Debug.Log(map.ToJson());
             view.ShowMap(map);
+
         }
 
         public void SaveMap()

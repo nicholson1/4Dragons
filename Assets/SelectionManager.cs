@@ -349,7 +349,7 @@ public class SelectionManager : MonoBehaviour
     public void CreateEquipmentListsStart()
     {
         
-        Random.InitState(RandomizationManager._instance.myRandom.Next());
+        Random.InitState(Rand._i.Random.Next());
         
         List<List<Equipment>> equipments = new List<List<Equipment>>();
 

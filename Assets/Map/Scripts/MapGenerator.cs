@@ -43,6 +43,7 @@ namespace Map
 
             ElitesThisMap = 0;
             ChestsThisMap = 0;
+            shopsThisMap = 0;
 
             GenerateLayerDistances();
 
@@ -89,7 +90,7 @@ namespace Map
 
             for (var i = 0; i < config.GridWidth; i++)
             {
-                var nodeType = Random.Range(0f, 1f) < layer.randomizeNodes ? GetRandomNode(nodesOnThisLayer) : layer.nodeType;
+                var nodeType = Rand._i.Random.NextDouble() < layer.randomizeNodes ? GetRandomNode(nodesOnThisLayer) : layer.nodeType;
                 
                 if (layerIndex >= 5 && ElitesThisMap == 0 && nodesOnThisLayer.Count > 0 )
                 {
@@ -109,7 +110,8 @@ namespace Map
                 
 
                 var blueprintName = config.nodeBlueprints.Where(b => b.nodeType == nodeType).ToList().Random().name;
-                var node = new Node(nodeType, blueprintName, new Point(i, layerIndex))
+                int seed = Rand._i.Random.Next();
+                var node = new Node(nodeType, blueprintName, new Point(i, layerIndex), seed)
                 {
                     position = new Vector2(-offset + i * layer.nodesApartDistance, GetDistanceToLayer(layerIndex))
                 };
@@ -323,7 +325,7 @@ namespace Map
                 nodeTypeWeights[3] = 3;
 
             NodeType nt = NodeType.MinorEnemy;
-            int roll = Random.Range(0, totalWeight + 1);
+            int roll = Rand._i.Random.Next(0, totalWeight + 1);
 
             int sum = 0;
             for (int i = 0; i < nodeTypeWeights.Length; i++)
@@ -341,7 +343,7 @@ namespace Map
             // if there is only 1 node width no elites allowed, if elite placed dont place another
             if (nt == NodeType.EliteEnemy && (nodesOnThisLayer.Count == 0 || ThisLayerHasElite(nodesOnThisLayer) || ElitesThisMap >= maxElites))
             {
-                nt =RandomNodes[Random.Range(0, RandomNodes.Count-1)];
+                nt =RandomNodes[Rand._i.Random.Next(0, RandomNodes.Count-1)];
             }
             
             if (nt == NodeType.Store)

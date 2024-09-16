@@ -82,7 +82,8 @@ public class CombatController : MonoBehaviour
     // Enemies have even more health
     // Enemies do even more damage
     // Dragons are more difficult
-    
+
+    private int currentSeed = -1;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -165,6 +166,10 @@ public class CombatController : MonoBehaviour
 
     public void MapNodeClicked(Node node)
     {
+        currentSeed = node.nodeSeed;
+        Random.InitState(currentSeed);
+        Debug.Log("Current Node Seed: " + currentSeed);
+        
         RotateAroundMap._instance.RandomRotate();
         //unless its first node
         if(ClickedFirstNode)
@@ -250,7 +255,7 @@ public class CombatController : MonoBehaviour
         switch (nt)
         {
             case NodeType.MinorEnemy:
-                Node n = new Node(NodeType.MinorEnemy, "none", new Point(0,WeatherManager._instance.weatherLevel));
+                Node n = new Node(NodeType.MinorEnemy, "none", new Point(0,WeatherManager._instance.weatherLevel),currentSeed );
                 StartRandomCombat(n);
                 break;
             case NodeType.Store:
