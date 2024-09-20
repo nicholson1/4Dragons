@@ -13,7 +13,6 @@ public class Elite : MonoBehaviour
     
     public void InitializeElite(EliteType type)
     {
-        c.EC = FindObjectOfType<EquipmentCreator>();
         // select elite type
         EliteType = type;
         //EliteType = EliteManager._instance.GetEliteType(c._level);
@@ -52,170 +51,170 @@ public class Elite : MonoBehaviour
             case EliteType.Ranger:
                 stat1 = Equipment.Stats.NaturePower;
                 stat2 = Equipment.Stats.Swords;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature4));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword1, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature4));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword1, rarity, stat1, stat2));
                 break;
             case EliteType.Woodsman:
                 stat1 = Equipment.Stats.NaturePower;
                 stat2 = Equipment.Stats.Axes;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));
                 break;
             case EliteType.Gladiator:
                 stat1 = Equipment.Stats.Shields;
                 stat2 = Equipment.Stats.Daggers;
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2, rarity, stat1, stat2));
                 break;
             case EliteType.Cultist:
                 stat1 = Equipment.Stats.Daggers;
                 stat2 = Equipment.Stats.ShadowPower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
                 break;
             case EliteType.Knight:
                 stat1 = Equipment.Stats.Swords;
                 stat2 = Equipment.Stats.Shields;
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword3, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield3, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword3, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield3, rarity, stat1, stat2));
                 break;
             case EliteType.Commander:
                 stat1 = Equipment.Stats.CritChance;
                 stat2 = Equipment.Stats.Hammers;
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer3, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Hammer3, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2, rarity, stat1, stat2));
                 break;
             case EliteType.Druid:
                 stat1 = Equipment.Stats.NaturePower;
                 stat2 = Equipment.Stats.SpellPower;
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature1, rarity, stat1, stat2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature4, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature1, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature4, rarity, stat1, stat2));
                 break;
             case EliteType.Witchdoctor:
                 stat1 = Equipment.Stats.ShadowPower;
                 stat2 = Equipment.Stats.NaturePower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
                 break;
             case EliteType.Pyromancer:
                 stat1 = Equipment.Stats.FirePower;
                 stat2 = Equipment.Stats.SpellPower;
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire1, rarity, stat1, stat2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire4, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire1, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire4, rarity, stat1, stat2));
                 break;
             case EliteType.Bloodbender:
                 stat1 = Equipment.Stats.BloodPower;
                 stat2 = Equipment.Stats.SpellPower;
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood1, rarity, stat1, stat2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood4, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood1, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood4, rarity, stat1, stat2));
                 break;
             
             case EliteType.HillGiant:
                 stat1 = Equipment.Stats.Health;
                 stat2 = Equipment.Stats.NaturePower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature3, rarity, stat1, stat2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature5));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Nature3, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature5));
                 break;
             case EliteType.FireGiant:
                 stat1 = Equipment.Stats.Health;
                 stat2 = Equipment.Stats.FirePower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire4, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire5, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire4, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire5, rarity, stat1, stat2));
                 break;
             case EliteType.FrostGiant:
                 stat1 = Equipment.Stats.Health;
                 stat2 = Equipment.Stats.IcePower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Ice2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Ice3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice5, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Ice2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Ice3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice5, rarity, stat1, stat2));
                 break;
             case EliteType.VoidGiant:
                 stat1 = Equipment.Stats.Health;
                 stat2 = Equipment.Stats.ShadowPower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow4, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow4, rarity, stat1, stat2));
                 break;
             case EliteType.BloodGiant:
                 stat1 = Equipment.Stats.Health;
                 stat2 = Equipment.Stats.BloodPower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood4, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood5, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood4, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood5, rarity, stat1, stat2));
                 break;
             case EliteType.FireKing:
                 stat1 = Equipment.Stats.Swords;
                 stat2 = Equipment.Stats.FirePower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire2));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire4));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword2, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire4));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Sword2, rarity, stat1, stat2));
                 break;
             case EliteType.IceQueen:
                 stat1 = Equipment.Stats.IcePower;
                 stat2 = Equipment.Stats.ShadowPower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Ice5));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice4, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Shadow3));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Ice5));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shadow1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice4, rarity, stat1, stat2));
                 break;
             case EliteType.Assassin:
                 stat1 = Equipment.Stats.Daggers;
                 stat2 = Equipment.Stats.Daggers;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature5));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature5));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger2, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Dagger3, rarity, stat1, stat2));
                 break;
             case EliteType.Shaman:
                 stat1 = Equipment.Stats.SpellPower;
                 stat2 = Equipment.Stats.Axes;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice1, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature1));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire3));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Axe3, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Ice1, rarity, stat1, stat2));
                 break;
             case EliteType.Paladin:
                 stat1 = Equipment.Stats.Shields;
                 stat2 = Equipment.Stats.SpellPower;
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire5));
-                spells.Add(c.EC.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield1, rarity, stat1, stat2));
-                weapons.Add(c.EC.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2, rarity, stat1, stat2));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Fire5));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Nature2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield1, rarity, stat1, stat2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2, rarity, stat1, stat2));
                 break;
         }
         List<Equipment> generatedEquipment = new List<Equipment>();
 
-        if (c.EC == null)
+        if (EquipmentCreator._instance == null)
         {
-            c.EC = FindObjectOfType<EquipmentCreator>();
+            EquipmentCreator._instance = FindObjectOfType<EquipmentCreator>();
 
         }
         //only the first 6 elements
@@ -225,7 +224,7 @@ public class Elite : MonoBehaviour
         {
             //int level = Random.Range(1, 20);
             
-            generatedEquipment.Add(c.EC.CreateArmor(level, (Equipment.Slot)i, rarity, stat1, stat2 ));
+            generatedEquipment.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)i, rarity, stat1, stat2 ));
             i++;
         }
 

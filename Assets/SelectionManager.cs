@@ -45,6 +45,8 @@ public class SelectionManager : MonoBehaviour
     
     public void RandomSelectionFromEquipment(Character c)
     {
+        Random.InitState(CombatController._instance.CurrentSeed);
+        
         //SkipButton.gameObject.SetActive(true);
         // get 4 random ints 0-c.equip.count
         List<List<Equipment>> EquipmentSelection = new List<List<Equipment>>();

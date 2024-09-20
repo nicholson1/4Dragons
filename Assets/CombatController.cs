@@ -84,6 +84,7 @@ public class CombatController : MonoBehaviour
     // Dragons are more difficult
 
     private int currentSeed = -1;
+    public int CurrentSeed => currentSeed;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -161,6 +162,7 @@ public class CombatController : MonoBehaviour
 
     public void ActivateStartChest()
     {
+        EquipmentCreator._instance.ApplyModifiers();
         StartChest.gameObject.SetActive(true);
     }
 

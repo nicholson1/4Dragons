@@ -75,7 +75,7 @@ public class Dragon : MonoBehaviour
    {
       List<Weapon> Spells = new List<Weapon>();
       
-      Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)4, canBeLooted:false)); // all dragons get block
+      Spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)4, canBeLooted:false)); // all dragons get block
       int physicalSpellCount = 0;
       int magicSpellCount = 0;
 
@@ -137,7 +137,7 @@ public class Dragon : MonoBehaviour
       for (int i = 0; i < physicalSpellCount; i++)
       {
          roll = PhysicalSpellIndexes[Random.Range(0, PhysicalSpellIndexes.Count)];
-         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll, canBeLooted:false));
+         Spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll, canBeLooted:false));
          PhysicalSpellIndexes.Remove(roll);
          //physicalSpellCount -= 1;
       }
@@ -145,7 +145,7 @@ public class Dragon : MonoBehaviour
       for (int i = 0; i < magicSpellCount; i++)
       {
          roll = MagicSpellIndexes[Random.Range(0, MagicSpellIndexes.Count)];
-         Spells.Add(c.EC.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll,canBeLooted:true));
+         Spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, (Weapon.SpellTypes)roll,canBeLooted:true));
          MagicSpellIndexes.Remove(roll);
          //magicSpellCount -= 1;
          
@@ -181,12 +181,7 @@ public class Dragon : MonoBehaviour
    public List<Equipment> CreateAllDragonEquipment(int level, int rarity)
    {
       List<Equipment> generatedEquipment = new List<Equipment>();
-
-      if (c.EC == null)
-      {
-         c.EC = FindObjectOfType<EquipmentCreator>();
-
-      }
+      
       //only the first 6 elements
       var v = Enum.GetValues (typeof (Equipment.Slot));
       int i = 0;
@@ -194,7 +189,7 @@ public class Dragon : MonoBehaviour
       {
          //int level = Random.Range(1, 20);
             
-         generatedEquipment.Add(c.EC.CreateArmor(level, (Equipment.Slot)i,rarity, Equipment.Stats.Strength, Equipment.Stats.SpellPower ));
+         generatedEquipment.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)i,rarity, Equipment.Stats.Strength, Equipment.Stats.SpellPower ));
          i++;
       }
 

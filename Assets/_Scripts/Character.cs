@@ -45,7 +45,6 @@ public class Character : MonoBehaviour
 
     Dictionary<Equipment.Stats, int> _stats;
 
-    public EquipmentCreator EC;
 
     [SerializeField] public CombatEntity _combatEntity;
 
@@ -77,7 +76,6 @@ public class Character : MonoBehaviour
     {
         if(StartRun)
             return;
-        EC = FindObjectOfType<EquipmentCreator>();
         CombatController.ActivateCombatEntities += ActivateCombatEntity;
         CombatTrigger.EndCombat += DeactivateCombatEntity;
         
@@ -130,31 +128,31 @@ public class Character : MonoBehaviour
                 EqMM.RandomCharacter();
                 //_weapons = EC.CreateAllWeapons(_level);
                 //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-                _equipment = EC.CreateAllEquipment(_level);
+                _equipment = EquipmentCreator._instance.CreateAllEquipment(_level);
 
            
-                _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
-                _spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
+                _spellScrolls.Add(EquipmentCreator._instance.CreateRandomSpellScroll(_level));
+                _spellScrolls.Add(EquipmentCreator._instance.CreateRandomSpellScroll(_level));
                 //_spellScrolls.Add(EC.CreateRandomSpellScroll(_level));
 
                 if (_level <= 5)
                 {
-                    _weapons.Add(EC.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                    _weapons.Add(EquipmentCreator._instance.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
                 }
                 else
                 {
-                    _weapons.Add(EC.CreateRandomWeapon(_level, false));
+                    _weapons.Add(EquipmentCreator._instance.CreateRandomWeapon(_level, false));
 
                 }
 
                 if (!HasDamageSpell(_spellScrolls) && !HasDamageSpell(_weapons))
                 {
                     // if we have no damage abilitys yet, give em one
-                    _weapons.Add(EC.CreateRandomWeaponWithSpell(_level, (Weapon.SpellTypes)GetRandomDamageSpell()));
+                    _weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(_level, (Weapon.SpellTypes)GetRandomDamageSpell()));
                 }
                 else
                 {
-                    _weapons.Add(EC.CreateRandomWeapon(_level, false));
+                    _weapons.Add(EquipmentCreator._instance.CreateRandomWeapon(_level, false));
                 }
             
                 EqMM.UpdateWeapon(_weapons[0], _weapons[1]);

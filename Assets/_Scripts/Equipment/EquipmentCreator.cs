@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using ImportantStuff;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SubsystemsImplementation;
@@ -19,21 +20,106 @@ public class EquipmentCreator : MonoBehaviour
     private List<Equipment> generatedEquipment = new List<Equipment>();
     private List<List<object>> nameTable;
 
+    private List<Equipment.Stats> possibleStats;
+    private List<Weapon.SpellTypes> possibleMagicSpells;
+    private List<Weapon.SpellTypes> possiblePhysicalSpells;
+    private List<Weapon.SpellTypes> possibleAllSpells;
 
-    private void Start()
+
+    public static EquipmentCreator _instance;
+
+    private void Awake()
     {
-        //CreateSpellScroll(1, 1, Weapon.SpellTypes.Axe2);
-        //debug stuff make some weapons
-        // for (int i = 0; i < 30; i++)
-        // {
-        //     CreateRandomWeapon(Random.Range(1, 5), 1, true);
-        // }
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
 
-        // for (int i = 1; i < 21; i++)
-        // {
-        //     GetRarity(i);
-        // }
+    public void ApplyModifiers()
+    {
+        RemoveStatsFromMod();
+        
+        possibleAllSpells = Enum.GetValues(typeof(Weapon.SpellTypes)).Cast<Weapon.SpellTypes>().ToList();
+        possiblePhysicalSpells = possibleAllSpells.GetRange(0, 15);
+        possibleMagicSpells = possibleAllSpells.GetRange(0, 15);
+    }
 
+    private void RemoveStatsFromMod()
+    {
+        possibleStats = Enum.GetValues(typeof(Equipment.Stats)).Cast<Equipment.Stats>().ToList();
+        possibleStats.Remove(Equipment.Stats.Rarity);
+        possibleStats.Remove(Equipment.Stats.ItemLevel);
+        possibleStats.Remove(Equipment.Stats.MagicResist);
+        possibleStats.Remove(Equipment.Stats.Armor);
+        possibleStats.Remove(Equipment.Stats.None);
+
+
+
+
+        foreach (Mods mod in Modifiers._instance.CurrentMods)
+        {
+            switch (mod)
+            {
+                case Mods.NoDaggerStats:
+                    possibleStats.Remove(Equipment.Stats.Daggers);
+                    break;
+                case Mods.NoShieldStats:
+                    possibleStats.Remove(Equipment.Stats.Shields);
+                    break;
+                case Mods.NoSwordStats:
+                    possibleStats.Remove(Equipment.Stats.Swords);
+                    break;
+                case Mods.NoAxeStats:
+                    possibleStats.Remove(Equipment.Stats.Axes);
+                    break;
+                case Mods.NoHammerStats:
+                    possibleStats.Remove(Equipment.Stats.Hammers);
+                    break;
+                case Mods.NoNatureStats:
+                    possibleStats.Remove(Equipment.Stats.NaturePower);
+                    break;
+                case Mods.NoFireStats:
+                    possibleStats.Remove(Equipment.Stats.FirePower);
+                    break;
+                case Mods.NoIceStats:
+                    possibleStats.Remove(Equipment.Stats.IcePower);
+                    break;
+                case Mods.NoBloodStats:
+                    possibleStats.Remove(Equipment.Stats.BloodPower);
+                    break;
+                case Mods.NoShadowStats:
+                    possibleStats.Remove(Equipment.Stats.ShadowPower);
+                    break;
+                case Mods.NoStrengthStats:
+                    possibleStats.Remove(Equipment.Stats.Strength);
+                    break;
+                case Mods.NoSpellPowerStats:
+                    possibleStats.Remove(Equipment.Stats.SpellPower);
+                    break;
+                case Mods.NoHealthStats:
+                    possibleStats.Remove(Equipment.Stats.Health);
+                    break;
+                case Mods.NoCritStats:
+                    possibleStats.Remove(Equipment.Stats.CritChance);
+                    break;
+                // case Mods.NoMRStat:
+                //     possibleStats.Remove(Equipment.Stats.MagicResist);
+                //     break;
+                // case Mods.NoArmStat:
+                //     possibleStats.Remove(Equipment.Stats.Armor);
+                //     break;
+                default:
+                    // Handle any other cases if needed
+                    break;
+            }
+
+        }
+        
     }
 
     private int GetRarity(int level)
@@ -500,8 +586,10 @@ public class EquipmentCreator : MonoBehaviour
        
     
         var v = Enum.GetValues (typeof (Equipment.Stats));
-        Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length-1));
-        Equipment.Stats b = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length-1));
+        // Equipment.Stats a = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length-1));
+        // Equipment.Stats b = (Equipment.Stats) v.GetValue (Random.Range(4, v.Length-1));
+        Equipment.Stats a = possibleStats[Random.Range(0, possibleStats.Count)];
+        Equipment.Stats b = possibleStats[Random.Range(0, possibleStats.Count)];
 
         if (stat1 != Equipment.Stats.None)
         {
@@ -524,24 +612,19 @@ public class EquipmentCreator : MonoBehaviour
             {
                 equipmentStats.Add(a, 1);
                 equipmentStats.Add(b, 1);
-               
             }
             else if (powerBudget % 2 == 0)
             {
                 equipmentStats.Add(a, powerBudget/2);
                 equipmentStats.Add(b, powerBudget/2);
-                
             }
             else
             {
                 equipmentStats.Add(a, (powerBudget + 1)/2);
                 equipmentStats.Add(b, (powerBudget -1 )/2);
-                
             }
         }
-        
-        
-    
+
         AddStatName(a, b);
 
         
@@ -588,8 +671,19 @@ public class EquipmentCreator : MonoBehaviour
     private (int,int) GenerateDefensiveStats(int powerBudget, Equipment.Slot slot)
     {
         int roll = Random.Range(0, powerBudget + 1);
-        
-        
+
+        List<int> possibleType = new List<int>() { 0, 1, 2 };
+
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoArmStat))
+        {
+            possibleType.Remove(0);
+            possibleType.Remove(2);
+        }
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoMRStat))
+        {
+            possibleType.Remove(1);
+            possibleType.Remove(2);
+        }
         
         //decide type
         int type = Random.Range(0, 3);
@@ -598,6 +692,8 @@ public class EquipmentCreator : MonoBehaviour
         roll = FixTheRoll(roll, powerBudget);
 
 
+        if (possibleType.Count == 0)
+            roll = 0;
 
         int modelIndex = AddDefensiveName((float)roll/powerBudget * 100, type, slot);
 
