@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EliteManager : MonoBehaviour
@@ -28,14 +29,50 @@ public class EliteManager : MonoBehaviour
         }
     }
 
+    private void ApplyDragonModifiers()
+    {
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoNatureDragons))
+        {
+            PossibleDragons.Remove(0);
+            Debug.Log("removing 0" );
+        }
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoFireDragons))
+        {
+            PossibleDragons.Remove(2);
+            Debug.Log("removing 2" );
+
+        }
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoIceDragons))
+        {
+            PossibleDragons.Remove(1);
+            Debug.Log("removing 1" );
+
+        }
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoBloodDragons))
+        {
+            PossibleDragons.Remove(3);
+            Debug.Log("removing 3" );
+
+        }
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoShadowDragons))
+        {
+            PossibleDragons.Remove(4);
+            Debug.Log("removing 4" );
+
+        }
+    }
+
     public DragonType GetDragonType()
     {
+        // this is misleading, but this is actually to select the spell school
         int typeIndex = -1;
 
         if (PossibleDragons.Count == 0)
         {
             PossibleDragons = new List<int>(){ 0, 1, 2, 3, 4};
         }
+        
+        ApplyDragonModifiers();
 
         typeIndex = PossibleDragons[Random.Range(0, PossibleDragons.Count)];
         PossibleDragons.Remove(typeIndex);

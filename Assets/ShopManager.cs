@@ -221,6 +221,13 @@ public class ShopManager : MonoBehaviour
         AdjustGoldText(Item2);
         AdjustGoldText(Item3);
         AdjustGoldText(Item4);
+
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoShopRerolls))
+        {
+            RerollButton.GetComponentInParent<Button>().interactable = false;
+        }
+
+        
         
     }
 

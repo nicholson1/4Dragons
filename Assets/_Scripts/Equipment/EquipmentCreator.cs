@@ -626,8 +626,6 @@ public class EquipmentCreator : MonoBehaviour
         }
 
         AddStatName(a, b);
-
-        
     }
         
     private void AddWeaponScaling(Weapon weapon, Weapon.SpellTypes spell1, Weapon.SpellTypes spell2 = Weapon.SpellTypes.None)

@@ -130,13 +130,19 @@ public class SelectionManager : MonoBehaviour
         }
 
         bool potionRoll = potionChance > Random.Range(0, 1f);
+
+        if (Modifiers._instance.CurrentMods.Contains(Mods.AlwaysPotion))
+            potionRoll = true;
+        
+        
         if (potionRoll || combatSincePotions >= forcePotionAfter)
         {
             List<Equipment> potions = new List<Equipment>();
             potions.Add(EC.CreateRandomPotion(c._level));
 
             combatSincePotions = 0;
-            EquipmentSelection.Add(potions);
+            if (!Modifiers._instance.CurrentMods.Contains(Mods.NoPotion))
+                EquipmentSelection.Add(potions);
         }
         else
         {
