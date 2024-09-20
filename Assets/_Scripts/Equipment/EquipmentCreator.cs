@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using ImportantStuff;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -43,10 +44,98 @@ public class EquipmentCreator : MonoBehaviour
     public void ApplyModifiers()
     {
         RemoveStatsFromMod();
-        
+        RemoveSpellsFromMod();
+    }
+
+    private void RemoveSpellsFromMod()
+    {
         possibleAllSpells = Enum.GetValues(typeof(Weapon.SpellTypes)).Cast<Weapon.SpellTypes>().ToList();
+        possibleAllSpells.Remove(Weapon.SpellTypes.None);
         possiblePhysicalSpells = possibleAllSpells.GetRange(0, 15);
-        possibleMagicSpells = possibleAllSpells.GetRange(0, 15);
+        possibleMagicSpells = possibleAllSpells.Skip(15).ToList();
+
+
+        foreach (Mods mod in Modifiers._instance.CurrentMods)
+        {
+            switch (mod)
+            {
+                case Mods.NoDaggerSpells:
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Dagger1);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Dagger2);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Dagger3);
+                    break;
+
+                case Mods.NoShieldSpells:
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Shield1);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Shield2);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Shield3);
+                    break;
+
+                case Mods.NoSwordSpells:
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Sword1);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Sword2);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Sword3);
+                    break;
+
+                case Mods.NoAxeSpells:
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Axe1);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Axe2);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Axe3);
+                    break;
+
+                case Mods.NoHammerSpells:
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Hammer1);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Hammer2);
+                    possiblePhysicalSpells.Remove(Weapon.SpellTypes.Hammer3);
+                    break;
+                
+                case Mods.NoNatureSpells:
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Nature1);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Nature2);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Nature3);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Nature4);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Nature5);
+
+                    break;
+                
+                case Mods.NoFireSpells:
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Fire1);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Fire2);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Fire3);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Fire4);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Fire5);
+
+                    break;
+
+                case Mods.NoIceSpells:
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Ice1);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Ice2);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Ice3);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Ice4);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Ice5);
+
+                    break;
+
+                case Mods.NoBloodSpells:
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Blood1);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Blood2);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Blood3);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Blood4);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Blood5);
+                    break;
+
+                case Mods.NoShadowSpells:
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Shadow1);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Shadow2);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Shadow3);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Shadow4);
+                    possibleMagicSpells.Remove(Weapon.SpellTypes.Shadow5);
+                    break;
+            }
+        }
+        possibleAllSpells.Clear();
+        possibleAllSpells.AddRange(possiblePhysicalSpells);
+        possibleAllSpells.AddRange(possibleMagicSpells);
     }
 
     private void RemoveStatsFromMod()
@@ -57,9 +146,6 @@ public class EquipmentCreator : MonoBehaviour
         possibleStats.Remove(Equipment.Stats.MagicResist);
         possibleStats.Remove(Equipment.Stats.Armor);
         possibleStats.Remove(Equipment.Stats.None);
-
-
-
 
         foreach (Mods mod in Modifiers._instance.CurrentMods)
         {
@@ -117,9 +203,34 @@ public class EquipmentCreator : MonoBehaviour
                     // Handle any other cases if needed
                     break;
             }
+        }
+    }
+    
+    public int GetRandomDamageSpellInt()
+    {
+        List<int> damageSpells = new List<int>() { 17, 18, 21, 22, 23, 27, 28, 30, 31, 37 };
 
+        for (int i = damageSpells.Count -1; i > 0; i--)
+        {
+            if (!possibleMagicSpells.Contains((Weapon.SpellTypes)damageSpells[i]))
+                damageSpells.Remove(damageSpells[i]);
         }
         
+        return damageSpells[Random.Range(0, damageSpells.Count)];
+    }
+    public int GetRandomDamagePhysicalSpellInt()
+    {
+        List<int> damageSpells = new List<int>() { 0,1,2,3,6,7,8,9,10,11,12,13,14 };
+        for (int i = damageSpells.Count-1; i > 0; i--)
+        {
+            if (!possiblePhysicalSpells.Contains((Weapon.SpellTypes)damageSpells[i]))
+                damageSpells.Remove(damageSpells[i]);
+        }
+
+        if (damageSpells.Count == 0)
+            return GetRandomDamageSpellInt();
+        
+        return damageSpells[Random.Range(0, damageSpells.Count)];
     }
 
     private int GetRarity(int level)
@@ -351,9 +462,20 @@ public class EquipmentCreator : MonoBehaviour
         }
         else
         {
+            //WE ARE ALWAYS HERE WE ONLY HAVE 1 HANDERS
             //0 - 10
-            spellIndex = Random.Range(0, 40);
-
+            if (Modifiers._instance.CurrentMods.Contains(Mods.NoSpellWeapons))
+            {
+                spellIndex = (int)possiblePhysicalSpells[Random.Range(0, possiblePhysicalSpells.Count)];
+            }
+            else if (Modifiers._instance.CurrentMods.Contains(Mods.NoPhysicalWeapons))
+            {
+                spellIndex = (int)possibleMagicSpells[Random.Range(0, possibleMagicSpells.Count)];
+            }
+            else
+            {
+                spellIndex = (int)possibleAllSpells[Random.Range(0, possibleAllSpells.Count)];
+            }
         }
         return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
 
@@ -379,7 +501,20 @@ public class EquipmentCreator : MonoBehaviour
     {
         bool isTwoHand = false;
         Equipment.Slot slot = Equipment.Slot.OneHander;
-        int spellIndex = Random.Range(0, 40);
+        int spellIndex;
+        if (Modifiers._instance.CurrentMods.Contains(Mods.NoSpellWeapons))
+        {
+            spellIndex = (int)possiblePhysicalSpells[Random.Range(0, possiblePhysicalSpells.Count)];
+
+        }
+        else if (Modifiers._instance.CurrentMods.Contains(Mods.NoPhysicalWeapons))
+        {
+            spellIndex = (int)possibleMagicSpells[Random.Range(0, possibleMagicSpells.Count)];
+        }
+        else
+        {
+            spellIndex = (int)possibleAllSpells[Random.Range(0, possibleAllSpells.Count)];
+        }
         return CreateWeapon(level, rarity, slot, (Weapon.SpellTypes)spellIndex);
 
     }
@@ -387,7 +522,7 @@ public class EquipmentCreator : MonoBehaviour
     public Weapon CreateRandomSpellScrollWithRarity(int level, int rarity)
     {
         int spellIndex;
-        spellIndex = Random.Range(15, 40);
+        spellIndex = (int)possibleMagicSpells[Random.Range(0, possibleMagicSpells.Count)];
         return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
 
     }
@@ -396,7 +531,7 @@ public class EquipmentCreator : MonoBehaviour
     {
         int rarity = GetRarity(level);
         int spellIndex;
-        spellIndex = Random.Range(15, 40);
+        spellIndex = (int)possibleMagicSpells[Random.Range(0, possibleMagicSpells.Count)];
         return CreateSpellScroll(level, rarity, (Weapon.SpellTypes)spellIndex);
 
         
