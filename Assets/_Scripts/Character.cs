@@ -168,6 +168,11 @@ public class Character : MonoBehaviour
                     _gold = Mathf.CeilToInt(_gold * .25f);
                 }
 
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
+                    _gold *= 2;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
+                    _gold = Mathf.RoundToInt(_gold * .5f);
+                
             }
             
 

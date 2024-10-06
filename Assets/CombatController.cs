@@ -69,7 +69,7 @@ public class CombatController : MonoBehaviour
 
     public bool ClickedFirstNode = false;
 
-    public SpellType NextDragonType = SpellType.Nature;
+    public SpellSchool nextDragonSchool = SpellSchool.Nature;
 
     public int Difficulty = 0;
     // Enemies have more health
@@ -730,7 +730,7 @@ public class CombatController : MonoBehaviour
         turnCounter = 0;
         
         //? node need to know depth
-        WeatherManager._instance.UpdateWeather(node.point.y, NextDragonType);
+        WeatherManager._instance.UpdateWeather(node.point.y, nextDragonSchool);
 
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }

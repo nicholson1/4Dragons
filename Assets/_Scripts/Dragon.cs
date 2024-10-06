@@ -11,7 +11,7 @@ public class Dragon : MonoBehaviour
 
    [SerializeField] private Character c;
    
-   public SpellType spellType;
+   public SpellSchool spellSchool;
    public DragonType dragonType;
 
    
@@ -30,9 +30,9 @@ public class Dragon : MonoBehaviour
       //randomSpellType
 
       if (randomizeSchool)
-         spellType = (SpellType)Random.Range(0, 5);
+         spellSchool = (SpellSchool)Random.Range(0, 5);
       else
-         spellType = CombatController._instance.NextDragonType;
+         spellSchool = CombatController._instance.nextDragonSchool;
 
       int DragonSelector = CombatController._instance.TrialCounter;
       //random drag depending on level
@@ -65,13 +65,13 @@ public class Dragon : MonoBehaviour
       }
 
       c._equipment = CreateAllDragonEquipment(c._level, rarity);
-      c._spellScrolls = GetDragonSpells(c._level, rarity, spellType, dragonType);
+      c._spellScrolls = GetDragonSpells(c._level, rarity, spellSchool, dragonType);
       
       c._gold = c._level * 10 + (Random.Range(-c._level, c._level+1));
 
    }
 
-   private List<Weapon> GetDragonSpells(int level, int rarity, SpellType spellSchool, DragonType dragType )
+   private List<Weapon> GetDragonSpells(int level, int rarity, SpellSchool spellSchool, DragonType dragType )
    {
       List<Weapon> Spells = new List<Weapon>();
       
@@ -86,23 +86,23 @@ public class Dragon : MonoBehaviour
 
       switch (spellSchool)
       {
-         case SpellType.Nature:
+         case SpellSchool.Nature:
             MagicSpellIndexes =  new List<int>() {15,16,17,18,19};
             materialIndex = 0;
             break;
-         case SpellType.Fire:
+         case SpellSchool.Fire:
             MagicSpellIndexes =  new List<int>() {20,21,22,23,24};
             materialIndex = 1;
             break;
-         case SpellType.Ice:
+         case SpellSchool.Ice:
             MagicSpellIndexes =  new List<int>() {25,26,27,28,29};
             materialIndex = 2;
             break;
-         case SpellType.Blood:
+         case SpellSchool.Blood:
             MagicSpellIndexes =  new List<int>() {30,31,32,33,34};
             materialIndex = 3;
             break;
-         case SpellType.Shadow:
+         case SpellSchool.Shadow:
             MagicSpellIndexes =  new List<int>() {35,36,37,38,39};
             materialIndex = 4;
             break;
@@ -197,13 +197,19 @@ public class Dragon : MonoBehaviour
    }
    
 }
-public enum SpellType
+public enum SpellSchool
 {
    Nature,
    Ice,
    Fire,
    Blood,
-   Shadow
+   Shadow,
+   
+   Dagger,
+   Shield,
+   Sword,
+   Axe,
+   Hammer,
 }
    
 public enum DragonType

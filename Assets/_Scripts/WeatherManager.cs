@@ -134,7 +134,7 @@ public class WeatherManager : MonoBehaviour
         }
     }
 
-    public void UpdateWeather(int level = 1, SpellType spellClass = SpellType.Blood)
+    public void UpdateWeather(int level = 1, SpellSchool spellClass = SpellSchool.Blood)
     {
         weatherLevel = level;
         Debug.Log("Weather Level:"+level);
@@ -149,7 +149,7 @@ public class WeatherManager : MonoBehaviour
 
         switch (spellClass)
         {
-            case SpellType.Nature:
+            case SpellSchool.Nature:
                 for (int i = 0; i < natureEffects.Length; i++)
                 {
                     if(i ==0)
@@ -163,7 +163,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case SpellType.Ice:
+            case SpellSchool.Ice:
                 for (int i = 0; i < frostEffects.Length; i++)
                 {
                     if(i ==0)
@@ -177,7 +177,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case SpellType.Fire:
+            case SpellSchool.Fire:
                 for (int i = 0; i < fireEffects.Length; i++)
                 {
                     fireEffects[i].SetFloat(Shader.PropertyToID("Particle Rate"), fireEffectsParticleRates[level][i]);
@@ -189,7 +189,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case SpellType.Shadow:
+            case SpellSchool.Shadow:
                 for (int i = 0; i < shadowEffects.Length; i++)
                 {
                     shadowEffects[i].SetFloat(Shader.PropertyToID("Particle Rate"), shadowEffectsParticleRates[level][i]);
@@ -201,7 +201,7 @@ public class WeatherManager : MonoBehaviour
 
 
                 break;
-            case SpellType.Blood:
+            case SpellSchool.Blood:
                 bloodRain.gameObject.SetActive(true);
                 var emission = bloodRain.emission;
                 emission.rateOverTime =(float)bloodEffectsParticleRates[level][0];
@@ -214,6 +214,9 @@ public class WeatherManager : MonoBehaviour
                 _windDirector.transform.localRotation = Quaternion.Euler(0, 0, 90);
 
 
+                break;
+            default:
+                Debug.LogWarning("INCORRECT SPELL SCHOOL FOR DRAGON");
                 break;
         }
         

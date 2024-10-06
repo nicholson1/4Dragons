@@ -1306,6 +1306,197 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
     }
+
+    public int AdjustPowerWithModifiers(int power, Weapon.SpellTypes spell)
+    {
+        float modifiedPower = power;
+        SpellSchool spellSchool = GetSpellSchoolFromSpell(spell);
+        switch (spellSchool)
+        {
+            case SpellSchool.Nature:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseNaturePower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseNaturePower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Ice:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseIcePower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseIcePower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Fire:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseFirePower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseFirePower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Blood:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseBloodPower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseBloodPower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Shadow:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseShadowPower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseShadowPower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Dagger:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseDaggerPower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseDaggerPower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Shield:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseShieldPower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseShieldPower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Sword:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseSwordPower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseSwordPower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Axe:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseAxePower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseAxePower)) modifiedPower *= 0.75f;
+                break;
+
+            case SpellSchool.Hammer:
+                if (Modifiers._instance.CurrentMods.Contains(Mods.IncreaseHammerPower)) modifiedPower *= 1.25f;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DecreaseHammerPower)) modifiedPower *= 0.75f;
+                break;
+        }
+
+        return Mathf.RoundToInt(modifiedPower);
+
+    }
+
+    public SpellSchool GetSpellSchoolFromSpell(Weapon.SpellTypes spell)
+    {
+        SpellSchool spellSchool = SpellSchool.Dagger;
+       switch (spell)
+        {
+            case Weapon.SpellTypes.Dagger1:
+                spellSchool = SpellSchool.Dagger;
+                break;
+            case Weapon.SpellTypes.Dagger2:
+                spellSchool = SpellSchool.Dagger;
+                break;
+            case Weapon.SpellTypes.Dagger3:
+                spellSchool = SpellSchool.Dagger;
+                break;
+            case Weapon.SpellTypes.Shield1:
+                spellSchool = SpellSchool.Shield;
+                break;
+            case Weapon.SpellTypes.Shield2:
+                spellSchool = SpellSchool.Shield;
+                break;
+            case Weapon.SpellTypes.Shield3:
+                spellSchool = SpellSchool.Shield;
+                break;
+            case Weapon.SpellTypes.Sword1:
+                spellSchool = SpellSchool.Sword;
+                break;
+            case Weapon.SpellTypes.Sword2:
+                spellSchool = SpellSchool.Sword;
+                break;
+            case Weapon.SpellTypes.Sword3:
+                spellSchool = SpellSchool.Sword;
+                break;
+            case Weapon.SpellTypes.Axe1:
+                spellSchool = SpellSchool.Axe;
+                break;
+            case Weapon.SpellTypes.Axe2:
+                spellSchool = SpellSchool.Axe;
+                break;
+            case Weapon.SpellTypes.Axe3:
+                spellSchool = SpellSchool.Axe;
+                break;
+            case Weapon.SpellTypes.Hammer1:
+                spellSchool = SpellSchool.Hammer;
+                break;
+            case Weapon.SpellTypes.Hammer2:
+                spellSchool = SpellSchool.Hammer;
+                break;
+            case Weapon.SpellTypes.Hammer3:
+                spellSchool = SpellSchool.Hammer;
+                break;
+            case Weapon.SpellTypes.Nature1:
+                spellSchool = SpellSchool.Nature;
+                break;
+            case Weapon.SpellTypes.Nature2:
+                spellSchool = SpellSchool.Nature;
+                break;
+            case Weapon.SpellTypes.Nature3:
+                spellSchool = SpellSchool.Nature;
+                break;
+            case Weapon.SpellTypes.Nature4:
+                spellSchool = SpellSchool.Nature;
+                break;
+            case Weapon.SpellTypes.Nature5:
+                spellSchool = SpellSchool.Nature;
+                break;
+            case Weapon.SpellTypes.Fire1:
+                spellSchool = SpellSchool.Fire;
+                break;
+            case Weapon.SpellTypes.Fire2:
+                spellSchool = SpellSchool.Fire;
+                break;
+            case Weapon.SpellTypes.Fire3:
+                spellSchool = SpellSchool.Fire;
+                break;
+            case Weapon.SpellTypes.Fire4:
+                spellSchool = SpellSchool.Fire;
+                break;
+            case Weapon.SpellTypes.Fire5:
+                spellSchool = SpellSchool.Fire;
+                break;
+            case Weapon.SpellTypes.Ice1:
+                spellSchool = SpellSchool.Ice;
+                break;
+            case Weapon.SpellTypes.Ice2:
+                spellSchool = SpellSchool.Ice;
+                break;
+            case Weapon.SpellTypes.Ice3:
+                spellSchool = SpellSchool.Ice;
+                break;
+            case Weapon.SpellTypes.Ice4:
+                spellSchool = SpellSchool.Ice;
+                break;
+            case Weapon.SpellTypes.Ice5:
+                spellSchool = SpellSchool.Ice;
+                break;
+            case Weapon.SpellTypes.Blood1:
+                spellSchool = SpellSchool.Blood;
+                break;
+            case Weapon.SpellTypes.Blood2:
+                spellSchool = SpellSchool.Blood;
+                break;
+            case Weapon.SpellTypes.Blood3:
+                spellSchool = SpellSchool.Blood;
+                break;
+            case Weapon.SpellTypes.Blood4:
+                spellSchool = SpellSchool.Blood;
+                break;
+            case Weapon.SpellTypes.Blood5:
+                spellSchool = SpellSchool.Blood;
+                break;
+            case Weapon.SpellTypes.Shadow1:
+                spellSchool = SpellSchool.Shadow;
+                break;
+            case Weapon.SpellTypes.Shadow2:
+                spellSchool = SpellSchool.Shadow;
+                break;
+            case Weapon.SpellTypes.Shadow3:
+                spellSchool = SpellSchool.Shadow;
+                break;
+            case Weapon.SpellTypes.Shadow4:
+                spellSchool = SpellSchool.Shadow;
+                break;
+            case Weapon.SpellTypes.Shadow5:
+                spellSchool = SpellSchool.Shadow;
+                break;
+        }
+
+       return spellSchool;
+    }
     
     // public CombatEntity.DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)
     // {

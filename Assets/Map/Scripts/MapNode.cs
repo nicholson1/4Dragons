@@ -91,7 +91,7 @@ namespace Map
             if (Node.nodeType == NodeType.Boss)
             {
                 Node.specialNodeType = (int)EliteManager._instance.GetDragonType();
-                CombatController._instance.NextDragonType = (SpellType)Node.specialNodeType;
+                CombatController._instance.nextDragonSchool = (SpellSchool)Node.specialNodeType;
             }
             
             SetNodeToolTip(node);
@@ -317,7 +317,7 @@ namespace Map
                     toolTip.Message = "You dont know what will be here";
                     break;
                 case NodeType.Boss:
-                    Equipment.Stats stat = EliteManager._instance.GetStatFromSpellType((SpellType)Node.specialNodeType);
+                    Equipment.Stats stat = EliteManager._instance.GetStatFromSpellType((SpellSchool)Node.specialNodeType);
                     (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues(stat);
                     
                     string[] split = info.Item4.Split(" ");

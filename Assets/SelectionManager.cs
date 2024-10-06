@@ -270,7 +270,12 @@ public class SelectionManager : MonoBehaviour
                 relics.Add(new List<Equipment> {RelicManager._instance.GetCommonRelic()});
                 break;
             case ChestType.Gold:
-                golds.Add(Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter);
+                int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
+                    gold *= 2;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
+                    gold = Mathf.RoundToInt(gold * .5f);
+                golds.Add(gold);
                 break;
             case ChestType.Equipment:
                 selection = new List<Equipment>();
@@ -309,7 +314,12 @@ public class SelectionManager : MonoBehaviour
         switch (selectionType.Item2)
         {
             case ChestType.Gold:
-                golds.Add(Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter);
+                int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
+                    gold *= 2;
+                if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
+                    gold = Mathf.RoundToInt(gold * .5f);
+                golds.Add(gold);
                 break;
             case ChestType.Equipment:
                 selection = new List<Equipment>();
@@ -344,7 +354,12 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
         }
-        golds.Add(Random.Range(-5, 10) + 50 * CombatController._instance.TrialCounter);
+        int gold1 = Random.Range(-5, 10) + 50 * CombatController._instance.TrialCounter;
+        if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
+            gold1 *= 2;
+        if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
+            gold1 = Mathf.RoundToInt(gold1 * .5f);
+        golds.Add(gold1);
 
 
         if (relics.Count == 0)
@@ -487,7 +502,13 @@ public class SelectionManager : MonoBehaviour
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
             
-            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){25}, new List<List<Equipment>>(){relics});
+            int gold = 25;
+            if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
+                gold *= 2;
+            if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
+                gold = Mathf.RoundToInt(gold * .5f);
+
+            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){gold}, new List<List<Equipment>>(){relics});
     }
 
     

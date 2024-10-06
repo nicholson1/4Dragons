@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ImportantStuff;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -217,20 +218,23 @@ public class EliteManager : MonoBehaviour
         return (stat1,stat2);
     }
 
-    public Equipment.Stats GetStatFromSpellType(SpellType type)
+    public Equipment.Stats GetStatFromSpellType(SpellSchool school)
     {
-        switch (type)
+        switch (school)
         {
-            case SpellType.Nature:
+            case SpellSchool.Nature:
                 return Equipment.Stats.NaturePower;
-            case SpellType.Fire:
+            case SpellSchool.Fire:
                 return Equipment.Stats.FirePower;
-            case SpellType.Blood:
+            case SpellSchool.Blood:
                 return Equipment.Stats.BloodPower;
-            case SpellType.Shadow:
+            case SpellSchool.Shadow:
                 return Equipment.Stats.ShadowPower;
-            case SpellType.Ice:
+            case SpellSchool.Ice:
                 return Equipment.Stats.IcePower;
+            default:
+                Debug.LogWarning("INCORRECT SPELL SCHOOL");
+                break;
         }
 
         Debug.LogError("SOMETHING IS WRONG WITH THE SPELL SCHOOLS");
