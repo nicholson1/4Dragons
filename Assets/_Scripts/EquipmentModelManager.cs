@@ -11,7 +11,7 @@ public class EquipmentModelManager : MonoBehaviour
     [SerializeField] private GameObject[] ShoulderModels;
     [SerializeField] private GameObject[] GloveModels;
     [SerializeField] private GameObject[] BootsModels;
-    
+
     [SerializeField] private GameObject[] Faces;
     [SerializeField] private GameObject[] Hair;
 
@@ -39,8 +39,11 @@ public class EquipmentModelManager : MonoBehaviour
     private int hairIndex = 0;
 
     private bool showHelm = true;
-    
 
+    //todo save in player prefs
+    // head, shoulder, chest, gloves, boots, weapon1, weapon2
+    private int[] forcedCosmetics = new int[7] { 0,0,0,0,0,0,0}; 
+    
     public void RandomCharacter()
     {
         faceIndex = Random.Range(0, Faces.Length);
@@ -95,12 +98,17 @@ public class EquipmentModelManager : MonoBehaviour
         {
             newIndex = 0;
         }
+        
+        // head, shoulder, chest, gloves, boots, weapon1, weapon2
+
         switch (equipment.slot)
         {
             case Equipment.Slot.Head:
 
                 if (showHelm == false)
                 {
+                    if(forcedCosmetics[0] == 1)
+                        break;
                     HeadModels[headIndex].SetActive(false);
                     headIndex = newIndex;
                     Hair[hairIndex].SetActive(true);
@@ -121,21 +129,29 @@ public class EquipmentModelManager : MonoBehaviour
                 HeadModels[headIndex].SetActive(true);
                 break;
             case Equipment.Slot.Shoulders:
+                if(forcedCosmetics[1] == 1)
+                    break;
                 ShoulderModels[shoulderIndex].SetActive(false);
                 shoulderIndex = newIndex;
                 ShoulderModels[shoulderIndex].SetActive(true);
                 break;
             case Equipment.Slot.Chest:
+                if(forcedCosmetics[2] == 1)
+                    break;
                 ChestModels[chestIndex].SetActive(false);
                 chestIndex = newIndex;
                 ChestModels[chestIndex].SetActive(true);
                 break;
             case Equipment.Slot.Gloves:
+                if(forcedCosmetics[3] == 1)
+                    break;
                 GloveModels[gloveIndex].SetActive(false);
                 gloveIndex = newIndex;
                 GloveModels[gloveIndex].SetActive(true);
                 break;
             case Equipment.Slot.Boots:
+                if(forcedCosmetics[4] == 1)
+                    break;
                 BootsModels[bootIndex].SetActive(false);
                 bootIndex = newIndex;
                 BootsModels[bootIndex].SetActive(true);
@@ -146,13 +162,11 @@ public class EquipmentModelManager : MonoBehaviour
 
     public void UpdateWeapon(Equipment w1, Equipment w2)
     {
-        
-        
         Weapon wep1 = (Weapon)w1;
         Weapon wep2 = (Weapon)w2;
 
-        int newIndex1 = 0;
-        int newIndex2 = 0;
+        int newIndex1 = rightHandIndex;
+        int newIndex2 = LeftHandIndex;
         
         
         //figured out which one is in which hand
@@ -203,8 +217,10 @@ public class EquipmentModelManager : MonoBehaviour
         LeftHandWep[LeftHandIndex].SetActive(false);
         RightHandWep[rightHandIndex].SetActive(false);
 
-        LeftHandIndex = newIndex2;
-        rightHandIndex = newIndex1;
+        if(forcedCosmetics[5] != 1)
+            LeftHandIndex = newIndex2;
+        if(forcedCosmetics[6] != 1)
+            rightHandIndex = newIndex1;
         
         LeftHandWep[LeftHandIndex].SetActive(true);
         RightHandWep[rightHandIndex].SetActive(true);
@@ -237,6 +253,28 @@ public class EquipmentModelManager : MonoBehaviour
             hairIndex = Hair.Length - 1;
         }
         Hair[hairIndex].SetActive(true);
+    }
+    
+    public void HeadButton(int direction)
+    {
+        HeadModels[headIndex].SetActive(false);
+        headIndex += direction;
+        if (headIndex > HeadModels.Length - 1 )
+        {
+            headIndex = 0;
+        }else if (headIndex < 0)
+        {
+            headIndex = HeadModels.Length - 1;
+        }
+        if (headIndex > 10 || headIndex == 0)
+        {
+            Hair[hairIndex].SetActive(true);
+        }
+        else
+        {
+            Hair[hairIndex].SetActive(false);
+        }
+        HeadModels[headIndex].SetActive(true);
     }
     public void ChestButton(int direction)
         {
@@ -326,6 +364,13 @@ public class EquipmentModelManager : MonoBehaviour
         Faces[faceIndex].SetActive(false);
         faceIndex = Random.Range(0, Faces.Length);
         Faces[faceIndex].SetActive(true);
+    }
+
+    public void ForceCosmeticToggle(int slotIndex)
+    {
+        forcedCosmetics[slotIndex] = (forcedCosmetics[slotIndex] + 1) % 2;
+        Debug.Log(forcedCosmetics);
+        
     }
     
     
