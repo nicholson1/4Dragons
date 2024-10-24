@@ -97,6 +97,7 @@ public class CombatController : MonoBehaviour
         }
         
         IncreaseTrialCounter();
+        MusicManager.Instance.PlayMenuMusic();
     }
     
     public void IncreaseTrialCounter()
@@ -164,6 +165,7 @@ public class CombatController : MonoBehaviour
     {
         EquipmentCreator._instance.ApplyModifiers();
         StartChest.gameObject.SetActive(true);
+        MusicManager.Instance.PlayAdventureMusic();
     }
 
     public void MapNodeClicked(Node node)
@@ -192,18 +194,23 @@ public class CombatController : MonoBehaviour
         {
             case NodeType.MinorEnemy:
                 StartRandomCombat(node);
+                MusicManager.Instance.PlayBattleMusic();
                 break;
             case NodeType.EliteEnemy:
                 StartRandomCombat(node);
+                MusicManager.Instance.PlayEliteMusic();
                 break;
             case NodeType.Boss:
                 StartRandomCombat(node);
+                MusicManager.Instance.PlayDragonMusic();
                 break;
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
+                MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(true);
+                MusicManager.Instance.PlayAdventureMusic();
                 break;
             case NodeType.Mystery:
                MysterySelect();
@@ -259,12 +266,15 @@ public class CombatController : MonoBehaviour
             case NodeType.MinorEnemy:
                 Node n = new Node(NodeType.MinorEnemy, "none", new Point(0,WeatherManager._instance.weatherLevel),currentSeed );
                 StartRandomCombat(n);
+                MusicManager.Instance.PlayBattleMusic();
                 break;
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
+                MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(false);
+                MusicManager.Instance.PlayAdventureMusic();
                 break;
         }
 

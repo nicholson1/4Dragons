@@ -778,8 +778,8 @@ public class Character : MonoBehaviour
                     Destroy(_combatEntity);
 
                     //CombatController._instance.Player._gold += _gold;
+                    MusicManager.Instance.PlayAdventureMusic();
 
-                    
                     if(isDragon || isElite)
                     {
                         _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Die.ToString());
@@ -808,6 +808,7 @@ public class Character : MonoBehaviour
             else
             {
                 //GameOver
+                MusicManager.Instance.PlayDeathMusic();
                 CombatController._instance.entitiesInCombat[1].myCharacter._am.SetTrigger("Victory");
                 Notification(ErrorMessageManager.Errors.YouHaveDied);
                 UIController._instance.ToggleInventoryUI(0);
