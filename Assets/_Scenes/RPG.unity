@@ -3357,7 +3357,8 @@ Transform:
   m_LocalPosition: {x: -8.582517, y: 10.701305, z: -8.918775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2077453377}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &112750800
@@ -4950,7 +4951,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.02e-43, y: 1.3e-44, z: 4.1563e-41, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 6e-44, z: 7e-45, w: 3.9323e-41}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -56283,6 +56284,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3d397d8780414037811524dd988a62e, type: 3}
+--- !u!1 &2077453376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2077453377}
+  - component: {fileID: 2077453379}
+  - component: {fileID: 2077453378}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2077453377
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077453376}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 112750799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2077453378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077453376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52413b421a404bb4dba3ab109d3bb9f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MenuMusic: {fileID: 8300000, guid: be166668f2763de4aa49a05a4ba3d919, type: 3}
+  AdventureMusic: {fileID: 8300000, guid: 377f10e60f718934d984db68c7489907, type: 3}
+  StandardBattleMusic: {fileID: 8300000, guid: 7a1396f6df19e514a9cb0e6504f79a96, type: 3}
+  EliteBattleMusic: {fileID: 8300000, guid: 79963f874d4121d45a6c61b8fe6241e8, type: 3}
+  DragonBattleMusic: {fileID: 8300000, guid: e83e36af7eb86a841b111aebc5d13d04, type: 3}
+  DeathMusic: {fileID: 8300000, guid: 021e5d610c1016e429e1f20418d67f95, type: 3}
+  ShopMusic: {fileID: 8300000, guid: 2f6e9de25b8c48a48ab2ea47da54c506, type: 3}
+--- !u!114 &2077453379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077453376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1020c709f21ac644be02712907e2512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolSize: 10
+  musicVolume: 1
+  ambienceVolume: 1
+  sfxVolume: 1
 --- !u!1 &2079045748
 GameObject:
   m_ObjectHideFlags: 0
