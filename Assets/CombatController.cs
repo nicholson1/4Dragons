@@ -97,7 +97,6 @@ public class CombatController : MonoBehaviour
         }
         
         IncreaseTrialCounter();
-        MusicManager.Instance.PlayMenuMusic();
     }
     
     public void IncreaseTrialCounter()
@@ -806,6 +805,8 @@ public class CombatController : MonoBehaviour
     {
         CombatTrigger.TriggerCombat += StartCombat;
         CombatTrigger.EndCombat += EndCombat;
+        MusicManager.Instance.PlayMenuMusic();
+
     }
     private void OnDestroy()
     {

@@ -18,9 +18,9 @@ public class SoundManager : MonoBehaviour
     private AudioSource ambienceSource;
 
     // Volume controls
-    public float musicVolume = 1f;
-    public float ambienceVolume = 1f;
-    public float sfxVolume = 1f;
+    [SerializeField] public float musicVolume = .5f;
+    public float ambienceVolume = .5f;
+    public float sfxVolume = .5f;
 
     // For fading
     private Coroutine musicFadeCoroutine;
@@ -247,5 +247,11 @@ public class SoundManager : MonoBehaviour
 
         ambienceSource.Stop();
         ambienceSource.volume = ambienceVolume; // Reset volume for next play
+    }
+
+    public void ToggleMuteMusic()
+    {
+        musicSourceA.mute = ! musicSourceA.mute;
+        musicSourceB.mute = ! musicSourceB.mute;
     }
 }
