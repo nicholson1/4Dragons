@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -16,6 +17,8 @@ public class SoundManager : MonoBehaviour
     private AudioSource musicSourceB;
     private bool isMusicSourceAPlaying = true; // Toggle between the two music sources
     private AudioSource ambienceSource;
+    private float[] MusicTimeStamps = new float[8];
+    private MusicChannel lastPlayedMusic;
 
     // Volume controls
     [SerializeField] public float musicVolume = .5f;
@@ -93,15 +96,17 @@ public class SoundManager : MonoBehaviour
     }
 
     // Play music with crossfade
-    public void PlayMusic(AudioClip newClip, float fadeDuration = 0f)
+    public void PlayMusic(AudioClip newClip, MusicChannel channel, float fadeDuration = 0f)
     {
         AudioSource activeSource = isMusicSourceAPlaying ? musicSourceA : musicSourceB;
+        
         AudioSource newSource = isMusicSourceAPlaying ? musicSourceB : musicSourceA;
 
         if (activeSource.clip != newClip)
         {
             newSource.clip = newClip;
             newSource.volume = 0f;
+            newSource.time = MusicTimeStamps[(int)channel];
             newSource.Play();
 
             if (fadeDuration > 0f)
@@ -116,8 +121,11 @@ public class SoundManager : MonoBehaviour
             }
 
             isMusicSourceAPlaying = !isMusicSourceAPlaying; // Switch sources
+            
+            lastPlayedMusic = channel;
         }
     }
+
 
     // Pause the currently active music source
     public void PauseMusic()
@@ -189,6 +197,7 @@ public class SoundManager : MonoBehaviour
     // Crossfade between two music sources
     private IEnumerator CrossfadeMusic(AudioSource oldSource, AudioSource newSource, float duration)
     {
+        MusicChannel currentChannel = lastPlayedMusic;
         float startVolume = oldSource.volume;
 
         for (float t = 0; t < duration; t += Time.deltaTime)
@@ -197,6 +206,9 @@ public class SoundManager : MonoBehaviour
             newSource.volume = Mathf.Lerp(0f, musicVolume, t / duration);
             yield return null;
         }
+
+        if(currentChannel != MusicChannel.DragonBattleMusic)
+            MusicTimeStamps[(int)currentChannel] = oldSource.time;
 
         oldSource.Stop();
         newSource.volume = musicVolume;
@@ -254,4 +266,15 @@ public class SoundManager : MonoBehaviour
         musicSourceA.mute = ! musicSourceA.mute;
         musicSourceB.mute = ! musicSourceB.mute;
     }
+}
+
+public enum MusicChannel
+{
+    MenuMusic = 0,
+    AdventureMusic = 1, 
+    StandardBattleMusic = 2,
+    EliteBattleMusic = 3,
+    DragonBattleMusic = 4,
+    ShopMusic = 5,
+    DeathMusic = 6,
 }

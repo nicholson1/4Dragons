@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class UIController : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject UiCamera;
     
     [SerializeField] private GameObject RelicTester;
+    [SerializeField] private GameObject ModTester;
+
+    [SerializeField] private GameObject DailyChallengeUI;
 
     
     
@@ -52,6 +56,26 @@ public class UIController : MonoBehaviour
         TitleScreen.SetActive(false);
         InventoryButton.SetActive(true);
         MapButton.SetActive(true);
+    }
+
+    public void ActivateDailyChallengeUI()
+    {
+        TitleScreen.SetActive(false);
+        DailyChallengeUI.gameObject.SetActive(false);
+
+        //List<List<object>> dailyChallenges = DataReader._instance.GetDailyChallengesTable();
+        DateTime currentDateTime = DateTime.Now;
+        
+        int challengeID = currentDateTime.Minute % 10;
+        
+        // load modifiers
+        // load name
+        // load descritpion
+    }
+    public void CloseDailyChallengeUI()
+    {
+        DailyChallengeUI.gameObject.SetActive(false);
+        TitleScreen.SetActive(true);
     }
 
 
@@ -190,9 +214,6 @@ public class UIController : MonoBehaviour
         TransitionCamera.gameObject.SetActive(false);
         MainCamera.gameObject.SetActive(true);
         TitleScreen.SetActive(true);
-
- 
-
     }
 
 
@@ -423,6 +444,10 @@ public class UIController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.R))
         {
             RelicTester.gameObject.SetActive(true);
+        }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
+        {
+            ModTester.gameObject.SetActive(true);
         }
     }
 }

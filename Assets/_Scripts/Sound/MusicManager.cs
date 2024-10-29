@@ -28,31 +28,31 @@ public class MusicManager : MonoBehaviour
 
     public void PlayMenuMusic()
     {
-        SoundManager.Instance.PlayMusic(MenuMusic, 1);
+        SoundManager.Instance.PlayMusic(MenuMusic, MusicChannel.MenuMusic,3);
     }
     public void PlayAdventureMusic()
     {
-        SoundManager.Instance.PlayMusic(AdventureMusic, 1);
+        SoundManager.Instance.PlayMusic(AdventureMusic,  MusicChannel.AdventureMusic,3);
     }
     public void PlayBattleMusic()
     {
-        SoundManager.Instance.PlayMusic(StandardBattleMusic, 1);
+        SoundManager.Instance.PlayMusic(StandardBattleMusic, MusicChannel.StandardBattleMusic, 3);
     }
     public void PlayEliteMusic()
     {
-        SoundManager.Instance.PlayMusic(EliteBattleMusic, 1);
+        SoundManager.Instance.PlayMusic(EliteBattleMusic,  MusicChannel.EliteBattleMusic, 3);
     }
     public void PlayDragonMusic()
     {
-        SoundManager.Instance.PlayMusic(DragonBattleMusic, 1);
+        SoundManager.Instance.PlayMusic(DragonBattleMusic,  MusicChannel.DragonBattleMusic, 3);
     }
     public void PlayShopMusic()
     {
-        SoundManager.Instance.PlayMusic(ShopMusic, 1);
+        SoundManager.Instance.PlayMusic(ShopMusic,  MusicChannel.ShopMusic, 3);
     }
     public void PlayDeathMusic()
     {
-        SoundManager.Instance.PlayMusic(DeathMusic, 1);
+        SoundManager.Instance.PlayMusic(DeathMusic,  MusicChannel.DeathMusic, 3);
     }
     
     

@@ -12,12 +12,16 @@ public class DataReader : MonoBehaviour
 
     public TextAsset EquipmentNamings;
     public TextAsset WeaponScaling;
+    
+    public TextAsset DailyChallenges;
+
 
     private List<string[]> EquipmentNamingTable;
     
     //Weapon Scaling table is "Ability", Base damage, Level Scaling, type scaling, .... could include more data...
     private List<List<object>> WeaponScalingTable;
-
+    
+    private List<List<object>> DailyChallengesTable;
     
 
     private void Awake()
@@ -32,6 +36,8 @@ public class DataReader : MonoBehaviour
         }
         EquipmentNamingTable = ReadCSV(EquipmentNamings);
         WeaponScalingTable = ReadTSVWeaponTable(WeaponScaling);
+        DailyChallengesTable = ReadTSVDailyChallenges(DailyChallenges);
+
     }
     
 
@@ -43,6 +49,10 @@ public class DataReader : MonoBehaviour
     public List<List<object>>  GetWeaponScalingTable()
     {
         return WeaponScalingTable;
+    }
+    public List<List<object>>  GetDailyChallengesTable()
+    {
+        return DailyChallengesTable;
     }
 
     private List<string[]> ReadCSV(TextAsset textAsset)
@@ -159,6 +169,49 @@ public class DataReader : MonoBehaviour
         // }
 
         return WeaponTable;
+
+    }
+    private List<List<object>> ReadTSVDailyChallenges(TextAsset textAsset)
+    {
+        string[] data = textAsset.text.Split(new string[] { "\n" }, StringSplitOptions.None);
+
+        List<object[]> dataTable = new List<object[]>();
+        List<List<object>> dailyChallenges = new List<List<object>>();
+        
+        
+        
+        foreach (var line in data)
+        {
+            dataTable.Add(line.Split("\t"));
+        }
+
+        for (int i = 0; i < dataTable.Count; i++)
+        {
+            List<object> temp = new List<object>();
+            
+            // add the ID
+            temp.Add(int.Parse(dataTable[i][0].ToString()));
+            // add the name
+            temp.Add(dataTable[i][1]);
+            
+            //description
+            temp.Add(dataTable[i][2]);
+            
+            //add the data
+            string[] modData = dataTable[i][3].ToString().Split(",");
+            List<int> mods = new List<int>();
+            foreach (var num in modData)
+            {
+                mods.Add(int.Parse(num));
+                
+            }
+            temp.Add(mods);
+
+            dailyChallenges.Add(temp);
+            
+        }
+
+        return dailyChallenges;
 
     }
 }
