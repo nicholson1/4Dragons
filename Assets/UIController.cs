@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -31,6 +34,12 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject ModTester;
 
     [SerializeField] private GameObject DailyChallengeUI;
+    [SerializeField] private TextMeshProUGUI DailyChallengeTitle;
+    [SerializeField] private TextMeshProUGUI DailyChallengeDescription;
+    [SerializeField] private TextMeshProUGUI ModDisplay;
+    [SerializeField] private GameObject ModScroll;
+
+
 
     
     
@@ -56,26 +65,49 @@ public class UIController : MonoBehaviour
         TitleScreen.SetActive(false);
         InventoryButton.SetActive(true);
         MapButton.SetActive(true);
+        DailyChallengeUI.gameObject.SetActive(false);
+
     }
 
     public void ActivateDailyChallengeUI()
     {
         TitleScreen.SetActive(false);
-        DailyChallengeUI.gameObject.SetActive(false);
+        DailyChallengeUI.gameObject.SetActive(true);
 
-        //List<List<object>> dailyChallenges = DataReader._instance.GetDailyChallengesTable();
+        List<List<object>> dailyChallenges = DataReader._instance.GetDailyChallengesTable();
         DateTime currentDateTime = DateTime.Now;
         
-        int challengeID = currentDateTime.Minute % 10;
-        
+        int challengeID = currentDateTime.Second % 10;
+
+        List<int> mods = (List<int>)dailyChallenges[challengeID][3];
+
+        foreach (Transform child in ModScroll.transform)
+        {
+            child.gameObject.SetActive(false);
+        }
         // load modifiers
+        foreach (int i in mods)
+        {
+            Modifiers._instance.AdjustMod((Mods)i, true);
+            TextMeshProUGUI mod = Instantiate(ModDisplay, ModScroll.transform);
+            mod.gameObject.SetActive(true);
+
+            mod.text = CamelCaseToSpaced(((Mods)i).ToString());
+
+
+        }
         // load name
+        DailyChallengeTitle.text = (string)dailyChallenges[challengeID][1];
+
         // load descritpion
+        DailyChallengeDescription.text = (string)dailyChallenges[challengeID][2];
+
     }
     public void CloseDailyChallengeUI()
     {
         DailyChallengeUI.gameObject.SetActive(false);
         TitleScreen.SetActive(true);
+        Modifiers._instance.ClearMods();
     }
 
 
@@ -449,5 +481,10 @@ public class UIController : MonoBehaviour
         {
             ModTester.gameObject.SetActive(true);
         }
+    }
+    public static string CamelCaseToSpaced(string camelCaseString)
+    {
+        // Add spaces before each uppercase letter and capitalize the first letter
+        return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
     }
 }

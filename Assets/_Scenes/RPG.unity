@@ -406,8 +406,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00010477743, y: 0}
-  m_SizeDelta: {x: -387.6, y: 0}
+  m_AnchoredPosition: {x: 0.00061373686, y: 0}
+  m_SizeDelta: {x: -382.6, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &17175246
 MonoBehaviour:
@@ -3471,7 +3471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EquipmentNamings: {fileID: 4900000, guid: c54bd8d7a0f0312469be5cc5a44fba82, type: 3}
   WeaponScaling: {fileID: 4900000, guid: 3c16eb3ea2395bf40b74a31d39f1a12e, type: 3}
-  DailyChallenges: {fileID: 0}
+  DailyChallenges: {fileID: 4900000, guid: 59fcd2468bee01e40b2ab3a11bc93f5b, type: 3}
 --- !u!114 &112750798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5141,7 +5141,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.02e-43, y: 1.4e-44, z: 3.6525e-41, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -13479,8 +13479,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: -50, y: -100}
+  m_AnchoredPosition: {x: 2.5, y: -25}
+  m_SizeDelta: {x: -55, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &410619885
 MonoBehaviour:
@@ -16814,8 +16814,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5, y: -37.399998}
-  m_SizeDelta: {x: -30, y: -94.8}
+  m_AnchoredPosition: {x: 0, y: -29.900002}
+  m_SizeDelta: {x: -50, y: -109.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &490713361
 MonoBehaviour:
@@ -16866,7 +16866,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.4
+  m_fontSize: 42.85
   m_fontSizeBase: 42.6
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -44233,6 +44233,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2144824915}
@@ -44249,6 +44253,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 673414760}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
+      value: 
+      objectReference: {fileID: 2144824908}
+    - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -44262,6 +44270,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -44294,6 +44306,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: Map.MapManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
       value: Map.MapManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -50210,8 +50226,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 190.9, y: -25}
-  m_SizeDelta: {x: 381.8, y: 50}
+  m_AnchoredPosition: {x: 185.045, y: -25}
+  m_SizeDelta: {x: 370.09, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1764738969
 MonoBehaviour:
@@ -50260,14 +50276,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33.7
+  m_fontSize: 32.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -61166,6 +61182,10 @@ MonoBehaviour:
   RelicTester: {fileID: 1576741201}
   ModTester: {fileID: 1415964164}
   DailyChallengeUI: {fileID: 326261189}
+  DailyChallengeTitle: {fileID: 322215188}
+  DailyChallengeDescription: {fileID: 490713361}
+  ModDisplay: {fileID: 1764738969}
+  ModScroll: {fileID: 17175244}
   RestartButton: {fileID: 822181647}
 --- !u!1 &1187426786015170 stripped
 GameObject:

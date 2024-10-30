@@ -40,6 +40,11 @@ public class Modifiers : MonoBehaviour
         }
     }
 
+    public void ClearMods()
+    {
+        currentMods.Clear();
+    }
+
     public void AdjustMod(Mods mod, bool add)
     {
         if (mod == Mods.None && add)
@@ -56,7 +61,7 @@ public class Modifiers : MonoBehaviour
         }
         if (add)
         {
-            Debug.Log("adding " + mod);
+            //Debug.Log("adding " + mod);
             currentMods.Add(mod);
             if (currentMods.Contains(Mods.None))
             {
