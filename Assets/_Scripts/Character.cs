@@ -137,7 +137,10 @@ public class Character : MonoBehaviour
 
                 if (_level <= 5)
                 {
-                    _weapons.Add(EquipmentCreator._instance.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                    if(!Modifiers._instance.CurrentMods.Contains(Mods.NoShieldSpells))
+                        _weapons.Add(EquipmentCreator._instance.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                    else
+                        _weapons.Add(EquipmentCreator._instance.CreateRandomWeapon(_level, false));
                 }
                 else
                 {
@@ -330,6 +333,12 @@ public class Character : MonoBehaviour
     {
         if(c != this)
             return;
+        
+        if(c._currentHealth < 0)
+        {
+            Debug.LogError("THIS BROKE SOMETHING MAYBE?");
+            return;
+        }
         
         //Debug.Log("HIT WITH BUFF + " + c.name);
 

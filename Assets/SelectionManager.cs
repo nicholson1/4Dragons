@@ -389,6 +389,8 @@ public class SelectionManager : MonoBehaviour
             selection1.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
         // present 4 spells
         int spellCount = 1;
+
+        int loopEnd = 10; // if we miss 10 times, just take that spell
         while (spellCount < 4)
         {
             Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
@@ -420,10 +422,15 @@ public class SelectionManager : MonoBehaviour
                 }
             }
 
-            if (hasSpell == false)
+            if (hasSpell == false || loopEnd == 0)
             {
                 selection1.Add(eq);
                 spellCount += 1;
+                loopEnd = 10;
+            }
+            else
+            {
+                loopEnd -= 1;
             }
         }
 
@@ -530,9 +537,11 @@ public class SelectionManager : MonoBehaviour
             selectionText.text = "Selection (1/4)";
             inventoryButton.gameObject.SetActive(true);
             BeginAdventureButton.SetActive(false);
-            equipments.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
             // present 4 spells
             int spellCount = 1;
+            
+            equipments.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
+
             while (spellCount < 4)
             {
                 Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);

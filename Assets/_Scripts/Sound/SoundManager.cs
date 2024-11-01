@@ -207,7 +207,7 @@ public class SoundManager : MonoBehaviour
             yield return null;
         }
 
-        if(currentChannel != MusicChannel.DragonBattleMusic)
+        if(currentChannel != MusicChannel.DragonBattleMusic && currentChannel != MusicChannel.EliteBattleMusic )
             MusicTimeStamps[(int)currentChannel] = oldSource.time;
 
         oldSource.Stop();

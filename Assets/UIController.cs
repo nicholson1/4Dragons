@@ -77,8 +77,8 @@ public class UIController : MonoBehaviour
         List<List<object>> dailyChallenges = DataReader._instance.GetDailyChallengesTable();
         DateTime currentDateTime = DateTime.Now;
         
-        int challengeID = currentDateTime.Second % 10;
-
+        int challengeID = currentDateTime.Second % 9;
+        //challengeID = 8;
         List<int> mods = (List<int>)dailyChallenges[challengeID][3];
 
         foreach (Transform child in ModScroll.transform)
