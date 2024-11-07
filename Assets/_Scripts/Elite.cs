@@ -121,7 +121,7 @@ public class Elite : MonoBehaviour
                 weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Fire4, rarity, stat1, stat2));
                 break;
             case EliteType.Bloodbender:
-                stat1 = Equipment.Stats.BloodPower;
+                stat1 = Equipment.Stats.LifeForce;
                 stat2 = Equipment.Stats.SpellPower;
                 weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood1, rarity, stat1, stat2));
                 spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
@@ -163,7 +163,7 @@ public class Elite : MonoBehaviour
                 break;
             case EliteType.BloodGiant:
                 stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.BloodPower;
+                stat2 = Equipment.Stats.LifeForce;
                 spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood1));
                 spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, Weapon.SpellTypes.Blood2));
                 weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Blood4, rarity, stat1, stat2));

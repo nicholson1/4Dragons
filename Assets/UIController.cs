@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -486,5 +487,15 @@ public class UIController : MonoBehaviour
     {
         // Add spaces before each uppercase letter and capitalize the first letter
         return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
+    }
+    public void CloseApplication()
+    {
+#if UNITY_EDITOR
+        // Stops playing in the editor
+        EditorApplication.isPlaying = false;
+#else
+            // Closes the application in a standalone build
+            Application.Quit();
+#endif
     }
 }

@@ -176,7 +176,7 @@ public class EquipmentCreator : MonoBehaviour
                     possibleStats.Remove(Equipment.Stats.IcePower);
                     break;
                 case Mods.NoBloodStats:
-                    possibleStats.Remove(Equipment.Stats.BloodPower);
+                    possibleStats.Remove(Equipment.Stats.LifeForce);
                     break;
                 case Mods.NoShadowStats:
                     possibleStats.Remove(Equipment.Stats.ShadowPower);

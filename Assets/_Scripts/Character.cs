@@ -789,28 +789,23 @@ public class Character : MonoBehaviour
                     //CombatController._instance.Player._gold += _gold;
                     MusicManager.Instance.PlayAdventureMusic();
 
-                    if(isDragon || isElite)
+                    if(isDragon)
                     {
                         _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Die.ToString());
-                        Destroy(_combatEntity);
-                        CombatController._instance.EndCombat();
-                        SelectionManager._instance.RandomSelectionFromEquipment(this);
-                        StartCoroutine(WaitThenDestroy(3));
-
                     }
-                    else
-                    {
-                        CombatController._instance.Guide.MoveToCleanse(this.transform);
-                        this.GetComponent<DarknessController>().Cleanse();
-                        _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Dizzy.ToString());
-                        Destroy(_combatEntity);
-                        StartCoroutine(WaitThenDestroy(10));
-                        CombatController._instance.EndCombat();
-                        WaitEndCombat = StartCoroutine(WaitThenEndCombat(7f));
-                        LootButtonManager._instance.SkipButton.gameObject.SetActive(true);
-                        LootButtonManager._instance.SkipButton.GetComponent<Button>().onClick.AddListener(SkipWaitEndCombat);
+                    // else
+                    //{
+                    CombatController._instance.Guide.MoveToCleanse(this.transform);
+                    this.GetComponent<DarknessController>().Cleanse();
+                    _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Dizzy.ToString());
+                    Destroy(_combatEntity);
+                    StartCoroutine(WaitThenDestroy(10));
+                    CombatController._instance.EndCombat();
+                    WaitEndCombat = StartCoroutine(WaitThenEndCombat(7f));
+                    LootButtonManager._instance.SkipButton.gameObject.SetActive(true);
+                    LootButtonManager._instance.SkipButton.GetComponent<Button>().onClick.AddListener(SkipWaitEndCombat);
 
-                    }
+                    //}
                 }
                 
             }

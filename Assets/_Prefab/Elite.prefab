@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 7501945257566157649}
   - component: {fileID: 1529198432102172218}
   - component: {fileID: 8687070090675257530}
+  - component: {fileID: 2083278548392685780}
   m_Layer: 11
   m_Name: Elite
   m_TagString: Enemy
@@ -273,7 +274,6 @@ MonoBehaviour:
   isElite: 1
   inventorySize: 6
   showHelm: 1
-  EC: {fileID: 0}
   _combatEntity: {fileID: 7501945257566157649}
   EqMM: {fileID: 0}
 --- !u!54 &7501945257566157652
@@ -359,3 +359,19 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &2083278548392685780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7501945257566157653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7478976fb263e2949b9123d1592a267c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LargeParticleSystem: {fileID: 0}
+  DarknessObj: {fileID: 0}
+  isElite: 1
+  isDragon: 0

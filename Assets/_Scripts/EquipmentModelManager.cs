@@ -31,12 +31,12 @@ public class EquipmentModelManager : MonoBehaviour
 
 
     private int headIndex = 0;
-    private int shoulderIndex = 0;
-    private int chestIndex = 0;
-    private int gloveIndex = 0;
-    private int bootIndex = 0;
+    private int shoulderIndex = 6;
+    private int chestIndex = 2;
+    private int gloveIndex = 1;
+    private int bootIndex = 5;
     private int faceIndex = 0;
-    private int hairIndex = 0;
+    private int hairIndex = 4;
 
     private bool showHelm = true;
 

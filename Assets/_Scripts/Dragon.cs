@@ -161,6 +161,8 @@ public class Dragon : MonoBehaviour
       Models[modelIndex].gameObject.SetActive(true);
       c._am = Models[modelIndex].GetComponent<Animator>();
       Models[modelIndex].GetComponentInChildren<SkinnedMeshRenderer>().material = Materials[materialIndex + (5 * modelIndex)];
+      
+      GetComponent<DarknessController>().SetDragonDarkness();
    }
 
    private bool ContainsSpell(List<Weapon> Spells, Weapon.SpellTypes spellType)

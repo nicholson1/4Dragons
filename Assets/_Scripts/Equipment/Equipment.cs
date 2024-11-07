@@ -157,7 +157,7 @@ namespace ImportantStuff
             NaturePower,
             FirePower,
             IcePower,
-            BloodPower,
+            LifeForce,
             ShadowPower,
 
             //additional stats

@@ -44,7 +44,6 @@ public class Relic : Equipment
         "Dreadbane Pendant",
         "Polished Diamond",
         "Frostbreath Totem",
-        "Juggernaut's Sigil",
         "Manasheild Talisman",
         "Ironsheild Talisman",
         "Ironward Totem",
@@ -61,7 +60,7 @@ public class Relic : Equipment
         "Ruthless Edgestone",
         "Sheildbreaker's Polish",
         "Goldseeker's Compass",
-        //dragon relics
+//dragon relics
         "Midas Whetstone",
         "Vampiric Charm",
         "Merchant's Guild Token",
@@ -76,18 +75,19 @@ public class Relic : Equipment
         "Veiled Vision Crystal",
         "Second Fiddle",
         "Unstable Energy Core",
+        "Juggernaut's Sigil",
     };
 
     private String[] RelicDescription =
     {
-        "none",
+        "None",
         "Swapping scrolls takes no energy",
         "Swapping weapons takes no energy",
-        "Everytime you cast a spell this fight increase your SP by 2% (resets each fight)",
-        "If you have 4 unique spell schools, gain SP",
-        "Everytime you use a physical attack this fight increase your AD by 2% (resets each fight)",
-        "When you drop below 50% health gain a bunch of armor + mr for a few turns?",
-        "When you drop below 50% hp gain SP + AD",
+        "Everytime you cast a spell this fight increase your Spellpower by 2% for the rest of combat",
+        "If you have 4 unique spell schools, gain Spellpower",
+        "Everytime you use a physical attack this fight increase your Strength by 2% for the rest of combat",
+        "When you drop below 50% health gain Armor and MR for the rest of combat",
+        "When you drop below 50% hp gain Spellpower and Strength for the rest of combat",
         "When you drop below 50% hp gain gain Block",
         "When you crit with an attack gain 1 gold",
         "Retain unused energy",
@@ -98,16 +98,15 @@ public class Relic : Equipment
         "Elites start damaged",
         "Gain 500 gold on pickup",
         "Chill opponents at the start of combat",
-        "Add your block value to your physical abilities power",
         "Prevent the first spell damage taken each combat",
         "Prevent the first physical damage taken each combat",
         "If you have no block Gain block at the end of your turn",
         "Start each combat prepared",
         "The first time you die resurrect with 50% hp and become invulnerable",
         "Your first Buff spell each combat costs no energy",
-        "? rooms wont have combats",
-        "After combat gain 5% intrest on your gold",
-        "Permanent wing boots",
+        "? nodes wont have combats",
+        "After combat gain 5% interest on your gold",
+        "You can ignore paths on the map",
         "Buffs and debuffs you cast last 1 turn longer",
         "Spells do double damage to block",
         "Crits on chilled targets do 100% more Damage",
@@ -115,7 +114,7 @@ public class Relic : Equipment
         "Crits do 33% more damage",
         "Physical attacks do double damage to block",
         "Enimies drop 25% more gold",
-        // dragon relics
+        //dragon relics
         "Add 50% of your gold to the power of your physical abilities",
         "Heal for half the unblocked damage you deal",
         "Shops reroll cost no longer increases",
@@ -124,17 +123,20 @@ public class Relic : Equipment
         "Combats have an additional loot reward",
         "When you crit with an attack, heal 5% of your health",
         "Gain +1 energy you can only select 1 loot",
-        "Gain +1 energy opponents get AD + SP",
+        "Gain +1 energy opponents get Strength and Spellpower",
         "Gain +2 energy you cannot use 1 cost abilities",
         "Gain +2 energy you cannot gain gold",
         "Gain +2 energy you cannot see enemy intents",
         "Gain +2 energy your opponents go first",
         "Gain +3 energy but lose 1 max energy after each turn",
+        "Add your block value to your physical abilities power",
     };
     
     //like specific function based on spellType?
     
 }
+
+
 public enum RelicType
 {
     None,
@@ -155,7 +157,6 @@ public enum RelicType
     Relic15,
     Relic16,
     Relic17,
-    Relic18,
     Relic19,
     Relic20,
     Relic21,
@@ -186,4 +187,6 @@ public enum RelicType
     DragonRelic12,
     DragonRelic13,
     DragonRelic14,
+    DragoRelic15,
+
 }

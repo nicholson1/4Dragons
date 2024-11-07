@@ -468,7 +468,7 @@ public class CombatEntity : MonoBehaviour
                         }
                         else
                         {
-                            attackDamage = Mathf.CeilToInt(blockAmount + attackDamage - blockAmount / 2f);
+                            attackDamage = Mathf.CeilToInt(blockAmount + attackDamage - (blockAmount / 2f));
                         }
                     }
                 }
@@ -482,7 +482,10 @@ public class CombatEntity : MonoBehaviour
                         }
                         else
                         {
-                            attackDamage = Mathf.CeilToInt(blockAmount + attackDamage - blockAmount / 2f);
+                            //Debug.Log($"attack damage: {attackDamage} blockAmount: {blockAmount}");
+
+                            attackDamage = Mathf.CeilToInt(blockAmount + attackDamage - (blockAmount / 2f));
+                            //Debug.Log($"attack damage:{attackDamage}");
                         }
                     }
                 }
@@ -499,6 +502,7 @@ public class CombatEntity : MonoBehaviour
 
                 GetHitWithBuff(myCharacter, BuffTypes.Block, 1, -blockAmount);
                 attackDamage -= Mathf.RoundToInt(blockAmount);
+                
             }
             else
             {

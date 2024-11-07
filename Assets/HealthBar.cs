@@ -372,7 +372,7 @@ public class HealthBar : MonoBehaviour
             return;
 
 
-        Debug.Log("turns are 3 = " + turns);
+        //Debug.Log("turns are 3 = " + turns);
         // make the icon
         if (MakeNewOne(CombatEntity.BuffTypes.None,debuff , CombatEntity.BlessingTypes.None))
         {

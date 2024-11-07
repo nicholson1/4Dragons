@@ -171,7 +171,7 @@ public class EliteManager : MonoBehaviour
                 stat2 = Equipment.Stats.SpellPower;
                 break;
             case EliteType.Bloodbender:
-                stat1 = Equipment.Stats.BloodPower;
+                stat1 = Equipment.Stats.LifeForce;
                 stat2 = Equipment.Stats.SpellPower;
                 break;
             case EliteType.HillGiant:
@@ -192,7 +192,7 @@ public class EliteManager : MonoBehaviour
                 break;
             case EliteType.BloodGiant:
                 stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.BloodPower;
+                stat2 = Equipment.Stats.LifeForce;
                 break;
             case EliteType.FireKing:
                 stat1 = Equipment.Stats.Swords;
@@ -227,7 +227,7 @@ public class EliteManager : MonoBehaviour
             case SpellSchool.Fire:
                 return Equipment.Stats.FirePower;
             case SpellSchool.Blood:
-                return Equipment.Stats.BloodPower;
+                return Equipment.Stats.LifeForce;
             case SpellSchool.Shadow:
                 return Equipment.Stats.ShadowPower;
             case SpellSchool.Ice:

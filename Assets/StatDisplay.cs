@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using ImportantStuff;
 using TMPro;
 using Unity.VisualScripting;
@@ -65,7 +66,7 @@ public class StatDisplay : MonoBehaviour
             //Debug.Log("update crit: " + text.text + " :" +v);
         }
         //Debug.Log(toolTip);
-        toolTip.Title = stat.ToString();
+        toolTip.Title = CamelCaseToSpaced(stat.ToString());
         toolTip.icon = icon.sprite;
         toolTip.IconColor = icon.color;
 
@@ -114,5 +115,11 @@ public class StatDisplay : MonoBehaviour
         message = message.Replace("$", value.ToString());
 
         return message;
+    }
+    
+    public static string CamelCaseToSpaced(string camelCaseString)
+    {
+        // Add spaces before each uppercase letter and capitalize the first letter
+        return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
     }
 }

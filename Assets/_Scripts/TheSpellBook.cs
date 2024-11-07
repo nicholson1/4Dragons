@@ -894,25 +894,25 @@ public class TheSpellBook : MonoBehaviour
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Blood1:
-                casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.BigSpellRev;
                 break;
             case Weapon.SpellTypes.Blood2:
-                casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.BigSpellRev;
                 break;
             case Weapon.SpellTypes.Blood3:
-                casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Blood4:
-                casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
             case Weapon.SpellTypes.Blood5:
-                casterStats.TryGetValue(Equipment.Stats.BloodPower, out p);
+                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.SmallSpell;
                 break;
             case Weapon.SpellTypes.Shadow1:
@@ -1115,7 +1115,7 @@ public class TheSpellBook : MonoBehaviour
                 int blockCheck = caster.myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
                 if (blockCheck != -1)
                 {
-                    if (RelicManager._instance.CheckRelic(RelicType.Relic18))
+                    if (RelicManager._instance.CheckRelic(RelicType.DragoRelic15))
                     {
                         power += Mathf.RoundToInt(caster.myCharacter.Buffs[blockCheck].Item3);
                     }
