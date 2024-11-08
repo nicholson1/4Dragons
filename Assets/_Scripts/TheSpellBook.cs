@@ -23,16 +23,9 @@ public class TheSpellBook : MonoBehaviour
     [SerializeField] private String[] BlessingDescriptions;
     [SerializeField] private Sprite[] BlessingSprites;
 
-
-    
     
     public Color[] abilityColors;
     
-    
-
-
-
-
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -328,7 +321,7 @@ public class TheSpellBook : MonoBehaviour
     {
         switch (debuff.Item1)
         {
-            case CombatEntity.DeBuffTypes.Bleed:
+            case CombatEntity.DeBuffTypes.Lacerate:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
                 ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Axe2, 0);
 
@@ -536,7 +529,7 @@ public class TheSpellBook : MonoBehaviour
         else if (abilityType == CombatEntity.AbilityTypes.PhysicalAttack)
         {
             //bleed
-            caster.DeBuff(target, CombatEntity.DeBuffTypes.Bleed,power[1], Mathf.RoundToInt(power[0]/2f), crit);
+            caster.DeBuff(target, CombatEntity.DeBuffTypes.Lacerate,power[1], Mathf.RoundToInt(power[0]/2f), crit);
 
         }
 

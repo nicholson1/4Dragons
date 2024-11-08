@@ -397,7 +397,7 @@ public class HealthBar : MonoBehaviour
                             b._amount = 75;
                         }
                     }
-                    if (debuff == CombatEntity.DeBuffTypes.Burn || debuff == CombatEntity.DeBuffTypes.Bleed)
+                    if (debuff == CombatEntity.DeBuffTypes.Burn || debuff == CombatEntity.DeBuffTypes.Lacerate)
                     {
                         
                         
@@ -757,7 +757,7 @@ public class HealthBar : MonoBehaviour
         {
             switch (debuff)
             {
-                case CombatEntity.DeBuffTypes.Bleed:
+                case CombatEntity.DeBuffTypes.Lacerate:
                     return false;
                 case CombatEntity.DeBuffTypes.Burn:
                     return false;

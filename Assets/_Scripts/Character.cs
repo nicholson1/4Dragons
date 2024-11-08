@@ -550,7 +550,7 @@ public class Character : MonoBehaviour
         int i = GetIndexOfDebuff(deBuff);
         switch (deBuff)
         {
-            case CombatEntity.DeBuffTypes.Bleed:
+            case CombatEntity.DeBuffTypes.Lacerate:
                 if (i == -1)
                 {
                     DeBuffs.Add((deBuff,turns,amount));

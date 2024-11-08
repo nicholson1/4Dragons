@@ -1085,7 +1085,7 @@ public class CombatEntity : MonoBehaviour
     
     public enum DeBuffTypes
     {
-        Bleed, // dot physical
+        Lacerate, // dot physical
         Burn, // dot spell
         Wounded, // anti healing
         Weakened, // anti power
