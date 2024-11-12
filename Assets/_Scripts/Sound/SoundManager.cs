@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
@@ -83,14 +85,17 @@ public class SoundManager : MonoBehaviour
     }
 
     // Play a sound effect
-    public void PlaySFX(AudioClip clip, Vector3 position)
+    public void Play2DSFX(AudioClip clip, float volume, float pitch = 1, float pitchVariance = 0)
     {
         AudioSource source = GetPooledSource();
         if (source != null)
         {
-            source.transform.position = position;
             source.clip = clip;
-            source.volume = sfxVolume;
+            source.volume = sfxVolume * volume;
+
+            // if (pitchVariance > 0)
+            //     pitch += Random.Range(-pitchVariance, pitchVariance);
+            source.pitch = pitch;
             source.Play();
         }
     }
@@ -265,6 +270,54 @@ public class SoundManager : MonoBehaviour
     {
         musicSourceA.mute = ! musicSourceA.mute;
         musicSourceB.mute = ! musicSourceB.mute;
+    }
+    public void AdjustMusicVolume(float volume)
+    {
+        musicVolume = volume;
+        musicSourceA.volume = musicVolume;
+        musicSourceB.volume = musicVolume;
+    }
+    public void AdjustSFXVolume(float volume)
+    {
+        sfxVolume = volume;
+    }
+    public void AdjustAmbienceVolume(float volume)
+    {
+        ambienceVolume = volume;
+    }
+    
+    [SerializeField] private Slider MusicSlider;
+    [SerializeField] private Slider SFXSlider;
+    [SerializeField] private Slider AmbSlider;
+
+    void Start()
+    {
+        MusicSlider.onValueChanged.AddListener(OnMusicSliderValueChanged);
+        SFXSlider.onValueChanged.AddListener(OnSFXSliderValueChanged);
+        AmbSlider.onValueChanged.AddListener(OnAmbienceSliderValueChanged);
+        
+        MusicSlider.SetValueWithoutNotify(musicVolume);
+        SFXSlider.SetValueWithoutNotify(sfxVolume);
+        AmbSlider.SetValueWithoutNotify(ambienceVolume);
+    }
+    public void OnMusicSliderValueChanged(float value)
+    {
+        AdjustMusicVolume(value);
+    }
+    public void OnSFXSliderValueChanged(float value)
+    {
+        AdjustSFXVolume(value);
+    }
+    public void OnAmbienceSliderValueChanged(float value)
+    {
+        AdjustAmbienceVolume(value);
+    }
+
+    void OnDestroy()
+    {
+        MusicSlider.onValueChanged.RemoveListener(OnMusicSliderValueChanged);
+        SFXSlider.onValueChanged.RemoveListener(OnSFXSliderValueChanged);
+        AmbSlider.onValueChanged.RemoveListener(OnAmbienceSliderValueChanged);
     }
 }
 

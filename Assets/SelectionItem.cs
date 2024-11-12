@@ -159,9 +159,6 @@ public class SelectionItem : MonoBehaviour
 
 
         StartCoroutine(RotateObjectForward());
-
-
-
     }
 
     IEnumerator RotateObjectForward()
@@ -294,7 +291,6 @@ public class SelectionItem : MonoBehaviour
         message = message.Replace("@", amount.ToString());
         message = message.Replace("#", (Mathf.RoundToInt(amount/4)*4).ToString());
         
-
         return message;
 
     }

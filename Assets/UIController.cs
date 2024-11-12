@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
+using UnityEngine.Serialization;
 
 public class UIController : MonoBehaviour
 {
@@ -39,10 +39,6 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI DailyChallengeDescription;
     [SerializeField] private TextMeshProUGUI ModDisplay;
     [SerializeField] private GameObject ModScroll;
-
-
-
-    
     
     public GameObject RestartButton;
     private bool haveInitializedEquipmentItems = false;
@@ -51,7 +47,22 @@ public class UIController : MonoBehaviour
 
     private bool InventoryOn = false;
     public static UIController _instance;
-
+    
+    //========= Sound Fx ===========
+    public AudioClip _hoverSFX;
+    [SerializeField] private float hoverVol;
+    public AudioClip _buttonClickSFX;
+    [SerializeField] private float clickVol;
+    [SerializeField] public AudioClip _OpenShopSFX;
+    [SerializeField] private float openShopVol;
+    public AudioClip _openLootSFX;
+    [SerializeField] private float OpenLootVol;
+    public AudioClip _openMapSFX;
+    [SerializeField] private float openMapVol;
+    public AudioClip _openInventorySFX;
+    [SerializeField] private float openInventoryVol;
+    
+    
     public void ToggleSettings()
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
@@ -67,7 +78,6 @@ public class UIController : MonoBehaviour
         InventoryButton.SetActive(true);
         MapButton.SetActive(true);
         DailyChallengeUI.gameObject.SetActive(false);
-
     }
 
     public void ActivateDailyChallengeUI()
@@ -300,6 +310,7 @@ public class UIController : MonoBehaviour
             CombatController._instance.UpdateUiButtons();
 
         }
+        PlayOpenInventory();
         //ToggleShopUI();
         
     }
@@ -329,7 +340,9 @@ public class UIController : MonoBehaviour
             StartCoroutine(MoveMapObject(MapUI));
         }
         //ToggleShopUI();
-        
+        PlayOpenMap();
+
+
     }
     bool shopMoving = false;
     private bool shopOn = false;
@@ -355,6 +368,9 @@ public class UIController : MonoBehaviour
             shopOn = !shopOn;
             StartCoroutine(MoveShopObject(ShopUI));
         }
+        
+        PlayOpenShop();
+
     }
     bool LootMoving = false;
     private bool lootOn = false;
@@ -381,6 +397,8 @@ public class UIController : MonoBehaviour
             lootOn = !lootOn;
             StartCoroutine(MoveLootObject(LootUI));
         }
+        
+        PlayOpenLoot();
     }
 
     IEnumerator MoveObject(GameObject moveObj)
@@ -497,5 +515,31 @@ public class UIController : MonoBehaviour
             // Closes the application in a standalone build
             Application.Quit();
 #endif
+    }
+
+    public void PlayUIHover()
+    {
+        SoundManager.Instance.Play2DSFX(_hoverSFX, hoverVol, .75f, .05f);
+    }
+    public void PlayUIClick()
+    {
+        SoundManager.Instance.Play2DSFX(_buttonClickSFX, clickVol, 1, .05f);
+    }
+    
+    public void PlayOpenShop()
+    {
+        SoundManager.Instance.Play2DSFX(_OpenShopSFX, openShopVol);
+    }
+    public void PlayOpenLoot()
+    {
+        SoundManager.Instance.Play2DSFX(_openLootSFX, OpenLootVol);
+    }
+    public void PlayOpenMap()
+    {
+        SoundManager.Instance.Play2DSFX(_openMapSFX, openMapVol);
+    }
+    public void PlayOpenInventory()
+    {
+        SoundManager.Instance.Play2DSFX(_openInventorySFX, openInventoryVol);
     }
 }

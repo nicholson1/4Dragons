@@ -369,7 +369,7 @@ public class EquipmentModelManager : MonoBehaviour
     public void ForceCosmeticToggle(int slotIndex)
     {
         forcedCosmetics[slotIndex] = (forcedCosmetics[slotIndex] + 1) % 2;
-        Debug.Log(forcedCosmetics);
+        //Debug.Log(forcedCosmetics);
         
     }
     

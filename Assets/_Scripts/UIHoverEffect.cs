@@ -36,6 +36,9 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if(shakeUI)
             ShakeUIElement();
         //LeanTween.rotateZ(gameObject, shakeAmount, shakeSpeed).setLoopPingPong().setEaseInOutQuad();
+        
+        
+        UIController._instance.PlayUIHover();
     }
 
     public void OnPointerExit(PointerEventData eventData)

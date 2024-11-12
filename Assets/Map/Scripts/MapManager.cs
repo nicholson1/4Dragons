@@ -55,6 +55,7 @@ namespace Map
         {
             if (nextMapSeed == -1)
             {
+                Debug.Log(Rand._i.Random);
                 Random.InitState(Rand._i.Random.Next());
             }
             else
