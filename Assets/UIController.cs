@@ -39,6 +39,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI DailyChallengeDescription;
     [SerializeField] private TextMeshProUGUI ModDisplay;
     [SerializeField] private GameObject ModScroll;
+    [SerializeField] public GameObject CinemaUI;
+
     
     public GameObject RestartButton;
     private bool haveInitializedEquipmentItems = false;

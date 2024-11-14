@@ -10,6 +10,9 @@ public class RotateAroundMap : MonoBehaviour
 
     private float currentRotation;
     public static RotateAroundMap _instance;
+    
+    public bool SlowRotate;
+    public float speed = 10f;
 
     private void Awake()
     {
@@ -30,7 +33,17 @@ public class RotateAroundMap : MonoBehaviour
 
     public void RandomRotate()
     {
+        SlowRotate = false;
         currentRotation = Random.Range(currentRotation + 20, currentRotation + 270);
         transform.RotateAround(TargetObject.position, Vector3.up, currentRotation);
+    }
+
+    private void Update()
+    {
+        if (SlowRotate && TargetObject != null)
+        {
+            // Rotate around the target object on the Y-axis (vertical rotation)
+            transform.RotateAround(TargetObject.position, Vector3.up, speed * Time.deltaTime);
+        }
     }
 }
