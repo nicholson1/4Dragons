@@ -14,6 +14,8 @@ public class RotateAroundMap : MonoBehaviour
     public bool SlowRotate;
     public float speed = 10f;
 
+    private bool onStart = true;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -29,6 +31,11 @@ public class RotateAroundMap : MonoBehaviour
     private void Start()
     {
         RandomRotate();
+        if (onStart)
+        {
+            SlowRotate = true;
+            onStart = false;
+        }
     }
 
     public void RandomRotate()

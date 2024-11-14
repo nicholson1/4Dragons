@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CinemaCamera : MonoBehaviour
 {
@@ -11,8 +14,15 @@ public class CinemaCamera : MonoBehaviour
 
     private float currentYaw = 0f; // Current horizontal rotation
     private float currentPitch = 0f; // Current vertical rotation
+    
+    [SerializeField] private Slider RotateSpeed;
+    [SerializeField] private Slider ZoomSpeed;
+    [SerializeField] private TextMeshProUGUI ZoomSpeedt;
+    [SerializeField] private TextMeshProUGUI rotSpeed;
 
-    void Start()
+
+
+    public void Start()
     {
         if (target == null)
         {
@@ -27,6 +37,16 @@ public class CinemaCamera : MonoBehaviour
 
         currentPitch = Mathf.Asin(direction.y) * Mathf.Rad2Deg;
         currentYaw = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        
+        RotateSpeed.onValueChanged.AddListener(Onrotatespeed);
+        ZoomSpeed.onValueChanged.AddListener(Onzoomspeed);
+
+    }
+
+    private void OnEnable()
+    {
+        zoomSpeed = ZoomSpeed.value;
+        rotationSpeed = RotateSpeed.value;
     }
 
     void Update()
@@ -58,7 +78,7 @@ public class CinemaCamera : MonoBehaviour
             distance += zoomSpeed * Time.deltaTime;
         }
         
-        distance = Mathf.Clamp(distance, 2f, 20f); // Clamp distance to avoid extreme zooms
+        distance = Mathf.Clamp(distance, 2f, 40f); // Clamp distance to avoid extreme zooms
 
         // Calculate the new position of the camera
         Vector3 direction = new Vector3(0, 0, -distance);
@@ -68,5 +88,17 @@ public class CinemaCamera : MonoBehaviour
 
         // Always look at the target
         transform.LookAt(target);
+    }
+    
+    public void Onrotatespeed(float s)
+    {
+        rotationSpeed = s;
+        rotSpeed.text = "Rotation Speed: " + s;
+    }
+    public void Onzoomspeed(float s)
+    {
+        zoomSpeed = s;
+        ZoomSpeedt.text = "Zoom Speed: " + s;
+
     }
 }

@@ -26,6 +26,8 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private GameObject InventoryButton;
     [SerializeField] private GameObject MapButton;
+    [SerializeField] private GameObject SettingsButton;
+
 
     [SerializeField] private GameObject MainCamera;
     [SerializeField] private GameObject TransitionCamera;
@@ -80,6 +82,19 @@ public class UIController : MonoBehaviour
         InventoryButton.SetActive(true);
         MapButton.SetActive(true);
         DailyChallengeUI.gameObject.SetActive(false);
+    }
+
+    private bool uiOn = true;
+    public void ToggleUI()
+    {
+        uiOn = !uiOn;
+        TitleScreen.SetActive(uiOn);
+        //InventoryButton.SetActive(uiOn);
+        //MapButton.SetActive(uiOn);
+        //DailyChallengeUI.gameObject.SetActive(uiOn);
+        SettingsButton.gameObject.SetActive(uiOn);
+        
+
     }
 
     public void ActivateDailyChallengeUI()

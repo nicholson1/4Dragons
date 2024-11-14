@@ -165,6 +165,9 @@ public class CombatController : MonoBehaviour
         EquipmentCreator._instance.ApplyModifiers();
         StartChest.gameObject.SetActive(true);
         MusicManager.Instance.PlayAdventureMusic();
+
+        RotateAroundMap._instance.SlowRotate = false;
+        Player._am.SetBool("Walk", false);
     }
 
     public void MapNodeClicked(Node node)
@@ -806,6 +809,9 @@ public class CombatController : MonoBehaviour
         CombatTrigger.TriggerCombat += StartCombat;
         CombatTrigger.EndCombat += EndCombat;
         MusicManager.Instance.PlayMenuMusic();
+        
+        Player._am.SetBool("Walk", true);
+
 
     }
     private void OnDestroy()
