@@ -85,6 +85,8 @@ public class CombatController : MonoBehaviour
 
     private int currentSeed = -1;
     public int CurrentSeed => currentSeed;
+
+    [SerializeField] private AudioClip _beginAdventure;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -168,6 +170,8 @@ public class CombatController : MonoBehaviour
 
         RotateAroundMap._instance.SlowRotate = false;
         Player._am.SetBool("Walk", false);
+        
+        SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, .5f, 1);
     }
 
     public void MapNodeClicked(Node node)

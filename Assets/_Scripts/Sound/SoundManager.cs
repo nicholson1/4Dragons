@@ -100,6 +100,17 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void Play2DSFXOnDelay(AudioClip clip, float volume, float delay, float pitch = 1, float pitchVariance = 0)
+    {
+        StartCoroutine(WaitThenPlay(clip, volume, delay, pitch, pitchVariance));
+    }
+
+    IEnumerator WaitThenPlay(AudioClip clip, float volume, float delay, float pitch = 1, float pitchVariance = 0)
+    {
+        yield return new WaitForSeconds(delay);
+        Play2DSFX(clip, volume, pitch, pitchVariance);
+    }
+
     // Play music with crossfade
     public void PlayMusic(AudioClip newClip, MusicChannel channel, float fadeDuration = 0f)
     {
