@@ -34,6 +34,12 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private ToolTip _toolTip;
 
     public bool canBeDragged = true;
+    
+    [SerializeField] private AudioClip pickUp;
+    [SerializeField] private float pickUpVol;
+    [SerializeField] private float pickUpPitch;
+    
+    
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
@@ -135,6 +141,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             return;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = .6f;
+        SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
+        //Debug.Log("pickup");
+
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -142,6 +151,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
+        
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -175,6 +185,8 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             {
                 Debug.Log("Cannot drag in combat");
                 CombatMove(ErrorMessageManager.Errors.CombatMove);
+                
+                SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
                 return;
             }
         }
@@ -223,8 +235,11 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
                 }
                 //EquipmentManager._instance.c.UpdateStats();
 
-
             }
+        }
+        else
+        {
+            SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
         }
     }
     private string GetWeaponType(Weapon.SpellTypes spell)

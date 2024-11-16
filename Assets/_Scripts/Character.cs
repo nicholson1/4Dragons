@@ -58,6 +58,10 @@ public class Character : MonoBehaviour
 
 
     public EquipmentModelManager EqMM;
+    
+    [SerializeField] private AudioClip getGold;
+    [SerializeField] private float getGoldVol;
+    [SerializeField] private float getGoldpitch;
 
     public void ToggleShowHelm()
     {
@@ -676,6 +680,9 @@ public class Character : MonoBehaviour
         _gold += amount;
         NotificationGold(ErrorMessageManager.Errors.GetGold, amount);
         UpdateStats();
+        
+        SoundManager.Instance.Play2DSFX(getGold, getGoldVol, getGoldpitch);
+
     }
 
     private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)

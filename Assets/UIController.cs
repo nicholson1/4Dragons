@@ -66,6 +66,15 @@ public class UIController : MonoBehaviour
     public AudioClip _openInventorySFX;
     [SerializeField] private float openInventoryVol;
     
+    public AudioClip errorSFX;
+    [SerializeField] public float errorVol;
+    
+    [SerializeField] private AudioClip placeItem;
+    [SerializeField] private float placeItemVol;
+    [SerializeField] private AudioClip GetRelic;
+    [SerializeField] private float GetRelicVol;
+    [SerializeField] private AudioClip SellItem;
+    [SerializeField] private float SellItemVol;
     
     public void ToggleSettings()
     {
@@ -558,5 +567,17 @@ public class UIController : MonoBehaviour
     public void PlayOpenInventory()
     {
         SoundManager.Instance.Play2DSFX(_openInventorySFX, openInventoryVol);
+    }
+    public void PlayPlaceItem()
+    {
+        SoundManager.Instance.Play2DSFX(placeItem, placeItemVol, 1, .05f);
+    }
+    public void PlayGetRelic()
+    {
+        SoundManager.Instance.Play2DSFX(GetRelic, GetRelicVol, 1, .05f);
+    }
+    public void PlaySellItem()
+    {
+        SoundManager.Instance.Play2DSFX(SellItem, SellItemVol, 1, .05f);
     }
 }

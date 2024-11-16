@@ -12,7 +12,9 @@ public class SoundManager : MonoBehaviour
 
     // AudioSource pools
     private List<AudioSource> pooledSources;
-    public int poolSize = 10;
+    public int poolSize = 20;
+    private List<AudioSource> ambiancePooledSources;
+    public int ambiancePoolSize = 5;
 
     // Music and ambience audio sources
     private AudioSource musicSourceA;
@@ -57,6 +59,15 @@ public class SoundManager : MonoBehaviour
             pooledSources.Add(newSource);
         }
 
+        ambiancePooledSources = new List<AudioSource>();
+        for (int i = 0; i < ambiancePoolSize; i++)
+        {
+            AudioSource newSource = gameObject.AddComponent<AudioSource>();
+            newSource.playOnAwake = false;
+            ambiancePooledSources.Add(newSource);
+        }
+        
+
         // Set up dedicated music sources for crossfading
         musicSourceA = gameObject.AddComponent<AudioSource>();
         musicSourceA.playOnAwake = false;
@@ -76,6 +87,17 @@ public class SoundManager : MonoBehaviour
     private AudioSource GetPooledSource()
     {
         foreach (var source in pooledSources)
+        {
+            if (!source.isPlaying)
+                return source;
+        }
+
+        return null; // Pool is full, no free sources
+    }
+    
+    private AudioSource GetPooledAmbienceSource()
+    {
+        foreach (var source in ambiancePooledSources)
         {
             if (!source.isPlaying)
                 return source;
@@ -133,7 +155,7 @@ public class SoundManager : MonoBehaviour
             else
             {
                 activeSource.Stop();
-                newSource.volume = musicVolume;
+                newSource.volume = musicVolume / 2;
             }
 
             isMusicSourceAPlaying = !isMusicSourceAPlaying; // Switch sources
@@ -179,9 +201,10 @@ public class SoundManager : MonoBehaviour
     }
 
     // Ambience methods
-    public void PlayAmbience(AudioClip clip, float fadeDuration = 0f)
+    public AudioSource PlayAmbience(AudioClip clip, bool loop, float fadeDuration = 0f)
     {
-        if (ambienceSource.clip != clip)
+        AudioSource source = GetPooledAmbienceSource();
+        if (source.clip != clip)
         {
             if (fadeDuration > 0f)
             {
@@ -190,23 +213,26 @@ public class SoundManager : MonoBehaviour
             }
             else
             {
-                ambienceSource.clip = clip;
-                ambienceSource.volume = ambienceVolume;
-                ambienceSource.Play();
+                source.clip = clip;
+                source.volume = ambienceVolume / 2;
+                source.loop = true;
+                source.Play();
             }
         }
+
+        return source;
     }
 
-    public void StopAmbience(float fadeDuration = 0f)
+    public void StopAmbience(AudioSource source, float fadeDuration = 0f)
     {
         if (fadeDuration > 0f)
         {
             if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
-            ambienceFadeCoroutine = StartCoroutine(FadeAmbienceOut(fadeDuration));
+            ambienceFadeCoroutine = StartCoroutine(FadeAmbienceOut(source,fadeDuration));
         }
         else
         {
-            ambienceSource.Stop();
+            source.Stop();
         }
     }
 
@@ -219,7 +245,7 @@ public class SoundManager : MonoBehaviour
         for (float t = 0; t < duration; t += Time.deltaTime)
         {
             oldSource.volume = Mathf.Lerp(startVolume, 0f, t / duration);
-            newSource.volume = Mathf.Lerp(0f, musicVolume, t / duration);
+            newSource.volume = Mathf.Lerp(0f, musicVolume / 2, t / duration);
             yield return null;
         }
 
@@ -227,7 +253,7 @@ public class SoundManager : MonoBehaviour
             MusicTimeStamps[(int)currentChannel] = oldSource.time;
 
         oldSource.Stop();
-        newSource.volume = musicVolume;
+        newSource.volume = musicVolume / 2;
     }
 
     // Fading coroutines for music
@@ -263,18 +289,18 @@ public class SoundManager : MonoBehaviour
         ambienceSource.volume = ambienceVolume;
     }
 
-    private IEnumerator FadeAmbienceOut(float duration)
+    private IEnumerator FadeAmbienceOut(AudioSource clip, float duration)
     {
-        float startVolume = ambienceSource.volume;
+        float startVolume = clip.volume;
 
         for (float t = 0; t < duration; t += Time.deltaTime)
         {
-            ambienceSource.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            clip.volume = Mathf.Lerp(startVolume, 0f, t / duration);
             yield return null;
         }
 
-        ambienceSource.Stop();
-        ambienceSource.volume = ambienceVolume; // Reset volume for next play
+        clip.Stop();
+        clip.volume = ambienceVolume; // Reset volume for next play
     }
 
     public void ToggleMuteMusic()
@@ -284,7 +310,7 @@ public class SoundManager : MonoBehaviour
     }
     public void AdjustMusicVolume(float volume)
     {
-        musicVolume = volume;
+        musicVolume = volume / 2;
         musicSourceA.volume = musicVolume;
         musicSourceB.volume = musicVolume;
     }
@@ -294,7 +320,10 @@ public class SoundManager : MonoBehaviour
     }
     public void AdjustAmbienceVolume(float volume)
     {
-        ambienceVolume = volume;
+        foreach (var audioSource in ambiancePooledSources)
+        {
+            audioSource.volume = volume / 2;
+        }
     }
     
     [SerializeField] private Slider MusicSlider;

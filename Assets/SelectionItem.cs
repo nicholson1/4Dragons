@@ -5,6 +5,7 @@ using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class SelectionItem : MonoBehaviour
 {
@@ -32,7 +33,8 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private GameObject Cardback;
     [SerializeField] private Image CardFront;
 
-
+    [SerializeField] private AudioClip[] randomCard;
+    [SerializeField] private float cardVol;
     public void InitializeSelectionItem(Equipment e)
     {
         RelicDescription.gameObject.SetActive(false);
@@ -163,6 +165,8 @@ public class SelectionItem : MonoBehaviour
 
     IEnumerator RotateObjectForward()
     {
+        PlayRandomCardFlip();
+
         bool halfway = false;
     
         float angle = 180;
@@ -191,6 +195,7 @@ public class SelectionItem : MonoBehaviour
         isFlipping = true;
         bool halfway = false;
     
+        PlayRandomCardFlip();
         float angle = 0;
         do {
             angle += 200 * Time.deltaTime;
@@ -297,6 +302,8 @@ public class SelectionItem : MonoBehaviour
 
     public void SelectRelic()
     {
+        UIController._instance.PlayUIClick();
+        UIController._instance.PlayGetRelic();
         //clear selections
         SelectionManager._instance.ClearSelections();
         // add to character
@@ -307,11 +314,15 @@ public class SelectionItem : MonoBehaviour
 
     public void AddToInventory()
     {
+        UIController._instance.PlayUIClick();
+        UIController._instance.PlayPlaceItem();
         EquipmentManager._instance.AddItemToInventoryFromSelection(item, this);
     }
 
     public void EquipedFromSelection()
     {
+        UIController._instance.PlayUIClick();
+        UIController._instance.PlayPlaceItem();
         EquipmentManager._instance.EquipItemFromSelection(item, this);
     }
 
@@ -330,6 +341,11 @@ public class SelectionItem : MonoBehaviour
         equip.interactable = false;
         inventory.interactable = false;
         selectRelic.interactable = false;
+    }
+
+    public void PlayRandomCardFlip()
+    {
+        SoundManager.Instance.Play2DSFX(randomCard[Random.Range(0, randomCard.Length)], cardVol, 1, .05f);
     }
 
     // public void SpellToolTip(Weapon.SpellTypes s, Weapon w, int index)

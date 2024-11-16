@@ -17,6 +17,12 @@ public class TreasureChest : MonoBehaviour
     public bool startingChest;
     public int force;
     public bool forceRelic = false;
+    
+    [SerializeField] private AudioClip openChest;
+    [SerializeField] private float openChestVol;
+    [SerializeField] private AudioClip chestAmbiance;
+    [SerializeField] private float chestAmbianceVol;
+    
 
     private void OnMouseDown()
     {
@@ -39,6 +45,7 @@ public class TreasureChest : MonoBehaviour
         if (!isOpen)
         {
             isRotating = true;
+            SoundManager.Instance.Play2DSFX(openChest, openChestVol);
         }
 
         UIController._instance.ToggleLootUI(1);
@@ -52,7 +59,16 @@ public class TreasureChest : MonoBehaviour
     {
         initialRotation = Lid.transform.localRotation;
         GetComponent<Rigidbody>().AddForce(Vector3.down * force,ForceMode.Impulse);
+        
+        ambience = SoundManager.Instance.PlayAmbience(chestAmbiance, true);
         //add focre down to rigdid body
+    }
+
+    private AudioSource ambience;
+
+    private void OnDisable()
+    {
+        SoundManager.Instance.StopAmbience(ambience, 2);
     }
 
     void Update()

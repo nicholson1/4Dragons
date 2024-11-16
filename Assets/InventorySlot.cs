@@ -24,8 +24,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     public static event Action<ErrorMessageManager.Errors, int> SellItem;
     public static event Action<ErrorMessageManager.Errors> NotEnoughGold;
 
+    [SerializeField] private AudioClip dropItem;
+    [SerializeField] private float dropItemVol;
+    //[SerializeField] private float placePitch;
 
-
+    
 
     public void LabelCheck()
     {
@@ -92,11 +95,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             if (CombatController._instance.entitiesInCombat.Count > 1)
             {
                 CombatMove(ErrorMessageManager.Errors.CombatMove);
+                SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
                 return;
             }
         }
         if (CanDropHere == false)
         {
+            SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
             return;
         }
         
@@ -110,6 +115,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 di.currentLocation.LabelCheck();
                 EquipmentManager._instance.DropItem(di.e);
                 Destroy(di.gameObject);
+                SoundManager.Instance.Play2DSFX(dropItem, dropItemVol, 1, .05f);
                 return;
             }
             if (Slot == Equipment.Slot.Sell)
@@ -121,14 +127,14 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 //character add gold
                 CombatController._instance.Player.GetGold(gold);
                 //trigger notification event
-                SellItem(ErrorMessageManager.Errors.GetGold, gold);
+                //SellItem(ErrorMessageManager.Errors.GetGold, gold);
 
                 
                 
                 di.currentLocation.Item = null;
                 di.currentLocation.LabelCheck();
                 EquipmentManager._instance.DropItem(di.e);
-                
+                UIController._instance.PlaySellItem();
                 
                 Destroy(di.gameObject);
                 
@@ -139,6 +145,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
             if (Slot != di.slotType && Slot != Equipment.Slot.All)
             {
+                SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
                 return;
             }
 
@@ -161,6 +168,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 
                 if (currentGold < cost)
                 {
+                    SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
                     NotEnoughGoldEvent();
                     return;
                 }
@@ -199,6 +207,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 
             }
             LabelCheck();
+            UIController._instance.PlayPlaceItem();
+
         }
     }
 

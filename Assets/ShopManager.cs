@@ -27,6 +27,13 @@ public class ShopManager : MonoBehaviour
     public int shopPrice = 25;
 
     public static ShopManager _instance;
+
+    [SerializeField] private AudioClip reRollShop;
+    [SerializeField] private float reRollVol;
+    [SerializeField] private float reRollpitch;
+
+    [SerializeField] private AudioClip openShop;
+    [SerializeField] private float openShopVol;
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -60,6 +67,8 @@ public class ShopManager : MonoBehaviour
         InitializeShop(roll);
         UIController._instance.ToggleShopUI();
         UIController._instance.ToggleInventoryUI(1);
+        
+        SoundManager.Instance.Play2DSFX(openShop, openShopVol);
 
     }
 
@@ -70,6 +79,8 @@ public class ShopManager : MonoBehaviour
 
     public void ReRollShop()
     {
+        SoundManager.Instance.Play2DSFX(reRollShop, reRollVol, reRollpitch, .05f);
+
         CombatController._instance.Player._gold -= shopPrice;
 
         
