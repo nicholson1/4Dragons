@@ -96,9 +96,10 @@ namespace Map
                 {
                     nodeType = NodeType.EliteEnemy;
                 }
-                else if (layerIndex >= 6 && ChestsThisMap == 0)
+                else if (layerIndex == 6 )
                 {
                     nodeType = NodeType.Treasure;
+                    Debug.Log("forcing treausre");
                 }
                 
                 if(nodeType == NodeType.EliteEnemy)
@@ -314,7 +315,7 @@ namespace Map
         {
             //{NodeType.Mystery, NodeType.Store, NodeType.MinorEnemy, NodeType.EliteEnemy, NodeType.Treasure};
 
-            int[] nodeTypeWeights = new[] { 2, 1, 5, 2, 1};
+            int[] nodeTypeWeights = new[] { 2, 1, 5, 2, 0};
             int totalWeight = 0;
             foreach (var item in nodeTypeWeights)
             {
