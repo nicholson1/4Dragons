@@ -100,10 +100,16 @@ public class ParticleManager : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Blood1:
                 SpawnMovingParticle(target, caster, LifeLeechPrefab, .1f, 5, 6);
+                AbilitySoundController.i.PlayLifeLeechSound(0f);
                 break;
             case Weapon.SpellTypes.Blood2:
                 SpawnMovingParticle(target, caster, LifeLeechPrefab, .1f, 5, 6);
                 SpawnMovingParticle(target, caster, LifeLeechPrefab, .1f, 5, 6);
+                AbilitySoundController.i.PlayLifeLeechSound(0f);
+                AbilitySoundController.i.PlayLifeLeechSound(.1f);
+                AbilitySoundController.i.PlayLifeLeechSound(.2f);
+
+
                 break;
             case Weapon.SpellTypes.Blood3:
                 SpawnStaticParticle(caster, InvulnerablePrefab, 0f, 5);
