@@ -115,14 +115,18 @@ public class SoundManager : MonoBehaviour
             source.clip = clip;
             source.volume = sfxVolume * volume;
 
-            // if (pitchVariance > 0)
-            //     pitch += Random.Range(-pitchVariance, pitchVariance);
+            if (pitchVariance > 0) 
+                pitch += Random.Range(-pitchVariance, pitchVariance);
             source.pitch = pitch;
             source.Play();
         }
+        else
+        {
+            Debug.Log("WHY IS THE SOURCE NULL");
+        }
     }
 
-    public void Play2DSFXOnDelay(AudioClip clip, float volume, float delay, float pitch = 1, float pitchVariance = 0)
+    public void Play2DSFXOnDelay(AudioClip clip,float delay, float volume, float pitch = 1, float pitchVariance = 0)
     {
         StartCoroutine(WaitThenPlay(clip, volume, delay, pitch, pitchVariance));
     }

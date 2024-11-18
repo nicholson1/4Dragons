@@ -75,6 +75,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private float GetRelicVol;
     [SerializeField] private AudioClip SellItem;
     [SerializeField] private float SellItemVol;
+    [SerializeField] private AudioClip DeathSound;
+    [SerializeField] private float DeathSoundVol;
+    [SerializeField] private AudioClip VictorySound;
+    [SerializeField] private float VictorySoundVol;
     
     public void ToggleSettings()
     {
@@ -579,5 +583,13 @@ public class UIController : MonoBehaviour
     public void PlaySellItem()
     {
         SoundManager.Instance.Play2DSFX(SellItem, SellItemVol, 1, .05f);
+    }
+    public void PlayDeathSound()
+    {
+        SoundManager.Instance.Play2DSFX(DeathSound, DeathSoundVol, 1);
+    }
+    public void PlayVictorySound()
+    {
+        SoundManager.Instance.Play2DSFX(VictorySound, VictorySoundVol, 1);
     }
 }

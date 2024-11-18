@@ -338,7 +338,7 @@ public class Character : MonoBehaviour
         if(c != this)
             return;
         
-        if(c._currentHealth < 0)
+        if(c._currentHealth <= 0)
         {
             Debug.LogError("THIS BROKE SOMETHING MAYBE?");
             return;
@@ -794,6 +794,7 @@ public class Character : MonoBehaviour
                     Destroy(_combatEntity);
 
                     //CombatController._instance.Player._gold += _gold;
+                    UIController._instance.PlayVictorySound();
                     MusicManager.Instance.PlayAdventureMusic();
 
                     if(isDragon)
@@ -819,11 +820,12 @@ public class Character : MonoBehaviour
             else
             {
                 //GameOver
+                UIController._instance.PlayDeathSound();
                 MusicManager.Instance.PlayDeathMusic();
                 CombatController._instance.entitiesInCombat[1].myCharacter._am.SetTrigger("Victory");
                 Notification(ErrorMessageManager.Errors.YouHaveDied);
                 UIController._instance.ToggleInventoryUI(0);
-                _am.SetTrigger("die");
+                _am.SetTrigger("Die");
                 UIController._instance.RestartButton.SetActive(true);
                 //CombatController._instance.
                 CombatController._instance.EndCombat();

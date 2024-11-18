@@ -14,7 +14,10 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
        private Canvas canvas;
        private Transform holder;
        private Vector3 startPos;
-
+       
+       
+       [SerializeField] private AudioClip usePotion;
+       [SerializeField] private float usePotionVol;
 
        public void InitializePotion(Consumable p)
        {
@@ -68,6 +71,9 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
                      {
                             CE.HitWithPotion(potion.ConsumableType);
                             EquipmentManager._instance.PoolPotion(this);
+                            
+                            SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, .05f);
+                            
                      }
               }
 

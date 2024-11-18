@@ -171,7 +171,7 @@ public class CombatController : MonoBehaviour
         RotateAroundMap._instance.SlowRotate = false;
         Player._am.SetBool("Walk", false);
         
-        SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, .5f, 1);
+        SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, 1, .5f);
     }
 
     public void MapNodeClicked(Node node)

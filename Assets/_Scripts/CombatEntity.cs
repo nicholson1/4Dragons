@@ -255,7 +255,7 @@ public class CombatEntity : MonoBehaviour
             disableDoubleClick = true;
             // disable end turn 
             //isMyTurn = false;
-            //Debug.Log("ran twice");
+            Debug.Log("ENDING PLAYER TURN");
             TriggerAllDebuffs();
         }
         else

@@ -33,6 +33,8 @@ public class ParticleManager : MonoBehaviour
     [SerializeField] private ParticleControl LifeLeechPrefab;
     [SerializeField] private ParticleControl BloodLifeTapPrefab;
 
+    
+    
 
 
 
@@ -60,23 +62,41 @@ public class ParticleManager : MonoBehaviour
     {
         switch (spell)
         {
+            case Weapon.SpellTypes.Shield1:
+                AbilitySoundController.i.PlayBashSound(.1f);
+                break;
+            case Weapon.SpellTypes.Shield2:
+                AbilitySoundController.i.PlayBlockSound(0);
+                break;
             case Weapon.SpellTypes.Shield3:
                 SpawnStaticParticle(caster, PreparedPrefab, 0f, 5);
+                AbilitySoundController.i.PlayBarricadeSound(0);
+                AbilitySoundController.i.PlayPreparedSound(0);
+
                 break;
             case Weapon.SpellTypes.Nature2:
                 SpawnStaticParticle(caster, NourishPrefab, .1f, 5);
+                AbilitySoundController.i.PlayNourishSound(.1f);
                 break;
             case Weapon.SpellTypes.Nature1:
                 SpawnStaticParticle(caster, RejuvPrefab, .1f, 5);
+                AbilitySoundController.i.PlayRejuvenationSound(.1f);
+                AbilitySoundController.i.PlayRejuvinateSound(.1f);
                 break;
             case Weapon.SpellTypes.Nature3:
                 SpawnStaticParticle(caster, ThornsPrefab, .1f, 5);
+                AbilitySoundController.i.PlayThornsSound(.1f);
                 break;
             case Weapon.SpellTypes.Nature4:
                 SpawnMovingParticle(caster,target, WrathPrefab, .2f, 5);
+                AbilitySoundController.i.PlayWrathSound(.2f);
+                AbilitySoundController.i.PlayWrathImpactSound(.6f);
+
                 break;
             case Weapon.SpellTypes.Nature5:
                 SpawnStaticParticle(caster, PreparedPrefab, 0f, 5);
+                AbilitySoundController.i.PlayMeditateSound(0f);
+                AbilitySoundController.i.PlayPreparedSound(0f);
                 break;
             case Weapon.SpellTypes.Blood1:
                 SpawnMovingParticle(target, caster, LifeLeechPrefab, .1f, 5, 6);
@@ -88,97 +108,168 @@ public class ParticleManager : MonoBehaviour
             case Weapon.SpellTypes.Blood3:
                 SpawnStaticParticle(caster, InvulnerablePrefab, 0f, 5);
                 SpawnStaticParticle(caster, BloodLifeTapPrefab, .7f, 5);
+                AbilitySoundController.i.PlayCrimsonVowSound(0f);
+                AbilitySoundController.i.PlayLifeTapSound(.7f);
                 break;
             case Weapon.SpellTypes.Blood4:
                 SpawnStaticParticle(caster, EmpowerPrefab, .1f, 5);
+                AbilitySoundController.i.PlayEmpoweredSound(.3f);
+                AbilitySoundController.i.PlayRitualSound(.1f);
                 break;
             case Weapon.SpellTypes.Blood5:
                 SpawnStaticParticle(target, PurgePrefab, .2f, 5);
+                AbilitySoundController.i.PlayPurgeSound(.2f);
+                break;
+            case Weapon.SpellTypes.Hammer1:
+                AbilitySoundController.i.PlaySmashSound(.1f);
                 break;
             case Weapon.SpellTypes.Hammer2:
                 SpawnStaticParticle(target, ExposedPrefab, .5f, 5);
+                AbilitySoundController.i.PlayPummelSound(.4f);
+                AbilitySoundController.i.PlayExposedSound(.5f);
                 break;
             case Weapon.SpellTypes.Hammer3:
                 SpawnStaticParticle(caster, EmpowerPrefab, .1f, 5);
+                AbilitySoundController.i.PlayMomentousSwingSound(.5f);
+                AbilitySoundController.i.PlayEmpoweredSound(.6f);
+                break;
+            case Weapon.SpellTypes.Axe1:
+                AbilitySoundController.i.PlayHackSound(.1f);
                 break;
             case Weapon.SpellTypes.Axe2:
                 if (delayTimeOverRide == -1)
                 {
                     SpawnStaticParticle(target, BleedPrefab, .4f, 5);
-
+                    AbilitySoundController.i.PlayRendSound(.3f);
+                    AbilitySoundController.i.PlayLacerateSound(.4f);
                 }
                 else
                 {
                     SpawnStaticParticle(target, BleedPrefab, delayTimeOverRide, 5);
-
+                    AbilitySoundController.i.PlayRendSound(.3f);
+                    AbilitySoundController.i.PlayLacerateSound(delayTimeOverRide);
                 }
                 break;
             case Weapon.SpellTypes.Axe3:
                 SpawnStaticParticle(target, PurgePrefab, .5f, 5);
+                AbilitySoundController.i.PlaySeverSound(.5f);
+                AbilitySoundController.i.PlayPurgeSound(.5f);
                 break;
             case Weapon.SpellTypes.Fire1:
                 SpawnStaticParticle(target, ExposedPrefab, .6f, 5);
                 SpawnStaticParticle(target, SmeltPrefab, .25f, 5);
+                AbilitySoundController.i.PlaySmeltSound(.25f);
+                AbilitySoundController.i.PlayExposedSound(.6f);
                 break;
             case Weapon.SpellTypes.Fire2:
                 if (delayTimeOverRide == -1)
                 {
                     SpawnStaticParticle(target, BurnPrefab, .6f, 5);
+                    AbilitySoundController.i.PlayBurnSound(.6f);
+                    AbilitySoundController.i.PlayIncinerateSound(.4f);
                 }
                 else
                 {
                     SpawnStaticParticle(target, BurnPrefab, delayTimeOverRide, 5);
+                    AbilitySoundController.i.PlayBurnSound(delayTimeOverRide);
+                    AbilitySoundController.i.PlayIncinerateSound(.4f);
                 }
                 break;
             case Weapon.SpellTypes.Fire3:
                 SpawnMovingParticle(caster,target, FireballPrefab, .2f, 5);
+                AbilitySoundController.i.PlayFireballSound(.2f);
+                AbilitySoundController.i.PlayFrostboltImpactSound(.6f);
+
                 break;
             case Weapon.SpellTypes.Fire4:
                 SpawnStaticParticle(target, MeteorStrikePrefab, 0f, 5);
+                AbilitySoundController.i.PlayPyroblastSound(0f);
                 break;
             case Weapon.SpellTypes.Fire5:
                 SpawnStaticParticle(caster, EmpowerPrefab, .1f, 5);
                 SpawnStaticParticle(caster, PreparedPrefab, 0f, 5);
+                AbilitySoundController.i.PlayInnerFireSound(0f);
+                AbilitySoundController.i.PlayPreparedSound(0f);
+                AbilitySoundController.i.PlayEmpoweredSound(.3f);
                 break;
             case Weapon.SpellTypes.Shadow1:
                 SpawnStaticParticle(caster, LifeTapPrefab, .7f, 5);
+                AbilitySoundController.i.PlayLifeTapSound(.7f);
+                AbilitySoundController.i.PlayShadowBoltImpactSound(0f);
                 break;
             case Weapon.SpellTypes.Shadow2:
                 SpawnStaticParticle(target, WeakenPrefab, .1f, 5);
+                AbilitySoundController.i.PlayWeakenedSound(.1f);
+                AbilitySoundController.i.PlayCurseOfWeaknessSound(0f);
                 break;
             case Weapon.SpellTypes.Shadow3:
                 SpawnMovingParticle(caster,target, ShadowBoltPrefab, .2f, 5);
+                AbilitySoundController.i.PlayShadowBoltSound(.2f);
+                AbilitySoundController.i.PlayShadowBoltImpactSound(.6f);
+
                 break;
             case Weapon.SpellTypes.Shadow4:
                 SpawnStaticParticle(target, WoundedPrefab, .2f, 5);
+                AbilitySoundController.i.PlayWoundedSound(.2f);
+                AbilitySoundController.i.PlayCurseOfSufferingSound(.1f);
                 break;
             case Weapon.SpellTypes.Shadow5:
                 SpawnStaticParticle(caster, ImmortalPrefab, 0f, 5);
                 SpawnStaticParticle(caster, LifeTapPrefab, .7f, 5);
+                AbilitySoundController.i.PlayDevilsDanceSound(0f);
+                AbilitySoundController.i.PlayLifeTapSound(.7f);
+                break;
+            case Weapon.SpellTypes.Dagger1:
+                AbilitySoundController.i.PlayStabSound(0f);
                 break;
             case Weapon.SpellTypes.Dagger2:
                 SpawnStaticParticle(target, WoundedPrefab, .2f, 5);
+                AbilitySoundController.i.PlayGougeSound(0f);
+                AbilitySoundController.i.PlayWoundedSound(.2f);
                 break;
             case Weapon.SpellTypes.Dagger3:
                 SpawnStaticParticle(target, WeakenPrefab, .1f, 5);
+                AbilitySoundController.i.PlaySliceSound(0);
+                AbilitySoundController.i.PlayWeakenedSound(0);
                 break;
             case Weapon.SpellTypes.Ice5:
                 SpawnStaticParticle(target, ExposedPrefab, .1f, 5);
                 SpawnStaticParticle(target, ChillPrefab, .1f, 5);
+                AbilitySoundController.i.PlayWindchillSound(0);
+                AbilitySoundController.i.PlayExposedSound(.1f);
+                AbilitySoundController.i.PlayChilledSound(.1f);
                 break;
             case Weapon.SpellTypes.Ice4:
                 SpawnMovingParticle(caster,target, FrostboltPrefab, .2f, 5);
                 SpawnStaticParticle(target, ChillPrefab, .75f, 5);
+                AbilitySoundController.i.PlayFrostboltSound(.2f);
+                AbilitySoundController.i.PlayChilledSound(.75f);
+                AbilitySoundController.i.PlayFrostboltImpactSound(.6f);
+
                 break;
             case Weapon.SpellTypes.Ice3:
                 SpawnStaticParticle(target, BlizzardPrefab, .6f, 5);
                 SpawnStaticParticle(target, ChillPrefab, 1f, 5);
+                AbilitySoundController.i.PlayChilledSound(1f);
+                AbilitySoundController.i.PlayBlizzardSound(.3f);
                 break;
             case Weapon.SpellTypes.Ice2:
                 SpawnStaticParticle(caster, ShatterPrefab, 0, 5);
+                AbilitySoundController.i.PlayShatterSound(0f);
                 break;
             case Weapon.SpellTypes.Ice1:
                 SpawnStaticParticle(caster, IceBlockPrefab, 0, 5);
+                AbilitySoundController.i.PlayIceBarrierSound(0f);
+                break;
+            case Weapon.SpellTypes.Sword1:
+                AbilitySoundController.i.PlaySlashSound(0f);
+                break;
+            case Weapon.SpellTypes.Sword2:
+                AbilitySoundController.i.PlayWhirlwindSound(0f);
+                break;
+            case Weapon.SpellTypes.Sword3:
+                AbilitySoundController.i.PlaySlashSound(0f);
+                AbilitySoundController.i.PlayBlockSound(.25f);
                 break;
         }
         
@@ -189,16 +280,11 @@ public class ParticleManager : MonoBehaviour
         ParticleControl pc = GetEffectPrefab(prefab.particleType);
         pc.Initialize(target.transform, delayTime, duration);
         
-        
-        
     }
     private void SpawnMovingParticle(CombatEntity caster, CombatEntity target, ParticleControl prefab, float delayTime, float duration, float moveSpeed = 8)
     {
         ParticleControl pc = GetEffectPrefab(prefab.particleType);
         pc.Initialize(caster.transform, target.transform, delayTime, duration, moveSpeed);
-        
-        
-        
     }
     
 
