@@ -76,11 +76,7 @@ public class SoundManager : MonoBehaviour
         musicSourceB = gameObject.AddComponent<AudioSource>();
         musicSourceB.playOnAwake = false;
         musicSourceB.loop = true;
-
-        // Set up ambience source
-        ambienceSource = gameObject.AddComponent<AudioSource>();
-        ambienceSource.playOnAwake = false;
-        ambienceSource.loop = true;
+        
     }
 
     // Get a pooled AudioSource for SFX
@@ -208,18 +204,19 @@ public class SoundManager : MonoBehaviour
     public AudioSource PlayAmbience(AudioClip clip, bool loop, float fadeDuration = 0f)
     {
         AudioSource source = GetPooledAmbienceSource();
+        source.loop = loop;
+
         if (source.clip != clip)
         {
             if (fadeDuration > 0f)
             {
                 if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
-                ambienceFadeCoroutine = StartCoroutine(FadeAmbienceIn(clip, fadeDuration));
+                ambienceFadeCoroutine = StartCoroutine(FadeAmbienceIn(clip, source, fadeDuration));
             }
             else
             {
                 source.clip = clip;
-                source.volume = ambienceVolume / 2;
-                source.loop = true;
+                source.volume = ambienceVolume / 4;
                 source.Play();
             }
         }
@@ -276,7 +273,7 @@ public class SoundManager : MonoBehaviour
     }
 
     // Fading coroutines for ambience
-    private IEnumerator FadeAmbienceIn(AudioClip newClip, float duration)
+    private IEnumerator FadeAmbienceIn(AudioClip newClip, AudioSource ambienceSource, float duration)
     {
         ambienceSource.clip = newClip;
         ambienceSource.volume = 0f;
@@ -286,11 +283,11 @@ public class SoundManager : MonoBehaviour
 
         for (float t = 0; t < duration; t += Time.deltaTime)
         {
-            ambienceSource.volume = Mathf.Lerp(startVolume, ambienceVolume, t / duration);
+            ambienceSource.volume = Mathf.Lerp(startVolume, ambienceVolume/4, t / duration);
             yield return null;
         }
 
-        ambienceSource.volume = ambienceVolume;
+        ambienceSource.volume = ambienceVolume/4;
     }
 
     private IEnumerator FadeAmbienceOut(AudioSource clip, float duration)
@@ -304,7 +301,7 @@ public class SoundManager : MonoBehaviour
         }
 
         clip.Stop();
-        clip.volume = ambienceVolume; // Reset volume for next play
+        clip.volume = ambienceVolume/ 4; // Reset volume for next play
     }
 
     public void ToggleMuteMusic()

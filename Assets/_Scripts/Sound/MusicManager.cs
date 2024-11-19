@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,9 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioClip DeathMusic;
     [SerializeField] private AudioClip ShopMusic;
     
+    [SerializeField] private AudioClip Ambiance1;
+
+    
     public static MusicManager Instance { get; private set; }
     private void Awake()
     {
@@ -24,6 +28,11 @@ public class MusicManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        PlayAmbiance1();
     }
 
     public void PlayMenuMusic()
@@ -53,6 +62,11 @@ public class MusicManager : MonoBehaviour
     public void PlayDeathMusic()
     {
         SoundManager.Instance.PlayMusic(DeathMusic,  MusicChannel.DeathMusic, 3);
+    }
+    
+    public void PlayAmbiance1()
+    {
+        SoundManager.Instance.PlayAmbience(Ambiance1,  true, 3);
     }
     
     
