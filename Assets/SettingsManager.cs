@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,6 +9,22 @@ public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private Slider difficultySlider;
     [SerializeField] private TextMeshProUGUI difficultyText;
+
+    [SerializeField] private Toggle ShowHelm;
+    [SerializeField] private Toggle ScreenShake;
+
+    private void Start()
+    {
+        ShowHelm.SetIsOnWithoutNotify(PlayerPrefsManager.GetShowHelm() == 1);
+        ScreenShake.SetIsOnWithoutNotify(PlayerPrefsManager.getScreenShake() == 1);
+
+        int diff = PlayerPrefsManager.GetDifficulty();
+        difficultySlider.SetValueWithoutNotify(diff);
+        OnValueChangeSlider();
+        
+
+        this.gameObject.SetActive(false);
+    }
 
     private string[] DifficultyTexts = new[]
     {
@@ -29,14 +46,16 @@ public class SettingsManager : MonoBehaviour
         int diff =  Mathf.RoundToInt(difficultySlider.value);
         CombatController._instance.Difficulty = diff;
 
-        string Stars = "";
-        for (int i = 0; i < diff; i++)
-        {
-            Stars += "<sprite=\"status_icon_star\" index=0>";
-        }
+        string Stars = $"{diff} <sprite=\"status_icon_star\" index=0> ";
+        // for (int i = 0; i < diff; i++)
+        // {
+        //     Stars += "<sprite=\"status_icon_star\" index=0>";
+        // }
         
         
         difficultyText.text = $"Difficulty: {Stars}\n {DifficultyTexts[diff]}";
+        
+        PlayerPrefsManager.SetDifficulty(diff);
     }
 
 }

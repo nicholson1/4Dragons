@@ -336,6 +336,10 @@ public class SoundManager : MonoBehaviour
         MusicSlider.onValueChanged.AddListener(OnMusicSliderValueChanged);
         SFXSlider.onValueChanged.AddListener(OnSFXSliderValueChanged);
         AmbSlider.onValueChanged.AddListener(OnAmbienceSliderValueChanged);
+
+        musicVolume = PlayerPrefsManager.GetMusicVol();
+        sfxVolume = PlayerPrefsManager.GetSFXVol();
+        ambienceVolume = PlayerPrefsManager.GetAmbianceVol();
         
         MusicSlider.SetValueWithoutNotify(musicVolume);
         SFXSlider.SetValueWithoutNotify(sfxVolume);
@@ -344,14 +348,17 @@ public class SoundManager : MonoBehaviour
     public void OnMusicSliderValueChanged(float value)
     {
         AdjustMusicVolume(value);
+        PlayerPrefsManager.SetMusicVol(value);
     }
     public void OnSFXSliderValueChanged(float value)
     {
         AdjustSFXVolume(value);
+        PlayerPrefsManager.SetSFXVol(value);
     }
     public void OnAmbienceSliderValueChanged(float value)
     {
         AdjustAmbienceVolume(value);
+        PlayerPrefsManager.SetAmbianceVol(value);
     }
 
     void OnDestroy()

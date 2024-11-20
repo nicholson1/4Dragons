@@ -19,11 +19,18 @@ public class CameraShake : MonoBehaviour
         {
             _instance = this;
         }
+
+        ScreenShakeEnabled = (PlayerPrefsManager.getScreenShake() == 1);
     }
 
     public void ToggleScreenShake()
     {
         ScreenShakeEnabled = !ScreenShakeEnabled;
+        if(ScreenShakeEnabled)
+            PlayerPrefsManager.SetScreenShake(1);
+        else
+            PlayerPrefsManager.SetScreenShake(0);
+
     }
 
     public void GetHit(int hitCost)

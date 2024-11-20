@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EquipmentModelManager : MonoBehaviour
 {
@@ -24,8 +26,10 @@ public class EquipmentModelManager : MonoBehaviour
     // [SerializeField] private GameObject[] Sheilds;
     // [SerializeField] private GameObject[] Wands;
     // [SerializeField] private GameObject[] Orbs;
+    
     // [SerializeField] private GameObject[] Daggers;
-
+    [SerializeField] private bool isPlayerCharacter = false;
+    
     private int rightHandIndex = 0;
     private int LeftHandIndex = 0;
 
@@ -39,11 +43,72 @@ public class EquipmentModelManager : MonoBehaviour
     private int hairIndex = 4;
 
     private bool showHelm = true;
-
-    //todo save in player prefs
-    // head, shoulder, chest, gloves, boots, weapon1, weapon2
-    private int[] forcedCosmetics = new int[7] { 0,0,0,0,0,0,0}; 
     
+    // head, shoulder, chest, gloves, boots, weapon1, weapon2
+    private int[] forcedCosmetics = new int[7] { 0,0,0,0,0,0,0};
+
+    private void Start()
+    {
+        if (!isPlayerCharacter)
+            return;
+        HeadModels[headIndex].SetActive(false);
+        headIndex = PlayerPrefsManager.GetHelmet();
+        HeadModels[headIndex].SetActive(true);
+        
+        ShoulderModels[shoulderIndex].SetActive(false);
+        shoulderIndex = PlayerPrefsManager.GetShoulder();
+        ShoulderModels[shoulderIndex].SetActive(true);
+        
+        ChestModels[chestIndex].SetActive(false);
+        chestIndex = PlayerPrefsManager.GetChest();
+        ChestModels[chestIndex].SetActive(true);
+        
+        GloveModels[gloveIndex].SetActive(false);
+        gloveIndex = PlayerPrefsManager.GetGloves();
+        GloveModels[gloveIndex].SetActive(true);
+        
+        BootsModels[bootIndex].SetActive(false);
+        bootIndex = PlayerPrefsManager.GetBoots();
+        BootsModels[bootIndex].SetActive(true);
+        
+        Faces[faceIndex].SetActive(false);
+        faceIndex = PlayerPrefsManager.GetFace();
+        Faces[faceIndex].SetActive(true);
+        
+        Hair[hairIndex].SetActive(false);
+        hairIndex = PlayerPrefsManager.GetHair();
+        Hair[hairIndex].SetActive(true);
+        
+        LeftHandWep[LeftHandIndex].SetActive(false);
+        RightHandWep[rightHandIndex].SetActive(false);
+
+        LeftHandIndex = PlayerPrefsManager.GetWeapon1();
+        rightHandIndex = PlayerPrefsManager.GetWeapon2();
+        
+        LeftHandWep[LeftHandIndex].SetActive(true);
+        RightHandWep[rightHandIndex].SetActive(true);
+
+
+        forcedCosmetics = new[]
+        {
+            PlayerPrefsManager.GetHelmetLock(),
+            PlayerPrefsManager.GetShoulderLock(),
+            PlayerPrefsManager.GetChestLock(),
+            PlayerPrefsManager.GetGlovesLock(),
+            PlayerPrefsManager.GetBootsLock(),
+            PlayerPrefsManager.GetWeapon1Lock(),
+            PlayerPrefsManager.GetWeapon2Lock()
+        };
+
+        if (PlayerPrefsManager.GetShowHelm() > 0)
+            showHelm = true;
+        else
+            showHelm = false;
+        
+        FixHead();
+
+    }
+
     public void RandomCharacter()
     {
         faceIndex = Random.Range(0, Faces.Length);
@@ -60,13 +125,16 @@ public class EquipmentModelManager : MonoBehaviour
         {
             showHelm = false;
         }
-
-
     }
 
     public void UpdateHead()
     {
         showHelm = !showHelm;
+        if(showHelm == true)
+            PlayerPrefsManager.SetShowHelm(1);
+        else
+            PlayerPrefsManager.SetShowHelm(0);
+        
         HeadModels[headIndex].SetActive(!HeadModels[headIndex].activeSelf);
 
         if (!showHelm)
@@ -87,6 +155,20 @@ public class EquipmentModelManager : MonoBehaviour
             }
         }
         
+    }
+
+    public void FixHead()
+    {
+        if (headIndex > 10 || headIndex == 0)
+        {
+            Hair[hairIndex].SetActive(true);
+        }
+        else
+        {
+            Hair[hairIndex].SetActive(false);
+        }
+        if(!showHelm)
+            HeadModels[headIndex].SetActive(false);
     }
 
 
@@ -238,6 +320,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             faceIndex = Faces.Length - 1;
         }
+        PlayerPrefsManager.SetFace(faceIndex);
         Faces[faceIndex].SetActive(true);
     }
     
@@ -252,6 +335,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             hairIndex = Hair.Length - 1;
         }
+        PlayerPrefsManager.SetHair(hairIndex);
         Hair[hairIndex].SetActive(true);
     }
     
@@ -274,6 +358,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             Hair[hairIndex].SetActive(false);
         }
+        PlayerPrefsManager.SetHelmet(headIndex);
         HeadModels[headIndex].SetActive(true);
     }
     public void ChestButton(int direction)
@@ -287,6 +372,7 @@ public class EquipmentModelManager : MonoBehaviour
             {
                 chestIndex = ChestModels.Length - 1;
             }
+            PlayerPrefsManager.SetChest(chestIndex);
             ChestModels[chestIndex].SetActive(true);
         }
     public void ShoulderButton(int direction)
@@ -300,6 +386,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             shoulderIndex = ShoulderModels.Length - 1;
         }
+        PlayerPrefsManager.SetShoulder(shoulderIndex);
         ShoulderModels[shoulderIndex].SetActive(true);
     }
     public void BootsButton(int direction)
@@ -313,6 +400,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             bootIndex = BootsModels.Length - 1;
         }
+        PlayerPrefsManager.SetBoots(bootIndex);
         BootsModels[bootIndex].SetActive(true);
     }
     public void GloveButton(int direction)
@@ -326,6 +414,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             gloveIndex = GloveModels.Length - 1;
         }
+        PlayerPrefsManager.SetGloves(gloveIndex);
         GloveModels[gloveIndex].SetActive(true);
     }
     public void Weapon1Button(int direction)
@@ -339,6 +428,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             LeftHandIndex = LeftHandWep.Length - 1;
         }
+        PlayerPrefsManager.SetWeapon1(LeftHandIndex);
         LeftHandWep[LeftHandIndex].SetActive(true);
     }
     public void Weapon2Button(int direction)
@@ -352,6 +442,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             rightHandIndex = RightHandWep.Length - 1;
         }
+        PlayerPrefsManager.SetWeapon2(rightHandIndex);
         RightHandWep[rightHandIndex].SetActive(true);
     }
 
@@ -360,17 +451,46 @@ public class EquipmentModelManager : MonoBehaviour
         Hair[hairIndex].SetActive(false);
         hairIndex = Random.Range(0, Hair.Length);
         Hair[hairIndex].SetActive(true);
+        PlayerPrefsManager.SetHair(hairIndex);
 
         Faces[faceIndex].SetActive(false);
         faceIndex = Random.Range(0, Faces.Length);
         Faces[faceIndex].SetActive(true);
+        PlayerPrefsManager.SetFace(faceIndex);
     }
 
     public void ForceCosmeticToggle(int slotIndex)
     {
-        forcedCosmetics[slotIndex] = (forcedCosmetics[slotIndex] + 1) % 2;
-        //Debug.Log(forcedCosmetics);
-        
+        int val = (forcedCosmetics[slotIndex] + 1) % 2;
+        forcedCosmetics[slotIndex] = val;
+
+
+        // head, shoulder, chest, gloves, boots, weapon1, weapon2
+        switch (slotIndex)
+        {
+            case 0:
+                PlayerPrefsManager.SetChestLock(val);
+                break;
+            case 1:
+                PlayerPrefsManager.SetShoulderLock(val);
+                break;
+            case 2:
+                PlayerPrefsManager.SetChestLock(val);
+                break;
+            case 3:
+                PlayerPrefsManager.SetGlovesLock(val);
+                break;
+            case 4:
+                PlayerPrefsManager.SetBootsLock(val);
+                break;
+            case 5:
+                PlayerPrefsManager.SetWeapon1Lock(val);
+                break;
+            case 6:
+                PlayerPrefsManager.SetWeapon2Lock(val);
+                break;
+        }
+
     }
     
     
