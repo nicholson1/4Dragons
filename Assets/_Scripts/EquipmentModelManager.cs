@@ -31,16 +31,16 @@ public class EquipmentModelManager : MonoBehaviour
     [SerializeField] private bool isPlayerCharacter = false;
     
     private int rightHandIndex = 0;
-    private int LeftHandIndex = 0;
+    private int LeftHandIndex = 33;
 
 
     private int headIndex = 0;
-    private int shoulderIndex = 6;
-    private int chestIndex = 2;
-    private int gloveIndex = 1;
-    private int bootIndex = 5;
-    private int faceIndex = 0;
-    private int hairIndex = 4;
+    private int shoulderIndex = 7;
+    private int chestIndex = 9;
+    private int gloveIndex = 7;
+    private int bootIndex = 6;
+    private int faceIndex = 5;
+    private int hairIndex = 8;
 
     private bool showHelm = true;
     
@@ -110,15 +110,16 @@ public class EquipmentModelManager : MonoBehaviour
     }
 
     public void RandomCharacter()
+    
     {
+        Faces[faceIndex].SetActive(false);
         faceIndex = Random.Range(0, Faces.Length);
-        Faces[0].SetActive(false);
         Faces[faceIndex].SetActive(true);
-        
+
+        Hair[hairIndex].SetActive(false);
         hairIndex = Random.Range(0, Hair.Length);
-        Hair[0].SetActive(false);
         Hair[hairIndex].SetActive(true);
-        
+
         // 1/4 chance they done show helm
         int roll = Random.Range(0, 4);
         if (roll == 0)
@@ -210,6 +211,7 @@ public class EquipmentModelManager : MonoBehaviour
                 headIndex = newIndex;
                 HeadModels[headIndex].SetActive(true);
                 break;
+            
             case Equipment.Slot.Shoulders:
                 if(forcedCosmetics[1] == 1)
                     break;

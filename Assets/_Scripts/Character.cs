@@ -180,6 +180,7 @@ public class Character : MonoBehaviour
                 if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
                     _gold = Mathf.RoundToInt(_gold * .5f);
                 
+                
             }
             
 
@@ -189,12 +190,13 @@ public class Character : MonoBehaviour
         {
             foreach (var eq in _equipment)
             {
-                EqMM.UpdateSlot(eq, showHelm);
+                EqMM.UpdateSlot(eq);
             }
         
         
             _equipment.AddRange(_weapons);
             _equipment.AddRange(_spellScrolls);
+            EqMM.FixHead();
         }
         
         UpdateStats();

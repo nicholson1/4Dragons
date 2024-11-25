@@ -35,20 +35,20 @@ public class PlayerPrefsManager : MonoBehaviour
     private const float DEFAULT_SFX_VOL = .25f;
     private const float DEFAULT_AMBIANCE_VOL = .25f;
     private const int DEFAULT_DIFFICULTY = 0;
-    private const int DEFAULT_FACE = 0;
-    private const int DEFAULT_HAIR = 4;
+    private const int DEFAULT_FACE = 5;
+    private const int DEFAULT_HAIR = 8;
     private const int DEFAULT_SHOW_HELM = 1;
     private const int DEFAULT_SCREEN_SHAKE = 1;
 
     private const int DEFAULT_HELMET = 0;
     private const int DEFAULT_HELMET_LOCK = 0;
-    private const int DEFAULT_SHOULDER = 6;
+    private const int DEFAULT_SHOULDER = 7;
     private const int DEFAULT_SHOULDER_LOCK = 0;
-    private const int DEFAULT_CHEST = 2;
+    private const int DEFAULT_CHEST = 9;
     private const int DEFAULT_CHEST_LOCK = 0;
-    private const int DEFAULT_GLOVES = 1;
+    private const int DEFAULT_GLOVES = 7;
     private const int DEFAULT_GLOVES_LOCK = 0;
-    private const int DEFAULT_BOOTS = 5;
+    private const int DEFAULT_BOOTS = 6;
     private const int DEFAULT_BOOTS_LOCK = 0;
     private const int DEFAULT_WEAPON1 = 0;
     private const int DEFAULT_WEAPON1_LOCK = 0;
