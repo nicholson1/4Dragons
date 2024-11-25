@@ -545,15 +545,18 @@ public class CombatController : MonoBehaviour
         {
             if (!entitiesInCombat[1].myCharacter.isDragon)
             {
-                Tie();
-                return;
+                if (CurrentTurnIndex == 0)
+                {
+                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 1* entitiesInCombat[1].myCharacter._level  );
+                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, 1* entitiesInCombat[1].myCharacter._level  );
+                }
             }
             else
             {
                 if (CurrentTurnIndex == 0)
                 {
-                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 1* entitiesInCombat[1].myCharacter._level  );
-                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, 1* entitiesInCombat[1].myCharacter._level  );
+                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 2* entitiesInCombat[1].myCharacter._level  );
+                    entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, 2* entitiesInCombat[1].myCharacter._level  );
                 }
                 
             }

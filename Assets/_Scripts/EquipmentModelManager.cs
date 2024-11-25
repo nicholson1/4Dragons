@@ -160,7 +160,7 @@ public class EquipmentModelManager : MonoBehaviour
 
     public void FixHead()
     {
-        if (headIndex > 10 || headIndex == 0)
+        if ((headIndex > 10 || headIndex == 0))
         {
             Hair[hairIndex].SetActive(true);
         }
@@ -169,7 +169,11 @@ public class EquipmentModelManager : MonoBehaviour
             Hair[hairIndex].SetActive(false);
         }
         if(!showHelm)
+        {
             HeadModels[headIndex].SetActive(false);
+            Hair[hairIndex].SetActive(true);
+        }
+        
     }
 
 

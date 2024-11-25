@@ -78,15 +78,23 @@ public class EquipmentManager : MonoBehaviour
         
         // loop through char inventory
         bool equippedSlot = false;
-        foreach (var invSlot in InventorySlots)
+
+        for (int invSloti = 0; invSloti < InventorySlots.Length; invSloti++)
         {
             //find the slot that has the item
-            if (invSlot.Slot == e.slot)
+            if (InventorySlots[invSloti].Slot == e.slot)
             {
-                if (invSlot.Item == null )
+                if (InventorySlots[invSloti].Slot == Equipment.Slot.OneHander || InventorySlots[invSloti].Slot == Equipment.Slot.Scroll)
+                {
+                    if (InventorySlots[invSloti + 1].Slot == InventorySlots[invSloti].Slot && InventorySlots[invSloti + 1].Item == null)
+                    {
+                        invSloti += 1;
+                    }
+                }
+                if (InventorySlots[invSloti].Item == null )
                 {
                     DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
-                    di.InitializeDragItem(e, invSlot);
+                    di.InitializeDragItem(e, InventorySlots[invSloti]);
                     //Debug.Log(c.GetStats()[Equipment.Stats.CritChance]);
                     c._equipment.Add(e);
                     if (e.isWeapon)
@@ -141,7 +149,6 @@ public class EquipmentManager : MonoBehaviour
                     InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
                     return;
                 }
-                
                 else
                 {
                     //move current equiped item to inventory
@@ -149,10 +156,10 @@ public class EquipmentManager : MonoBehaviour
 
                     if (e.isWeapon)
                     {
-                        if (InventorySlots[Array.IndexOf(InventorySlots, invSlot) + 1].Item == null)
+                        if (InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1].Item == null)
                         {
                             DragItem wep = Instantiate(_dragItemPrefab, inventoryTransform);
-                            wep.InitializeDragItem(e, InventorySlots[Array.IndexOf(InventorySlots, invSlot) + 1]);
+                            wep.InitializeDragItem(e, InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1]);
                             c._equipment.Add(e);
                             if (e.isWeapon)
                             {
@@ -190,18 +197,18 @@ public class EquipmentManager : MonoBehaviour
                     }
 
                     
-                    DragItem equiped = invSlot.Item;
+                    DragItem equiped = InventorySlots[invSloti].Item;
                     equiped.currentLocation = slot;
                     equiped._rectTransform.anchoredPosition = slot._rt.anchoredPosition;
                     equiped.currentLocation.Item = equiped;
                     slot.LabelCheck();
-                    UnEquipItem(invSlot.Item.e);
+                    UnEquipItem(InventorySlots[invSloti].Item.e);
                     //c._equipment.Remove(equiped.e);
                     
                     
                     
                     DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
-                    di.InitializeDragItem(e, invSlot);
+                    di.InitializeDragItem(e, InventorySlots[invSloti]);
                     c._equipment.Add(e);
                     if (e.isWeapon)
                     {
