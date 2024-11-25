@@ -206,20 +206,19 @@ public class SoundManager : MonoBehaviour
         AudioSource source = GetPooledAmbienceSource();
         source.loop = loop;
 
-        if (source.clip != clip)
+        
+        if (fadeDuration > 0f)
         {
-            if (fadeDuration > 0f)
-            {
-                if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
-                ambienceFadeCoroutine = StartCoroutine(FadeAmbienceIn(clip, source, fadeDuration));
-            }
-            else
-            {
-                source.clip = clip;
-                source.volume = ambienceVolume / 4;
-                source.Play();
-            }
+            if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
+            ambienceFadeCoroutine = StartCoroutine(FadeAmbienceIn(clip, source, fadeDuration));
         }
+        else
+        {
+            source.clip = clip;
+            source.volume = ambienceVolume / 4;
+            source.Play();
+        }
+        
 
         return source;
     }

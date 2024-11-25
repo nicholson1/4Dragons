@@ -20,6 +20,8 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private DragItem _dragItemPrefab;
     [SerializeField] private InventorySlot[] InventorySlots;
     [SerializeField] private Transform inventoryTransform;
+
+    public InventorySlot[] InventorySlotsRef => InventorySlots;
     
     public static event Action<ErrorMessageManager.Errors> InventoryNotifications;
     public static event Action<Equipment> PotionCollected;

@@ -301,7 +301,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         
     }
 
-    int CalculateGold(Equipment e, InventorySlot SellButton)
+    public int CalculateGold(Equipment e, InventorySlot SellButton)
     {
         // get rarity
 
