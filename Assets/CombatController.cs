@@ -108,7 +108,7 @@ public class CombatController : MonoBehaviour
         {
             case 1:
                 _normalDamageMultiplier = .5f;
-                _eliteDamageMultiplier = .33f;
+                _eliteDamageMultiplier = .4f;
                 _dragonDamageMultiplier = .5f;
                 break;
             case 2:
@@ -178,7 +178,7 @@ public class CombatController : MonoBehaviour
     {
         currentSeed = node.nodeSeed;
         Random.InitState(currentSeed);
-        Debug.Log("Current Node Seed: " + currentSeed);
+        //Debug.Log("Current Node Seed: " + currentSeed);
         
         RotateAroundMap._instance.RandomRotate();
         //unless its first node
@@ -243,7 +243,7 @@ public class CombatController : MonoBehaviour
             nt = NodeType.Store;
         }
 
-        else if (roll >= 5)
+        else if (roll >= 6) // >5 when we have events
         {
             //event
             nt = NodeType.Store;
@@ -351,7 +351,7 @@ public class CombatController : MonoBehaviour
         if (RelicManager._instance.HasRelic4Buff)
         {
             //remove blessing
-            Debug.Log("remove blessing");
+            //Debug.Log("remove blessing");
 
             int blessingIndex = CombatController._instance.Player.GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
             CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, -CombatController._instance.Player.Blessings[blessingIndex].Item3 );
@@ -431,10 +431,13 @@ public class CombatController : MonoBehaviour
         if (RelicManager._instance.CheckRelic(RelicType.Relic22))
         {
             entitiesInCombat[0].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
+            ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, Weapon.SpellTypes.Nature5);
         }
         if (RelicManager._instance.CheckRelic(RelicType.Relic17))
         {
             entitiesInCombat[1].DeBuff(entitiesInCombat[1], CombatEntity.DeBuffTypes.Chilled, 1,1);
+            ParticleManager._instance.SpawnParticle(entitiesInCombat[1], entitiesInCombat[1], Weapon.SpellTypes.Ice4);
+
         }
 
         if (entitiesInCombat.Count > 1 && entitiesInCombat[1].myCharacter.isElite)
@@ -581,7 +584,7 @@ public class CombatController : MonoBehaviour
             EndTurnButton.interactable = false;
 
         }
-        Debug.Log(entitiesInCombat[CurrentTurnIndex] + " now their turn");
+        //Debug.Log(entitiesInCombat[CurrentTurnIndex] + " now their turn");
         entitiesInCombat[CurrentTurnIndex].StartTurn();
         
     }
@@ -694,7 +697,7 @@ public class CombatController : MonoBehaviour
         {
             GameObject.Destroy(entitiesInCombat[i].gameObject);
             entitiesInCombat.RemoveAt(i);
-            Debug.Log("DESTRIYING GAME OBJECT");
+            //Debug.Log("DESTRIYING GAME OBJECT");
         }
         UIController._instance.ToggleInventoryUI(0);
 

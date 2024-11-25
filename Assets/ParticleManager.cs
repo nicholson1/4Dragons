@@ -280,6 +280,7 @@ public class ParticleManager : MonoBehaviour
         }
         
     }
+    
 
     private void SpawnStaticParticle(CombatEntity target, ParticleControl prefab, float delayTime, float duration)
     {

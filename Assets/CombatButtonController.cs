@@ -148,7 +148,7 @@ public class CombatButtonController : MonoBehaviour
             if(!RelicManager._instance.HasRelic4Buff && RelicManager._instance.CheckRelic(RelicType.Relic4))
             {
                 //if we dont have the blessing give the player one
-                Debug.Log("add blessing");
+                //Debug.Log("add blessing");
                 CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 10 * CombatController._instance.Player._level);
                 RelicManager._instance.HasRelic4Buff = true;
             }
@@ -158,7 +158,7 @@ public class CombatButtonController : MonoBehaviour
             if (RelicManager._instance.HasRelic4Buff)
             {
                 //remove blessing
-                Debug.Log("remove blessing");
+                //Debug.Log("remove blessing");
 
                 int blessingIndex = CombatController._instance.Player.GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
                 CombatController._instance.Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, -CombatController._instance.Player.Blessings[blessingIndex].Item3 );

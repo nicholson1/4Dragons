@@ -190,6 +190,7 @@ public class TheSpellBook : MonoBehaviour
                 case Weapon.SpellTypes.Shield3:
                     BasicBlock(spell, w, caster, caster);
                     BasicNonDamageBuff(spell, w, caster, caster);
+                    BasicNonDamageBuff(spell, w, caster, caster);
                     break;
                 case Weapon.SpellTypes.Sword1:
                     BasicPhysicalAttack(spell, w, caster, target);
@@ -384,11 +385,11 @@ public class TheSpellBook : MonoBehaviour
                 break;
             case Weapon.SpellTypes.Fire1:
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
-                power[0] = 10;
+                power[0] = 30;
                 break;
             case Weapon.SpellTypes.Hammer2:
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
-                power[0] = 10;
+                power[0] = 20;
                 break;
         }
         
@@ -446,6 +447,7 @@ public class TheSpellBook : MonoBehaviour
         if (buff == CombatEntity.BuffTypes.Prepared)
         {
             Amount = 1;
+            power[1] = 1;
         }
 
         if (Amount < 1)
@@ -466,7 +468,7 @@ public class TheSpellBook : MonoBehaviour
 
         if (spell == Weapon.SpellTypes.Dagger3)
         {
-            caster.DeBuff(target, Debuff,power[1], Mathf.RoundToInt(power[1]));
+            caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[1]));
             return;
 
         }
@@ -491,9 +493,8 @@ public class TheSpellBook : MonoBehaviour
         
         if (spell == Weapon.SpellTypes.Hammer3)
         {
-            caster.Buff(target, buff,power[1], Mathf.RoundToInt(power[1]));
+            caster.Buff(target, buff,2, Mathf.RoundToInt(power[1]));
             return;
-
         }
         
 
@@ -750,6 +751,7 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hack;
+                turn = 1;
                 break;
             case Weapon.SpellTypes.Shield1:
                 casterStats.TryGetValue(Equipment.Stats.Shields, out p);
@@ -1078,6 +1080,8 @@ public class TheSpellBook : MonoBehaviour
                 {
                     Amount = 10;
                 }
+                
+                //Debug.Log(power);
                 turn = Amount;
             }
             else
@@ -1091,11 +1095,11 @@ public class TheSpellBook : MonoBehaviour
             // Max amount you can add is 10%
             // it will cap out at 30% tho
             int Amount = power;
-            Amount = Mathf.RoundToInt(((float)Amount/ (Amount +200))* 10);
+            Amount = Mathf.RoundToInt(((float)Amount/ (Amount +200))* 20);
 
-            if (Amount < 1)
+            if (Amount < 5)
             {
-                Amount = 1;
+                Amount = 5;
             }
 
             power = Amount;

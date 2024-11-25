@@ -200,7 +200,7 @@ public class CombatEntity : MonoBehaviour
             if (myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic14))
             {
                 //keep our block
-                GetBuffed(this, BuffTypes.Block, 1, 0);
+                GetBuffed(this, BuffTypes.Block, 2, 0);
             }
             else
             {
@@ -255,14 +255,12 @@ public class CombatEntity : MonoBehaviour
             disableDoubleClick = true;
             // disable end turn 
             //isMyTurn = false;
-            Debug.Log("ENDING PLAYER TURN");
+            //Debug.Log("ENDING PLAYER TURN");
             TriggerAllDebuffs();
         }
         else
         {
-
             SetMyIntentions();
-
         }
         
         if(myCharacter.isPlayerCharacter)
@@ -272,6 +270,7 @@ public class CombatEntity : MonoBehaviour
             {
                 if (RelicManager._instance.CheckRelic(RelicType.Relic21))
                 {
+                    ParticleManager._instance.SpawnParticle(this, this, Weapon.SpellTypes.Shield2);
                     GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .1f));
                 }
             }
@@ -603,8 +602,10 @@ public class CombatEntity : MonoBehaviour
 
         foreach (var spell in weaponSpells)
         {
-            if(spell.Item1 != Weapon.SpellTypes.None)
-                Spells.Add((spell.Item1, spell.Item2));
+            //if(spell.Item1 != Weapon.SpellTypes.None) 
+                //Spells.Add((spell.Item1, spell.Item2));
+            Spells.Add((spell.Item1, spell.Item2));
+
         }
 
         // if (weaponSpells.Item1 != Weapon.SpellTypes.None)
@@ -619,8 +620,10 @@ public class CombatEntity : MonoBehaviour
         
         foreach (var spell in spellScrolls)
         {
-            if(spell.Item1 != Weapon.SpellTypes.None)
-                Spells.Add((spell.Item1, spell.Item2));
+            //if(spell.Item1 != Weapon.SpellTypes.None)
+                //Spells.Add((spell.Item1, spell.Item2));
+            Spells.Add((spell.Item1, spell.Item2));
+
         }
         //Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
         //Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
@@ -800,6 +803,7 @@ public class CombatEntity : MonoBehaviour
         if (isMyTurn)
         {
             GetMySpells();
+            
             CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
             
             // set the animator to the correct thang
