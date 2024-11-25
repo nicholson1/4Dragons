@@ -6,26 +6,29 @@ using PlayFab.ClientModels;
 using System.Threading.Tasks;
 using PlayFab.PfEditor.EditorModels;
 using UnityEngine;
+using LoginResult = PlayFab.ClientModels.LoginResult;
+using PlayFabError = PlayFab.PlayFabError;
+using PlayFabErrorCode = PlayFab.PlayFabErrorCode;
 
 public class PlayFabManager : MonoBehaviour
 {
-    private string _sessionTicket;                       //
+    private string _sessionTicket; //
     private DateTime _loginTime;
     private string _playFabId;
-    private bool _waitingOnProfile;                      //used to determine when playFab has sent or error out on profile
-    private bool _errorGettingProfile;                   //indicates if there was an error getting the profile
-    private bool _emailVerifiedForCurrentProfile;        //indicated whether the user has confirmed their email address
+    private bool _waitingOnProfile; //used to determine when playFab has sent or error out on profile
+    private bool _errorGettingProfile; //indicates if there was an error getting the profile
+    private bool _emailVerifiedForCurrentProfile; //indicated whether the user has confirmed their email address
     private const double SessionTimeoutHours = 20.0;
 
-    private const string EmailKey = "PlayFabEmail";     //  Key for storing email in PlayerPrefs
-    private const string PasswordKey = "PlayFabPassword";// Key for storing Password in PlayerPrefs
+    private const string EmailKey = "PlayFabEmail"; //  Key for storing email in PlayerPrefs
+    private const string PasswordKey = "PlayFabPassword"; // Key for storing Password in PlayerPrefs
     private string current_sw_version = "NO_VERSION";
     private string current_platform = "NO_PLATFORM";
-    
-   public bool IsInitialized => !string.IsNullOrEmpty(_sessionTicket);
+
+    public bool IsInitialized => !string.IsNullOrEmpty(_sessionTicket);
     public bool IsLoggedIn => IsInitialized && !IsSessionTicketExpired();
     public string LoggedInEmail => (IsLoggedIn) ? LoadCredential(EmailKey) : "";
-    
+
     private void Awake()
     {
         // Ensure PlayFab Title ID is set
@@ -33,6 +36,7 @@ public class PlayFabManager : MonoBehaviour
         {
             Debug.LogError("Title ID is not set. Please set the Title ID in the PlayFab settings.");
         }
+
         current_sw_version = Application.version;
         current_platform = Application.platform.ToString();
     }
@@ -47,18 +51,20 @@ public class PlayFabManager : MonoBehaviour
 
         var tcs = new TaskCompletionSource<bool>();
 
-        PlayFabClientAPI.LoginWithEmailAddress(request, 
-            result => {
+        PlayFabClientAPI.LoginWithEmailAddress(request,
+            result =>
+            {
                 // Login succeeded - email exists
                 tcs.SetResult(true);
             },
-            error => {
+            error =>
+            {
                 if (error.Error == PlayFabErrorCode.AccountNotFound)
                 {
                     // Account not found - email does not exist
                     tcs.SetResult(false);
                 }
-                else if (error.Error == PlayFabErrorCode.InvalidEmailAddress || 
+                else if (error.Error == PlayFabErrorCode.InvalidEmailAddress ||
                          error.Error == PlayFabErrorCode.InvalidPassword)
                 {
                     // Invalid email or password - email exists
@@ -75,8 +81,13 @@ public class PlayFabManager : MonoBehaviour
 
         return await tcs.Task;
     }
-    
-    public enum RegistrationResult {SUCCESS, EMAIL_EXISTS, ERROR}
+
+    public enum RegistrationResult
+    {
+        SUCCESS,
+        EMAIL_EXISTS,
+        ERROR
+    }
 
     public async Task<RegistrationResult> RegisterAccountAsync(string email, string password)
     {
@@ -87,7 +98,7 @@ public class PlayFabManager : MonoBehaviour
             Email = email,
             Password = password
         };
-        
+
         var result = await PlayFabClientAPIAsync.RegisterPlayFabUserAsync(registerRequest);
         if (result.Success)
         {
@@ -106,13 +117,13 @@ public class PlayFabManager : MonoBehaviour
                 OnError(result.Error);
                 registrationResult = RegistrationResult.ERROR;
             }
-            
+
         }
 
         return registrationResult;
     }
 
-    
+
     //======================================== Login Functionality ==================================================
     public async Task<bool> LoginAccountAsync(string email, string password)
     {
@@ -122,7 +133,7 @@ public class PlayFabManager : MonoBehaviour
             Debug.LogError("Cannot login: Email or password is blank.");
             return false;
         }
-        
+
         var loginRequest = new LoginWithEmailAddressRequest
         {
             Email = email,
@@ -130,12 +141,11 @@ public class PlayFabManager : MonoBehaviour
         };
 
         SaveCredentials(email, password);
-        
-        var result = await MainThreadDispatcher.RunOnMainThread(() =>  PlayFabClientAPIAsync.LoginWithEmailAddressAsync(loginRequest));
+
+        var result = PlayFabClientAPIAsync.LoginWithEmailAddressAsync(loginRequest));
         if (result.Success)
         {
             double totalSeconds = DateTime.UtcNow.Subtract(startTime).TotalSeconds;
-            submitTelemetryTiming(Endpoint.playFab_Login, totalSeconds);
             OnLoginSuccess(result.Result);
             return true;
         }
@@ -159,11 +169,7 @@ public class PlayFabManager : MonoBehaviour
             Debug.LogWarning("User is not logged in. Session ticket is null or empty.");
             return null;
         }
-        else
-        {
-            double totalSeconds = DateTime.UtcNow.Subtract(startTime).TotalSeconds;
-            if (totalSeconds > 0.25) submitTelemetryTiming(Endpoint.playFab_GetSessionTicketAsync, totalSeconds);
-        }
+
         return _sessionTicket;
     }
 
@@ -180,15 +186,15 @@ public class PlayFabManager : MonoBehaviour
         if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
         {
             password = EncryptionUtility.Decrypt(password);
-            await LoginAccountAsync(email,  password);
+            await LoginAccountAsync(email, password);
         }
         else
         {
             Debug.LogWarning("Cannot refresh session ticket: Email or password is missing.");
         }
     }
-    
-    
+
+
     public async Task RecoverPasswordAsync(string email)
     {
         var recoveryRequest = new SendAccountRecoveryEmailRequest
@@ -207,8 +213,8 @@ public class PlayFabManager : MonoBehaviour
             OnError(result.Error);
         }
     }
-    
-    
+
+
     public async Task<string> RequestPasswordChange(string email)
     {
         var request = new SendAccountRecoveryEmailRequest
@@ -225,32 +231,33 @@ public class PlayFabManager : MonoBehaviour
         return await tcs.Task;
     }
 
-    
+
     //===================================== email verification functionality =======================================
-    
+
     public async Task<bool> IsPlayerEmailVerified()
     {
         if (_emailVerifiedForCurrentProfile)
             return true;
-        
+
         _errorGettingProfile = false;
         _waitingOnProfile = true;
         ObtainEmailVerificationStatus();
         var timeOut = DateTime.Now.AddSeconds(10);
-        
+
         while (_waitingOnProfile && !_errorGettingProfile && DateTime.Now < timeOut)
             await Task.Delay(250);
 
         if (_errorGettingProfile || _waitingOnProfile)
         {
-            Debug.LogError($"Unable to verify email.  _errorGettingProfile: {_errorGettingProfile}, _waitingOnProfile: {_waitingOnProfile}");
+            Debug.LogError(
+                $"Unable to verify email.  _errorGettingProfile: {_errorGettingProfile}, _waitingOnProfile: {_waitingOnProfile}");
             return false;
         }
 
 
         return _emailVerifiedForCurrentProfile;
     }
-    
+
     private void ObtainEmailVerificationStatus()
     {
         var request = new GetPlayerProfileRequest
@@ -261,11 +268,12 @@ public class PlayFabManager : MonoBehaviour
                 ShowContactEmailAddresses = true, // This enables the retrieval of email status.
             }
         };
-        
-        PlayFabClientAPI.GetPlayerProfile(request, (result => {
+
+        PlayFabClientAPI.GetPlayerProfile(request, (result =>
+        {
 
             Debug.Log("Obtained email verification status");
-            if (result.PlayerProfile.ContactEmailAddresses.Count > 0 && 
+            if (result.PlayerProfile.ContactEmailAddresses.Count > 0 &&
                 !string.IsNullOrEmpty(result.PlayerProfile.ContactEmailAddresses[0].EmailAddress))
             {
                 _emailVerifiedForCurrentProfile = result.PlayerProfile.ContactEmailAddresses[0].VerificationStatus
@@ -280,12 +288,17 @@ public class PlayFabManager : MonoBehaviour
 
             _waitingOnProfile = false;
 
-        }), (error) => {_errorGettingProfile = true; Debug.LogError("Error obtaining email verification status: "+error.GenerateErrorReport()); ;} );
+        }), (error) =>
+        {
+            _errorGettingProfile = true;
+            Debug.LogError("Error obtaining email verification status: " + error.GenerateErrorReport());
+            ;
+        });
     }
-    
-    
+
+
     //============================== Credential Operations ==================================
-    
+
 
 
     private void SaveCredentials(string email, string password)
@@ -301,9 +314,10 @@ public class PlayFabManager : MonoBehaviour
         {
             return PlayerPrefs.GetString(key);
         }
+
         return null;
     }
-    
+
     // =================================== Handler Methods ========================================
 
     private void OnRegisterSuccess(RegisterPlayFabUserResult result)
@@ -313,8 +327,6 @@ public class PlayFabManager : MonoBehaviour
         _playFabId = result.PlayFabId;
         _loginTime = DateTime.UtcNow;
         AddOrUpdateContactEmail(_playFabId, LoadCredential(EmailKey));
-        SignalStream.GetStream(StreamId.Application.PlayFabLoggedIn).SendSignal("Logged in to PlayFab");
-
     }
 
     private async void OnLoginSuccess(LoginResult result)
@@ -323,14 +335,13 @@ public class PlayFabManager : MonoBehaviour
         _sessionTicket = result.SessionTicket;
         _loginTime = DateTime.UtcNow;
         _playFabId = result.PlayFabId;
-        SignalStream.GetStream(StreamId.Application.PlayFabLoggedIn).SendSignal("Logged in to PlayFab");
     }
 
     private void OnError(PlayFabError error)
     {
         Debug.LogError("Error: " + error.GenerateErrorReport());
     }
-    
+
     public void SignOut()
     {
         _sessionTicket = null;
@@ -339,9 +350,9 @@ public class PlayFabManager : MonoBehaviour
         PlayerPrefs.DeleteKey(PasswordKey);
         PlayerPrefs.Save();
     }
-    
+
     //======================== Updating contact e-mail =================================
-    
+
 
     void AddOrUpdateContactEmail(string playFabId, string emailAddress)
     {
@@ -349,10 +360,8 @@ public class PlayFabManager : MonoBehaviour
         {
             EmailAddress = emailAddress
         };
-        PlayFabClientAPI.AddOrUpdateContactEmail(request, result =>
-        {
-            Debug.Log("The player's account has been updated with a contact email");
-        }, FailureCallback);
+        PlayFabClientAPI.AddOrUpdateContactEmail(request,
+            result => { Debug.Log("The player's account has been updated with a contact email"); }, FailureCallback);
     }
 
     void FailureCallback(PlayFabError error)
@@ -360,3 +369,4 @@ public class PlayFabManager : MonoBehaviour
         Debug.LogWarning("Something went wrong with your API call. Here's some debug information:");
         Debug.LogError(error.GenerateErrorReport());
     }
+}
