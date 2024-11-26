@@ -37,6 +37,7 @@ public class ToolTipManager : MonoBehaviour
    [SerializeField] public Color[] rarityColors;
    private RectTransform _rt;
 
+
    //public HorizontalLayoutGroup LayoutGroup;
    private void Awake()
    {
