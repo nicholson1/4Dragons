@@ -2,6 +2,7 @@ using System;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.Threading.Tasks;
+using _Scripts.PlayFab;
 using UnityEngine;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 using PlayFabError = PlayFab.PlayFabError;
@@ -139,7 +140,7 @@ public class PlayFabManager : MonoBehaviour
 
         SaveCredentials(email, password);
 
-        var result = PlayFabClientAPIAsync.LoginWithEmailAddressAsync(loginRequest));
+        var result = await PlayFabClientAPIAsync.LoginWithEmailAddressAsync(loginRequest);
         if (result.Success)
         {
             double totalSeconds = DateTime.UtcNow.Subtract(startTime).TotalSeconds;
