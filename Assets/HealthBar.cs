@@ -184,7 +184,7 @@ public class HealthBar : MonoBehaviour
             return;
         }
         
-        Debug.Log(spell);
+        //Debug.Log(spell);
 
         IntentDisplay intent = GetIntent();
         intent.UpdateInfo(spell);

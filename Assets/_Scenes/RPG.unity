@@ -2124,6 +2124,7 @@ RectTransform:
   - {fileID: 390310777}
   - {fileID: 341539783}
   - {fileID: 630179596}
+  - {fileID: 1054744220}
   - {fileID: 1269784935}
   - {fileID: 2002347779}
   - {fileID: 2064375806}
@@ -4023,6 +4024,7 @@ GameObject:
   - component: {fileID: 112750807}
   - component: {fileID: 112750808}
   - component: {fileID: 112750809}
+  - component: {fileID: 112750810}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4559,6 +4561,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cursorTex: {fileID: 2800000, guid: 3abbfc6a58af500449cbe4a932a62cac, type: 3}
+--- !u!114 &112750810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112750796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3239acca523a74742aa8e4bfc300b284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TutorialTips:
+  - ID: 1
+    Message: "Are you sure you want to skip? There is no time for dilly dallying,
+      you can\u2019t choose from these later! "
+    IsShown: 0
+  - ID: 0
+    Message: 'This is your energy, it refills to 4 each turn, you can spend energy
+      to cast spells or to change equipment in combat '
+    IsShown: 0
+  - ID: 2
+    Message: Equipment that is of higher level will have more stats, and there Abilities
+      will be stronger
+    IsShown: 0
+  - ID: 3
+    Message: Equipment that is of higher rarity will have more stats, and there Abilities
+      will be stronger
+    IsShown: 0
+  - ID: 4
+    Message: 'Relics are strong items that will help you throughout your adventure
+      Spells '
+    IsShown: 0
+  - ID: 5
+    Message: "This is your current health, don't let it get to 0 in a fight or else
+      the darkness will win, I\u2019ll heal you up after you defeat your opponents!"
+    IsShown: 0
+  - ID: 6
+    Message: These tell you what your opponent is going to do on their turn
+    IsShown: 0
+  - ID: 7
+    Message: Potions can be clicked and drag onto you or the enemy to be used!
+    IsShown: 0
+  TutorialsEnabled: 0
 --- !u!1 &113373469
 GameObject:
   m_ObjectHideFlags: 0
@@ -6075,7 +6121,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: NaN, y: 6e-44, z: 7e-45, w: 3.8496e-41}
+  m_BoundingSphereOverride: {x: 5.82e-43, y: 1.1754944e-38, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -36050,6 +36096,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052574978}
   m_CullTransparentMesh: 1
+--- !u!224 &1054744220 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+  m_PrefabInstance: {fileID: 1935818659614596815}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1058302892 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3817523799084027836, guid: 5b6e4b108798d1e4691715189a19c92f, type: 3}
@@ -68815,6 +68866,10 @@ PrefabInstance:
       value: 65535
       objectReference: {fileID: 0}
     - target: {fileID: 274350897750500491, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -4171563015097924827, guid: 18e5ede33e490485d9576cb16d82ad1e, type: 2}
+    - target: {fileID: 274350897750500491, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_enableAutoSizing
       value: 0
       objectReference: {fileID: 0}
@@ -72405,6 +72460,103 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1858120171091744125, guid: 67d540c994e4b594abf7d7858f6c1e91, type: 3}
   m_PrefabInstance: {fileID: 1857384933480717989}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1935818659614596815
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 63800432}
+    m_Modifications:
+    - target: {fileID: 768451901534043601, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_Name
+      value: Tutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -791.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 200.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2919060248925136621, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
 --- !u!1001 &2054574564301940544
 PrefabInstance:
   m_ObjectHideFlags: 0

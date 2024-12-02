@@ -763,6 +763,8 @@ public class CombatController : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         StartCombat(p, e);
         ToolTipManager._instance.HideToolTipAll();
+        TutorialManager.Instance.QueueTip(TutorialNames.Energy);
+
     }
 
     private void StartCombat(Character player, Character enemy)
