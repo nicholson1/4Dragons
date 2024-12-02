@@ -73,7 +73,7 @@ public class TheSpellBook : MonoBehaviour
         {
             Debug.Log("Spell is none still");
         }
-        
+
         List<List<object>> scaling = WeaponScalingTable;
         IList abilities = (IList)scaling[(int)spell][4];
 

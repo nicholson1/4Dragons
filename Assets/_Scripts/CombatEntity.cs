@@ -665,16 +665,13 @@ public class CombatEntity : MonoBehaviour
             
         }
 
-        for (int i = Spells.Count - 1; i > 0; i--)
+        for (int i = Spells.Count - 1; i >= 0; i--)
         {
             if (Spells[i].Item1 == Weapon.SpellTypes.None)
             {
                 Spells.RemoveAt(i);
             }
         }
-
-
-        //todo modify it with titles
 
         int bloodpactcount = 0;
         int immortalcount = 0;
@@ -756,6 +753,7 @@ public class CombatEntity : MonoBehaviour
             if ( spellE <= energy)
             {
                 //Debug.Log(roll + " " + Spells[roll].Item1);
+
                 intent.Add((Spells[roll].Item1, Spells[roll].Item2));
                 energy -= spellE;
 
@@ -770,9 +768,14 @@ public class CombatEntity : MonoBehaviour
 
             infiniteStop += 1;
         }
-
-        AddingIntents = StartCoroutine(AddIntents());
+        
         Intentions = intent;
+        //Debug.Log("=================================");
+        // foreach (var VARIABLE in Intentions)
+        // {
+        //     Debug.Log(VARIABLE.Item1 + " " + VARIABLE.Item2) ;
+        // }
+        AddingIntents = StartCoroutine(AddIntents());
         if (isMyTurn)
         {
             TriggerAllDebuffs();
@@ -790,6 +793,7 @@ public class CombatEntity : MonoBehaviour
         yield return new WaitForSeconds(1);
         for (int i = 0; i < Intentions.Count; i++)
         {
+            //Debug.Log(Intentions[i].Item1);
             AddIntent(myCharacter, Intentions[i].Item1);
             yield return new WaitForSeconds(.25f);
 
