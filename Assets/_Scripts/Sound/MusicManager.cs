@@ -14,6 +14,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioClip ShopMusic;
     
     [SerializeField] private AudioClip Ambiance1;
+    [SerializeField] private AudioClip VictoryMusic;
 
     
     public static MusicManager Instance { get; private set; }
@@ -67,6 +68,10 @@ public class MusicManager : MonoBehaviour
     public void PlayAmbiance1()
     {
         SoundManager.Instance.PlayAmbience(Ambiance1,  true, 3);
+    }
+    public void PlayVictoryMusic()
+    {
+        SoundManager.Instance.PlayMusic(VictoryMusic,  MusicChannel.VictoryMusic, 2);
     }
     
     

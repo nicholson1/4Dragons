@@ -18,7 +18,7 @@ public class TutorialManager : MonoBehaviour
     private Queue<TutorialNames> _tutorialNamesQueue = new Queue<TutorialNames>();
     public static event Action<TutorialNames> TriggerTutorial;
 
-    private bool showingTip = false;
+    public bool showingTip = false;
     
 
     private void Awake()
@@ -26,7 +26,7 @@ public class TutorialManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         // Initialize the tip dictionary
         tipDictionary = new Dictionary<TutorialNames, TutorialTip>();
@@ -34,9 +34,20 @@ public class TutorialManager : MonoBehaviour
         {
             tipDictionary[tip.ID] = tip;
         }
+
+        TutorialsEnabled = PlayerPrefsManager.GetTutorialEnabled() == 1;
     }
     
     
+    public void ToggleTutorialEnabled()
+    {
+        TutorialsEnabled = !TutorialsEnabled;
+        if(TutorialsEnabled)
+            PlayerPrefsManager.SetTutorialEnabled(1);
+        else
+            PlayerPrefsManager.SetTutorialEnabled(0);
+
+    }
 
     public void QueueTip(TutorialNames tipID)
     {
@@ -45,7 +56,7 @@ public class TutorialManager : MonoBehaviour
         if(tipDictionary[tipID].IsShown) return;
         
         if(_tutorialNamesQueue.Contains(tipID)) return;
-        
+
         _tutorialNamesQueue.Enqueue(tipID);
         
         if(!showingTip)
@@ -59,7 +70,6 @@ public class TutorialManager : MonoBehaviour
             showingTip = false;
             return;
         }
-        showingTip = true;
         TutorialNames tipID  =_tutorialNamesQueue.Dequeue();
         var tip = tipDictionary[tipID];
         Debug.Log($"Tutorial Tip: {tip.Message}");
@@ -74,6 +84,12 @@ public class TutorialManager : MonoBehaviour
     {
         var tip = tipDictionary[id];
         return tip.Message;
+    }
+    
+    public bool CheckIsShown(TutorialNames id)
+    {
+        var tip = tipDictionary[id];
+        return tip.IsShown;
     }
 
 
@@ -104,5 +120,6 @@ public enum TutorialNames
     HealthBar,
     Intents,
     Potions,
+    Abilities,
     
 }

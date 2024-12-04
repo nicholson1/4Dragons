@@ -377,4 +377,5 @@ public enum MusicChannel
     DragonBattleMusic = 4,
     ShopMusic = 5,
     DeathMusic = 6,
+    VictoryMusic = 7,
 }

@@ -68,7 +68,8 @@ public class TreasureChest : MonoBehaviour
 
     private void OnDisable()
     {
-        SoundManager.Instance.StopAmbience(ambience, 2);
+        if(SoundManager.Instance != null)
+            SoundManager.Instance.StopAmbience(ambience, 2);
     }
 
     void Update()

@@ -35,6 +35,10 @@ public class SelectionItem : MonoBehaviour
 
     [SerializeField] private AudioClip[] randomCard;
     [SerializeField] private float cardVol;
+    private Equipment _equipment;
+
+    [SerializeField] private GameObject abilityTutorial;
+    [SerializeField] private GameObject rarityTutorial;
     public void InitializeSelectionItem(Equipment e)
     {
         RelicDescription.gameObject.SetActive(false);
@@ -46,6 +50,8 @@ public class SelectionItem : MonoBehaviour
         inventory.interactable = true;
         Cardback.SetActive(true);
         transform.rotation = Quaternion.Euler( 0,180, 0);
+
+        _equipment = e;
 
         myCharacter = CombatController._instance.Player.GetComponent<CombatEntity>();
 
@@ -67,6 +73,8 @@ public class SelectionItem : MonoBehaviour
         {
             //Weapon x = (Weapon)e;
             slot.text = e.slot.ToString();
+            abilityTutorial.SetActive(false);
+
         }
         SetRarityText(e.stats[Equipment.Stats.Rarity], e);
 
@@ -144,7 +152,7 @@ public class SelectionItem : MonoBehaviour
             _toolTip.Message = r.relicDescription;
             RelicDescription.text = r.relicDescription;
             RelicDescription.gameObject.SetActive(true);
-
+            
         }
 
         if (e.slot == Equipment.Slot.Consumable)
@@ -158,9 +166,12 @@ public class SelectionItem : MonoBehaviour
 
         if(e.stats[Equipment.Stats.Rarity] != 0)
             CardFront.color = title.color;
+        else
+            rarityTutorial.SetActive(false);
 
-
+        
         StartCoroutine(RotateObjectForward());
+        
     }
 
     IEnumerator RotateObjectForward()
@@ -175,6 +186,15 @@ public class SelectionItem : MonoBehaviour
             if (angle < 0)
             {
                 angle = 0; // clamp
+
+                if (_equipment.slot == Equipment.Slot.Scroll || _equipment.slot == Equipment.Slot.OneHander)
+                {
+                    TutorialManager.Instance.QueueTip(TutorialNames.Abilities);
+                }
+                if (_equipment.slot != Equipment.Slot.Relic && _equipment.stats[Equipment.Stats.Rarity] > 0)
+                {
+                    TutorialManager.Instance.QueueTip(TutorialNames.EquipmentRarity);
+                }
                 
             }
 
@@ -182,12 +202,15 @@ public class SelectionItem : MonoBehaviour
             {
                 halfway = true;
                 Cardback.SetActive(false);
+                
             }
             
         
             transform.rotation = Quaternion.Euler( 0,angle, 0);
             yield return null;
         } while( angle > 0);
+
+
         
     }
     IEnumerator RotateObjectBack()

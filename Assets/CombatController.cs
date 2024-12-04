@@ -764,6 +764,8 @@ public class CombatController : MonoBehaviour
         StartCombat(p, e);
         ToolTipManager._instance.HideToolTipAll();
         TutorialManager.Instance.QueueTip(TutorialNames.Energy);
+        TutorialManager.Instance.QueueTip(TutorialNames.HealthBar);
+        TutorialManager.Instance.QueueTip(TutorialNames.Intents);
 
     }
 

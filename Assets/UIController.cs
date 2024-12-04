@@ -42,6 +42,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ModDisplay;
     [SerializeField] private GameObject ModScroll;
     [SerializeField] public GameObject CinemaUI;
+    [SerializeField] public VictorySequence VictorySequence;
 
     
     public GameObject RestartButton;
@@ -164,6 +165,7 @@ public class UIController : MonoBehaviour
     public void ActivateVictoryScreen()
     {
         StartCoroutine(TransitionToVictoryUiCamera(1, 1));
+        VictorySequence.StartVictorySequence();
     }
     
 

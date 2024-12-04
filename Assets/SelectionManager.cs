@@ -29,6 +29,8 @@ public class SelectionManager : MonoBehaviour
     private int combatSincePotions = 0;
     private int forcePotionAfter = 3;
 
+    [SerializeField] private TutorialDisplay skipSelectionTutorial;
+
 
     private void Awake()
     {
@@ -210,6 +212,17 @@ public class SelectionManager : MonoBehaviour
                 i.DisableButtons();
             }
         }
+    }
+
+    public void SkipSelectionButton()
+    {
+        if(TutorialManager.Instance.TutorialsEnabled && !TutorialManager.Instance.CheckIsShown(TutorialNames.SkipSelection))
+            TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
+        else
+        {
+            ClearSelections();
+        }
+
     }
 
     public void ClearSelections()

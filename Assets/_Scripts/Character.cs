@@ -764,7 +764,7 @@ public class Character : MonoBehaviour
                     {
                         // victory
                         UIController._instance.ActivateVictoryScreen();
-                        UIController._instance.ToggleInventoryUI(0);
+                        UIController._instance.ToggleInventoryUI(0); 
 
                     }
                     else

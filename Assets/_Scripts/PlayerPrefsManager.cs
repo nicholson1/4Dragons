@@ -27,6 +27,7 @@ public class PlayerPrefsManager : MonoBehaviour
     private const string WEAPON2_LOCK_KEY = "Weapon2Lock";
     private const string SHOW_HELM_KEY = "ShowHelm";
     private const string SCREEN_SHAKE_KEY = "ScreenShake";
+    private const string TUTORIAL_ENABLED_KEY = "TutorialEnabled";
 
     
 
@@ -39,6 +40,9 @@ public class PlayerPrefsManager : MonoBehaviour
     private const int DEFAULT_HAIR = 8;
     private const int DEFAULT_SHOW_HELM = 1;
     private const int DEFAULT_SCREEN_SHAKE = 1;
+    
+    private const int DEFAULT_TUTORIAL_ENABLED = 1;
+
 
     private const int DEFAULT_HELMET = 0;
     private const int DEFAULT_HELMET_LOCK = 0;
@@ -80,6 +84,7 @@ public class PlayerPrefsManager : MonoBehaviour
     public static void SetWeapon2Lock(int value) => PlayerPrefs.SetInt(WEAPON2_LOCK_KEY, value);
     public static void SetShowHelm(int value) => PlayerPrefs.SetInt(SHOW_HELM_KEY, value);
     public static void SetScreenShake(int value) => PlayerPrefs.SetInt(SCREEN_SHAKE_KEY, value);
+    public static void SetTutorialEnabled(int value) => PlayerPrefs.SetInt(TUTORIAL_ENABLED_KEY, value);
 
     
 
@@ -107,6 +112,7 @@ public class PlayerPrefsManager : MonoBehaviour
     public static int GetWeapon2Lock() => PlayerPrefs.GetInt(WEAPON2_LOCK_KEY, DEFAULT_WEAPON2_LOCK);
     public static int GetShowHelm() => PlayerPrefs.GetInt(SHOW_HELM_KEY, DEFAULT_SHOW_HELM);
     public static int getScreenShake() => PlayerPrefs.GetInt(SCREEN_SHAKE_KEY, DEFAULT_SCREEN_SHAKE);
+    public static int GetTutorialEnabled() => PlayerPrefs.GetInt(TUTORIAL_ENABLED_KEY, DEFAULT_TUTORIAL_ENABLED);
 
     // Utility Functions
     public static void SavePreferences() => PlayerPrefs.Save();
@@ -134,7 +140,10 @@ public class PlayerPrefsManager : MonoBehaviour
         SetWeapon1Lock(DEFAULT_WEAPON1_LOCK);
         SetWeapon2(DEFAULT_WEAPON2);
         SetWeapon2Lock(DEFAULT_WEAPON2_LOCK);
-
+        SetShowHelm(DEFAULT_SHOW_HELM);
+        SetScreenShake(DEFAULT_SCREEN_SHAKE);
+        SetTutorialEnabled(DEFAULT_TUTORIAL_ENABLED);
+        
         SavePreferences();
     }
 }

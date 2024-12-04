@@ -12,11 +12,14 @@ public class SettingsManager : MonoBehaviour
 
     [SerializeField] private Toggle ShowHelm;
     [SerializeField] private Toggle ScreenShake;
+    [SerializeField] private Toggle Tutorials;
+
 
     private void Start()
     {
         ShowHelm.SetIsOnWithoutNotify(PlayerPrefsManager.GetShowHelm() == 1);
         ScreenShake.SetIsOnWithoutNotify(PlayerPrefsManager.getScreenShake() == 1);
+        Tutorials.SetIsOnWithoutNotify(PlayerPrefsManager.GetTutorialEnabled() == 1);
 
         int diff = PlayerPrefsManager.GetDifficulty();
         difficultySlider.SetValueWithoutNotify(diff);
