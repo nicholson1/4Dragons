@@ -200,7 +200,7 @@ public class CombatEntity : MonoBehaviour
             if (myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic14))
             {
                 //keep our block
-                GetBuffed(this, BuffTypes.Block, 1, 0);
+                GetBuffed(this, BuffTypes.Block, 2, 0);
             }
             else
             {
@@ -255,14 +255,12 @@ public class CombatEntity : MonoBehaviour
             disableDoubleClick = true;
             // disable end turn 
             //isMyTurn = false;
-            Debug.Log("ENDING PLAYER TURN");
+            //Debug.Log("ENDING PLAYER TURN");
             TriggerAllDebuffs();
         }
         else
         {
-
             SetMyIntentions();
-
         }
         
         if(myCharacter.isPlayerCharacter)
@@ -272,6 +270,7 @@ public class CombatEntity : MonoBehaviour
             {
                 if (RelicManager._instance.CheckRelic(RelicType.Relic21))
                 {
+                    ParticleManager._instance.SpawnParticle(this, this, Weapon.SpellTypes.Shield2);
                     GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .1f));
                 }
             }
@@ -603,8 +602,10 @@ public class CombatEntity : MonoBehaviour
 
         foreach (var spell in weaponSpells)
         {
-            if(spell.Item1 != Weapon.SpellTypes.None)
-                Spells.Add((spell.Item1, spell.Item2));
+            //if(spell.Item1 != Weapon.SpellTypes.None) 
+                //Spells.Add((spell.Item1, spell.Item2));
+            Spells.Add((spell.Item1, spell.Item2));
+
         }
 
         // if (weaponSpells.Item1 != Weapon.SpellTypes.None)
@@ -619,8 +620,10 @@ public class CombatEntity : MonoBehaviour
         
         foreach (var spell in spellScrolls)
         {
-            if(spell.Item1 != Weapon.SpellTypes.None)
-                Spells.Add((spell.Item1, spell.Item2));
+            //if(spell.Item1 != Weapon.SpellTypes.None)
+                //Spells.Add((spell.Item1, spell.Item2));
+            Spells.Add((spell.Item1, spell.Item2));
+
         }
         //Spells.Add((spellScrolls.Item1, spellScrolls.Item3));
         //Spells.Add((spellScrolls.Item2, spellScrolls.Item4));
@@ -662,16 +665,13 @@ public class CombatEntity : MonoBehaviour
             
         }
 
-        for (int i = Spells.Count - 1; i > 0; i--)
+        for (int i = Spells.Count - 1; i >= 0; i--)
         {
             if (Spells[i].Item1 == Weapon.SpellTypes.None)
             {
                 Spells.RemoveAt(i);
             }
         }
-
-
-        //todo modify it with titles
 
         int bloodpactcount = 0;
         int immortalcount = 0;
@@ -753,6 +753,7 @@ public class CombatEntity : MonoBehaviour
             if ( spellE <= energy)
             {
                 //Debug.Log(roll + " " + Spells[roll].Item1);
+
                 intent.Add((Spells[roll].Item1, Spells[roll].Item2));
                 energy -= spellE;
 
@@ -767,9 +768,14 @@ public class CombatEntity : MonoBehaviour
 
             infiniteStop += 1;
         }
-
-        AddingIntents = StartCoroutine(AddIntents());
+        
         Intentions = intent;
+        //Debug.Log("=================================");
+        // foreach (var VARIABLE in Intentions)
+        // {
+        //     Debug.Log(VARIABLE.Item1 + " " + VARIABLE.Item2) ;
+        // }
+        AddingIntents = StartCoroutine(AddIntents());
         if (isMyTurn)
         {
             TriggerAllDebuffs();
@@ -787,6 +793,7 @@ public class CombatEntity : MonoBehaviour
         yield return new WaitForSeconds(1);
         for (int i = 0; i < Intentions.Count; i++)
         {
+            //Debug.Log(Intentions[i].Item1);
             AddIntent(myCharacter, Intentions[i].Item1);
             yield return new WaitForSeconds(.25f);
 
@@ -800,6 +807,7 @@ public class CombatEntity : MonoBehaviour
         if (isMyTurn)
         {
             GetMySpells();
+            
             CastTheAbility(Spells[index].Item1,Spells[index].Item2 );
             
             // set the animator to the correct thang

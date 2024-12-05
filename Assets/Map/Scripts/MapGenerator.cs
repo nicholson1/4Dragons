@@ -99,7 +99,7 @@ namespace Map
                 else if (layerIndex == 6 )
                 {
                     nodeType = NodeType.Treasure;
-                    Debug.Log("forcing treausre");
+                    //Debug.Log("forcing treausre");
                 }
                 
                 if(nodeType == NodeType.EliteEnemy)

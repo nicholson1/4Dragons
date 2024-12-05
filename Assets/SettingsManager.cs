@@ -12,11 +12,14 @@ public class SettingsManager : MonoBehaviour
 
     [SerializeField] private Toggle ShowHelm;
     [SerializeField] private Toggle ScreenShake;
+    [SerializeField] private Toggle Tutorials;
+
 
     private void Start()
     {
         ShowHelm.SetIsOnWithoutNotify(PlayerPrefsManager.GetShowHelm() == 1);
         ScreenShake.SetIsOnWithoutNotify(PlayerPrefsManager.getScreenShake() == 1);
+        Tutorials.SetIsOnWithoutNotify(PlayerPrefsManager.GetTutorialEnabled() == 1);
 
         int diff = PlayerPrefsManager.GetDifficulty();
         difficultySlider.SetValueWithoutNotify(diff);
@@ -28,16 +31,16 @@ public class SettingsManager : MonoBehaviour
 
     private string[] DifficultyTexts = new[]
     {
-        "",
+        "Beginner",
         "Enemies have more health",
-        "Reduce the chance you find a potion",
+        "Potions less common",
         "Enemies drop less gold",
         "You have less max Health",
         "Enemies do more damage",
         "Increase the chance of elites",
         "Shops are more expensive",
-        "Enemies have even more health",
-        "Enemies do even more damage",
+        "Enemies have MORE health",
+        "Enemies do MORE damage",
         "Dragons are more difficult"
     };
 

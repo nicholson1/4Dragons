@@ -183,6 +183,8 @@ public class HealthBar : MonoBehaviour
         {
             return;
         }
+        
+        //Debug.Log(spell);
 
         IntentDisplay intent = GetIntent();
         intent.UpdateInfo(spell);

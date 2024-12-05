@@ -7,7 +7,7 @@ public class MoveAndSpin : MonoBehaviour
     private Vector3 target; // The target object to move towards and spin around
     private float speed = 3f; // Speed of the object
     private float spinSpeed = 250f; // Speed of spinning
-    private int spins = 3; // Number of spins around the target
+    private int spins = 2; // Number of spins around the target
     private float withinDistance = .75f; // Distance to stop from the target
     private float radius = .75f; // Radius of the spinning
 

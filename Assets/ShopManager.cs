@@ -112,6 +112,13 @@ public class ShopManager : MonoBehaviour
         
         ShopType = type;
         SellButton.SellType = type;
+
+        foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
+        {
+            if(slot.Item != null)
+                slot.Item.TurnOnSellPrice(slot.CalculateGold(slot.Item.e, SellButton));
+        }
+        
         int level = CombatController._instance.Player._level;
         Equipment e;
         // create drag items
@@ -240,6 +247,8 @@ public class ShopManager : MonoBehaviour
 
         
         
+        
+        
     }
 
     void AdjustGoldText(InventorySlot slot)
@@ -296,6 +305,12 @@ public class ShopManager : MonoBehaviour
     {
         UIController._instance.ToggleShopUI(0);
         UIController._instance.ToggleMapUI(1);
+        foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
+        {
+            if(slot.Item != null)
+                slot.Item.TurnOffSellPrice();
+        }
+        
 
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
 

@@ -30,6 +30,8 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
               potion = p;
               _toolTip.e = potion;
               image.sprite = p.icon;
+              
+              TutorialManager.Instance.QueueTip(TutorialNames.Potions);
        }
 
        public void OnBeginDrag(PointerEventData eventData)

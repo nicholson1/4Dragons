@@ -39,6 +39,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private float pickUpVol;
     [SerializeField] private float pickUpPitch;
     
+    [SerializeField] private TextMeshProUGUI sellPrice;
     
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
@@ -379,7 +380,17 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             canBeDragged = false;
         }
     }
+
+    public void TurnOnSellPrice(int price)
+    {
+        sellPrice.text = price.ToString();
+        sellPrice.gameObject.SetActive(true);
+    }
    
+    public void TurnOffSellPrice()
+    {
+        sellPrice.gameObject.SetActive(false);
+    }
     private void Start()
     {
         Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
