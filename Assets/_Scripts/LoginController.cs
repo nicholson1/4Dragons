@@ -23,9 +23,20 @@ public class LoginController : MonoBehaviour
     [SerializeField] private GameObject ErrorTextObj;
     [SerializeField] private TextMeshProUGUI ErrorText;
 
-    public void Start()
+    public async void Start()
     {
         // attempt to login automatically if player prefs exist
+        
+        bool loginResult = await _playFabManager.AutoLogin();
+        if (loginResult == false)
+        {
+            ErrorLogin();
+            return;
+        }
+        else
+        {
+            LoginSuccess();
+        }
         
     }
 
@@ -86,6 +97,7 @@ public class LoginController : MonoBehaviour
                 return;
         }
     }
+    
 
     public async void Login()
     {
@@ -185,5 +197,11 @@ public class LoginController : MonoBehaviour
     {
         login.SetActive(false);
         register.SetActive(true);
+    }
+
+    public void SignOut()
+    {
+        _playFabManager.SignOut();
+        this.gameObject.SetActive(true);
     }
 }

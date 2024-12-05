@@ -92,6 +92,7 @@ namespace Map
             {
                 Node.specialNodeType = (int)EliteManager._instance.GetDragonType();
                 CombatController._instance.nextDragonSchool = (SpellSchool)Node.specialNodeType;
+                
             }
             
             SetNodeToolTip(node);

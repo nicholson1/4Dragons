@@ -192,6 +192,43 @@ public class PlayFabManager : MonoBehaviour
         }
     }
 
+    public async Task<bool> AutoLogin()
+    {
+        string email = LoadCredential(EmailKey);
+        string password = LoadCredential(PasswordKey);
+        
+        password = EncryptionUtility.Decrypt(password);
+        
+        DateTime startTime = DateTime.UtcNow;
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            Debug.LogError("Cannot login: Email or password is blank.");
+            return false;
+        }
+
+        var loginRequest = new LoginWithEmailAddressRequest
+        {
+            Email = email,
+            Password = password
+        };
+
+        SaveCredentials(email, password);
+
+        var result = await PlayFabClientAPIAsync.LoginWithEmailAddressAsync(loginRequest);
+        if (result.Success)
+        {
+            double totalSeconds = DateTime.UtcNow.Subtract(startTime).TotalSeconds;
+            OnLoginSuccess(result.Result);
+            return true;
+        }
+        else
+        {
+            OnError(result.Error);
+            return false;
+        }
+        
+    }
+
 
     public async Task RecoverPasswordAsync(string email)
     {

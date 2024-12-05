@@ -75,6 +75,7 @@ public class DarknessController : MonoBehaviour
         if (isDragon)
         {
             GetComponent<Character>()._am.SetTrigger(TheSpellBook.AnimationTriggerNames.Reset.ToString());
+            WeatherManager._instance.UpdateWeather(0, CombatController._instance.previousDragonSchool);
         }
         DarknessObj.gameObject.SetActive(false);
         yield return new WaitForSeconds(2);
