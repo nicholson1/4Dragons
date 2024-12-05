@@ -12,11 +12,15 @@ public class TutorialDisplay : MonoBehaviour
     public TextMeshProUGUI Text;
     [SerializeField] private TutorialNames _tutorialID;
     public static event Action<TutorialNames> CloseAll;
+
+    [SerializeField] private CanvasGroup _canvasGroup;
     
     void Awake()
     {
         TutorialManager.TriggerTutorial += ShowTutorial;
         TutorialDisplay.CloseAll += CloseAllTutorial;
+        TutorialManager.CloseTutorial += CloseOverride;
+
 
     }
 
@@ -26,11 +30,14 @@ public class TutorialDisplay : MonoBehaviour
         textBox.SetActive(false);
         TutorialManager.Instance.showingTip = false;
         TutorialManager.Instance.ShowTip();
+        
 
         if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity)
         {
             CloseAll(_tutorialID);
         }
+        //PlayUIClick();
+
     }
 
     private void OnDisable()
@@ -62,13 +69,63 @@ public class TutorialDisplay : MonoBehaviour
         }
         TutorialManager.Instance.showingTip = true;
 
+        StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
+
+    }
+
+    public void CloseOverride(TutorialNames id)
+    {
+        if(id != _tutorialID)
+            return;
+        CloseTip();
     }
 
     private void OnDestroy()
     {
         TutorialManager.TriggerTutorial -= ShowTutorial;
+        TutorialManager.CloseTutorial -= CloseOverride;
+
         TutorialDisplay.CloseAll -= CloseAllTutorial;
 
 
+    }
+    
+    public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration)
+    {
+        // Check if the CanvasGroup is valid
+        if (canvasGroup == null)
+        {
+            Debug.LogError("CanvasGroup is null.");
+            yield break;
+        }
+
+        canvasGroup.alpha = 0;
+        canvasGroup.gameObject.SetActive(true);
+
+        // Store the initial alpha value
+        float startAlpha = canvasGroup.alpha;
+
+        // Track the time elapsed
+        float elapsedTime = 0f;
+
+        // Gradually change the alpha value
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / duration);
+            yield return null;
+        }
+
+        // Set the final alpha value to ensure it reaches the target
+        canvasGroup.alpha = targetAlpha;
+        if(targetAlpha == 0)
+            canvasGroup.gameObject.SetActive(false);
+
+    }
+    public AudioClip _buttonClickSFX;
+    [SerializeField] private float clickVol = .25f;
+    public void PlayUIClick()
+    {
+        SoundManager.Instance.Play2DSFX(_buttonClickSFX, clickVol, 1, .05f);
     }
 }

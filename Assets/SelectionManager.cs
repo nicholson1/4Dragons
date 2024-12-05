@@ -220,7 +220,6 @@ public class SelectionManager : MonoBehaviour
             TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
         else
         {
-            
             ClearSelections();
         }
 
@@ -257,6 +256,8 @@ public class SelectionManager : MonoBehaviour
         selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
         StartCoroutine(FadeImage(.5f,0f));
+        
+        TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);
     }
 
     public void CreateChestReward(bool forceRelic = false)

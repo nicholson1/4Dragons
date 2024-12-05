@@ -17,6 +17,8 @@ public class TutorialManager : MonoBehaviour
 
     private Queue<TutorialNames> _tutorialNamesQueue = new Queue<TutorialNames>();
     public static event Action<TutorialNames> TriggerTutorial;
+    public static event Action<TutorialNames> CloseTutorial;
+
 
     public bool showingTip = false;
     
@@ -75,9 +77,12 @@ public class TutorialManager : MonoBehaviour
         Debug.Log($"Tutorial Tip: {tip.Message}");
         tip.IsShown = true;
         tipDictionary[tipID] = tip;
-        
-        TriggerTutorial(tipID);
-        
+
+        if (TriggerTutorial != null) TriggerTutorial(tipID);
+    }
+    public void CloseTip(TutorialNames tipID)
+    {
+        if (CloseTutorial != null) CloseTutorial(tipID);
     }
 
     public string GetText(TutorialNames id)

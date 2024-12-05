@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 2919060248925136621}
   - component: {fileID: 5035603284249441689}
   - component: {fileID: 7451899475511768857}
+  - component: {fileID: 9003427363595057489}
   m_Layer: 5
   m_Name: Tutorial
   m_TagString: Untagged
@@ -158,6 +159,21 @@ MonoBehaviour:
   textBox: {fileID: 4856714851827412310}
   Text: {fileID: 3893498882046821280}
   _tutorialID: 0
+  _canvasGroup: {fileID: 9003427363595057489}
+  _buttonClickSFX: {fileID: 8300000, guid: 75901574704170b489c90214f9578664, type: 3}
+  clickVol: 0.25
+--- !u!225 &9003427363595057489
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768451901534043601}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4223521959463489472
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +324,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5373872775814155594
 RectTransform:
   m_ObjectHideFlags: 0

@@ -22,22 +22,28 @@ public class LoginController : MonoBehaviour
 
     [SerializeField] private GameObject ErrorTextObj;
     [SerializeField] private TextMeshProUGUI ErrorText;
+    [SerializeField] private CanvasGroup errorGroup;
+
 
     public async void Start()
     {
         // attempt to login automatically if player prefs exist
         
-        bool loginResult = await _playFabManager.AutoLogin();
-        if (loginResult == false)
-        {
-            ErrorLogin();
-            return;
-        }
-        else
-        {
-            LoginSuccess();
-        }
         
+        
+        PlayFabManager.AutoResult loginResult = await _playFabManager.AutoLogin();
+        switch (loginResult)
+        {
+            case PlayFabManager.AutoResult.NODATA:
+                return;
+            case PlayFabManager.AutoResult.ERROR:
+                ErrorLogin();
+                return;
+            case PlayFabManager.AutoResult.SUCCESS:
+                LoginSuccess();
+                return;
+        }
+
     }
 
     public async void Register()
@@ -160,38 +166,48 @@ public class LoginController : MonoBehaviour
     {
         ErrorTextObj.SetActive(true);
         ErrorText.text = "Passwords must be at least 6 characters!";
+        StartCoroutine(FadeCanvasGroup(errorGroup, 1, 1));
+
 
     }
     private void ErrorPassword()
     {
         ErrorTextObj.SetActive(true);
         ErrorText.text = "Passwords do not match!";
+        StartCoroutine(FadeCanvasGroup(errorGroup, 1, 1));
+
     }
     private void ErrorRegistration()
     {
         ErrorTextObj.SetActive(true);
         ErrorText.text = "Error during registration!";
+        StartCoroutine(FadeCanvasGroup(errorGroup, 1, 1));
+
     }
     private void ErrorEmailFormat()
     {
         ErrorTextObj.SetActive(true);
         ErrorText.text = "Email not in correct format!";
+        StartCoroutine(FadeCanvasGroup(errorGroup, 1, 1));
+
     }
     private void ErrorEmailExists()
     {
         ErrorTextObj.SetActive(true);
         ErrorText.text = "Email already exists!";
+        StartCoroutine(FadeCanvasGroup(errorGroup, 1, 1));
+
     }
     private void ErrorLogin()
     {
         ErrorTextObj.SetActive(true);
         ErrorText.text = "Email and or password is wrong!";
+        StartCoroutine(FadeCanvasGroup(errorGroup, 1, 1));
     }
     public void LoadLogin()
     {
         login.SetActive(true);
         register.SetActive(false);
-
     }
     public void LoadRegister()
     {
@@ -203,5 +219,38 @@ public class LoginController : MonoBehaviour
     {
         _playFabManager.SignOut();
         this.gameObject.SetActive(true);
+    }
+    
+    public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration)
+    {
+        // Check if the CanvasGroup is valid
+        if (canvasGroup == null)
+        {
+            Debug.LogError("CanvasGroup is null.");
+            yield break;
+        }
+
+        canvasGroup.alpha = 0;
+        canvasGroup.gameObject.SetActive(true);
+
+        // Store the initial alpha value
+        float startAlpha = canvasGroup.alpha;
+
+        // Track the time elapsed
+        float elapsedTime = 0f;
+
+        // Gradually change the alpha value
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / duration);
+            yield return null;
+        }
+
+        // Set the final alpha value to ensure it reaches the target
+        canvasGroup.alpha = targetAlpha;
+        if(targetAlpha == 0)
+            canvasGroup.gameObject.SetActive(false);
+
     }
 }

@@ -86,6 +86,12 @@ public class PlayFabManager : MonoBehaviour
         EMAIL_EXISTS,
         ERROR
     }
+    public enum AutoResult
+    {
+        SUCCESS,
+        NODATA,
+        ERROR
+    }
 
     public async Task<RegistrationResult> RegisterAccountAsync(string email, string password)
     {
@@ -192,10 +198,14 @@ public class PlayFabManager : MonoBehaviour
         }
     }
 
-    public async Task<bool> AutoLogin()
+    public async Task<AutoResult> AutoLogin()
     {
+        
         string email = LoadCredential(EmailKey);
         string password = LoadCredential(PasswordKey);
+
+        if (password == null || email == null)
+            return AutoResult.NODATA;
         
         password = EncryptionUtility.Decrypt(password);
         
@@ -203,7 +213,7 @@ public class PlayFabManager : MonoBehaviour
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
             Debug.LogError("Cannot login: Email or password is blank.");
-            return false;
+            return AutoResult.ERROR;
         }
 
         var loginRequest = new LoginWithEmailAddressRequest
@@ -219,12 +229,12 @@ public class PlayFabManager : MonoBehaviour
         {
             double totalSeconds = DateTime.UtcNow.Subtract(startTime).TotalSeconds;
             OnLoginSuccess(result.Result);
-            return true;
+            return AutoResult.SUCCESS;
         }
         else
         {
             OnError(result.Error);
-            return false;
+            return AutoResult.ERROR;
         }
         
     }
