@@ -21,6 +21,8 @@ public class TutorialManager : MonoBehaviour
 
 
     public bool showingTip = false;
+
+    [SerializeField] private MoveAndSpin guide;
     
 
     private void Awake()
@@ -79,6 +81,9 @@ public class TutorialManager : MonoBehaviour
         tipDictionary[tipID] = tip;
 
         if (TriggerTutorial != null) TriggerTutorial(tipID);
+
+        if(tipID != TutorialNames.Cleanse)
+            guide.MoveToRandom();
     }
     public void CloseTip(TutorialNames tipID)
     {
@@ -126,5 +131,8 @@ public enum TutorialNames
     Intents,
     Potions,
     Abilities,
+    Cleanse,
+    Start,
+
     
 }

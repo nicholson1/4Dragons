@@ -119,7 +119,7 @@ public class UIController : MonoBehaviour
         List<List<object>> dailyChallenges = DataReader._instance.GetDailyChallengesTable();
         DateTime currentDateTime = DateTime.Now;
         
-        int challengeID = currentDateTime.Second % 9;
+        int challengeID = currentDateTime.Day % 9;
         //challengeID = 8;
         List<int> mods = (List<int>)dailyChallenges[challengeID][3];
 

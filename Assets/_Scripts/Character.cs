@@ -805,6 +805,8 @@ public class Character : MonoBehaviour
                     }
                     // else
                     //{
+                    TutorialManager.Instance.QueueTip(TutorialNames.Cleanse);
+                    
                     CombatController._instance.Guide.MoveToCleanse(this.transform);
                     this.GetComponent<DarknessController>().Cleanse();
                     _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Dizzy.ToString());

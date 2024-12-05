@@ -1,36 +1,179 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class MoveAndSpin : MonoBehaviour
 {
     private Vector3 target; // The target object to move towards and spin around
     private float speed = 3f; // Speed of the object
-    private float spinSpeed = 250f; // Speed of spinning
+    private float spinSpeed = 350f; // Speed of spinning
     private int spins = 2; // Number of spins around the target
     private float withinDistance = .75f; // Distance to stop from the target
     private float radius = .75f; // Radius of the spinning
 
-    private Vector3 startPosition; // Original start position
+    [SerializeField] private Transform startPosition; // Original start position
     private bool isReturning = false; // Check if the object is returning to start
+    
+    
+    private bool isMoving = false;
+    public float initialAcceleration = -0.1f; // Starting acceleration in the -x direction
+    public float accelerationIncreaseRate = 0.05f; // Rate at which acceleration increases over time
+    public float maxSpeed = 10f; // Maximum speed
+    public float arrivalThreshold = 0.1f;
+    private Vector3 velocity = Vector3.zero; // Current velocity
+    private float currentAcceleration;
+    public float overshootDistance = 1f;
 
+
+    [SerializeField] private Transform[] tutorial1Location;
+
+    private Coroutine c = null;
+
+    public void MoveToRandom()
+    {
+
+        if (c != null)
+        {
+            StopCoroutine(c);
+        }
+        c = StartCoroutine(MoveToPos1());
+        
+    }
+
+    public IEnumerator MoveToPos1()
+    {
+        StartCoroutine(MoveToTargetWithOvershoot(tutorial1Location[Random.Range(0,tutorial1Location.Length )].position));
+        while (isMoving)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(3);
+        StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
+
+    }
     public void MoveToCleanse(Transform tar)
     {
-        startPosition = transform.position;
         target = tar.position + new Vector3(0,1.5f,0);
+        if (c != null)
+        {
+            StopCoroutine(c);
+        }
         StartCoroutine(MoveToWithinDistance());
     }
 
     IEnumerator MoveToWithinDistance()
     {
-        while (Vector3.Distance(transform.position, target) > withinDistance)
+        c = StartCoroutine(MoveToTargetWithOvershoot(target));
+        
+        while (isMoving)
         {
-            transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
             yield return null;
         }
 
         StartCoroutine(SpinAroundTarget());
     }
+
+    private bool have_Bounced;
+    private float bounceTimer = .15f;
+    
+    
+    private IEnumerator MoveToTargetWithOvershoot(Vector3 target)
+    {
+        have_Bounced = false;
+        isMoving = true;
+        currentAcceleration = initialAcceleration;
+
+        while (true)
+        {
+            Vector3 directionToTarget = (target - transform.position).normalized;
+            float distanceToTarget = Vector3.Distance(transform.position, target);
+
+            if (distanceToTarget > arrivalThreshold)
+            {
+                if (distanceToTarget <= overshootDistance) // Decelerate near the target
+                {
+                    currentAcceleration -= accelerationIncreaseRate * Time.deltaTime;
+                    currentAcceleration = Mathf.Max(0, currentAcceleration); // Prevent negative acceleration
+                }
+                else // Accelerate when far from the target
+                {
+                    currentAcceleration += accelerationIncreaseRate * Time.deltaTime;
+                }
+
+                // Apply acceleration to velocity
+                velocity += directionToTarget * currentAcceleration * Time.deltaTime;
+
+                // Clamp the velocity to the maximum speed
+                velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+            }
+            else // Overshooting behavior
+            {
+                if (!have_Bounced) // If velocity points away from the target
+                {
+                    currentAcceleration += accelerationIncreaseRate * Time.deltaTime;
+                    velocity += directionToTarget * currentAcceleration * Time.deltaTime;
+
+                    bounceTimer -= Time.deltaTime;
+                    if (bounceTimer < 0)
+                    {
+                        bounceTimer = .15f;
+                        have_Bounced = true;
+                    }
+
+                }
+                else // Snap to the target if it's within the threshold
+                {
+                    transform.position = target;
+                    velocity = Vector3.zero;
+                    break; // End the coroutine
+                }
+            }
+
+            // Move the object
+            transform.position += velocity * Time.deltaTime;
+
+            // Wait for the next frame
+            yield return null;
+        }
+
+        isMoving = false;
+        
+    }
+    private IEnumerator MoveToTarget(Vector3 target)
+    {
+        isMoving = true;
+        currentAcceleration = initialAcceleration;
+
+        while (Vector3.Distance(transform.position, target) > arrivalThreshold)
+        {
+            // Calculate the direction to the target
+            Vector3 direction = (target - transform.position).normalized;
+
+            // Update acceleration to increase over time
+            currentAcceleration += accelerationIncreaseRate * Time.deltaTime;
+
+            // Apply acceleration to velocity
+            velocity += direction * currentAcceleration * Time.deltaTime;
+
+            // Clamp the velocity to the maximum speed
+            velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
+            // Move the object
+            transform.position += velocity * Time.deltaTime;
+
+            // Wait for the next frame
+            yield return null;
+        }
+
+        // Snap to the target position and stop the movement
+        transform.position = target;
+        velocity = Vector3.zero;
+        isMoving = false;
+    }
+    
 
     IEnumerator SpinAroundTarget()
     {
@@ -50,18 +193,19 @@ public class MoveAndSpin : MonoBehaviour
         }
 
         isReturning = true;
-        ReturnToStartPosition();
+        StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
+        //ReturnToStartPosition();
     }
 
     void ReturnToStartPosition()
     {
-        while (Vector3.Distance(transform.position, startPosition) > 0.1f)
+        while (Vector3.Distance(transform.position, startPosition.position) > 0.1f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, startPosition, speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, startPosition.position, speed * Time.deltaTime);
             return;
         }
 
-        transform.position = startPosition; // Ensure the exact start position is reached
+        transform.position = startPosition.position; // Ensure the exact start position is reached
         isReturning = false;
         //Debug.Log("Returned to start position.");
     }

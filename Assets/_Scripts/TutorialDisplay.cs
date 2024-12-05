@@ -69,7 +69,8 @@ public class TutorialDisplay : MonoBehaviour
         }
         TutorialManager.Instance.showingTip = true;
 
-        StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
+        if(gameObject.activeSelf)
+            StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
 
     }
 

@@ -174,6 +174,8 @@ public class CombatController : MonoBehaviour
         Player._am.SetBool("Walk", false);
         
         SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, 1, .5f);
+        
+        TutorialManager.Instance.QueueTip(TutorialNames.Start);
     }
 
     public void MapNodeClicked(Node node)
@@ -226,6 +228,8 @@ public class CombatController : MonoBehaviour
                 break;
         }
         
+        TutorialManager.Instance.CloseTip(TutorialNames.Cleanse);
+        TutorialManager.Instance.CloseTip(TutorialNames.Start);
     }
 
     public void MysterySelect()
