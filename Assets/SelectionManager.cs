@@ -220,6 +220,7 @@ public class SelectionManager : MonoBehaviour
             TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
         else
         {
+            
             ClearSelections();
         }
 
