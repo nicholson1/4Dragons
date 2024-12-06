@@ -59,6 +59,7 @@ public class CombatButtonController : MonoBehaviour
             if (weapon1.interactable)
             {
                 character.CastAbility(0);
+                weapon1.TriggerButtonGlow();
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -66,6 +67,8 @@ public class CombatButtonController : MonoBehaviour
             if (weapon2.interactable)
             {
                 character.CastAbility(1);
+                weapon2.TriggerButtonGlow();
+
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
@@ -73,6 +76,7 @@ public class CombatButtonController : MonoBehaviour
             if (scroll1.interactable)
             {
                 character.CastAbility(2);
+                scroll1.TriggerButtonGlow();
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
@@ -80,6 +84,8 @@ public class CombatButtonController : MonoBehaviour
             if (scroll2.interactable)
             {
                 character.CastAbility(3);
+                scroll2.TriggerButtonGlow();
+
             }
         }
     }

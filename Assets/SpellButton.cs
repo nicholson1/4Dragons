@@ -22,12 +22,18 @@ public class SpellButton : MonoBehaviour
 
     //[SerializeField] private DataReader dataReader;
     List<List<object>> DataTable;
+
+    public ButtonGlow buttonGlow;
     public void SetDataTable(List<List<object>> WeaponScalingTable )
     {
         
        DataTable = WeaponScalingTable;
     }
 
+    public void TriggerButtonGlow()
+    {
+        buttonGlow.TriggerEffect(_toolTip.IconColor);
+    }
     
     
     public void UpdateSpell(Weapon.SpellTypes s, Weapon w)
