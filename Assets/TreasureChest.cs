@@ -22,34 +22,40 @@ public class TreasureChest : MonoBehaviour
     [SerializeField] private float openChestVol;
     [SerializeField] private AudioClip chestAmbiance;
     [SerializeField] private float chestAmbianceVol;
-    
+
+    public bool testRun = false;
 
     private void OnMouseDown()
     {
         if(EventSystem.current.IsPointerOverGameObject())
             return;
         
-        if (startingChest && !isOpen)
+        if(!testRun)
         {
-            SelectionManager._instance.CreateEquipmentListsStart();
+            if (startingChest && !isOpen)
+            {
+                SelectionManager._instance.CreateEquipmentListsStart();
+            }
+
+            if (!startingChest && !isOpen)
+            {
+                SelectionManager._instance.CreateChestReward(forceRelic);
+            }
+
+            //Debug.Log(!LootButtonManager._instance.HasItems());
+            if (!LootButtonManager._instance.HasItems())
+                return;
+            
+            UIController._instance.ToggleLootUI(1);
+            UIController._instance.ToggleInventoryUI(1);
         }
-        if (!startingChest && !isOpen)
-        {
-            SelectionManager._instance.CreateChestReward(forceRelic);
-        }
-        
-        //Debug.Log(!LootButtonManager._instance.HasItems());
-        if(!LootButtonManager._instance.HasItems())
-            return;
         
         if (!isOpen)
         {
             isRotating = true;
             SoundManager.Instance.Play2DSFX(openChest, openChestVol);
         }
-
-        UIController._instance.ToggleLootUI(1);
-        UIController._instance.ToggleInventoryUI(1);
+        
         
         isOpen = true;
         //StartCoroutine(WaitThenDisable());

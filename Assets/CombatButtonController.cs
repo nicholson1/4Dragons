@@ -20,6 +20,8 @@ public class CombatButtonController : MonoBehaviour
     [SerializeField] private DataReader _dataReader;
     private List<List<object>> DataTable;
     private int currentEnergy = 0;
+
+    private CombatEntity character = null;
     
     private void Start()
     {
@@ -36,6 +38,9 @@ public class CombatButtonController : MonoBehaviour
             scroll1.SetDataTable(DataTable);
         if(scroll2 != null)
             scroll2.SetDataTable(DataTable);
+
+        if (character == null)
+            character = CombatController._instance.Player._combatEntity;
     }
 
     private void OnDestroy()
@@ -44,6 +49,39 @@ public class CombatButtonController : MonoBehaviour
         CombatController.UpdateUIButtons -= UpdateCombatUI;
 
         Character.UpdateEnergy -= UpdateEnergy;
+    }
+
+    private void Update()
+    {
+        
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (weapon1.interactable)
+            {
+                character.CastAbility(0);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if (weapon2.interactable)
+            {
+                character.CastAbility(1);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (scroll1.interactable)
+            {
+                character.CastAbility(2);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            if (scroll2.interactable)
+            {
+                character.CastAbility(3);
+            }
+        }
     }
 
     private void UpdateEnergy(Character c, int current, int max, int change)
@@ -176,6 +214,7 @@ public class CombatButtonController : MonoBehaviour
         {
             //Debug.Log(" spell is false");
             b.interactable = false;
+            button.interactable = false;
             return;
         }
         int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
@@ -185,16 +224,26 @@ public class CombatButtonController : MonoBehaviour
         if (energyAmount > currentEnergy)
         {
             // if relic 24 is unsued and the spell is a buff
-            if(TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.Buff, button.spell) && !RelicManager._instance.UsedRelic24 && RelicManager._instance.CheckRelic(RelicType.Relic24))
+            if(TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.Buff, button.spell) && !RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
+            {
                 b.interactable = true;
+                button.interactable = true;
+
+            }
                 
             else
+            {
                 b.interactable = false;
+                button.interactable = false;
+
+            }
         }
 
         else
         {
             b.interactable = true;
+            button.interactable = true;
+
         }
         
         if (b.interactable && energyAmount == 1)
@@ -202,6 +251,8 @@ public class CombatButtonController : MonoBehaviour
             if(RelicManager._instance.CheckRelic(RelicType.DragonRelic10))
             {
                 b.interactable = false;
+                button.interactable = false;
+
             }
         }
     }

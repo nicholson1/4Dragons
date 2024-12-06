@@ -146,21 +146,21 @@ public class SoundManager : MonoBehaviour
             newSource.volume = 0f;
             newSource.time = MusicTimeStamps[(int)channel];
             newSource.Play();
-
-            if (fadeDuration > 0f)
-            {
-                if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
-                musicFadeCoroutine = StartCoroutine(CrossfadeMusic(activeSource, newSource, fadeDuration));
-            }
-            else
-            {
-                activeSource.Stop();
-                newSource.volume = musicVolume / 2;
-            }
-
-            isMusicSourceAPlaying = !isMusicSourceAPlaying; // Switch sources
+        
+             if (fadeDuration > 0f)
+             {
+                 if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+                 musicFadeCoroutine = StartCoroutine(CrossfadeMusic(activeSource, newSource, fadeDuration));
+             }
+             else
+             {
+                 activeSource.Stop();
+                 newSource.volume = musicVolume / 2;
+             }
+        
+             isMusicSourceAPlaying = !isMusicSourceAPlaying; // Switch sources
             
-            lastPlayedMusic = channel;
+             lastPlayedMusic = channel;
         }
     }
 

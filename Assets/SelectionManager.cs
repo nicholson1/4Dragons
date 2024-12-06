@@ -161,14 +161,14 @@ public class SelectionManager : MonoBehaviour
 
         List<int> GoldSelections = new List<int>();
 
-        if (RelicManager._instance.CheckRelic(RelicType.Relic34))
+        if (RelicManager._instance.CheckRelic(RelicType.Relic33))
         {
             c._gold += Mathf.RoundToInt(c._gold * .25f);
         }
         
         GoldSelections.Add(c._gold);
         
-        if (RelicManager._instance.CheckRelic(RelicType.Relic26))
+        if (RelicManager._instance.CheckRelic(RelicType.Relic25))
         {
             GoldSelections.Add(Mathf.RoundToInt(CombatController._instance.Player._gold * .05f));
         }
@@ -385,7 +385,10 @@ public class SelectionManager : MonoBehaviour
 
     public void CreateEquipmentListsStart()
     {
-        
+        // if (Rand._i.Random == null)
+        // {
+        //     Rand._i.SetSeedForRun();
+        // }
         Random.InitState(Rand._i.Random.Next());
         
         List<List<Equipment>> equipments = new List<List<Equipment>>();

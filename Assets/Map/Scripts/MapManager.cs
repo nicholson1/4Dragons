@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 //using Newtonsoft.Json;
 
@@ -87,7 +88,8 @@ namespace Map
         {
             SaveMap();
         }
-        
+
+        private float MapGenTimer = 0f;
         private void Update()
         {
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
@@ -101,8 +103,17 @@ namespace Map
             }
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.J))
             {
-                GenerateNewMap();
-                CombatController._instance.MapCanBeClicked = true;
+                if(MapGenTimer <= 0)
+                {
+                    GenerateNewMap();
+                    CombatController._instance.MapCanBeClicked = true;
+                    MapGenTimer = .25f;
+                }
+            }
+
+            if (MapGenTimer > 0)
+            {
+                MapGenTimer -= Time.deltaTime;
             }
         }
     }

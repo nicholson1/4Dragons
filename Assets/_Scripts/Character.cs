@@ -735,14 +735,14 @@ public class Character : MonoBehaviour
 
         if (_currentHealth <= 0 && isPlayerCharacter)
         {
-            if (!RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
+            if (!RelicManager._instance.UsedRelic22 && RelicManager._instance.CheckRelic(RelicType.Relic22))
             {
                 _currentHealth = 0;
                 //Debug.Log(Mathf.RoundToInt(c._maxHealth/2f));
                 
                 _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
                 _combatEntity.Buff(_combatEntity,CombatEntity.BuffTypes.Invulnerable, 1, 1);
-                RelicManager._instance.UsedRelic23 = true;
+                RelicManager._instance.UsedRelic22 = true;
                 //Debug.Log(_currentHealth);
             }
             

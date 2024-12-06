@@ -156,12 +156,12 @@ public class TheSpellBook : MonoBehaviour
                                                      spell == Weapon.SpellTypes.Ice2 ||
                                                      spell == Weapon.SpellTypes.Blood4))
         {
-            if (!RelicManager._instance.UsedRelic24)
+            if (!RelicManager._instance.UsedRelic23)
             {
-                if (RelicManager._instance.CheckRelic(RelicType.Relic24))
+                if (RelicManager._instance.CheckRelic(RelicType.Relic23))
                 {
                     caster.myCharacter.UpdateEnergyCount(int.Parse(WeaponScalingTable[(int)spell][2].ToString()));
-                    RelicManager._instance.UsedRelic24 = true;
+                    RelicManager._instance.UsedRelic23 = true;
                 }
             }
         }
@@ -939,10 +939,9 @@ public class TheSpellBook : MonoBehaviour
         if (caster.myCharacter.isPlayerCharacter && turn > 0)
         {
             //Debug.Log(turn.ToString() + " : "+ spell);
-            if (RelicManager._instance.CheckRelic(RelicType.Relic28))
+            if (RelicManager._instance.CheckRelic(RelicType.Relic27))
             {
                 turn += 1;
-                Debug.Log("we should do this incenerate");
             }
         }
 
@@ -1112,7 +1111,7 @@ public class TheSpellBook : MonoBehaviour
                 int blockCheck = caster.myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
                 if (blockCheck != -1)
                 {
-                    if (RelicManager._instance.CheckRelic(RelicType.DragoRelic15))
+                    if (RelicManager._instance.CheckRelic(RelicType.DragonRelic15))
                     {
                         power += Mathf.RoundToInt(caster.myCharacter.Buffs[blockCheck].Item3);
                     }

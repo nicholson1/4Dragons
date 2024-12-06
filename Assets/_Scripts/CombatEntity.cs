@@ -268,10 +268,10 @@ public class CombatEntity : MonoBehaviour
             int blockCheck = myCharacter.GetIndexOfBuff(CombatEntity.BuffTypes.Block);
             if (blockCheck == -1)
             {
-                if (RelicManager._instance.CheckRelic(RelicType.Relic21))
+                if (RelicManager._instance.CheckRelic(RelicType.Relic20))
                 {
                     ParticleManager._instance.SpawnParticle(this, this, Weapon.SpellTypes.Shield2);
-                    GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .1f));
+                    GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .05f));
                 }
             }
         }
@@ -322,11 +322,20 @@ public class CombatEntity : MonoBehaviour
 
         if (deBuff == DeBuffTypes.Chilled && !myCharacter.isPlayerCharacter)
         {
-            // if we are not chilled and become chilled
+            // if we are not chilled and become chilled, and reset intentions
             int chill = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
+            // if the turns == 1 as in we just applied chill, then reset intentions
             if (myCharacter.DeBuffs[chill].Item2 == 1)
             {
                 SetMyIntentions();
+            }
+            // if the turns == 2 as in we just applied chill with relic, then reset intentions
+            if (myCharacter.DeBuffs[chill].Item2 == 2)
+            {
+                if (!myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic18))
+                {
+                    SetMyIntentions();
+                }
             }
         }
 
@@ -350,12 +359,20 @@ public class CombatEntity : MonoBehaviour
 
         if (myCharacter.isPlayerCharacter)
         {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic31))
+            if (RelicManager._instance.CheckRelic(RelicType.Relic30))
             {
                 crit = 0;
             }
 
-            if (dt == AbilityTypes.SpellAttack && !RelicManager._instance.UsedRelic19)
+            if (dt == AbilityTypes.SpellAttack && !RelicManager._instance.UsedRelic18)
+            {
+                if (RelicManager._instance.CheckRelic(RelicType.Relic18))
+                {
+                    damagePreReduction = 0;
+                    RelicManager._instance.UsedRelic18 = true;
+                }
+            }
+            if (dt == AbilityTypes.PhysicalAttack && !RelicManager._instance.UsedRelic19)
             {
                 if (RelicManager._instance.CheckRelic(RelicType.Relic19))
                 {
@@ -363,18 +380,10 @@ public class CombatEntity : MonoBehaviour
                     RelicManager._instance.UsedRelic19 = true;
                 }
             }
-            if (dt == AbilityTypes.PhysicalAttack && !RelicManager._instance.UsedRelic20)
-            {
-                if (RelicManager._instance.CheckRelic(RelicType.Relic20))
-                {
-                    damagePreReduction = 0;
-                    RelicManager._instance.UsedRelic20 = true;
-                }
-            }
         }
         if (!myCharacter.isPlayerCharacter)
         {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic32))
+            if (RelicManager._instance.CheckRelic(RelicType.Relic31))
             {
                 critModifier += .5f;
             }
@@ -382,7 +391,7 @@ public class CombatEntity : MonoBehaviour
             int chilled = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
             if (chilled != -1)
             {
-                if (RelicManager._instance.CheckRelic(RelicType.Relic30))
+                if (RelicManager._instance.CheckRelic(RelicType.Relic29))
                 {
                     critModifier *= 2;
                 }
@@ -458,7 +467,7 @@ public class CombatEntity : MonoBehaviour
             {
                 if(dt == AbilityTypes.SpellAttack)
                 {
-                    if (RelicManager._instance.CheckRelic(RelicType.Relic29))
+                    if (RelicManager._instance.CheckRelic(RelicType.Relic28))
                     {
 
                         if (blockAmount >= attackDamage * 2)
@@ -473,7 +482,7 @@ public class CombatEntity : MonoBehaviour
                 }
                 if(dt == AbilityTypes.PhysicalAttack)
                 {
-                    if (RelicManager._instance.CheckRelic(RelicType.Relic33))
+                    if (RelicManager._instance.CheckRelic(RelicType.Relic32))
                     {
                         if (blockAmount >= attackDamage * 2)
                         {

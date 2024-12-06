@@ -18,7 +18,7 @@ public class SpellButton : MonoBehaviour
     [SerializeField]private ToolTip _toolTip;
     //public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
 
-    
+    public bool interactable = true;
 
     //[SerializeField] private DataReader dataReader;
     List<List<object>> DataTable;

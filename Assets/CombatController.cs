@@ -166,8 +166,10 @@ public class CombatController : MonoBehaviour
 
     public void ActivateStartChest()
     {
+        started = true;
         EquipmentCreator._instance.ApplyModifiers();
         StartChest.gameObject.SetActive(true);
+        
         MusicManager.Instance.PlayAdventureMusic();
 
         RotateAroundMap._instance.SlowRotate = false;
@@ -262,7 +264,7 @@ public class CombatController : MonoBehaviour
 
         if (nt == NodeType.MinorEnemy)
         {
-            if (RelicManager._instance.CheckRelic(RelicType.Relic25))
+            if (RelicManager._instance.CheckRelic(RelicType.Relic24))
             {
                 //todo roll again for treasure store event
                 roll = Random.Range(0, 2);
@@ -434,7 +436,7 @@ public class CombatController : MonoBehaviour
 
         yield return new WaitForSeconds(.5f);
         
-        if (RelicManager._instance.CheckRelic(RelicType.Relic22))
+        if (RelicManager._instance.CheckRelic(RelicType.Relic21))
         {
             entitiesInCombat[0].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
             ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, Weapon.SpellTypes.Nature5);
@@ -460,9 +462,9 @@ public class CombatController : MonoBehaviour
             Player.UpdateEnergyCount(1);;
         }
 
+        RelicManager._instance.UsedRelic18 = false;
         RelicManager._instance.UsedRelic19 = false;
-        RelicManager._instance.UsedRelic20 = false;
-        RelicManager._instance.UsedRelic24 = false;
+        RelicManager._instance.UsedRelic23 = false;
         RelicManager._instance.UsedRelic8 = false;
         RelicManager._instance.UsedRelic7 = false;
         RelicManager._instance.UsedRelic6 = false;
@@ -800,6 +802,9 @@ public class CombatController : MonoBehaviour
 
     }
 
+    private bool started = false;
+    private bool testRun = false;
+
     private void Update()
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.K))
@@ -811,6 +816,13 @@ public class CombatController : MonoBehaviour
                     entitiesInCombat[i].DirectTakeDamage(999999);
                 }
             }
+        }
+        if (!started&& Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.S))
+        {
+            ActivateStartChest();
+            testRun = true;
+            StartChest.GetComponent<TreasureChest>().testRun = testRun;
+
         }
         
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha4))

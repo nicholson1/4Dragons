@@ -108,9 +108,9 @@ public class RelicDisplay : MonoBehaviour
                 CombatController._instance.Player._maxEnergy += 3;
             }
         }
-        if (relic.relicType == RelicType.Relic27)
+        if (relic.relicType == RelicType.Relic26)
         {
-            if(RelicManager._instance.CheckRelic(RelicType.Relic27))
+            if(RelicManager._instance.CheckRelic(RelicType.Relic26))
             {
                 MapView.Instance.SetAttainableNodes();
             }

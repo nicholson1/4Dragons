@@ -81,7 +81,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             initialRotation = transform.localRotation;
             setOnce = true;
         }
-        LeanTween.cancel(gameObject);
+        //LeanTween.cancel(gameObject);
         LeanTween.scale(gameObject, initialScale * hoverScale, 0.1f).setEaseInOutQuad();
         yield return new WaitForSeconds(time);
         LeanTween.scale(gameObject, initialScale, 0.1f).setEaseInOutQuad();

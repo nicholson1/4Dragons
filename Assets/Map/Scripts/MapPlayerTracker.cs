@@ -44,7 +44,7 @@ namespace Map
                 else
                     PlayWarningThatNodeCannotBeAccessed();
                 
-                if (RelicManager._instance.CheckRelic(RelicType.Relic27))
+                if (RelicManager._instance.CheckRelic(RelicType.Relic26))
                 {
                     SendPlayerToNode(mapNode);
                 }

@@ -368,7 +368,18 @@ public class EquipmentManager : MonoBehaviour
         // if incombat
         if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
         {
-            UpdateUi();
+            
+            //Debug.Log("three times?");
+            if (e.slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
+            {
+                return;
+            }
+            if (e.slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
+            {
+                return;
+            }
+            c.UpdateEnergyCount(-1);
+            
         }
 
     }
@@ -534,17 +545,17 @@ public class EquipmentManager : MonoBehaviour
         hasInitialized = true;
     }
 
-    private void UpdateUi()
-    {
-        //CombatController._instance.UpdateUiButtons();
-        
-        // if in combat take one energy
-        if (CombatController._instance.entitiesInCombat.Count > 1)
-        {
-            //Debug.Log("three times?");
-            c.UpdateEnergyCount(-1);
-        }
-    }
+    // private void UpdateUi()
+    // {
+    //     //CombatController._instance.UpdateUiButtons();
+    //     
+    //     // if in combat take one energy
+    //     if (CombatController._instance.entitiesInCombat.Count > 1)
+    //     {
+    //         //Debug.Log("three times?");
+    //         c.UpdateEnergyCount(-1);
+    //     }
+    // }
 
     public void AddPotionToPotionBar(Consumable consume)
     {

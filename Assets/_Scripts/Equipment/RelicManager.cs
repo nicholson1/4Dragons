@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ImportantStuff;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -24,10 +25,10 @@ public class RelicManager : MonoBehaviour
     private int FirstDragonRelicIndex = 34;
     public static RelicManager _instance;
 
-    public bool UsedRelic23 = false; // resurect
-    public bool UsedRelic19 = false; // prevent first spell damage
-    public bool UsedRelic20 = false; // prevent first physical damage
-    public bool UsedRelic24 = false; // first buff free
+    public bool UsedRelic22 = false; // resurect
+    public bool UsedRelic18 = false; // prevent first spell damage
+    public bool UsedRelic19 = false; // prevent first physical damage
+    public bool UsedRelic23 = false; // first buff free
     public bool UsedRelic8 = false; //  drop below 50% gain block
     public bool UsedRelic6 = false; //  drop below 50% gain armor + mr
     public bool UsedRelic7 = false; //  drop below 50% gain sp + ad

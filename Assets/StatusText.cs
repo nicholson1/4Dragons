@@ -21,8 +21,6 @@ public class StatusText : MonoBehaviour
     public Sprite healIcon;
     public Sprite spellAttackIcon;
     
-    
-    
 
     public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, HealthBar hb, int reduction = 0)
     {
@@ -98,7 +96,7 @@ public class StatusText : MonoBehaviour
     private void StartMovement()
     {
         // if i have siblings increase my starting pos by 30
-        transform.position += new Vector3(0, (transform.parent.childCount - 1) * -40, 0);
+        transform.position += new Vector3(0, (transform.parent.childCount - 1) * -70, 0);
         Icon.color = Color.white;
         if (!this.isActiveAndEnabled)
         {
