@@ -24,12 +24,14 @@ public class LoginController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ErrorText;
     [SerializeField] private CanvasGroup errorGroup;
 
+    private CanvasGroup _canvasGroup;
 
     public async void Start()
     {
         // attempt to login automatically if player prefs exist
-        
-        
+
+        _canvasGroup = GetComponent<CanvasGroup>();
+        StartCoroutine(FadeIn(_canvasGroup , 1));
         
         PlayFabManager.AutoResult loginResult = await _playFabManager.AutoLogin();
         switch (loginResult)
@@ -44,6 +46,54 @@ public class LoginController : MonoBehaviour
                 return;
         }
 
+    }
+    
+    public IEnumerator FadeIn(CanvasGroup targetCanvasGroup, float duration)
+    {
+        targetCanvasGroup.gameObject.SetActive(true);
+        float elapsedTime = 0f;
+
+        // Ensure the CanvasGroup is visible and starts from 0 alpha
+        targetCanvasGroup.alpha = 0;
+        targetCanvasGroup.interactable = false;
+        targetCanvasGroup.blocksRaycasts = false;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            targetCanvasGroup.alpha = Mathf.Clamp01(elapsedTime / duration);
+            yield return null; // Wait until the next frame
+        }
+
+        // Make sure alpha is set to 1 after fading
+        targetCanvasGroup.alpha = 1;
+        targetCanvasGroup.interactable = true;
+        targetCanvasGroup.blocksRaycasts = true;
+        
+    }
+    public IEnumerator FadeOutAndDeactivate(CanvasGroup canvasGroup, float duration)
+    {
+        if (canvasGroup == null)
+        {
+            Debug.LogError("CanvasGroup is null. Cannot fade out.");
+            yield break;
+        }
+
+        float startAlpha = canvasGroup.alpha;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsedTime / duration);
+            yield return null; // Wait until the next frame
+        }
+
+        // Ensure the alpha is set to 0 at the end
+        canvasGroup.alpha = 0f;
+
+        // Deactivate the CanvasGroup's GameObject
+        canvasGroup.gameObject.SetActive(false);
     }
 
     public async void Register()
@@ -154,8 +204,9 @@ public class LoginController : MonoBehaviour
     {
         CloseError();
         //login i suppose
-        
-        this.gameObject.SetActive(false);
+
+        StartCoroutine(FadeOutAndDeactivate(_canvasGroup, 1));
+        WorkInProgress._instance.OpenWorkInProgress();
     }
 
     public void CloseError()

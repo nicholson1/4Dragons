@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Collections.Generic;
+using PlayFab.MultiplayerModels;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -41,8 +42,22 @@ public class TutorialManager : MonoBehaviour
 
         TutorialsEnabled = PlayerPrefsManager.GetTutorialEnabled() == 1;
     }
-    
-    
+
+    private float timer = 3f;
+    private void FixedUpdate()
+    {
+        if (!showingTip && _tutorialNamesQueue.Count > 0)
+        {
+            timer -= Time.fixedDeltaTime;
+
+            if (timer <= 0)
+            {
+                ShowTip();
+                timer = 3f;
+            }
+        }
+    }
+
     public void ToggleTutorialEnabled()
     {
         TutorialsEnabled = !TutorialsEnabled;
@@ -67,6 +82,23 @@ public class TutorialManager : MonoBehaviour
             ShowTip();
     }
 
+    public void DequeueTipOnSuccess(TutorialNames tipID)
+    {
+        if(_tutorialNamesQueue.Count == 0)
+            return;
+        if (tipID == _tutorialNamesQueue.Peek())
+        {
+
+            _tutorialNamesQueue.Dequeue();
+        }
+    }
+
+    public void MoveSprite(TutorialNames tipID)
+    {
+        if(tipID != TutorialNames.Cleanse)
+            guide.MoveToRandom();
+    }
+
     public void ShowTip()
     {
         if(_tutorialNamesQueue.Count == 0)
@@ -74,16 +106,15 @@ public class TutorialManager : MonoBehaviour
             showingTip = false;
             return;
         }
-        TutorialNames tipID  =_tutorialNamesQueue.Dequeue();
+        TutorialNames tipID  =_tutorialNamesQueue.Peek();
         var tip = tipDictionary[tipID];
-        Debug.Log($"Tutorial Tip: {tip.Message}");
+        //Debug.Log($"Tutorial Tip: {tip.Message}");
         tip.IsShown = true;
         tipDictionary[tipID] = tip;
 
         if (TriggerTutorial != null) TriggerTutorial(tipID);
 
-        if(tipID != TutorialNames.Cleanse)
-            guide.MoveToRandom();
+        
     }
     public void CloseTip(TutorialNames tipID)
     {
@@ -133,6 +164,7 @@ public enum TutorialNames
     Abilities,
     Cleanse,
     Start,
+    Stats,
 
     
 }

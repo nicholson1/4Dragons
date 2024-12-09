@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,13 +28,24 @@ public class ButtonGlow : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        targetImage.color = new Color(0,0,0 ,0);
+        targetImage.transform.localScale = initialScale;
+    }
+
     public void TriggerEffect(Color c)
     {
+       
         if (targetImage != null)
         {
             gameObject.SetActive(true);
             if(co != null)
                 StopCoroutine(co);
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
             co = StartCoroutine(ScaleAndFadeCoroutine(c, targetScale, fadeInTime, fadeOutTime));
         }
     }

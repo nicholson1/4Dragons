@@ -39,6 +39,8 @@ public class SelectionItem : MonoBehaviour
 
     [SerializeField] private GameObject abilityTutorial;
     [SerializeField] private GameObject rarityTutorial;
+    [SerializeField] private GameObject statsTutorial;
+
     public void InitializeSelectionItem(Equipment e)
     {
         RelicDescription.gameObject.SetActive(false);
@@ -68,6 +70,8 @@ public class SelectionItem : MonoBehaviour
             slot.text = "Scroll"; //+GetWeaponType(x.spellType1);
             _toolTip.is_spell = true;
             //_toolTip.is_item = false;
+            statsTutorial.SetActive(false);
+
         }
         else
         {
@@ -153,6 +157,7 @@ public class SelectionItem : MonoBehaviour
             RelicDescription.text = r.relicDescription;
             RelicDescription.gameObject.SetActive(true);
             
+            statsTutorial.SetActive(false);
         }
 
         if (e.slot == Equipment.Slot.Consumable)
@@ -194,6 +199,10 @@ public class SelectionItem : MonoBehaviour
                 if (_equipment.slot != Equipment.Slot.Relic && _equipment.stats[Equipment.Stats.Rarity] > 0)
                 {
                     TutorialManager.Instance.QueueTip(TutorialNames.EquipmentRarity);
+                }
+                if (_equipment.slot != Equipment.Slot.Relic && _equipment.stats.Count > 2)
+                {
+                    TutorialManager.Instance.QueueTip(TutorialNames.Stats);
                 }
                 
             }

@@ -32,7 +32,8 @@ public class TutorialDisplay : MonoBehaviour
         TutorialManager.Instance.ShowTip();
         
 
-        if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity)
+
+        if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity || _tutorialID == TutorialNames.Stats)
         {
             CloseAll(_tutorialID);
         }
@@ -58,7 +59,13 @@ public class TutorialDisplay : MonoBehaviour
     {
         if(id != _tutorialID)
             return;
+
+        if (gameObject.activeInHierarchy == false)
+        {
+            return;
+        }
         
+        TutorialManager.Instance.MoveSprite(id);
 
         BackgroundGlow.gameObject.SetActive(true);
 
@@ -68,9 +75,14 @@ public class TutorialDisplay : MonoBehaviour
             Text.text = TutorialManager.Instance.GetText(id);
         }
         TutorialManager.Instance.showingTip = true;
+        
 
-        if(gameObject.activeSelf)
-            StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
+        /*if(gameObject.activeInHierarchy)
+        {
+        */
+            
+        StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
+        //}
 
     }
 
@@ -108,6 +120,8 @@ public class TutorialDisplay : MonoBehaviour
 
         // Track the time elapsed
         float elapsedTime = 0f;
+        
+        
 
         // Gradually change the alpha value
         while (elapsedTime < duration)
@@ -121,6 +135,13 @@ public class TutorialDisplay : MonoBehaviour
         canvasGroup.alpha = targetAlpha;
         if(targetAlpha == 0)
             canvasGroup.gameObject.SetActive(false);
+
+        if (targetAlpha >= 1)
+        {
+            //yield return new WaitForSeconds(.25f);
+            TutorialManager.Instance.DequeueTipOnSuccess(_tutorialID);
+
+        }
 
     }
     public AudioClip _buttonClickSFX;

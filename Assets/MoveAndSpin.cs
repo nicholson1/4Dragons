@@ -44,14 +44,14 @@ public class MoveAndSpin : MonoBehaviour
 
     public IEnumerator MoveToPos1()
     {
-        StartCoroutine(MoveToTargetWithOvershoot(tutorial1Location[Random.Range(0,tutorial1Location.Length )].position));
+        c =StartCoroutine(MoveToTargetWithOvershoot(tutorial1Location[Random.Range(0,tutorial1Location.Length )].position));
         while (isMoving)
         {
             yield return null;
         }
 
         yield return new WaitForSeconds(3);
-        StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
+        c =StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
 
     }
     public void MoveToCleanse(Transform tar)
@@ -61,7 +61,7 @@ public class MoveAndSpin : MonoBehaviour
         {
             StopCoroutine(c);
         }
-        StartCoroutine(MoveToWithinDistance());
+        c =StartCoroutine(MoveToWithinDistance());
     }
 
     IEnumerator MoveToWithinDistance()
@@ -73,7 +73,7 @@ public class MoveAndSpin : MonoBehaviour
             yield return null;
         }
 
-        StartCoroutine(SpinAroundTarget());
+        c = StartCoroutine(SpinAroundTarget());
     }
 
     private bool have_Bounced;
@@ -193,7 +193,7 @@ public class MoveAndSpin : MonoBehaviour
         }
 
         isReturning = true;
-        StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
+        c =StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
         //ReturnToStartPosition();
     }
 
@@ -215,6 +215,22 @@ public class MoveAndSpin : MonoBehaviour
         if (isReturning)
         {
             ReturnToStartPosition();
+        }
+    }
+    
+    private float timer = 5f;
+    private void FixedUpdate()
+    {
+        timer -= Time.fixedDeltaTime;
+
+        if (timer < 0)
+        {
+            timer = 5;
+            if (Vector3.Distance(transform.position, startPosition.position) > 10)
+            {
+                StopCoroutine(c);
+                transform.localPosition = startPosition.localPosition;
+            }
         }
     }
 }

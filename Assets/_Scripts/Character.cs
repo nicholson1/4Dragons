@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
 using Map;
+using PlayFab.Internal;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -62,6 +63,7 @@ public class Character : MonoBehaviour
     [SerializeField] private AudioClip getGold;
     [SerializeField] private float getGoldVol;
     [SerializeField] private float getGoldpitch;
+    [SerializeField] private ButtonGlow EnergyGlow;
 
     public void ToggleShowHelm()
     {
@@ -312,6 +314,12 @@ public class Character : MonoBehaviour
             _currentEnergy = 0;
 
         UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
+
+        if (amount > 0 && isPlayerCharacter && EnergyGlow != null)
+        {
+            EnergyGlow.TriggerEffect(new Color(1,.9f,.2f));
+            UIController._instance.PlayEnergySound();
+        }
     }
 
     public void UsePrepStack()
@@ -737,12 +745,18 @@ public class Character : MonoBehaviour
         {
             if (!RelicManager._instance.UsedRelic22 && RelicManager._instance.CheckRelic(RelicType.Relic22))
             {
-                _currentHealth = 0;
+                _currentHealth = 1;
                 //Debug.Log(Mathf.RoundToInt(c._maxHealth/2f));
                 
-                _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
+                //Debug.Log("phenoix blessing " + " current max = "  + _maxHealth + " current health = " + _currentHealth);
+                
+                
                 _combatEntity.Buff(_combatEntity,CombatEntity.BuffTypes.Invulnerable, 1, 1);
+                _combatEntity.Heal(_combatEntity,Mathf.RoundToInt(c._maxHealth/2f), 0);
                 RelicManager._instance.UsedRelic22 = true;
+                
+                //Debug.Log("phenoix blessing after " + " current max = "  + _maxHealth + " current health = " + _currentHealth);
+
                 //Debug.Log(_currentHealth);
             }
             

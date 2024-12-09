@@ -80,6 +80,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private float DeathSoundVol;
     [SerializeField] private AudioClip VictorySound;
     [SerializeField] private float VictorySoundVol;
+    [SerializeField] private AudioClip EnergySound;
+    [SerializeField] private float EnergySoundVol;
     
     public void ToggleSettings()
     {
@@ -572,7 +574,7 @@ public class UIController : MonoBehaviour
     }
     public void PlayOpenInventory()
     {
-        SoundManager.Instance.Play2DSFX(_openInventorySFX, openInventoryVol);
+        SoundManager.Instance.Play2DSFX(_openInventorySFX, openInventoryVol, 1, .05f);
     }
     public void PlayPlaceItem()
     {
@@ -593,5 +595,18 @@ public class UIController : MonoBehaviour
     public void PlayVictorySound()
     {
         SoundManager.Instance.Play2DSFX(VictorySound, VictorySoundVol, 1);
+    }
+    public void PlayEnergySound()
+    {
+        SoundManager.Instance.Play2DSFX(EnergySound, EnergySoundVol, 1, .05f);
+    }
+    
+    public void OpenDiscordLink()
+    {
+        Application.OpenURL("https://discord.gg/RTQUhQKAyR");
+    }
+    public void OpenSteamLink()
+    {
+        Application.OpenURL("https://store.steampowered.com/app/3327710/For_Dragons/");
     }
 }

@@ -32,7 +32,7 @@ namespace Map
                 Debug.LogWarning("Config was null in MapGenerator.Generate()");
                 return null;
             }
-
+            
             config = conf;
             nodes.Clear();
 
@@ -91,15 +91,30 @@ namespace Map
             for (var i = 0; i < config.GridWidth; i++)
             {
                 var nodeType = Rand._i.Random.NextDouble() < layer.randomizeNodes ? GetRandomNode(nodesOnThisLayer) : layer.nodeType;
+
+                if (layerIndex >= 4 && shopsThisMap == 0)
+                {
+                    nodeType = NodeType.Store;
+                }
+                if (layerIndex >= 7 && shopsThisMap <= 1)
+                {
+                    nodeType = NodeType.Store;
+                }
                 
-                if (layerIndex >= 5 && ElitesThisMap == 0 && nodesOnThisLayer.Count > 0 )
+                //try after force an elite after level 4, and after level 6 
+                if (layerIndex >= 4 && ElitesThisMap == 0 && nodesOnThisLayer.Count > 0 )
                 {
                     nodeType = NodeType.EliteEnemy;
                 }
-                else if (layerIndex == 6 )
+                
+                if (layerIndex >= 7 && ElitesThisMap <= 1 && nodesOnThisLayer.Count > 0 )
+                {
+                    nodeType = NodeType.EliteEnemy;
+                }
+                
+                if (layerIndex == 6 )
                 {
                     nodeType = NodeType.Treasure;
-                    //Debug.Log("forcing treausre");
                 }
                 
                 if(nodeType == NodeType.EliteEnemy)
@@ -339,6 +354,8 @@ namespace Map
                     break;
                 }
             }
+            
+            
 
 
             // if there is only 1 node width no elites allowed, if elite placed dont place another
@@ -349,14 +366,14 @@ namespace Map
             
             if (nt == NodeType.Store)
             {
-                if (shopsThisMap > maxShop)
+                if (shopsThisMap >= maxShop)
                     nt = NodeType.Mystery;
             }
 
             if (nt == NodeType.Treasure)
             {
-                if (ChestsThisMap > 0)
-                    nt = NodeType.Mystery;
+                //if (ChestsThisMap > 0)
+                nt = NodeType.Mystery;
             }
 
             return nt;
