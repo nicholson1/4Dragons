@@ -201,7 +201,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
                 if (di.slotType == Equipment.Slot.Consumable)
                 {
-                    Debug.Log("from inventory slot potion");
+                    //Debug.Log("from inventory slot potion");
                     EquipmentManager._instance.AddPotionToPotionBar((Consumable)di.e);
                 }
                 

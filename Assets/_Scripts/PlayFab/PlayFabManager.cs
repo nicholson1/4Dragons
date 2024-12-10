@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.Threading.Tasks;
@@ -27,8 +29,17 @@ public class PlayFabManager : MonoBehaviour
     public bool IsLoggedIn => IsInitialized && !IsSessionTicketExpired();
     public string LoggedInEmail => (IsLoggedIn) ? LoadCredential(EmailKey) : "";
 
+    public static PlayFabManager _instance;
     private void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
         // Ensure PlayFab Title ID is set
         if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
         {
@@ -414,4 +425,79 @@ public class PlayFabManager : MonoBehaviour
         Debug.LogWarning("Something went wrong with your API call. Here's some debug information:");
         Debug.LogError(error.GenerateErrorReport());
     }
+    
+    // ========================== Stat INFO and Calls ========================================
+    public void SubmitRunData(bool victory)
+    {
+        // this method runs on death and on Victory
+        
+        List<Dictionary<string, object>> abilities = new List<Dictionary<string, object>>();
+        List<Dictionary<string, object>> seenRelics = new List<Dictionary<string, object>>();
+        List<Dictionary<string, object>> notSelectedRelics = new List<Dictionary<string, object>>();
+
+
+        //=============== Turn Abilities into the correct format ==========================
+        foreach (var ability in StatsTracker.Instance.AbilityUsageTracker.Values)
+        {
+            abilities.Add(new Dictionary<string, object>
+            {
+                { "AbilityType", ability.AbilityType },
+                { "Level", ability.Level },
+                { "Rarity", ability.Rarity },
+                { "UsageCount", ability.UsageCount }
+            });
+        }
+        //=============== Turn seen Relics into the correct format ==========================
+        foreach (var relic in StatsTracker.Instance.RelicsPicked)
+        {
+            seenRelics.Add(new Dictionary<string, object>
+            {
+                { relic.Key, relic.Value },
+            });
+        }
+        //=============== Turn UN seen Relics into the correct format ==========================
+        foreach (var relic in StatsTracker.Instance.RelicsNotPicked)
+        {
+            notSelectedRelics.Add(new Dictionary<string, object>
+            {
+                { relic.Key, relic.Value },
+            });
+        }
+        
+        //todo likley change this to a Named event or something
+        //todo make sure the abilities seen relics and not selected relics are appropirately being added to the body.
+        
+
+        
+        var request = new WriteClientPlayerEventRequest
+        {
+            EventName = "RunData",
+            Body = new Dictionary<string, object>() {
+                { "game_difficulty", CombatController._instance.Difficulty },
+                { "final_player_level", CombatController._instance.Player._level},
+                { "won_game", victory},
+                { "platform", current_platform},
+                { "app_version", current_sw_version },
+                { "Abilities", abilities },
+                { "Selected_Relics", seenRelics },
+                { "Not_Selected_Relics", notSelectedRelics }
+
+            },
+        };
+        
+        //========== Debug Print the dictionary ===========================
+
+        // string s = "";
+        // foreach (var item in request.Body)
+        // {
+        //     s += $"{item.Key}: {item.Value} \n";
+        // }
+        // Debug.Log(s);
+        // ======================================================
+
+        PlayFabClientAPI.WritePlayerEvent(request, 
+            result => Debug.Log("Successfully submitted Run Data to PlayFab."),
+            error => Debug.LogError("Failed to submit data: " + error.GenerateErrorReport()));
+    }
 }
+

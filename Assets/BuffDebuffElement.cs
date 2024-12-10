@@ -91,7 +91,7 @@ public class BuffDebuffElement : MonoBehaviour
             toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(_blessing), _turns, _amount);
             turnCounter.text = Mathf.RoundToInt(_amount).ToString();
             
-            Debug.Log("updateing values of  blessing + "  + _amount);
+            //Debug.Log("updateing values of  blessing + "  + _amount);
             return;
         }
         

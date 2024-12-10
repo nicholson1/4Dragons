@@ -7,6 +7,7 @@ using Map;
 using PlayFab.Internal;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.UI;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -64,7 +65,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float getGoldVol;
     [SerializeField] private float getGoldpitch;
     [SerializeField] private ButtonGlow EnergyGlow;
-
+    
     public void ToggleShowHelm()
     {
         showHelm = !showHelm;
@@ -779,6 +780,7 @@ public class Character : MonoBehaviour
                         // victory
                         UIController._instance.ActivateVictoryScreen();
                         UIController._instance.ToggleInventoryUI(0); 
+                        PlayFabManager._instance.SubmitRunData(true);
 
                     }
                     else
@@ -837,6 +839,7 @@ public class Character : MonoBehaviour
             }
             else
             {
+                PlayFabManager._instance.SubmitRunData(false);
                 //GameOver
                 UIController._instance.PlayDeathSound();
                 MusicManager.Instance.PlayDeathMusic();
@@ -942,12 +945,25 @@ public class Character : MonoBehaviour
                 int blessingIndex = GetIndexOfBlessing((CombatEntity.BlessingTypes)stat.Key);
                 if ( blessingIndex != -1)
                 {
-                    //Debug.Log("we have this blessing lets do something about it");
+                    //Debug.Log($"{stat.Key}");
                     //Debug.Log(_stats[stat.Key] + " + " + Blessings[blessingIndex].Item3);
                     _stats[stat.Key] = Mathf.RoundToInt(stat.Value + Blessings[blessingIndex].Item3);
                     //Debug.Log( " = " + _stats[stat.Key] );
                 }
             }
+        }
+        //check to see if we dont have any base spell power form items but we do have a spell power blessing
+        int SpellPowerCheck = GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
+        
+        if (_stats[Equipment.Stats.SpellPower] == 0 && SpellPowerCheck != -1)
+        {
+            _stats[Equipment.Stats.SpellPower] = Mathf.RoundToInt(Blessings[SpellPowerCheck].Item3);
+        }
+        
+        int strengthCheck = GetIndexOfBlessing(CombatEntity.BlessingTypes.Strength);
+        if (_stats[Equipment.Stats.Strength] == 0 && strengthCheck != -1)
+        {
+            _stats[Equipment.Stats.Strength] = Mathf.RoundToInt(Blessings[strengthCheck].Item3);
         }
 
         // max health = 50 * level + 50 + hp from stats
