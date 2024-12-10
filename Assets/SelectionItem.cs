@@ -41,6 +41,8 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private GameObject rarityTutorial;
     [SerializeField] private GameObject statsTutorial;
 
+    public bool available = true;
+
     public void InitializeSelectionItem(Equipment e)
     {
         RelicDescription.gameObject.SetActive(false);
@@ -334,14 +336,18 @@ public class SelectionItem : MonoBehaviour
 
     public void SelectRelic()
     {
+        available = false;
         UIController._instance.PlayUIClick();
         UIController._instance.PlayGetRelic();
+        StatsTracker.Instance.TrackRelicSelected(item);
+
         //clear selections
         SelectionManager._instance.ClearSelections();
         // add to character
         CombatController._instance.Player._Relics.Add(item);
         //remove relic from seen relic list
         RelicManager._instance.SelectRelic(item);
+        
     }
 
     public void AddToInventory()

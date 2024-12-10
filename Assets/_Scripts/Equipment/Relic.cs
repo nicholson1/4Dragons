@@ -113,7 +113,7 @@ public class Relic : Equipment
         "You can not be crit",
         "Crits do 33% more damage",
         "Physical attacks do double damage to block",
-        "Enimies drop 25% more gold",
+        "Enemies drop 25% more gold",
         //dragon relics
         "Add 50% of your gold to the power of your physical abilities",
         "Heal for half the unblocked damage you deal",

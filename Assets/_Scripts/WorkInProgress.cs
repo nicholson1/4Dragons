@@ -27,14 +27,19 @@ public class WorkInProgress : MonoBehaviour
     public void OpenWorkInProgress()
     {
         if(hasDisplayed)
+        {
+            //_canvasGroup.gameObject.SetActive(false);
             return;
-            
+        }
+
+        _canvasGroup.blocksRaycasts = true;
         StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
         hasDisplayed = true;
     }
     
     public void CloseWorkInProgess()
     {
+        _canvasGroup.blocksRaycasts = false;
         StartCoroutine(FadeCanvasGroup(_canvasGroup, 0, 1));
     }
 

@@ -21,7 +21,7 @@ namespace Map
         private static int shopsThisMap = 0;
 
         private static int maxElites = 3;
-        private static int maxShop = 3;
+        private static int maxShop = 4;
 
 
 

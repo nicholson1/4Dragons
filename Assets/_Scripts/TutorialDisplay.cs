@@ -14,14 +14,22 @@ public class TutorialDisplay : MonoBehaviour
     public static event Action<TutorialNames> CloseAll;
 
     [SerializeField] private CanvasGroup _canvasGroup;
+
+    [SerializeField] private RectTransform _rectTransform;
     
     void Awake()
     {
         TutorialManager.TriggerTutorial += ShowTutorial;
         TutorialDisplay.CloseAll += CloseAllTutorial;
         TutorialManager.CloseTutorial += CloseOverride;
+    }
 
-
+    private void LateUpdate()
+    {
+        if (_rectTransform.rotation != Quaternion.identity)
+        {
+            _rectTransform.rotation = Quaternion.identity;
+        }
     }
 
     public void CloseTip()

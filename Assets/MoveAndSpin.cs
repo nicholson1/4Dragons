@@ -44,7 +44,8 @@ public class MoveAndSpin : MonoBehaviour
 
     public IEnumerator MoveToPos1()
     {
-        c =StartCoroutine(MoveToTargetWithOvershoot(tutorial1Location[Random.Range(0,tutorial1Location.Length )].position));
+        
+        c = StartCoroutine(MoveToTargetWithOvershoot(tutorial1Location[Random.Range(0,tutorial1Location.Length )].position));
         while (isMoving)
         {
             yield return null;
@@ -226,10 +227,12 @@ public class MoveAndSpin : MonoBehaviour
         if (timer < 0)
         {
             timer = 5;
-            if (Vector3.Distance(transform.position, startPosition.position) > 10)
+            if (Vector3.Distance(transform.localPosition, startPosition.localPosition) > 10)
             {
                 StopCoroutine(c);
+                velocity = Vector3.zero;
                 transform.localPosition = startPosition.localPosition;
+                isReturning = false;
             }
         }
     }

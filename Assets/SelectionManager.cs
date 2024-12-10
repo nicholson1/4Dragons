@@ -234,6 +234,11 @@ public class SelectionManager : MonoBehaviour
             {
                 return;
             }
+
+            if (si.item.isRelic && si.available)
+            {
+                StatsTracker.Instance.TrackUnSelected(si.item);
+            }
         }
         //selectionsLeft = 10;
         for (int i = selectionItems.Length -1; i >= 0; i--)

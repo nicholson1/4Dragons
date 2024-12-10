@@ -856,6 +856,9 @@ public class CombatEntity : MonoBehaviour
         if(!myCharacter.isPlayerCharacter)
             return;
         
+        //keep track of the abilities used for playfab
+        StatsTracker.Instance.TrackAbilityUsage(spell.ToString(), weapon.stats[Equipment.Stats.ItemLevel], weapon.stats[Equipment.Stats.Rarity] );
+        
         if(TheSpellBook._instance.IsSpellNotPhysical(spell))
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic3))
