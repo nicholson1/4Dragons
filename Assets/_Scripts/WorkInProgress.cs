@@ -8,7 +8,7 @@ public class WorkInProgress : MonoBehaviour
     public static WorkInProgress _instance;
     [SerializeField] private CanvasGroup _canvasGroup;
 
-    private bool hasDisplayed = false;
+    public bool hasDisplayed = false;
     
     private void Awake()
     {

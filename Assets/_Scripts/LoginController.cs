@@ -29,9 +29,18 @@ public class LoginController : MonoBehaviour
     public async void Start()
     {
         // attempt to login automatically if player prefs exist
-
+        
         _canvasGroup = GetComponent<CanvasGroup>();
-        StartCoroutine(FadeIn(_canvasGroup , 1));
+
+        if (WorkInProgress._instance.hasDisplayed)
+        {
+            _canvasGroup.gameObject.SetActive(false);
+            
+        }
+        else
+        {
+            StartCoroutine(FadeIn(_canvasGroup , 1));
+        }
         
         PlayFabManager.AutoResult loginResult = await _playFabManager.AutoLogin();
         switch (loginResult)
@@ -205,7 +214,8 @@ public class LoginController : MonoBehaviour
         CloseError();
         //login i suppose
 
-        StartCoroutine(FadeOutAndDeactivate(_canvasGroup, 1));
+        if(this.gameObject.activeInHierarchy)
+            StartCoroutine(FadeOutAndDeactivate(_canvasGroup, 1));
         WorkInProgress._instance.OpenWorkInProgress();
     }
 
