@@ -87,7 +87,12 @@ public class UIController : MonoBehaviour
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
     }
-    public void RestartGame()
+    public void RestartGame(bool victory = false)
+    {
+        PlayFabManager._instance.SubmitRunData(victory);
+        SceneManager.LoadScene(0);
+    }
+    public void RestartGameAfterDeath()
     {
         SceneManager.LoadScene(0);
     }

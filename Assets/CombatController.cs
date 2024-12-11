@@ -701,6 +701,8 @@ public class CombatController : MonoBehaviour
 
     public void StartRandomCombat(Node node)
     {
+        if(StartChest!= null)
+            StartChest.SetActive(false);
         for (int i = 1; i < entitiesInCombat.Count; i++)
         {
             GameObject.Destroy(entitiesInCombat[i].gameObject);

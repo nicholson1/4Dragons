@@ -467,8 +467,6 @@ public class PlayFabManager : MonoBehaviour
         //todo likley change this to a Named event or something
         //todo make sure the abilities seen relics and not selected relics are appropirately being added to the body.
         
-
-        
         var request = new WriteClientPlayerEventRequest
         {
             EventName = "RunData",

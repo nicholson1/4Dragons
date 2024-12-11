@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginController : MonoBehaviour
@@ -280,6 +281,8 @@ public class LoginController : MonoBehaviour
     {
         _playFabManager.SignOut();
         this.gameObject.SetActive(true);
+        SceneManager.LoadScene(0);
+
     }
     
     public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration)

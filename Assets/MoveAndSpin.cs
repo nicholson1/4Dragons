@@ -50,6 +50,11 @@ public class MoveAndSpin : MonoBehaviour
         {
             yield return null;
         }
+        
+        if (c != null)
+        {
+            StopCoroutine(c);
+        }
 
         yield return new WaitForSeconds(3);
         c =StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
@@ -57,22 +62,25 @@ public class MoveAndSpin : MonoBehaviour
     }
     public void MoveToCleanse(Transform tar)
     {
-        target = tar.position + new Vector3(0,1.5f,0);
         if (c != null)
         {
             StopCoroutine(c);
         }
+        transform.localPosition = startPosition.localPosition;
+        target = tar.position + new Vector3(0,1.5f,0);
+        
         c =StartCoroutine(MoveToWithinDistance());
     }
 
     IEnumerator MoveToWithinDistance()
     {
-        c = StartCoroutine(MoveToTargetWithOvershoot(target));
+        c = StartCoroutine(MoveToTarget(target));
         
         while (isMoving)
         {
             yield return null;
         }
+        
 
         c = StartCoroutine(SpinAroundTarget());
     }
@@ -194,8 +202,8 @@ public class MoveAndSpin : MonoBehaviour
         }
 
         isReturning = true;
-        c =StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
-        //ReturnToStartPosition();
+        //c =StartCoroutine(MoveToTargetWithOvershoot(startPosition.position));
+        ReturnToStartPosition();
     }
 
     void ReturnToStartPosition()
