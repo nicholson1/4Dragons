@@ -40,7 +40,7 @@ public class EquipmentModelManager : MonoBehaviour
     private int gloveIndex = 7;
     private int bootIndex = 6;
     private int faceIndex = 5;
-    private int hairIndex = 8;
+    private int hairIndex = 7;
 
     private bool showHelm = true;
     

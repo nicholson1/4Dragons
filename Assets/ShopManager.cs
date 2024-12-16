@@ -330,6 +330,10 @@ public class ShopManager : MonoBehaviour
             Item1.NotEnoughGoldEvent();
             return;
         }
+        
+        UIController._instance.PlayGetRelic();
+        //UIController._instance.play();
+
         // if we do - gold
         CombatController._instance.Player._gold -= cost;
         Item1.BuyItemEvent(-cost);
@@ -356,6 +360,7 @@ public class ShopManager : MonoBehaviour
                 ClearItem(Item4);
                 break;
         }
+
         CombatController._instance.Player.UpdateStats();
 
     }

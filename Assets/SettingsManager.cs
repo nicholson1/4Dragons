@@ -14,6 +14,8 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private Toggle ScreenShake;
     [SerializeField] private Toggle Tutorials;
 
+    [SerializeField] private TextMeshProUGUI difficultyTextHUD;
+
 
     private void Start()
     {
@@ -59,6 +61,7 @@ public class SettingsManager : MonoBehaviour
         difficultyText.text = $"Difficulty: {Stars}\n {DifficultyTexts[diff]}";
         
         PlayerPrefsManager.SetDifficulty(diff);
+        difficultyTextHUD.text = diff.ToString();
     }
 
 }

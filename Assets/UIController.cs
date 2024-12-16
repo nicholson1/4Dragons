@@ -142,8 +142,6 @@ public class UIController : MonoBehaviour
             mod.gameObject.SetActive(true);
 
             mod.text = CamelCaseToSpaced(((Mods)i).ToString());
-
-
         }
         // load name
         DailyChallengeTitle.text = (string)dailyChallenges[challengeID][1];
@@ -207,6 +205,12 @@ public class UIController : MonoBehaviour
         TransitionCamera.gameObject.SetActive(false);
         UiCamera.gameObject.SetActive(true);
         CustomizeUI.SetActive(true);
+        
+        //stop walking, stop spinning
+        CombatController._instance.Player._am.SetBool("Walk", false);
+        RotateAroundMap._instance.ToggleRotate(false);
+
+
 
     }
     private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime)
@@ -296,6 +300,10 @@ public class UIController : MonoBehaviour
         TransitionCamera.gameObject.SetActive(false);
         MainCamera.gameObject.SetActive(true);
         TitleScreen.SetActive(true);
+        
+        //stop walking, stop spinning
+        CombatController._instance.Player._am.SetBool("Walk", true);
+        RotateAroundMap._instance.ToggleRotate(true);
     }
 
 

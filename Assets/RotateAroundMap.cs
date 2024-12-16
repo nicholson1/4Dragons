@@ -30,15 +30,21 @@ public class RotateAroundMap : MonoBehaviour
 
     private void Start()
     {
-        RandomRotate();
+        StopRandomRotate();
         if (onStart)
         {
             SlowRotate = true;
             onStart = false;
         }
     }
+    
+    public void ToggleRotate(bool isRotating)
+    {
+        SlowRotate = isRotating;
+    }
+    
 
-    public void RandomRotate()
+    public void StopRandomRotate()
     {
         SlowRotate = false;
         currentRotation = Random.Range(currentRotation + 20, currentRotation + 270);

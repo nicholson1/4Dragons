@@ -137,6 +137,8 @@ public class SelectionItem : MonoBehaviour
         else
         {
             _spellDisplay.gameObject.SetActive(false);
+            if(e.isPotion)
+                rarityTutorial.SetActive(false);
         }
         if(e.stats.ContainsKey(Equipment.Stats.ItemLevel))
             _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();

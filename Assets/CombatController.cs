@@ -186,7 +186,7 @@ public class CombatController : MonoBehaviour
         Random.InitState(currentSeed);
         //Debug.Log("Current Node Seed: " + currentSeed);
         
-        RotateAroundMap._instance.RandomRotate();
+        RotateAroundMap._instance.StopRandomRotate();
         //unless its first node
         if(ClickedFirstNode)
         {
@@ -693,7 +693,7 @@ public class CombatController : MonoBehaviour
             //Player.transform.LookAt(target);
 
 
-        }
+        } 
 
         //Debug.LogWarning("No Ground Found");
         return Vector3.zero;
