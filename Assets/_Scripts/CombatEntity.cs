@@ -442,13 +442,17 @@ public class CombatEntity : MonoBehaviour
         
         //figure out damage reduction
         int reductionAmount = 0;
-        if (dt == AbilityTypes.PhysicalAttack)
+        
+        if(myCharacter.isPlayerCharacter)
         {
-            reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
-        }
-        else if (dt == AbilityTypes.SpellAttack)
-        {
-            reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
+            if (dt == AbilityTypes.PhysicalAttack)
+            {
+                reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
+            }
+            else if (dt == AbilityTypes.SpellAttack)
+            {
+                reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
+            }
         }
         
         

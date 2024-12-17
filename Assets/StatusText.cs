@@ -33,7 +33,10 @@ public class StatusText : MonoBehaviour
             case CombatEntity.AbilityTypes.PhysicalAttack:
                 AmountText.text = amount.ToString();
                 AmountText.color = TheSpellBook._instance.abilityColors[(int)abilityTypes];
-                ReductionText.text = "(" + reduction + ")";
+                if (reduction > 0)
+                    ReductionText.text = "(" + reduction + ")";
+                else
+                    ReductionText.text = "";
                 ReductionText.color = Color.gray;
                 Icon.sprite = physicalAttackIcon;
                 break;
@@ -42,8 +45,10 @@ public class StatusText : MonoBehaviour
                 AmountText.color = TheSpellBook._instance.abilityColors[(int)abilityTypes];
                 Icon.sprite = spellAttackIcon;
                 //Icon.color = abilityColors[abilityTypes.GetHashCode()];
-
-                ReductionText.text = "(" + reduction + ")";
+                if (reduction > 0)
+                    ReductionText.text = "(" + reduction + ")";
+                else
+                    ReductionText.text = "";
                 ReductionText.color = Color.gray;
                 break;
                 

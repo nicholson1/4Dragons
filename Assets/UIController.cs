@@ -83,6 +83,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private AudioClip EnergySound;
     [SerializeField] private float EnergySoundVol;
     
+    [SerializeField] private AudioClip CleanseSound;
+    [SerializeField] private float CleanseSoundVol;
+    [SerializeField] private float CleanseSoundDelay;
     public void ToggleSettings()
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
@@ -612,6 +615,11 @@ public class UIController : MonoBehaviour
     public void PlayEnergySound()
     {
         SoundManager.Instance.Play2DSFX(EnergySound, EnergySoundVol, 1, .05f);
+    }
+    
+    public void PlayCleanseSound()
+    {
+        SoundManager.Instance.Play2DSFXOnDelay(CleanseSound, CleanseSoundDelay,CleanseSoundVol, 1, .05f);
     }
     
     public void OpenDiscordLink()

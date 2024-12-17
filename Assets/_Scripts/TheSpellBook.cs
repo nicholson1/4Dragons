@@ -1125,6 +1125,11 @@ public class TheSpellBook : MonoBehaviour
                     }
                 }
             }
+            
+            //reduce over all player damage because of removed MR + Armour
+            // 25% reduction of what it used to be, will be a nerf early game but buff later
+            if(IsSpellType(SpellClass.SpellAttack, spell) || IsSpellType(SpellClass.PhysicalAttack, spell))
+                power = Mathf.RoundToInt(power * .75f); 
         }
         
         

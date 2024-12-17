@@ -1008,20 +1008,20 @@ public class Character : MonoBehaviour
         if (isDragon)
         {
             if(difficulty >= 9)
-                hp = 175 * _level;
+                hp = 200 * _level;
             else if (difficulty >= 1)
-                hp = 150 * _level;
+                hp = 175 * _level;
             else
-                hp = 125 * _level;
+                hp = 150 * _level;
         }
         else if (isElite)
         {
             if(difficulty >= 9)
-                hp = 120 * _level;
+                hp = 130 * _level;
             else if (difficulty >= 1)
-                hp = 100 * _level;
+                hp = 110 * _level;
             else
-                hp = 80 * _level;
+                hp = 90 * _level;
         }
         else if (isPlayerCharacter)
         {
@@ -1034,11 +1034,11 @@ public class Character : MonoBehaviour
         else
         {
             if(difficulty >= 9)
-                hp = 85 * _level;
+                hp = 100 * _level;
             else if (difficulty >= 1)
-                hp = 75 * _level;
+                hp = 85 * _level;
             else
-                hp = 65 * _level;
+                hp = 75 * _level;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);

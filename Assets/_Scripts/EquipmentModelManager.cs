@@ -126,6 +126,7 @@ public class EquipmentModelManager : MonoBehaviour
         {
             showHelm = false;
         }
+        
     }
 
     public void UpdateHead()
