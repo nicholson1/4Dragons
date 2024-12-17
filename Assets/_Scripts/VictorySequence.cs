@@ -51,7 +51,7 @@ public class VictorySequence : MonoBehaviour
         StartCoroutine(FadeCanvasGroup(victoryImage, 0, 2));
         yield return new WaitForSeconds(2);
         StartCoroutine(FadeCanvasGroup(darkness, 1, 2));
-        StartCoroutine(AnimateString("", "The Darkness Still Looms....", 5, UpdateDarknessText));
+        StartCoroutine(AnimateString("", "The Shadows Still Loom in Wyrmwood....", 5, UpdateDarknessText));
         yield return new WaitForSeconds(7);
         StartCoroutine(FadeCanvasGroup(darkness, 0, 2));
         credits.StartScroll();
