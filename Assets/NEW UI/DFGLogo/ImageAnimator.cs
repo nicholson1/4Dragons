@@ -34,6 +34,7 @@ public class ImageAnimatior : MonoBehaviour {
 
         parent.alpha = 1;
         StartCoroutine(FadeCanvasGroup(Logo, 1, 2,0));
+        StartCoroutine(ChangeSpritesSequentially(3));
     }
 
     void FadeOut()
@@ -42,19 +43,30 @@ public class ImageAnimatior : MonoBehaviour {
     }
     
     
+    private IEnumerator ChangeSpritesSequentially(float totalDuration)
+    {
+        float timePerSprite = totalDuration / sprites.Length; // Calculate time per sprite
 
-    void Update () {
-        if (!loop && index == sprites.Length) return;
-        frame ++;
-        if (frame < spritePerFrame) return;
-        image.sprite = sprites [index];
-        frame = 0;
-        index ++;
-        if (index >= sprites.Length) {
-            if (loop) index = 0;
-            if (destroyOnEnd) Destroy (gameObject);
+        for (int i = 0; i < sprites.Length; i++)
+        {
+            image.sprite = sprites[i]; // Change the sprite
+            yield return new WaitForSeconds(timePerSprite); // Wait for the specified time
         }
     }
+    
+
+    // void Update () {
+    //     if (!loop && index == sprites.Length) return;
+    //     frame ++;
+    //     if (frame < spritePerFrame) return;
+    //     image.sprite = sprites [index];
+    //     frame = 0;
+    //     index ++;
+    //     if (index >= sprites.Length) {
+    //         if (loop) index = 0;
+    //         if (destroyOnEnd) Destroy (gameObject);
+    //     }
+    // }
     
     public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration, float delay)
     {
