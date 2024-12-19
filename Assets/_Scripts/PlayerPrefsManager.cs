@@ -37,7 +37,7 @@ public class PlayerPrefsManager : MonoBehaviour
     private const float DEFAULT_AMBIANCE_VOL = .25f;
     private const int DEFAULT_DIFFICULTY = 0;
     private const int DEFAULT_FACE = 5;
-    private const int DEFAULT_HAIR = 8;
+    private const int DEFAULT_HAIR = 7;
     private const int DEFAULT_SHOW_HELM = 1;
     private const int DEFAULT_SCREEN_SHAKE = 1;
     

@@ -77,7 +77,7 @@ public class TutorialDisplay : MonoBehaviour
 
         BackgroundGlow.gameObject.SetActive(true);
 
-        if(!TutorialManager.Instance.showingTip)
+        if(!TutorialManager.Instance.showingTip || id == TutorialNames.SkipSelection)
         {
             textBox.gameObject.SetActive(true);
             Text.text = TutorialManager.Instance.GetText(id);

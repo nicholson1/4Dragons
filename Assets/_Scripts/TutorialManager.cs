@@ -76,6 +76,12 @@ public class TutorialManager : MonoBehaviour
         
         if(_tutorialNamesQueue.Contains(tipID)) return;
 
+        if (tipID == TutorialNames.SkipSelection)
+        {
+            if (TriggerTutorial != null) TriggerTutorial(tipID);
+            return;
+        }
+
         _tutorialNamesQueue.Enqueue(tipID);
         
         if(!showingTip)
@@ -113,9 +119,9 @@ public class TutorialManager : MonoBehaviour
         tipDictionary[tipID] = tip;
 
         if (TriggerTutorial != null) TriggerTutorial(tipID);
-
-        
     }
+    
+    
     public void CloseTip(TutorialNames tipID)
     {
         if (CloseTutorial != null) CloseTutorial(tipID);

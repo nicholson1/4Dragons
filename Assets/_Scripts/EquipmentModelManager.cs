@@ -163,6 +163,8 @@ public class EquipmentModelManager : MonoBehaviour
     {
         if ((headIndex > 10 || headIndex == 0))
         {
+            //Debug.Log(hairIndex);
+            //Debug.Log(Hair.Length);
             Hair[hairIndex].SetActive(true);
         }
         else
