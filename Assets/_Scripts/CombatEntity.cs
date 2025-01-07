@@ -347,6 +347,7 @@ public class CombatEntity : MonoBehaviour
         if (thingGettingAttacked != this)
             return;
         
+        //Debug.Log("Get attacked");
         
         // Debug.Log("I am" + this.gameObject.name + "\n" +
         //           dt.ToString() + "\n" +
@@ -593,7 +594,8 @@ public class CombatEntity : MonoBehaviour
             CameraShake._instance.GetHit(TheSpellBook._instance.GetEnergy(lastSpellCastTargeted));
         }
 
-        lastSpellCastTargeted = Weapon.SpellTypes.None;
+        // we had to disable this because it wasnt allowing multiple heals from life leech and essenace drain, as well as block from composed strike
+        //lastSpellCastTargeted = Weapon.SpellTypes.None;
 
 
     }
@@ -891,7 +893,6 @@ public class CombatEntity : MonoBehaviour
     
     public void Heal(CombatEntity target, int amount, float crit)
     {
-        //Debug.Log("HEAL");
         // do we crit
         int heal = amount;
         float critModifier = 1.5f;
