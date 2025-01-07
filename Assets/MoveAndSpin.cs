@@ -149,7 +149,7 @@ public class MoveAndSpin : MonoBehaviour
         }
 
         isMoving = false;
-        
+        transform.position = target;
     }
     private IEnumerator MoveToTarget(Vector3 target)
     {

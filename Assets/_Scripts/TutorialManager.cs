@@ -78,6 +78,7 @@ public class TutorialManager : MonoBehaviour
 
         if (tipID == TutorialNames.SkipSelection)
         {
+            tipDictionary[tipID].IsShown = true;
             if (TriggerTutorial != null) TriggerTutorial(tipID);
             return;
         }

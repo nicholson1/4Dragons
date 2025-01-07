@@ -788,6 +788,9 @@ public class CombatEntity : MonoBehaviour
         // {
         //     Debug.Log(VARIABLE.Item1 + " " + VARIABLE.Item2) ;
         // }
+        
+        // flip the list, so it makes sense
+        Intentions.Reverse();
         AddingIntents = StartCoroutine(AddIntents());
         if (isMyTurn)
         {
