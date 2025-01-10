@@ -45,7 +45,7 @@ public class UIController : MonoBehaviour
     [SerializeField] public VictorySequence VictorySequence;
 
     
-    public GameObject RestartButton;
+    [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
 

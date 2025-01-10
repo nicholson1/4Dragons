@@ -44,23 +44,54 @@ public class QualityManager : MonoBehaviour
         //SetQualityLevel(0);
     }
 
-    //private float timer = 10;
-    //private int level = 0;
-    // private void Update()
-    // {
-    //     timer -= Time.deltaTime;
+    // private float timer = 10;
+    // private int level = 0;
+    //  private void Update()
+    //  {
+    //      timer -= Time.deltaTime;
     //
-    //     if (timer < 0)
-    //     {
-    //         timer = 5;
-    //         SetQualityLevel(level);
-    //         level += 1;
-    //     }
-    // }
+    //      if (timer < 0)
+    //      {
+    //          timer = 5;
+    //          SetAntiAliasing(level);
+    //          level += 2;
+    //          Debug.Log(level);
+    //      }
+    //  }
 
     public void SetQualityLevel(int level)
     {
         QualitySettings.SetQualityLevel(level, true);
+
+        switch (level)
+        {
+            case 0: //very low
+                QualitySettings.globalTextureMipmapLimit = 3;
+                QualitySettings.antiAliasing = 0;
+                break;
+            case 1: // low
+                QualitySettings.globalTextureMipmapLimit = 2;
+                QualitySettings.antiAliasing = 0;
+                break;
+            case 2: // medium
+                QualitySettings.globalTextureMipmapLimit = 1;
+                QualitySettings.antiAliasing = 2;
+                break;
+            case 3: // high
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.antiAliasing = 4;
+                break;
+            case 4: // very high
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.antiAliasing = 4;
+                break;
+            case 5: // ultra
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.antiAliasing = 8;
+                break;
+        }
+        
+        
         SaveSettings();
     }
 
@@ -107,10 +138,10 @@ public class QualityManager : MonoBehaviour
         PlayerPrefs.SetInt("QualityLevel", QualitySettings.GetQualityLevel());
         //PlayerPrefs.SetInt("ResolutionIndex", resolutionDropdown.value);
         //PlayerPrefs.SetInt("FullScreen", fullscreenToggle.isOn ? 1 : 0);
-        //PlayerPrefs.SetInt("TextureQuality", QualitySettings.globalTextureMipmapLimit);
+        PlayerPrefs.SetInt("TextureQuality", QualitySettings.globalTextureMipmapLimit);
         //PlayerPrefs.SetFloat("LODBias", QualitySettings.lodBias);
         //PlayerPrefs.SetInt("Shadows", QualitySettings.shadows == ShadowQuality.All ? 1 : 0);
-        //PlayerPrefs.SetInt("AntiAliasing", antiAliasingDropdown.value);
+        PlayerPrefs.SetInt("AntiAliasing", QualitySettings.antiAliasing);
         PlayerPrefs.Save();
     }
 
@@ -132,8 +163,8 @@ public class QualityManager : MonoBehaviour
         // fullscreenToggle.isOn = PlayerPrefs.GetInt("FullScreen", 1) == 1;
 
         // Load texture quality
-        // int textureQuality = PlayerPrefs.GetInt("TextureQuality", 0); // Default Full Res
-        // QualitySettings.globalTextureMipmapLimit = textureQuality;
+        int textureQuality = PlayerPrefs.GetInt("TextureQuality", 0); // Default Full Res
+        QualitySettings.globalTextureMipmapLimit = textureQuality;
         // textureQualityDropdown.value = textureQuality;
 
         // Load LOD bias
@@ -147,8 +178,8 @@ public class QualityManager : MonoBehaviour
         // shadowsToggle.isOn = enableShadows;
 
         // Load anti-aliasing
-        // int antiAliasing = PlayerPrefs.GetInt("AntiAliasing", 1); // Default 2x
-        // QualitySettings.antiAliasing = antiAliasing == 0 ? 0 : (int)Mathf.Pow(2, antiAliasing);
-        // antiAliasingDropdown.value = antiAliasing;
+        int antiAliasing = PlayerPrefs.GetInt("AntiAliasing", 1); // Default 2x
+        QualitySettings.antiAliasing = antiAliasing == 0 ? 0 : (int)Mathf.Pow(2, antiAliasing);
+        //antiAliasingDropdown.value = antiAliasing;
     }
 }

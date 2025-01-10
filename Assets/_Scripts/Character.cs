@@ -408,7 +408,10 @@ public class Character : MonoBehaviour
                 }
                 else
                 {
-                    Buffs[i] = (buff, Buffs[i].Item2 + turns, amount + Buffs[i].Item3);
+                    float tempAmount = Buffs[i].Item3;
+                    if (amount > tempAmount)
+                        tempAmount = amount;
+                    Buffs[i] = (buff, Buffs[i].Item2 + turns, amount);
                 
                     if (Buffs[i].Item3 <=0)
                     {
@@ -847,7 +850,7 @@ public class Character : MonoBehaviour
                 Notification(ErrorMessageManager.Errors.YouHaveDied);
                 UIController._instance.ToggleInventoryUI(0);
                 _am.SetTrigger("Die");
-                UIController._instance.RestartButton.SetActive(true);
+                UIController._instance.EndOfGameScreen.SetActive(true);
                 //CombatController._instance.
                 CombatController._instance.EndCombat();
 

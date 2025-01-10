@@ -72,6 +72,8 @@ public class CombatController : MonoBehaviour
     public SpellSchool nextDragonSchool = SpellSchool.Nature;
     public SpellSchool previousDragonSchool = SpellSchool.Axe;
 
+    private Node LastNodeClicked;
+
 
     public int Difficulty = 0;
     // Enemies have more health
@@ -180,13 +182,15 @@ public class CombatController : MonoBehaviour
         TutorialManager.Instance.QueueTip(TutorialNames.Start);
     }
 
-    public void MapNodeClicked(Node node)
+    public void MapNodeClicked(Node node, bool retry = false)
     {
+        Debug.Log("Node seed:" + node.nodeSeed);
+        LastNodeClicked = node;
         currentSeed = node.nodeSeed;
         Random.InitState(currentSeed);
         //Debug.Log("Current Node Seed: " + currentSeed);
-        
-        RotateAroundMap._instance.StopRandomRotate();
+        if(!retry)
+            RotateAroundMap._instance.StopRandomRotate();
         //unless its first node
         if(ClickedFirstNode)
         {
@@ -802,6 +806,27 @@ public class CombatController : MonoBehaviour
         Player.transform.LookAt(new Vector3(lookDirection.x, Player.transform.position.y, lookDirection.z));
 
 
+    }
+
+    public void RestartCombat()
+    {
+        //deactivate death screen
+        EndCombat();
+        UIController._instance.EndOfGameScreen.SetActive(false);
+        //revive the player
+        //clear buffs and debuffs and blessings
+        // reset energy
+        _instance.Player._currentEnergy = 0;
+
+                    
+                    
+        _instance.Player._currentHealth = CombatController._instance.Player._maxHealth;
+        _instance.Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
+        _instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
+        
+        
+        Player._am.SetTrigger("Reset");
+        MapNodeClicked(LastNodeClicked, true);
     }
 
     private bool started = false;
