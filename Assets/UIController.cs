@@ -46,6 +46,7 @@ public class UIController : MonoBehaviour
 
     
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
+    [SerializeField] private GameObject retryCombatButton;
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
 
@@ -537,6 +538,21 @@ public class UIController : MonoBehaviour
         moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
 
         LootMoving = false;
+    }
+
+    public void ActivateDeathScreen()
+    {
+        EndOfGameScreen.SetActive(true);
+
+        if (CombatController._instance.retryAvailable >= 1)
+        {
+            retryCombatButton.SetActive(true);
+            TutorialManager.Instance.QueueTip(TutorialNames.Retry);
+        }
+        else
+        {
+            retryCombatButton.SetActive(false);
+        }
     }
 
 

@@ -132,6 +132,7 @@ public class Character : MonoBehaviour
             }
             else
             {
+                Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
                 EqMM.RandomCharacter();
                 //_weapons = EC.CreateAllWeapons(_level);
                 //_spellScrolls = EC.CreateAllSpellScrolls(_level);
@@ -848,9 +849,12 @@ public class Character : MonoBehaviour
                 MusicManager.Instance.PlayDeathMusic();
                 CombatController._instance.entitiesInCombat[1].myCharacter._am.SetTrigger("Victory");
                 Notification(ErrorMessageManager.Errors.YouHaveDied);
+                
+                UIController._instance.ActivateDeathScreen();
+                
                 UIController._instance.ToggleInventoryUI(0);
                 _am.SetTrigger("Die");
-                UIController._instance.EndOfGameScreen.SetActive(true);
+                //UIController._instance.EndOfGameScreen.SetActive(true);
                 //CombatController._instance.
                 CombatController._instance.EndCombat();
 

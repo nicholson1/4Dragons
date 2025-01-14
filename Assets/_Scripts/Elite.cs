@@ -13,6 +13,8 @@ public class Elite : MonoBehaviour
     
     public void InitializeElite(EliteType type)
     {
+        Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
+
         // select elite type
         EliteType = type;
         //EliteType = EliteManager._instance.GetEliteType(c._level);
@@ -233,6 +235,16 @@ public class Elite : MonoBehaviour
         
         generatedEquipment.AddRange(weapons);
         generatedEquipment.AddRange(spells);
+
+        foreach (var equip in generatedEquipment)
+        {
+            string s = "";
+            foreach (var VARIABLE in equip.stats)
+            {
+                s += VARIABLE.Key + "-" + VARIABLE.Value + " \n";
+            }
+            Debug.Log(s);
+        }
 
         return generatedEquipment;
     }

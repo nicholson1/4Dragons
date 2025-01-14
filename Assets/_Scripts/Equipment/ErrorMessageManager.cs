@@ -91,7 +91,7 @@ public class ErrorMessageManager : MonoBehaviour
                 e.InitializeError("Victory!", Color.blue);
                 break;
             case Errors.YouHaveDied:
-                e.InitializeError("Death!", Color.black);
+                e.InitializeError("", Color.black);
                 break;
             case Errors.CombatMove:
                 e.InitializeError("You Don't Have Enough Energy", Color.white);
@@ -102,8 +102,6 @@ public class ErrorMessageManager : MonoBehaviour
             case Errors.Tie:
                 e.InitializeError("Its a Draw!", Color.blue);
                 break;
-
-                
 
         }
     }

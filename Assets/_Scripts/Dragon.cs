@@ -25,6 +25,8 @@ public class Dragon : MonoBehaviour
 
    public void InitializeDragon( bool randomizeSchool = false)
    {
+      Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
+
       //RARITY OF SPELLS 0 = COMMON, 1 = UNCOMMON, 2 = RARE, 3 = EPIC
       int rarity = -1;
       //randomSpellType

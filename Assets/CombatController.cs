@@ -72,7 +72,7 @@ public class CombatController : MonoBehaviour
     public SpellSchool nextDragonSchool = SpellSchool.Nature;
     public SpellSchool previousDragonSchool = SpellSchool.Axe;
 
-    private Node LastNodeClicked;
+    public Node LastNodeClicked;
 
 
     public int Difficulty = 0;
@@ -89,6 +89,8 @@ public class CombatController : MonoBehaviour
 
     private int currentSeed = -1;
     public int CurrentSeed => currentSeed;
+    public int retryAvailable = 1;
+
 
     [SerializeField] private AudioClip _beginAdventure;
     private void Awake()
@@ -194,7 +196,8 @@ public class CombatController : MonoBehaviour
         //unless its first node
         if(ClickedFirstNode)
         {
-            Player._level += 1;
+            if(!retry)
+                Player._level += 1;
             if(rewardChest != null)
                 rewardChest.gameObject.SetActive(false);
         }
@@ -810,6 +813,7 @@ public class CombatController : MonoBehaviour
 
     public void RestartCombat()
     {
+        retryAvailable -= 1;
         //deactivate death screen
         EndCombat();
         UIController._instance.EndOfGameScreen.SetActive(false);

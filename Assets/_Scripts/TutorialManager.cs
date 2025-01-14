@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using PlayFab.MultiplayerModels;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -83,6 +84,7 @@ public class TutorialManager : MonoBehaviour
             return;
         }
 
+        //Debug.Log(tipID);
         _tutorialNamesQueue.Enqueue(tipID);
         
         if(!showingTip)
@@ -172,6 +174,7 @@ public enum TutorialNames
     Cleanse,
     Start,
     Stats,
+    Retry,
 
     
 }
