@@ -71,7 +71,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void FlashScale(float time = .5f)
     {
-        StartCoroutine(BlinkScale(time));
+        if(this.isActiveAndEnabled)
+            StartCoroutine(BlinkScale(time));
     }
     private IEnumerator BlinkScale(float time = .5f)
     {

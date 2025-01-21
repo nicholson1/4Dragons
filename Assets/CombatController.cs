@@ -243,7 +243,10 @@ public class CombatController : MonoBehaviour
 
     public void MysterySelect()
     {
+        //9126268
+        Random.InitState(LastNodeClicked.nodeSeed);
         int roll = Random.Range(0, 11);
+
         NodeType nt;
 
         if (roll >= 10)
@@ -258,11 +261,11 @@ public class CombatController : MonoBehaviour
             nt = NodeType.Store;
         }
 
-        else if (roll >= 6) // >5 when we have events
-        {
-            //event
-            nt = NodeType.Store;
-        }
+        // else if (roll >= 6) // >5 when we have events
+        // {
+        //     //event
+        //     nt = NodeType.Store;
+        // }
         else
         {
             //else just a random enemy

@@ -53,6 +53,8 @@ public class ShopManager : MonoBehaviour
         // Scrolls,
         // Weapons,
         // FullHalfPrice,
+        
+        Random.InitState(CombatController._instance.CurrentSeed);
 
         int roll;
         if (CombatController._instance.Player._gold < 200)
@@ -103,6 +105,7 @@ public class ShopManager : MonoBehaviour
     public void InitializeShop(InventorySlot.SellShopType type)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
+        Random.InitState(CombatController._instance.CurrentSeed);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
         //TODO REMOVE THIS ITS ONLY FOR TESTING THE POTIONS

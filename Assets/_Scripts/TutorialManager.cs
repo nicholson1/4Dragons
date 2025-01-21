@@ -32,7 +32,7 @@ public class TutorialManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        //DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(this);
 
         // Initialize the tip dictionary
         tipDictionary = new Dictionary<TutorialNames, TutorialTip>();
@@ -41,10 +41,39 @@ public class TutorialManager : MonoBehaviour
             tipDictionary[tip.ID] = tip;
         }
 
+        InitializeTooltipStates();
+
         TutorialsEnabled = PlayerPrefsManager.GetTutorialEnabled() == 1;
     }
 
     private float timer = 3f;
+    
+    public void InitializeTooltipStates()
+    {
+        foreach (var tip in tipDictionary)
+        {
+            tip.Value.IsShown = PlayerPrefs.GetInt(tip.Value.ID.ToString(), 0) == 1; // Load state from PlayerPrefs
+            //Debug.Log(tip.Value.ID.ToString().ToString() + " " + tip.Value.IsShown);
+        }
+    }
+
+    // Method to check if a tooltip has been shown and save its state
+    public void CheckAndSaveTooltipShown(TutorialNames tooltipKey)
+    {
+        if (!tipDictionary.ContainsKey(tooltipKey))
+        {
+            Debug.LogWarning($"Tooltip with key {tooltipKey} does not exist.");
+            return;
+        }
+
+        // Mark the tooltip as shown
+        //tooltip.IsShown = true;
+        PlayerPrefs.SetInt(tooltipKey.ToString(), 1); // Save state to PlayerPrefs
+        PlayerPrefs.Save();
+        
+    }
+    
+    
     private void FixedUpdate()
     {
         if (!showingTip && _tutorialNamesQueue.Count > 0)
@@ -63,7 +92,10 @@ public class TutorialManager : MonoBehaviour
     {
         TutorialsEnabled = !TutorialsEnabled;
         if(TutorialsEnabled)
+        {
             PlayerPrefsManager.SetTutorialEnabled(1);
+            ResetTips();
+        }
         else
             PlayerPrefsManager.SetTutorialEnabled(0);
 
@@ -148,7 +180,10 @@ public class TutorialManager : MonoBehaviour
         foreach (var tip in tipDictionary.Values)
         {
             tip.IsShown = false;
+            PlayerPrefs.SetInt(tip.ID.ToString(), 0); // Save state to PlayerPrefs
         }
+        PlayerPrefs.Save();
+
     }
 }
 [System.Serializable]

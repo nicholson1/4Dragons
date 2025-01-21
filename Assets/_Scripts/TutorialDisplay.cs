@@ -83,7 +83,9 @@ public class TutorialDisplay : MonoBehaviour
             Text.text = TutorialManager.Instance.GetText(id);
         }
         TutorialManager.Instance.showingTip = true;
-        
+
+        TutorialManager.Instance.CheckAndSaveTooltipShown(id);
+
 
         /*if(gameObject.activeInHierarchy)
         {
