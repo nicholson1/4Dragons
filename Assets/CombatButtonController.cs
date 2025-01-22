@@ -88,6 +88,10 @@ public class CombatButtonController : MonoBehaviour
 
             }
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            character.EndTurn();
+        }
     }
 
     private void UpdateEnergy(Character c, int current, int max, int change)

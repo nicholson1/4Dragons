@@ -44,6 +44,8 @@ public class UIController : MonoBehaviour
     [SerializeField] public GameObject CinemaUI;
     [SerializeField] public VictorySequence VictorySequence;
 
+    [SerializeField] public GameObject[] KeybindVisuals;
+
     
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
     [SerializeField] private GameObject retryCombatButton;
@@ -552,6 +554,16 @@ public class UIController : MonoBehaviour
         else
         {
             retryCombatButton.SetActive(false);
+        }
+    }
+
+    public void ToggleKeyBindVisual()
+    {
+        int enabled = PlayerPrefsManager.GetKeyBindEnabled();
+        bool active = enabled == 1;
+        foreach (var keybind in KeybindVisuals)
+        {
+            keybind.SetActive(active);
         }
     }
 

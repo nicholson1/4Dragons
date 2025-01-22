@@ -13,6 +13,7 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private Toggle ShowHelm;
     [SerializeField] private Toggle ScreenShake;
     [SerializeField] private Toggle Tutorials;
+    [SerializeField] private Toggle Keybinds;
 
     [SerializeField] private TextMeshProUGUI difficultyTextHUD;
 
@@ -22,6 +23,8 @@ public class SettingsManager : MonoBehaviour
         ShowHelm.SetIsOnWithoutNotify(PlayerPrefsManager.GetShowHelm() == 1);
         ScreenShake.SetIsOnWithoutNotify(PlayerPrefsManager.getScreenShake() == 1);
         Tutorials.SetIsOnWithoutNotify(PlayerPrefsManager.GetTutorialEnabled() == 1);
+        Keybinds.SetIsOnWithoutNotify(PlayerPrefsManager.GetKeyBindEnabled() == 1);
+
 
         int diff = PlayerPrefsManager.GetDifficulty();
         difficultySlider.SetValueWithoutNotify(diff);
