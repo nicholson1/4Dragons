@@ -11,7 +11,7 @@ public class SpellDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text;
 
     [SerializeField] private CombatEntity player;
-    public Weapon.SpellTypes spell;
+    public SpellTypes spell;
     public int value;
     [SerializeField] private ToolTip toolTip;
 
@@ -27,7 +27,7 @@ public class SpellDisplay : MonoBehaviour
         // }
     }
 
-    public void UpdateValues(Weapon.SpellTypes s, Weapon w, CombatEntity c)
+    public void UpdateValues(SpellTypes s, Weapon w, CombatEntity c)
     {
         //Debug.Log(GetStatIntFromSpell(s));
         (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValuesFromSpell(s);

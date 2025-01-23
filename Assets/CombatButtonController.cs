@@ -130,10 +130,10 @@ public class CombatButtonController : MonoBehaviour
 
     private void UpdateSpellButtons(Character player)
     {
-        List<(Weapon.SpellTypes, Weapon)> weaponSpells = player.GetWeaponSpells();
-        //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
+        List<(SpellTypes, Weapon)> weaponSpells = player.GetWeaponSpells();
+        //(SpellTypes, SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
 
-        List<(Weapon.SpellTypes, Weapon)> spellScrolls = player.GetSpells();
+        List<(SpellTypes, Weapon)> spellScrolls = player.GetSpells();
         // refence the datatable with these spells as int
         //Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
 
@@ -151,12 +151,12 @@ public class CombatButtonController : MonoBehaviour
         switch (spellScrolls.Count)
         {
             case 0:
-                scroll1.UpdateSpell(Weapon.SpellTypes.None, null);
-                scroll2.UpdateSpell(Weapon.SpellTypes.None, null);
+                scroll1.UpdateSpell(SpellTypes.None, null);
+                scroll2.UpdateSpell(SpellTypes.None, null);
                 break;
             case 1:
                 scroll1.UpdateSpell(spellScrolls[0].Item1, spellScrolls[0].Item2);
-                scroll2.UpdateSpell(Weapon.SpellTypes.None, null);
+                scroll2.UpdateSpell(SpellTypes.None, null);
                 break;
             case 2:
                 scroll1.UpdateSpell(spellScrolls[0].Item1, spellScrolls[0].Item2);
@@ -173,12 +173,12 @@ public class CombatButtonController : MonoBehaviour
         switch (weaponSpells.Count)
         {
             case 0:
-                weapon1.UpdateSpell(Weapon.SpellTypes.None, null);
-                weapon2.UpdateSpell(Weapon.SpellTypes.None, null);
+                weapon1.UpdateSpell(SpellTypes.None, null);
+                weapon2.UpdateSpell(SpellTypes.None, null);
                 break;
             case 1:
                 weapon1.UpdateSpell(weaponSpells[0].Item1, weaponSpells[0].Item2);
-                weapon2.UpdateSpell(Weapon.SpellTypes.None, null);
+                weapon2.UpdateSpell(SpellTypes.None, null);
                 break;
             case 2:
                 weapon1.UpdateSpell(weaponSpells[0].Item1, weaponSpells[0].Item2);
@@ -225,7 +225,7 @@ public class CombatButtonController : MonoBehaviour
     {
         Button b = button.GetComponent<Button>();
 
-        if (button.spell == Weapon.SpellTypes.None)
+        if (button.spell == SpellTypes.None)
         {
             //Debug.Log(" spell is false");
             b.interactable = false;
@@ -272,12 +272,12 @@ public class CombatButtonController : MonoBehaviour
         }
     }
 
-    private bool CheckForUniqueSpellSchools(Weapon.SpellTypes[] spells)
+    private bool CheckForUniqueSpellSchools(SpellTypes[] spells)
     {
         List<string> types = new List<string>();
         foreach (var spell in spells)
         {
-            if (spell == Weapon.SpellTypes.None)
+            if (spell == SpellTypes.None)
                 return false;
             if ((int)spell < 15)
                 return false;
@@ -296,12 +296,12 @@ public class CombatButtonController : MonoBehaviour
 
         return true;
     }
-    private bool CheckForUniquePhysicalSchools(Weapon.SpellTypes[] spells)
+    private bool CheckForUniquePhysicalSchools(SpellTypes[] spells)
     {
         List<string> types = new List<string>();
         foreach (var spell in spells)
         {
-            if (spell == Weapon.SpellTypes.None)
+            if (spell == SpellTypes.None)
                 return false;
             if ((int)spell > 14)
                 return false;

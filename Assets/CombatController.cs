@@ -449,12 +449,12 @@ public class CombatController : MonoBehaviour
         if (RelicManager._instance.CheckRelic(RelicType.Relic21))
         {
             entitiesInCombat[0].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
-            ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, Weapon.SpellTypes.Nature5);
+            ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, SpellTypes.Nature5);
         }
         if (RelicManager._instance.CheckRelic(RelicType.Relic17))
         {
             entitiesInCombat[1].DeBuff(entitiesInCombat[1], CombatEntity.DeBuffTypes.Chilled, 1,1);
-            ParticleManager._instance.SpawnParticle(entitiesInCombat[1], entitiesInCombat[1], Weapon.SpellTypes.Ice4);
+            ParticleManager._instance.SpawnParticle(entitiesInCombat[1], entitiesInCombat[1], SpellTypes.Ice4);
 
         }
 

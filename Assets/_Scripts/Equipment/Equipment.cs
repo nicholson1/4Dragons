@@ -133,40 +133,36 @@ namespace ImportantStuff
             Relic,
             Sold,
         }
+    }
+    public enum Stats
+    {
+        ItemLevel,
+        Rarity,
+        Armor, // (physical)
+        MagicResist, // (spell)
 
+        Strength,
 
-        public enum Stats
-        {
-            ItemLevel,
-            Rarity,
-            Armor, // (physical)
-            MagicResist, // (spell)
+        //specific types of physical damage
+        Swords,
+        Axes,
+        Daggers,
+        Shields,
+        Hammers,
 
-            Strength,
+        SpellPower,
 
-            //specific types of physical damage
-            Swords,
-            Axes,
-            Daggers,
-            Shields,
-            Hammers,
+        //specific type of spell Damage
+        NaturePower,
+        FirePower,
+        IcePower,
+        LifeForce,
+        ShadowPower,
 
-            SpellPower,
-
-            //specific type of spell Damage
-            NaturePower,
-            FirePower,
-            IcePower,
-            LifeForce,
-            ShadowPower,
-
-            //additional stats
-            Health,
-            CritChance,
+        //additional stats
+        Health,
+        CritChance,
             
-            None,
-        }
-        
-
+        None,
     }
 }

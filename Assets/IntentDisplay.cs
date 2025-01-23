@@ -15,7 +15,7 @@ public class IntentDisplay : MonoBehaviour, IPointerExitHandler
 
     public float bounceHeight;
     private RectTransform rt;
-    public void UpdateInfo(Weapon.SpellTypes spell)
+    public void UpdateInfo(SpellTypes spell)
     {
         (Sprite, Sprite) sprites = TheSpellBook._instance.GetAbilityTypeIcons(spell);
 

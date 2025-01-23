@@ -26,141 +26,141 @@ public class StatDisplayManager : MonoBehaviour
         }
     }
 
-    public (string, Sprite, Color, string) GetValues(Equipment.Stats stat)
+    public (string, Sprite, Color, string) GetValues(Stats stat)
     {
         //Debug.Log(stat);
         return (statNames[(int)stat-2], statIcons[(int)stat-2], statColors[(int)stat-2], statDesc [(int)stat-2]);
     }
     
-    public (string, Sprite, Color, string) GetValuesFromSpell(Weapon.SpellTypes s)
+    public (string, Sprite, Color, string) GetValuesFromSpell(SpellTypes s)
     {
         int stat = GetStatIntFromSpell(s);
         //Debug.Log(stat);
         return (statNames[(int)stat-2], statIcons[(int)stat-2], statColors[(int)stat-2], statDesc [(int)stat-2]);
     }
-    private int GetStatIntFromSpell(Weapon.SpellTypes s)
+    private int GetStatIntFromSpell(SpellTypes s)
     {
         int i = 0;
         switch (s)
         {
-            case Weapon.SpellTypes.Dagger1:
+            case SpellTypes.Dagger1:
                 i = 7;
                 break;
-            case Weapon.SpellTypes.Dagger2:
+            case SpellTypes.Dagger2:
                 i = 7;
                 break;
-            case Weapon.SpellTypes.Dagger3:
+            case SpellTypes.Dagger3:
                 i = 7;
                 break;
-            case Weapon.SpellTypes.Shield1:
+            case SpellTypes.Shield1:
                 i = 8;
                 break;
-            case Weapon.SpellTypes.Shield2:
+            case SpellTypes.Shield2:
                 i = 8;
                 break;
-            case Weapon.SpellTypes.Shield3:
+            case SpellTypes.Shield3:
                 i = 8;
                 break;
-            case Weapon.SpellTypes.Sword1:
+            case SpellTypes.Sword1:
                 i = 5;
                 break;
-            case Weapon.SpellTypes.Sword2:
+            case SpellTypes.Sword2:
                 i = 5;
                 break;
-            case Weapon.SpellTypes.Sword3:
+            case SpellTypes.Sword3:
                 i = 5;
                 break;
-            case Weapon.SpellTypes.Axe1:
+            case SpellTypes.Axe1:
                 i = 6;
                 break;
-            case Weapon.SpellTypes.Axe2:
+            case SpellTypes.Axe2:
                 i = 6;
                 break;
-            case Weapon.SpellTypes.Axe3:
+            case SpellTypes.Axe3:
                 i = 6;
                 break;
-            case Weapon.SpellTypes.Hammer1:
+            case SpellTypes.Hammer1:
                 i = 9;
                 break;
-            case Weapon.SpellTypes.Hammer2:
+            case SpellTypes.Hammer2:
                 i = 9;
                 break;
-            case Weapon.SpellTypes.Hammer3:
+            case SpellTypes.Hammer3:
                 i = 9;
                 break;
-            case Weapon.SpellTypes.Nature1:
+            case SpellTypes.Nature1:
                 i = 11;
                 break;
-            case Weapon.SpellTypes.Nature2:
+            case SpellTypes.Nature2:
                 i = 11;
                 break;
-            case Weapon.SpellTypes.Nature3:
+            case SpellTypes.Nature3:
                 i = 11;
                 break;
-            case Weapon.SpellTypes.Nature4:
+            case SpellTypes.Nature4:
                 i = 11;
                 break;
-            case Weapon.SpellTypes.Nature5:
+            case SpellTypes.Nature5:
                 i = 11;
                 break;
-            case Weapon.SpellTypes.Fire1:
+            case SpellTypes.Fire1:
                 i = 12;
                 break;
-            case Weapon.SpellTypes.Fire2:
+            case SpellTypes.Fire2:
                 i = 12;
                 break;
-            case Weapon.SpellTypes.Fire3:
+            case SpellTypes.Fire3:
                 i = 12;
                 break;
-            case Weapon.SpellTypes.Fire4:
+            case SpellTypes.Fire4:
                 i = 12;
                 break;
-            case Weapon.SpellTypes.Fire5:
+            case SpellTypes.Fire5:
                 i = 12;
                 break;
-            case Weapon.SpellTypes.Ice1:
+            case SpellTypes.Ice1:
                 i = 13;
                 break;
-            case Weapon.SpellTypes.Ice2:
+            case SpellTypes.Ice2:
                 i = 13;
                 break;
-            case Weapon.SpellTypes.Ice3:
+            case SpellTypes.Ice3:
                 i = 13;
                 break;
-            case Weapon.SpellTypes.Ice4:
+            case SpellTypes.Ice4:
                 i = 13;
                 break;
-            case Weapon.SpellTypes.Ice5:
+            case SpellTypes.Ice5:
                 i = 13;
                 break;
-            case Weapon.SpellTypes.Blood1:
+            case SpellTypes.Blood1:
                 i = 14;
                 break;
-            case Weapon.SpellTypes.Blood2:
+            case SpellTypes.Blood2:
                 i = 14;
                 break;
-            case Weapon.SpellTypes.Blood3:
+            case SpellTypes.Blood3:
                 i = 14;
                 break;
-            case Weapon.SpellTypes.Blood4:
+            case SpellTypes.Blood4:
                 i = 14;
                 break;
-            case Weapon.SpellTypes.Blood5:
+            case SpellTypes.Blood5:
                 i = 14;
                 break;
-            case Weapon.SpellTypes.Shadow1:
+            case SpellTypes.Shadow1:
                 i = 15;
                 break;
-            case Weapon.SpellTypes.Shadow2:
+            case SpellTypes.Shadow2:
                 i = 15;
                 break;
-            case Weapon.SpellTypes.Shadow3:
+            case SpellTypes.Shadow3:
                 i = 15;
                 break;
-            case Weapon.SpellTypes.Shadow4:
+            case SpellTypes.Shadow4:
                 i = 15;
                 break;
-            case Weapon.SpellTypes.Shadow5:
+            case SpellTypes.Shadow5:
                 i = 15;
                 break;
 

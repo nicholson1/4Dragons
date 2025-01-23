@@ -53,9 +53,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _rectTransform.localScale = currentLocation._rt.localScale;
         currentLocation.LabelCheck();
         icon.sprite = e.icon;
-        Background.sprite = BackgroundSprites[e.stats[Equipment.Stats.Rarity]];
-        Glow.sprite = GlowSprites[e.stats[Equipment.Stats.Rarity]];
-        if (e.stats[Equipment.Stats.Rarity] == 0)
+        Background.sprite = BackgroundSprites[e.stats[Stats.Rarity]];
+        Glow.sprite = GlowSprites[e.stats[Stats.Rarity]];
+        if (e.stats[Stats.Rarity] == 0)
         {
             Glow.gameObject.SetActive(false);
         }
@@ -72,11 +72,11 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         }
         if(e.slot != Equipment.Slot.Relic && e.slot != Equipment.Slot.Consumable)
         {
-            _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
-            LvlText.text = "Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+            _toolTip.iLvl = e.stats[Stats.ItemLevel].ToString();
+            LvlText.text = "Lvl: " + e.stats[Stats.ItemLevel];
             
 
-            _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
+            _toolTip.rarity = e.stats[Stats.Rarity];
             _toolTip.Cost = "";
             _toolTip.Title = e.name;
             _toolTip.e = e;
@@ -86,20 +86,20 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         {
             if(e.slot == Equipment.Slot.Relic)
                 _toolTip.is_relic = true;
-            _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
+            _toolTip.rarity = e.stats[Stats.Rarity];
             _toolTip.Title = e.name;
             _toolTip.e = e;
             canBeDragged = false;
             _toolTip.is_item = false;
         }
-        //LvlText.color = ToolTipManager._instance.rarityColors[e.stats[Equipment.Stats.Rarity]];
+        //LvlText.color = ToolTipManager._instance.rarityColors[e.stats[Stats.Rarity]];
         if (!e.isWeapon)
         {
             _toolTip.Message += "Slot: " + e.slot + "\n";
         }
         foreach (var stat in e.stats)
         {
-            if (stat.Key != Equipment.Stats.Rarity && stat.Key != Equipment.Stats.ItemLevel )
+            if (stat.Key != Stats.Rarity && stat.Key != Stats.ItemLevel )
             {
                 _toolTip.Message += stat.Key +": "+ stat.Value + "\n";
             }
@@ -108,12 +108,12 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (e.isWeapon)
         {
             Weapon x = (Weapon) e;
-            if (x.spellType1 != Weapon.SpellTypes.None)
+            if (x.spellType1 != SpellTypes.None)
             {
                 _toolTip.Cost = x.scalingInfo1[2].ToString();
                 _toolTip.Message += x.scalingInfo1[0]+ "\n";
             }
-            if (x.spellType2 != Weapon.SpellTypes.None)
+            if (x.spellType2 != SpellTypes.None)
             {
                 _toolTip.Cost += ", " + x.scalingInfo2[2].ToString();
                 _toolTip.Message += x.scalingInfo2[0]+ "\n";
@@ -243,99 +243,99 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
         }
     }
-    private string GetWeaponType(Weapon.SpellTypes spell)
+    private string GetWeaponType(SpellTypes spell)
     {
         string name = "";
         switch (spell)
         {
-            case Weapon.SpellTypes.Dagger1:
+            case SpellTypes.Dagger1:
                 name = "Dagger";
                 break;
-            case Weapon.SpellTypes.Dagger2:
+            case SpellTypes.Dagger2:
                 name = "Dagger";
                 break;
-            case Weapon.SpellTypes.Shield1:
+            case SpellTypes.Shield1:
                 name = "Shield";
                 break;
-            case Weapon.SpellTypes.Shield2:
+            case SpellTypes.Shield2:
                 name = "Shield";
                 break;
-            case Weapon.SpellTypes.Sword1:
+            case SpellTypes.Sword1:
                 name = "Sword";
                 break;
-            case Weapon.SpellTypes.Sword2:
+            case SpellTypes.Sword2:
                 name = "Sword";
                 break;
-            case Weapon.SpellTypes.Axe1:
+            case SpellTypes.Axe1:
                 name = "Axe";
                 break;
-            case Weapon.SpellTypes.Axe2:
+            case SpellTypes.Axe2:
                 name = "Axe";
                 break;
-            case Weapon.SpellTypes.Hammer1:
+            case SpellTypes.Hammer1:
                 name = "Hammer";
                 break;
-            case Weapon.SpellTypes.Hammer2:
+            case SpellTypes.Hammer2:
                 name = "Hammer";
                 break;
-            case Weapon.SpellTypes.Nature1:
+            case SpellTypes.Nature1:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Nature2:
+            case SpellTypes.Nature2:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Nature3:
+            case SpellTypes.Nature3:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Nature4:
+            case SpellTypes.Nature4:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Fire1:
+            case SpellTypes.Fire1:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Fire2:
+            case SpellTypes.Fire2:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Fire3:
+            case SpellTypes.Fire3:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Fire4:
+            case SpellTypes.Fire4:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Ice1:
+            case SpellTypes.Ice1:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Ice2:
+            case SpellTypes.Ice2:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Ice3:
+            case SpellTypes.Ice3:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Ice4:
+            case SpellTypes.Ice4:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Blood1:
+            case SpellTypes.Blood1:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Blood2:
+            case SpellTypes.Blood2:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Blood3:
+            case SpellTypes.Blood3:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Blood4:
+            case SpellTypes.Blood4:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Shadow1:
+            case SpellTypes.Shadow1:
                 name = "Shadow";
                 break;
-            case Weapon.SpellTypes.Shadow2:
+            case SpellTypes.Shadow2:
                 name = "Shadow";
                 break;
-            case Weapon.SpellTypes.Shadow3:
+            case SpellTypes.Shadow3:
                 name = "Shadow";
                 break;
-            case Weapon.SpellTypes.Shadow4:
+            case SpellTypes.Shadow4:
                 name = "Shadow";
                 break;
             }

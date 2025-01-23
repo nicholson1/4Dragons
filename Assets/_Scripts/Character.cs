@@ -45,7 +45,7 @@ public class Character : MonoBehaviour
     public bool showHelm = true;
 
 
-    Dictionary<Equipment.Stats, int> _stats;
+    Dictionary<Stats, int> _stats;
 
 
     [SerializeField] public CombatEntity _combatEntity;
@@ -106,10 +106,10 @@ public class Character : MonoBehaviour
         {
             //_weapons = EC.CreateAllWeapons(_level);
             //_spellScrolls = EC.CreateAllSpellScrolls(_level);
-            // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Dagger3));
-            // _weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, Weapon.SpellTypes.Sword3));
-            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood1));
-            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood2));
+            // _weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, SpellTypes.Dagger3));
+            // _weapons.Add(EC.CreateWeapon(_level,0,Equipment.Slot.OneHander, SpellTypes.Sword3));
+            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,SpellTypes.Blood1));
+            // _spellScrolls.Add(EC.CreateSpellScroll(_level,1,SpellTypes.Blood2));
         }
         else
         {
@@ -133,6 +133,7 @@ public class Character : MonoBehaviour
             else
             {
                 Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
+                EquipmentCreator._instance.GetCharacterAbilities();
                 EqMM.RandomCharacter();
                 //_weapons = EC.CreateAllWeapons(_level);
                 //_spellScrolls = EC.CreateAllSpellScrolls(_level);
@@ -146,7 +147,7 @@ public class Character : MonoBehaviour
                 if (_level <= 5)
                 {
                     if(!Modifiers._instance.CurrentMods.Contains(Mods.NoShieldSpells))
-                        _weapons.Add(EquipmentCreator._instance.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, Weapon.SpellTypes.Shield2));
+                        _weapons.Add(EquipmentCreator._instance.CreateWeapon(_level,Mathf.FloorToInt(_level/5f),Equipment.Slot.OneHander, SpellTypes.Shield2));
                     else
                         _weapons.Add(EquipmentCreator._instance.CreateRandomWeapon(_level, false));
                 }
@@ -159,7 +160,7 @@ public class Character : MonoBehaviour
                 if (!HasDamageSpell(_spellScrolls) && !HasDamageSpell(_weapons))
                 {
                     // if we have no damage abilitys yet, give em one
-                    _weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(_level, (Weapon.SpellTypes)GetRandomDamageSpell()));
+                    _weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(_level, (SpellTypes)GetRandomDamageSpell()));
                 }
                 else
                 {
@@ -167,10 +168,10 @@ public class Character : MonoBehaviour
                 }
             
                 EqMM.UpdateWeapon(_weapons[0], _weapons[1]);
-                //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Hammer3));
-                //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, Weapon.SpellTypes.Fire2));
-                //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Blood1));
-                //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,Weapon.SpellTypes.Nature4));
+                //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, SpellTypes.Hammer3));
+                //_weapons.Add(EC.CreateWeapon(_level,1,Equipment.Slot.OneHander, SpellTypes.Fire2));
+                //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,SpellTypes.Blood1));
+                //_spellScrolls.Add(EC.CreateSpellScroll(_level,1,SpellTypes.Nature4));
 
                 _gold = _level * 2 + (Random.Range(-_level, _level+1));
 
@@ -208,10 +209,10 @@ public class Character : MonoBehaviour
         StartRun = true;
 
     }
-    public List<(Weapon.SpellTypes, Weapon)> GetWeaponSpells()
+    public List<(SpellTypes, Weapon)> GetWeaponSpells()
     {
         //spell 1, spell2, weapon1, weapon2
-        List<(Weapon.SpellTypes, Weapon)> Spells = new List<(Weapon.SpellTypes, Weapon)>();
+        List<(SpellTypes, Weapon)> Spells = new List<(SpellTypes, Weapon)>();
 
         foreach (var weapon in _weapons)
         {
@@ -251,7 +252,7 @@ public class Character : MonoBehaviour
         {
             if (Spells.Count < 2)
             {
-                Spells.Add((Weapon.SpellTypes.None,null));
+                Spells.Add((SpellTypes.None,null));
             }
         }
 
@@ -259,9 +260,9 @@ public class Character : MonoBehaviour
         return Spells;
     }
 
-    public List<(Weapon.SpellTypes, Weapon)> GetSpells()
+    public List<(SpellTypes, Weapon)> GetSpells()
     {
-        List<(Weapon.SpellTypes, Weapon)> Spells = new List<(Weapon.SpellTypes, Weapon)>();
+        List<(SpellTypes, Weapon)> Spells = new List<(SpellTypes, Weapon)>();
         foreach (var scroll in _spellScrolls)
         {
             Spells.Add((scroll.GetSpellTypes().Item1, scroll));
@@ -271,16 +272,16 @@ public class Character : MonoBehaviour
         {
             if (Spells.Count < 2)
             {
-                Spells.Add((Weapon.SpellTypes.None,null));
+                Spells.Add((SpellTypes.None,null));
             }
         }
 
         return Spells;
     }
 
-    public (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) GetScollSpells()
+    public (SpellTypes, SpellTypes, Weapon, Weapon) GetScollSpells()
     {
-        (Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spells = (Weapon.SpellTypes.None, Weapon.SpellTypes.None, null, null);
+        (SpellTypes, SpellTypes, Weapon, Weapon) spells = (SpellTypes.None, SpellTypes.None, null, null);
         switch (_spellScrolls.Count)
         {
             case 0:
@@ -303,7 +304,7 @@ public class Character : MonoBehaviour
         return spells;
     }
 
-    public Dictionary<Equipment.Stats, int> GetStats()
+    public Dictionary<Stats, int> GetStats()
     {
         return _stats;
     }
@@ -927,13 +928,13 @@ public class Character : MonoBehaviour
 
     public void UpdateStats()
     {
-        _stats = new Dictionary<Equipment.Stats, int>();
+        _stats = new Dictionary<Stats, int>();
 
         //base stats
         for (int i = 2; i < 18; i++)
         {
-            //Debug.Log((Equipment.Stats)i);
-            _stats.Add((Equipment.Stats)i, 0);
+            //Debug.Log((Stats)i);
+            _stats.Add((Stats)i, 0);
         }
 
         foreach (Equipment e in _equipment)
@@ -962,15 +963,15 @@ public class Character : MonoBehaviour
         //check to see if we dont have any base spell power form items but we do have a spell power blessing
         int SpellPowerCheck = GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
         
-        if (_stats[Equipment.Stats.SpellPower] == 0 && SpellPowerCheck != -1)
+        if (_stats[Stats.SpellPower] == 0 && SpellPowerCheck != -1)
         {
-            _stats[Equipment.Stats.SpellPower] = Mathf.RoundToInt(Blessings[SpellPowerCheck].Item3);
+            _stats[Stats.SpellPower] = Mathf.RoundToInt(Blessings[SpellPowerCheck].Item3);
         }
         
         int strengthCheck = GetIndexOfBlessing(CombatEntity.BlessingTypes.Strength);
-        if (_stats[Equipment.Stats.Strength] == 0 && strengthCheck != -1)
+        if (_stats[Stats.Strength] == 0 && strengthCheck != -1)
         {
-            _stats[Equipment.Stats.Strength] = Mathf.RoundToInt(Blessings[strengthCheck].Item3);
+            _stats[Stats.Strength] = Mathf.RoundToInt(Blessings[strengthCheck].Item3);
         }
 
         // max health = 50 * level + 50 + hp from stats
@@ -1048,11 +1049,11 @@ public class Character : MonoBehaviour
                 hp = 75 * _level;
         }
         int hpFromStats = 0;
-        _stats.TryGetValue(Equipment.Stats.Health, out hpFromStats);
+        _stats.TryGetValue(Stats.Health, out hpFromStats);
         hp += hpFromStats;
         _maxHealth = hp;
 
-        _stats[Equipment.Stats.Health] += hp;
+        _stats[Stats.Health] += hp;
         
         //only set current health if we are out of combat
         if(CombatController._instance.entitiesInCombat.Count <= 1)
@@ -1065,7 +1066,7 @@ public class Character : MonoBehaviour
         Output += name + "\n";
         Output += GetWeaponSpellsNames();
         //Output += "Level: " + level + "\n";
-        foreach (KeyValuePair<Equipment.Stats,int> kvp in _stats)
+        foreach (KeyValuePair<Stats,int> kvp in _stats)
         {
             Output += kvp.Key.ToString() + ": " + kvp.Value + "\n";
 

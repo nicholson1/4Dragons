@@ -258,7 +258,7 @@ public class ShopManager : MonoBehaviour
     {
         
         TextMeshProUGUI goldText = slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>() ;
-        int cost = (slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60;
+        int cost = (slot.Item.e.stats[Stats.Rarity] + 1) * 60;
         if (CombatController._instance.Difficulty >= 7)
             cost += Mathf.RoundToInt(cost * .2f);  
         goldText.text = (cost).ToString();

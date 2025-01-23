@@ -10,13 +10,13 @@ using UnityEngine.UI;
 public class SpellButton : MonoBehaviour
 {
     [SerializeField] private CombatEntity myCharacter;
-    public Weapon.SpellTypes spell;
+    public SpellTypes spell;
     public Weapon weapon;
     public Image SpellIcon;
     public TextMeshProUGUI SpellText;
    
     [SerializeField]private ToolTip _toolTip;
-    //public static event Action<CombatEntity, Weapon.SpellTypes, int, int> AttackWithSpell;
+    //public static event Action<CombatEntity, SpellTypes, int, int> AttackWithSpell;
 
     public bool interactable = true;
 
@@ -36,12 +36,12 @@ public class SpellButton : MonoBehaviour
     }
     
     
-    public void UpdateSpell(Weapon.SpellTypes s, Weapon w)
+    public void UpdateSpell(SpellTypes s, Weapon w)
     {
 
 
         spell = s;
-        if (spell == Weapon.SpellTypes.None)
+        if (spell == SpellTypes.None)
         {
             _toolTip.icon =  null;
             _toolTip.IconColor = new Color(0,0,0,0);
@@ -54,7 +54,7 @@ public class SpellButton : MonoBehaviour
         
             //iLVL
             //int a;
-            //w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+            //w.stats.TryGetValue(Stats.ItemLevel, out a);
             _toolTip.iLvl = "";
             //Rarity
             
@@ -105,11 +105,11 @@ public class SpellButton : MonoBehaviour
         
         //iLVL
         int a;
-        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+        w.stats.TryGetValue(Stats.ItemLevel, out a);
         _toolTip.iLvl = a.ToString();
         //Rarity
         int r;
-        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        w.stats.TryGetValue(Stats.Rarity, out r);
         _toolTip.rarity = r;
 
         _toolTip.e = w;
@@ -157,10 +157,10 @@ public class SpellButton : MonoBehaviour
         
     }
     
-    private string GetSpellDescription(Weapon.SpellTypes spell)
+    private string GetSpellDescription(SpellTypes spell)
     {
         return DataTable[spell.GetHashCode()].Last().ToString() + "\n" + weapon.name + "\n Level:" +
-               weapon.stats[Equipment.Stats.ItemLevel] + "\n Rarity:" + weapon.stats[Equipment.Stats.Rarity];
+               weapon.stats[Stats.ItemLevel] + "\n Rarity:" + weapon.stats[Stats.Rarity];
     }
 
 

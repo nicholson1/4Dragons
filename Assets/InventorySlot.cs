@@ -46,7 +46,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         if (Item != null)
         {
             SlotLable.gameObject.SetActive(false);
-            //background.color = ToolTipManager._instance.rarityColors[Item.e.stats[Equipment.Stats.Rarity]];
+            //background.color = ToolTipManager._instance.rarityColors[Item.e.stats[Stats.Rarity]];
             //background.color = new Color(background.color.r, background.color.g,background.color.b, baseColor.a);
             Item._rectTransform.localScale = _rt.localScale;
 
@@ -161,7 +161,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                     
                 
                 int currentGold = CombatController._instance.Player._gold;
-                int cost = (di.e.stats[Equipment.Stats.Rarity] + 1) * 60;
+                int cost = (di.e.stats[Stats.Rarity] + 1) * 60;
 
                 if (CombatController._instance.Difficulty >= 7)
                     cost += Mathf.RoundToInt(cost * .2f);
@@ -342,7 +342,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
 
         }
-        int rarity = e.stats[Equipment.Stats.Rarity] + 1;
+        int rarity = e.stats[Stats.Rarity] + 1;
 
         return Mathf.RoundToInt((60 * rarity) * costReduction);
 

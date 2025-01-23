@@ -82,7 +82,7 @@ public class SelectionItem : MonoBehaviour
             abilityTutorial.SetActive(false);
 
         }
-        SetRarityText(e.stats[Equipment.Stats.Rarity], e);
+        SetRarityText(e.stats[Stats.Rarity], e);
 
         icon.sprite = e.icon;
         title.color = rarity.color;
@@ -92,7 +92,7 @@ public class SelectionItem : MonoBehaviour
         int count = 0;
         foreach (var kvp in e.stats)
         {
-            if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+            if (kvp.Key != Stats.Rarity && kvp.Key != Stats.ItemLevel)
             {
                 stats[count].UpdateValues(kvp.Key, kvp.Value);
                 count += 1;
@@ -109,7 +109,7 @@ public class SelectionItem : MonoBehaviour
         if (e.isWeapon)
         {
             Weapon x = (Weapon) e;
-            if (x.spellType1 != Weapon.SpellTypes.None)
+            if (x.spellType1 != SpellTypes.None)
             {
                 _spellDisplay.gameObject.SetActive(true);
                 _spellDisplay.UpdateValues(x.spellType1, x, myCharacter);
@@ -123,7 +123,7 @@ public class SelectionItem : MonoBehaviour
                 
                 //count += 1;
             }
-            if (x.spellType2 != Weapon.SpellTypes.None)
+            if (x.spellType2 != SpellTypes.None)
             {
                 //stats[count].text = x.scalingInfo1[0].ToString();
                 //stats[count].color = rarity.color;
@@ -140,9 +140,9 @@ public class SelectionItem : MonoBehaviour
             if(e.isPotion)
                 rarityTutorial.SetActive(false);
         }
-        if(e.stats.ContainsKey(Equipment.Stats.ItemLevel))
-            _toolTip.iLvl = e.stats[Equipment.Stats.ItemLevel].ToString();
-        _toolTip.rarity = e.stats[Equipment.Stats.Rarity];
+        if(e.stats.ContainsKey(Stats.ItemLevel))
+            _toolTip.iLvl = e.stats[Stats.ItemLevel].ToString();
+        _toolTip.rarity = e.stats[Stats.Rarity];
         _toolTip.Cost = "";
         _toolTip.Title = e.name;
         _toolTip.e = e;
@@ -173,7 +173,7 @@ public class SelectionItem : MonoBehaviour
             RelicDescription.gameObject.SetActive(true);
         }
 
-        if(e.stats[Equipment.Stats.Rarity] != 0)
+        if(e.stats[Stats.Rarity] != 0)
             CardFront.color = title.color;
         else
             rarityTutorial.SetActive(false);
@@ -200,7 +200,7 @@ public class SelectionItem : MonoBehaviour
                 {
                     TutorialManager.Instance.QueueTip(TutorialNames.Abilities);
                 }
-                if (_equipment.slot != Equipment.Slot.Relic && _equipment.stats[Equipment.Stats.Rarity] > 0)
+                if (_equipment.slot != Equipment.Slot.Relic && _equipment.stats[Stats.Rarity] > 0)
                 {
                     TutorialManager.Instance.QueueTip(TutorialNames.EquipmentRarity);
                 }
@@ -297,11 +297,11 @@ public class SelectionItem : MonoBehaviour
                 break;
             
         }
-        if(e.stats.ContainsKey(Equipment.Stats.ItemLevel))
-            rarity.text += " Lvl: " + e.stats[Equipment.Stats.ItemLevel];
+        if(e.stats.ContainsKey(Stats.ItemLevel))
+            rarity.text += " Lvl: " + e.stats[Stats.ItemLevel];
     }
     
-    // public void UpdateToolTipWeapon(Weapon.SpellTypes s, Weapon w)
+    // public void UpdateToolTipWeapon(SpellTypes s, Weapon w)
     // {
     //
     //    
@@ -315,11 +315,11 @@ public class SelectionItem : MonoBehaviour
     //     
     //     //iLVL
     //     int a;
-    //     w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+    //     w.stats.TryGetValue(Stats.ItemLevel, out a);
     //     _toolTip.iLvl = a.ToString();
     //     //Rarity
     //     int r;
-    //     w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+    //     w.stats.TryGetValue(Stats.Rarity, out r);
     //     _toolTip.rarity = r;
     //     
     //     
@@ -388,7 +388,7 @@ public class SelectionItem : MonoBehaviour
         SoundManager.Instance.Play2DSFX(randomCard[Random.Range(0, randomCard.Length)], cardVol, 1, .05f);
     }
 
-    // public void SpellToolTip(Weapon.SpellTypes s, Weapon w, int index)
+    // public void SpellToolTip(SpellTypes s, Weapon w, int index)
     // {
     //     
     //     SpellToolTips[index].gameObject.SetActive(true);
@@ -407,11 +407,11 @@ public class SelectionItem : MonoBehaviour
     //     
     //     //iLVL
     //     int a;
-    //     w.stats.TryGetValue(Equipment.Stats.ItemLevel, out a);
+    //     w.stats.TryGetValue(Stats.ItemLevel, out a);
     //     SpellToolTips[index].iLvl = a.ToString();
     //     //Rarity
     //     int r;
-    //     w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+    //     w.stats.TryGetValue(Stats.Rarity, out r);
     //     SpellToolTips[index].rarity = r;
     //     
     //     //Debug.Log("we did the things?");
@@ -419,99 +419,99 @@ public class SelectionItem : MonoBehaviour
     //     
     // }
 
-    private string GetWeaponType(Weapon.SpellTypes spell)
+    private string GetWeaponType(SpellTypes spell)
     {
         string name = "";
         switch (spell)
         {
-            case Weapon.SpellTypes.Dagger1:
+            case SpellTypes.Dagger1:
                 name = "Dagger";
                 break;
-            case Weapon.SpellTypes.Dagger2:
+            case SpellTypes.Dagger2:
                 name = "Dagger";
                 break;
-            case Weapon.SpellTypes.Shield1:
+            case SpellTypes.Shield1:
                 name = "Shield";
                 break;
-            case Weapon.SpellTypes.Shield2:
+            case SpellTypes.Shield2:
                 name = "Shield";
                 break;
-            case Weapon.SpellTypes.Sword1:
+            case SpellTypes.Sword1:
                 name = "Sword";
                 break;
-            case Weapon.SpellTypes.Sword2:
+            case SpellTypes.Sword2:
                 name = "Sword";
                 break;
-            case Weapon.SpellTypes.Axe1:
+            case SpellTypes.Axe1:
                 name = "Axe";
                 break;
-            case Weapon.SpellTypes.Axe2:
+            case SpellTypes.Axe2:
                 name = "Axe";
                 break;
-            case Weapon.SpellTypes.Hammer1:
+            case SpellTypes.Hammer1:
                 name = "Hammer";
                 break;
-            case Weapon.SpellTypes.Hammer2:
+            case SpellTypes.Hammer2:
                 name = "Hammer";
                 break;
-            case Weapon.SpellTypes.Nature1:
+            case SpellTypes.Nature1:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Nature2:
+            case SpellTypes.Nature2:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Nature3:
+            case SpellTypes.Nature3:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Nature4:
+            case SpellTypes.Nature4:
                 name = "Nature";
                 break;
-            case Weapon.SpellTypes.Fire1:
+            case SpellTypes.Fire1:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Fire2:
+            case SpellTypes.Fire2:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Fire3:
+            case SpellTypes.Fire3:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Fire4:
+            case SpellTypes.Fire4:
                 name = "Fire";
                 break;
-            case Weapon.SpellTypes.Ice1:
+            case SpellTypes.Ice1:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Ice2:
+            case SpellTypes.Ice2:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Ice3:
+            case SpellTypes.Ice3:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Ice4:
+            case SpellTypes.Ice4:
                 name = "Ice";
                 break;
-            case Weapon.SpellTypes.Blood1:
+            case SpellTypes.Blood1:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Blood2:
+            case SpellTypes.Blood2:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Blood3:
+            case SpellTypes.Blood3:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Blood4:
+            case SpellTypes.Blood4:
                 name = "Blood";
                 break;
-            case Weapon.SpellTypes.Shadow1:
+            case SpellTypes.Shadow1:
                 name = "Shadow";
                 break;
-            case Weapon.SpellTypes.Shadow2:
+            case SpellTypes.Shadow2:
                 name = "Shadow";
                 break;
-            case Weapon.SpellTypes.Shadow3:
+            case SpellTypes.Shadow3:
                 name = "Shadow";
                 break;
-            case Weapon.SpellTypes.Shadow4:
+            case SpellTypes.Shadow4:
                 name = "Shadow";
                 break;
             }

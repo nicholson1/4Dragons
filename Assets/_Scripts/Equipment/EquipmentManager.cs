@@ -58,7 +58,7 @@ public class EquipmentManager : MonoBehaviour
     {
         foreach (var kvp in c.GetStats())
         {
-            if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel )
+            if (kvp.Key != Stats.Rarity && kvp.Key != Stats.ItemLevel )
             {
                 _statDisplays[((int)kvp.Key)-2].UpdateValues(kvp.Key, kvp.Value);
             }
@@ -95,7 +95,7 @@ public class EquipmentManager : MonoBehaviour
                 {
                     DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
                     di.InitializeDragItem(e, InventorySlots[invSloti]);
-                    //Debug.Log(c.GetStats()[Equipment.Stats.CritChance]);
+                    //Debug.Log(c.GetStats()[Stats.CritChance]);
                     c._equipment.Add(e);
                     if (e.isWeapon)
                     {
@@ -126,7 +126,7 @@ public class EquipmentManager : MonoBehaviour
                     }
                     c.EqMM.UpdateSlot(e);
                     c.UpdateStats();
-                    //Debug.Log(c.GetStats()[Equipment.Stats.CritChance]);
+                    //Debug.Log(c.GetStats()[Stats.CritChance]);
 
                     
                     si.RemoveSelection();
