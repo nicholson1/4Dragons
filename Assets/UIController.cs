@@ -45,6 +45,7 @@ public class UIController : MonoBehaviour
     [SerializeField] public VictorySequence VictorySequence;
 
     [SerializeField] public GameObject[] KeybindVisuals;
+    private bool showKeybinds = true;
 
     
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
@@ -557,14 +558,26 @@ public class UIController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
+        {
+            ToggleKeyBindVisual();
+        }
+    }
+
     public void ToggleKeyBindVisual()
     {
-        int enabled = PlayerPrefsManager.GetKeyBindEnabled();
-        bool active = enabled == 1;
+        showKeybinds = !showKeybinds;
         foreach (var keybind in KeybindVisuals)
         {
-            keybind.SetActive(active);
+            keybind.SetActive(showKeybinds);
         }
+        
+        if(showKeybinds)
+            PlayerPrefsManager.SetKeyBindEnabled(1);
+        else
+            PlayerPrefsManager.SetKeyBindEnabled(0);
     }
 
 
@@ -652,7 +665,7 @@ public class UIController : MonoBehaviour
     
     public void OpenDiscordLink()
     {
-        Application.OpenURL("https://discord.gg/RTQUhQKAyR");
+        Application.OpenURL("https://discord.gg/8rNMwuhpkp");
     }
     public void OpenSteamLink()
     {

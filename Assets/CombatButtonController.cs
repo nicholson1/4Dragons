@@ -13,6 +13,8 @@ public class CombatButtonController : MonoBehaviour
     [SerializeField] private SpellButton weapon2;
     [SerializeField] private SpellButton scroll1;
     [SerializeField] private SpellButton scroll2;
+    [SerializeField] private Button endTurn;
+
 
     [SerializeField] private TextMeshProUGUI energyText;
     
@@ -90,7 +92,10 @@ public class CombatButtonController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            character.EndTurn();
+            if (endTurn.interactable)
+            {
+                character.EndTurn();
+            }
         }
     }
 
