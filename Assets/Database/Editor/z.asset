@@ -1,0 +1,815 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: z
+  m_EditorClassIdentifier: Assembly-CSharp:NorskaLibExamples.Spreadsheets:SpreadsheetContainer
+  foldoutImportGUI: 1
+  documentId: 1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08
+  selectedTogglesIds:
+  - EventsData
+  - OptionsData
+  foldoutSerializationGUI: 0
+  serializationOutputPath: ../../Configs
+  serializationFileName: Configs.v0.1
+  serializationFormat: 0
+  content:
+    EventsData:
+    - ID: 0
+      EEvent: 0
+      DisplayName: None
+      TrialMin: 0
+      Chance: 0
+      Text: Null Event
+      Option0: 1
+      Option1: 0
+      Option2: 0
+      Option3: 0
+    - ID: 1
+      EEvent: 1
+      DisplayName: Travelling Blacksmith
+      TrialMin: 0
+      Chance: 1
+      Text: You Encounter a traveling blacksmith. He seems willing to do business
+        with you.
+      Option0: 27
+      Option1: 24
+      Option2: 9
+      Option3: 2
+    OptionsData:
+    - ID: 0
+      EOption: 0
+      DisplayName: None
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 1
+      EOption: 1
+      DisplayName: Leave
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: You leave and continue on your journey.
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 2
+      EOption: 2
+      DisplayName: Ignore
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: You ignore the blacksmith, and he ignores you.
+      Outcome1: 57
+      Value1: 1
+      Chance1: 0
+      Text1: You try to ignore the blacksmith, but he is insulted by your smug attitude!
+        En Garde!
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 3
+      EOption: 3
+      DisplayName: Run
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 4
+      EOption: 4
+      DisplayName: Hide
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 5
+      EOption: 5
+      DisplayName: Dodge
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 6
+      EOption: 6
+      DisplayName: Feint
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 7
+      EOption: 7
+      DisplayName: Bluff
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 8
+      EOption: 8
+      DisplayName: Intemidate
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 9
+      EOption: 9
+      DisplayName: Fight
+      Outcome0: 57
+      Value0: 1
+      Chance0: 0
+      Text0: Why pay when you can pillage? You charge at the blacksmith with a cry
+        of greed!
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: As you plan your attack, the blacksmith notices your greedy bloodlust
+        and flees!
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 10
+      EOption: 10
+      DisplayName: Spar
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 11
+      EOption: 11
+      DisplayName: Search
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 12
+      EOption: 12
+      DisplayName: Enter
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 13
+      EOption: 13
+      DisplayName: Camp
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 14
+      EOption: 14
+      DisplayName: Continue
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 15
+      EOption: 15
+      DisplayName: Open
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 16
+      EOption: 16
+      DisplayName: Close
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 17
+      EOption: 17
+      DisplayName: Loot
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 18
+      EOption: 18
+      DisplayName: Take
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 19
+      EOption: 19
+      DisplayName: Steal
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 20
+      EOption: 20
+      DisplayName: Trade
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 21
+      EOption: 21
+      DisplayName: Give
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 22
+      EOption: 22
+      DisplayName: Offer
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 23
+      EOption: 23
+      DisplayName: Donate
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 24
+      EOption: 24
+      DisplayName: Shop
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 25
+      EOption: 25
+      DisplayName: Buy
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 26
+      EOption: 26
+      DisplayName: Sell
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 27
+      EOption: 27
+      DisplayName: Forge
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 28
+      EOption: 28
+      DisplayName: Play
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 29
+      EOption: 29
+      DisplayName: Train
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 30
+      EOption: 30
+      DisplayName: Talk
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 31
+      EOption: 31
+      DisplayName: Sing
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 32
+      EOption: 32
+      DisplayName: Dance
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 33
+      EOption: 33
+      DisplayName: Agree
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 34
+      EOption: 34
+      DisplayName: Argue
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 35
+      EOption: 35
+      DisplayName: Laugh
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 36
+      EOption: 36
+      DisplayName: Hug
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 37
+      EOption: 37
+      DisplayName: Read
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 38
+      EOption: 38
+      DisplayName: Eat
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 39
+      EOption: 39
+      DisplayName: Quaff
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 40
+      EOption: 40
+      DisplayName: Rock
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 41
+      EOption: 41
+      DisplayName: Paper
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 42
+      EOption: 42
+      DisplayName: Scissors
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 43
+      EOption: 43
+      DisplayName: Right
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 44
+      EOption: 44
+      DisplayName: Middle
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 45
+      EOption: 45
+      DisplayName: Left
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 46
+      EOption: 46
+      DisplayName: Red
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 47
+      EOption: 47
+      DisplayName: Green
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 48
+      EOption: 48
+      DisplayName: Blue
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 49
+      EOption: 49
+      DisplayName: High
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
+    - ID: 50
+      EOption: 50
+      DisplayName: Low
+      Outcome0: 0
+      Value0: 0
+      Chance0: 0
+      Text0: Nothing Happens
+      Outcome1: 0
+      Value1: 0
+      Chance1: 0
+      Text1: Nothing Happens
+      Outcome2: 0
+      Value2: 0
+      Chance2: 0
+      Text2: Nothing Happens
