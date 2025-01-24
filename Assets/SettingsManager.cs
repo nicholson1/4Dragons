@@ -37,15 +37,15 @@ public class SettingsManager : MonoBehaviour
     private string[] DifficultyTexts = new[]
     {
         "Beginner",
-        "Enemies have more health",
+        "Enemies are Tougher",
         "Potions less common",
         "Enemies drop less gold",
         "You have less max Health",
-        "Enemies do more damage",
+        "Enemies are Mightier",
         "Increase the chance of elites",
         "Shops are more expensive",
-        "Enemies have MORE health",
-        "Enemies do MORE damage",
+        "Enemies are Relentless",
+        "Enemies are Unyielding",
         "Dragons are more difficult"
     };
 

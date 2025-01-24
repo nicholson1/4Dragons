@@ -345,7 +345,10 @@ public class HealthBar : MonoBehaviour
 
                     if (buff == CombatEntity.BuffTypes.Thorns)
                     {
-                        b._amount += amount;
+                        float tempAmount = b._amount;
+                        if (amount > tempAmount)
+                            tempAmount = amount;
+                        b._amount = tempAmount;
                     }
                     //if(buff == CombatEntity.BuffTypes.Rejuvenate || 
                     b._turns += turns;

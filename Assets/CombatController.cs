@@ -44,12 +44,21 @@ public class CombatController : MonoBehaviour
     private float _normalDamageMultiplier = .5f;    
     private float _eliteDamageMultiplier = .5f;
     private float _dragonDamageMultiplier = .5f;
+    
+    private float _normalHealingMultiplier = .5f;    
+    private float _eliteHealingMultiplier = .33f;
+    private float _dragonHealingMultiplier = .25f;
+
 
     public MoveAndSpin Guide;
 
     public float DragonDamageMultipler => _dragonDamageMultiplier;
     public float EliteDamageMultiplier => _eliteDamageMultiplier;
     public float NormalDamageMultiplier => _normalDamageMultiplier;
+    
+    public float DragonHealingMultipler => _dragonHealingMultiplier;
+    public float EliteHealingMultiplier => _eliteHealingMultiplier;
+    public float NormalHealingMultiplier => _normalHealingMultiplier;
 
     public static event Action EndTurn;
     // public static event Action EndCombatEvent;
@@ -116,36 +125,77 @@ public class CombatController : MonoBehaviour
                 _normalDamageMultiplier = .5f;
                 _eliteDamageMultiplier = .4f;
                 _dragonDamageMultiplier = .5f;
+                
+                
                 break;
             case 2:
                 _normalDamageMultiplier = .75f;
                 _eliteDamageMultiplier = .5f;
                 _dragonDamageMultiplier = .75f;
+                
+                
+                
                 break;
             case 3:
                 _normalDamageMultiplier = 1f;
                 _eliteDamageMultiplier = .66f;
                 _dragonDamageMultiplier = 1f;
+                
+                
                 break;
             case 4:
                 _normalDamageMultiplier = 1.25f;
                 _eliteDamageMultiplier = 1f;
                 _dragonDamageMultiplier = 1.25f;
+                
+                
                 break;
         }
+        
+        
 
         if (Difficulty >= 9)
+        {
+            _normalDamageMultiplier += .5f;
+            _eliteDamageMultiplier += .3f;
+            _dragonDamageMultiplier += .3f;
+            
+            _normalHealingMultiplier= .75f;
+            _eliteHealingMultiplier = .66f;
+            _dragonHealingMultiplier = .5f;
+        }
+        else if (Difficulty >= 8)
         {
             _normalDamageMultiplier += .4f;
             _eliteDamageMultiplier += .2f;
             _dragonDamageMultiplier += .2f;
+            
+            _normalHealingMultiplier= .75f;
+            _eliteHealingMultiplier = .66f;
+            _dragonHealingMultiplier = .5f;
         }
-        else if (Difficulty < 5)
+        else if (Difficulty >= 5)
         {
             _normalDamageMultiplier -= .1f;
             _eliteDamageMultiplier -= .1f;
             _dragonDamageMultiplier -= .1f;
+            
+            _normalHealingMultiplier= .66f;
+            _eliteHealingMultiplier = .5f;
+            _dragonHealingMultiplier = .33f;
+            
         }
+        else if (Difficulty >= 1)
+        {
+            _normalDamageMultiplier -= .2f;
+            _eliteDamageMultiplier -= .2f;
+            _dragonDamageMultiplier -= .2f;
+            
+            _normalHealingMultiplier= .5f;
+            _eliteHealingMultiplier = .33f;
+            _dragonHealingMultiplier = .25f;
+        }
+        
     }
 
     public void DecideShopOrCombat()
@@ -261,11 +311,12 @@ public class CombatController : MonoBehaviour
             nt = NodeType.Store;
         }
 
-        // else if (roll >= 6) // >5 when we have events
-        // {
-        //     //event
-        //     nt = NodeType.Store;
-        // }
+        else if (roll >= 6) // >5 when we have events
+        {
+            //event
+            // todo event
+            nt = NodeType.Store;
+        }
         else
         {
             //else just a random enemy

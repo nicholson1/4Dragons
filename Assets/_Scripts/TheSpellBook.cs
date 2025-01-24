@@ -1059,8 +1059,26 @@ public class TheSpellBook : MonoBehaviour
             }
             
             power = Mathf.RoundToInt(power * adjustment);
-           
 
+            if (IsSpellType(SpellClass.Heal, spell))
+            {
+                //.Log("we are heal");
+                float healingAdjustment = CombatController._instance.NormalHealingMultiplier;
+
+                if (caster.myCharacter.isElite)
+                {
+                    healingAdjustment = CombatController._instance.EliteHealingMultiplier;
+                }
+            
+                if (caster.myCharacter.isDragon)
+                {
+                    healingAdjustment = CombatController._instance.DragonHealingMultipler;
+                }
+                //Debug.Log("power before: " + power);
+                power = Mathf.RoundToInt(power * healingAdjustment);
+                //Debug.Log("power after: " + power);
+            }
+            
         }
         
         if (spell == SpellTypes.Shadow2 || spell == SpellTypes.Blood4 || spell == SpellTypes.Fire5 || spell == SpellTypes.Dagger3 || spell == SpellTypes.Hammer3)

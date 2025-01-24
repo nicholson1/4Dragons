@@ -413,7 +413,7 @@ public class Character : MonoBehaviour
                     float tempAmount = Buffs[i].Item3;
                     if (amount > tempAmount)
                         tempAmount = amount;
-                    Buffs[i] = (buff, Buffs[i].Item2 + turns, amount);
+                    Buffs[i] = (buff, Buffs[i].Item2 + turns, tempAmount);
                 
                     if (Buffs[i].Item3 <=0)
                     {
@@ -1017,17 +1017,25 @@ public class Character : MonoBehaviour
         {
             if(difficulty >= 9)
                 hp = 200 * _level;
-            else if (difficulty >= 1)
+            else if (difficulty >= 8)
                 hp = 175 * _level;
-            else
+            else if (difficulty >= 5)
                 hp = 150 * _level;
+            else if (difficulty >= 1)
+                hp = 125 * _level;
+            else
+                hp = 100 * _level;
         }
         else if (isElite)
         {
             if(difficulty >= 9)
                 hp = 130 * _level;
-            else if (difficulty >= 1)
+            else if (difficulty >= 8)
+                hp = 120 * _level;
+            else if (difficulty >= 5)
                 hp = 110 * _level;
+            else if (difficulty >= 1)
+                hp = 100 * _level;
             else
                 hp = 90 * _level;
         }
@@ -1043,10 +1051,14 @@ public class Character : MonoBehaviour
         {
             if(difficulty >= 9)
                 hp = 100 * _level;
-            else if (difficulty >= 1)
+            else if (difficulty >= 8)
+                hp = 90 * _level;
+            else if (difficulty >= 5)
                 hp = 85 * _level;
+            else if (difficulty >= 1)
+                hp = 80 * _level;
             else
-                hp = 75 * _level;
+                hp = 70 * _level;
         }
         int hpFromStats = 0;
         _stats.TryGetValue(Stats.Health, out hpFromStats);
