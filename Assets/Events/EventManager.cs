@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 /// <summary>
 /// Use EventManager.Instance to access the following methods for Event data:
@@ -15,10 +17,8 @@ public class EventManager : MonoBehaviour
 
     bool isInitialized;
 
-    EventsData[] _events;
-    OptionsData[] _options;
-    Chances<EEvent> _eventChances = new();
-    Chances<(EOutcome, float)> _outcomeChances = new();
+    Chances<EventInfo> _eventChances = new();
+    Chances<OutcomeInfo> _outcomeChances = new();
 
     public static EventManager Instance => GetInstance();
     static EventManager _instance;
@@ -39,15 +39,12 @@ public class EventManager : MonoBehaviour
         if (Database == null)
             Database = Resources.Load<Database>("Database");
 
-        _events = Database.eventsData;
-        _options = Database.optionsData;
-
         isInitialized = true;
     }
 
     /// <param name="trialCount"></param>
     /// <returns>A valid EEvent with weighted likelyhood. If no trialCount is provided, it checks CombatController._instance.TrialCounter.</returns>
-    public EEvent GetRandomEvent(int trialCount = -1)
+    public EventInfo GetRandomEvent(int trialCount = -1)
     {
         if (trialCount < 0)
             trialCount = CombatController._instance.TrialCounter;
@@ -57,79 +54,138 @@ public class EventManager : MonoBehaviour
 
         _eventChances.Clear();
 
-        foreach (EventsData eventsData in _events)
-            if (trialCount >= eventsData.TrialMin)
-                _eventChances.AddOutcome(eventsData.EEvent, eventsData.Chance);
+        for(int i = 0; i < Database.eventsData.rowEntries.Length; i++)
+            if(trialCount >= Database.eventsData.GetInt(i, "TrialMin"))
+            {
+                EventInfo eventInfo = new()
+                {
+                    eEvent = (EEvent)Database.eventsData.GetEnum(typeof(EEvent), i, "EEvent"),
+                    displayName = Database.eventsData.GetString(i, "DisplayName"),
+                    text = Database.eventsData.GetString(i, "Text")
+                };
 
-        EEvent selectedEvent = EEvent.Blacksmith;
+                _eventChances.AddOutcome(eventInfo);
+            }
+
+        EventInfo selectedEventInfo = new()
+        {
+            eEvent = EEvent.Blacksmith,
+            displayName = "Travelling Blacksmith",
+            text = "You Encounter a strange traveling blacksmith. He seems willing to do business with you."
+        };
 
         if (_eventChances.Count <= 0)
-            Debug.LogError("No valid events for player with TrialCount of " + trialCount + ".\n Selecting Default Event: " + selectedEvent);
+            Debug.LogError("No valid events for player with TrialCount of " + trialCount + ".\n Selecting Default Event: " + selectedEventInfo.eEvent);
         else
-            selectedEvent = _eventChances.GetRandomOutcome();
+            selectedEventInfo = _eventChances.GetRandomOutcome();
 
-        return selectedEvent;
+        return selectedEventInfo;
     }
 
     /// <param name="eEvent"></param>
     /// <returns>1 to 4 options based on the given EEvent</returns>
-    public List<EOption> GetOptions(EEvent eEvent)
+    public List<OptionInfo> GetOptions(EEvent eEvent)
     {
-        List<EOption> options = new(4);
-        EOption option = EOption.None;
+        List<OptionInfo> options = new(4);
+        EOption eOption = EOption.None;
+        int row = (int)eEvent;
 
-        option = _events[(int)eEvent].Option0;
+        for (int i = 0; i < 4; i++)
+        {
+            string column = "Option" + i.ToString("0");
+            eOption = (EOption)Database.eventsData.GetEnum(typeof(EOption), row, column);
 
-        if (option != EOption.None)
-            options.Add(option);
+            if (eOption != EOption.None)
+            {
+                OptionInfo addOption = new()
+                {
+                    option = eOption,
+                    displayName = Database.eventsData.GetString(row, column)
+                };
 
-        option = _events[(int)eEvent].Option1;
-
-        if (option != EOption.None)
-            options.Add(option);
-
-        option = _events[(int)eEvent].Option2;
-
-        if (option != EOption.None)
-            options.Add(option);
-
-        option = _events[(int)eEvent].Option3;
-
-        if (option != EOption.None)
-            options.Add(option);
+                options.Add(addOption);
+            }
+        }
 
         if (options.Count <= 0)
-            options.Add(EOption.Leave);
+        {
+            OptionInfo addOption = new()
+            {
+                option = EOption.Leave,
+                displayName = "Leave"
+            };
+
+            options.Add(addOption);
+        }
 
         return options;
     }
 
     /// <param name="option"></param>
     /// <returns>A random outcome that comes from the given option with weighted likelyhood.</returns>
-    public (EOutcome, float) GetOutcome(EOption option)
+    public OutcomeInfo GetOutcome(EOption option)
     {
         if (!isInitialized)
             Initialize();
 
         _outcomeChances.Clear();
 
-        foreach (OptionsData optionsData in _options)
+        for (int i = 0; i < Database.eventsData.rowEntries.Length; i++)
         {
-            if (optionsData.Chance0 > 0f)
-                _outcomeChances.AddOutcome((optionsData.Outcome0, optionsData.Value0), optionsData.Chance0);
-            if (optionsData.Chance1 > 0f)
-                _outcomeChances.AddOutcome((optionsData.Outcome1, optionsData.Value1), optionsData.Chance1);
-            if (optionsData.Chance2 > 0f)
-                _outcomeChances.AddOutcome((optionsData.Outcome2, optionsData.Value2), optionsData.Chance2);
+            for(int j = 0; j < 3; j++)
+            {
+                string chanceNumber = "Chance" + j;
+                float chance = Database.eventsData.GetFloat(i, chanceNumber);
+
+                if (chance > 0f)
+                {
+                    OutcomeInfo outcomeInfo = new()
+                    {
+                        outcome = (EOutcome)Database.eventsData.GetEnum(typeof(EOutcome), i, "Outcome"+j),
+                        value = Database.eventsData.GetFloat(i, "Value"+j),
+                        text = Database.eventsData.GetString(i, "Text"+j)
+                    };
+
+                    _outcomeChances.AddOutcome(outcomeInfo);
+                }
+            }            
         }
 
-        (EOutcome, float) outcome = (EOutcome.None, 0f);
-
         if (_eventChances.Count <= 0)
-            Debug.LogError("No valid outcomes for option: " + option + ".\n Selecting Default Outcome: " + outcome);
-        else
-            outcome = _outcomeChances.GetRandomOutcome();
+        {
+            Debug.LogError("No valid outcomes for option: " + option + ".\n Selecting Default Outcome: None");
 
-        return outcome;
+            OutcomeInfo outcomeInfo = new()
+            {
+                outcome = EOutcome.None,
+                value = 0,
+                text = "Nothing Happens."
+            };
+
+            return outcomeInfo;
+        }
+
+        return _outcomeChances.GetRandomOutcome();
     }
+}
+
+
+public struct EventInfo
+{
+    public EEvent eEvent;
+    public string displayName;
+    public string text;
+}
+
+public struct OptionInfo
+{
+    public EOption option;
+    public string displayName;
+}
+
+public struct OutcomeInfo
+{
+    public EOutcome outcome;
+    public float value;
+    public string text;
 }

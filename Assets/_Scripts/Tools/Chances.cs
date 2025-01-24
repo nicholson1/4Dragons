@@ -100,6 +100,7 @@ public class Chances<T>
     {
         return GetChancePercentage(_outcomes.IndexOf(outcome));
     }
+
     public float GetChancePercentage(int index)
     {
         if (index < 0 || index >= _outcomes.Count)

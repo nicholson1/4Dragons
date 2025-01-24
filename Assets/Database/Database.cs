@@ -1,82 +1,211 @@
-using NorskaLibExamples.Spreadsheets;
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
+using UnityEngine.Networking;
+using Unity.VisualScripting;
 
 public class Database : MonoBehaviour
 {
-    public SpreadsheetContainer spreadsheetContainer;
-    public EventsData[] eventsData;
-    public OptionsData[] optionsData;
+    public string speadsheetID = "1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08";
+    public string credentials = "AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w";
+    public string eventsRaw = "";
+    public string optionsRaw = "";
+    public string jsonRaw = "";
 
-    public void LoadData()
+    public DataEntryContainer eventsData;
+    public DataEntryContainer optionsData;
+
+    public async void LoadData()
     {
-        spreadsheetContainer = Resources.Load<SpreadsheetContainer>("SpreadsheetContainer");
+        string requestLink = GetRequestLink("Events");
+        await ReadSheetDataAsync(requestLink);
+        LoadEvents(jsonRaw);
 
-        LoadEventsData();
-        LoadOptionsData();
     }
 
-    private void LoadEventsData()
+    private void LoadEvents(string jsonRaw)
     {
-        eventsData = new EventsData[spreadsheetContainer.Content.EventsData.Count];
+        eventsData = new();
+        eventsRaw = jsonRaw;
+        JSONNode jsonParse = JSON.Parse(eventsRaw);
 
-        for (int i = 0; i < eventsData.Length; i++)
-        {
-            EventsData eventData = spreadsheetContainer.Content.EventsData[i];
-            eventsData[i] = new EventsData();
+        Dictionary<string, string>[] source = new Dictionary<string, string>[0];
 
-            if (eventData == null)
-            {
-                Debug.LogError("Event Data " + i + " is null in the SpreadsheetContainer");
-                continue;
-            }
-
-            eventsData[i].ID = eventData.ID;
-            eventsData[i].EEvent = eventData.EEvent;
-            eventsData[i].DisplayName = eventData.DisplayName;
-            eventsData[i].TrialMin = eventData.TrialMin;
-            eventsData[i].Chance = eventData.Chance;
-            eventsData[i].Text = eventData.Text;
-            eventsData[i].Option0 = eventData.Option0;
-            eventsData[i].Option1 = eventData.Option1;
-            eventsData[i].Option2 = eventData.Option2;
-            eventsData[i].Option3 = eventData.Option3;
-        }
+        // I want to store the json node data here to source
+        //eventsData.SetEntries(source);
     }
 
-    private void LoadOptionsData()
+    private string GetRequestLink(string tabName)
     {
-        optionsData = new OptionsData[spreadsheetContainer.Content.OptionsData.Count];
+        return $"https://sheets.googleapis.com/v4/spreadsheets/{speadsheetID}/values/{tabName}?key={credentials}";
+    }
 
-        for (int i = 0; i < optionsData.Length; i++)
+    private async Task ReadSheetDataAsync(string requestLink)
+    {
+        using (UnityWebRequest request = UnityWebRequest.Get(requestLink))
         {
-            OptionsData optionData = spreadsheetContainer.Content.OptionsData[i];
-            optionsData[i] = new OptionsData();
+            var operation = request.SendWebRequest();
 
-            if (optionData == null)
+            while (!operation.isDone)
+                await Task.Yield(); // Wait until the request completes.
+
+            if (request.result == UnityWebRequest.Result.ConnectionError ||
+                request.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError("Option Data " + i + " is null in the SpreadsheetContainer");
-                continue;
+                Debug.LogError($"Web Request Error: {request.error}");
+                return;
             }
 
-            optionsData[i].ID = optionData.ID;
-            optionsData[i].EOption = optionData.EOption;
-            optionsData[i].DisplayName = optionData.DisplayName;
-            optionsData[i].Outcome0 = optionData.Outcome0;
-            optionsData[i].Value0 = optionData.Value0;
-            optionsData[i].Chance0 = optionData.Chance0;
-            optionsData[i].Text0 = optionData.Text0;
-            optionsData[i].Outcome1 = optionData.Outcome1;
-            optionsData[i].Value1 = optionData.Value1;
-            optionsData[i].Chance1 = optionData.Chance1;
-            optionsData[i].Text1 = optionData.Text1;
-            optionsData[i].Outcome2 = optionData.Outcome2;
-            optionsData[i].Value2 = optionData.Value2;
-            optionsData[i].Chance2 = optionData.Chance2;
-            optionsData[i].Text2 = optionData.Text2;
+            jsonRaw = request.downloadHandler.text;
+            Debug.Log($"Successfully accessed json data from {requestLink}");
         }
     }
 }
 
+public class DataContainer
+{
+
+}
+
+
+[System.Serializable]
+public class RowEntry
+{
+    public List<ColumnValue> columnList = new List<ColumnValue>();
+}
+
+[System.Serializable]
+public class ColumnValue
+{
+    public string column;
+    public string value;
+}
+
+[System.Serializable]
+public class DataEntryContainer
+{
+    public RowEntry[] rowEntries = new RowEntry[0];
+
+    public void SetEntries(Dictionary<string, string>[] source)
+    {
+        rowEntries = new RowEntry[source.Length];
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            Dictionary<string, string> rowEntry = source[i];
+
+            foreach (KeyValuePair<string, string> cellEntry in rowEntry)
+                rowEntries[i].columnList.Add(new ColumnValue { column = cellEntry.Key, value = cellEntry.Value });
+        }
+    }
+
+    public string GetString(int row, string column)
+    {
+        if (row < 0 || row > rowEntries.Length)
+        {
+            Debug.LogError("Invalid row: " + row);
+            return "";
+        }
+
+        foreach (ColumnValue columnValue in rowEntries[row].columnList)
+            if (columnValue.column == column)
+                return columnValue.value;
+
+        Debug.LogError("Invalid column: " + column);
+        return "";
+    }
+
+    public bool GetBool(int row, string column)
+    {
+        return GetString(row, column) == "TRUE";
+    }
+
+    public int GetInt(int row, string column)
+    {
+        int result = 0;
+        string cellData = GetString(row, column);
+
+        if (!int.TryParse(cellData, out result))
+            Debug.LogError("Invalid cellData: '" + cellData + "' did not parse into an int");
+
+        return result;
+    }
+
+    public int GetEnum(Type enumType, int row, string column)
+    {
+        int result = 0;
+        string cellData = GetString(row, column);
+
+        if (Enum.TryParse(enumType, cellData, out object enumValue) && enumValue != null)
+            result = (int)enumValue;
+        else
+            Debug.LogError("Invalid cellData: '" + cellData + "' did not parse into the Enum Type " + enumType);
+
+        return result;
+    }
+
+    public float GetFloat(int row, string column)
+    {
+        float result = 0;
+        string cellData = GetString(row, column);
+
+        if (!float.TryParse(cellData, out result))
+            Debug.LogError("Invalid cellData: '" + cellData + "' could not be parsed into a float.");
+
+        return result;
+    }
+
+    public string[] GetStringColumn(string column)
+    {
+        string[] results = new string[rowEntries.Length];
+
+        for (int i = 0; i < results.Length; i++)
+            results[i] = GetString(i, column);
+
+        return results;
+    }
+
+    public bool[] GetBoolColumn(string column)
+    {
+        bool[] results = new bool[rowEntries.Length];
+
+        for (int i = 0; i < results.Length; i++)
+            results[i] = GetBool(i, column);
+
+        return results;
+    }
+
+    public int[] GetIntColumn(string column)
+    {
+        int[] results = new int[rowEntries.Length];
+
+        for (int i = 0; i < results.Length; i++)
+            results[i] = GetInt(i, column);
+
+        return results;
+    }
+
+    public int[] GetEnumColumn(Type enumType, string column)
+    {
+        int[] results = new int[rowEntries.Length];
+
+        for (int i = 0; i < results.Length; i++)
+            results[i] = GetEnum(enumType, i, column);
+
+        return results;
+    }
+
+    public float[] GetFloatColumn(string column)
+    {
+        float[] results = new float[rowEntries.Length];
+
+        for (int i = 0; i < results.Length; i++)
+            results[i] = GetFloat(i, column);
+
+        return results;
+    }
+
+}

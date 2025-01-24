@@ -11,7 +11,11 @@ public class DatabaseLoader : Editor
         _database = (Database)target;
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("spreadsheetContainer"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("speadsheetID"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("credentials"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("eventsRaw"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("optionsRaw"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("jsonRaw"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("eventsData"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("optionsData"));
 
