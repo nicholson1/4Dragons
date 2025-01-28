@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ImportantStuff;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,6 +33,9 @@ public class EquipmentManager : MonoBehaviour
     [SerializeField] private PotionDrag PotionPrefab;
     private List<PotionDrag> PotionPool = new List<PotionDrag>();
     private List<PotionDrag> ActivePotions = new List<PotionDrag>();
+    
+    private List<DragItem> ItemPool = new List<DragItem>();
+    private List<DragItem> ActiveItems = new List<DragItem>();
 
     private void Awake()
     {
@@ -93,7 +97,7 @@ public class EquipmentManager : MonoBehaviour
                 }
                 if (InventorySlots[invSloti].Item == null )
                 {
-                    DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+                    DragItem di = GetDragItem();
                     di.InitializeDragItem(e, InventorySlots[invSloti]);
                     //Debug.Log(c.GetStats()[Stats.CritChance]);
                     c._equipment.Add(e);
@@ -158,7 +162,7 @@ public class EquipmentManager : MonoBehaviour
                     {
                         if (InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1].Item == null)
                         {
-                            DragItem wep = Instantiate(_dragItemPrefab, inventoryTransform);
+                            DragItem wep = GetDragItem();
                             wep.InitializeDragItem(e, InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1]);
                             c._equipment.Add(e);
                             if (e.isWeapon)
@@ -207,7 +211,7 @@ public class EquipmentManager : MonoBehaviour
                     
                     
                     
-                    DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+                    DragItem di = GetDragItem();
                     di.InitializeDragItem(e, InventorySlots[invSloti]);
                     c._equipment.Add(e);
                     if (e.isWeapon)
@@ -442,15 +446,10 @@ public class EquipmentManager : MonoBehaviour
     }
     public void CreateDragItemInShop(Equipment e, InventorySlot slot)
     {
-        
-        //todo POOL THESE YOU GOOF
-        
-        DragItem di = Instantiate(_dragItemPrefab, inventoryTransform);
+        DragItem di = GetDragItem();
         di.InitializeDragItem(e, slot);
         di.transform.SetParent(slot._rt.parent);
         di.transform.position = slot.transform.position;
-
-
     }
 
     public void AddItemToInventoryFromSelection(Equipment e, SelectionItem si)
@@ -596,14 +595,79 @@ public class EquipmentManager : MonoBehaviour
                 //we found the potion
                 slot.Item.currentLocation.Item = null;
                 slot.LabelCheck();
-                DropItem(DI.e);
-                Destroy(DI.gameObject);
+                PoolItem(DI);
                 break;
             }
         }
 
         p.gameObject.SetActive(false);
     }
+    
+    
+    private DragItem GetDragItem()
+    {
+        DragItem di;
+        if (ItemPool.Count > 0)
+        {
+            di = ItemPool[0];
+            ItemPool.RemoveAt(0);
+            di.gameObject.SetActive(true);
+        }
+        else
+        {
+            di = Instantiate(_dragItemPrefab, inventoryTransform);
+        }
+        return di;
+    }
+    public void PoolItem(DragItem di)
+    {
+        
+        ItemPool.Add(di);
+        ActiveItems.Remove(di);
+        DropItem(di.e);
+        //di.e = null;
+        di.gameObject.SetActive(false);
+    }
+    
+    public DragItem UpgradeEquipment(DragItem item)
+    {
+        Equipment e = item.e;
+        
+        item._toolTip.CloseTip();
+
+        //e.PrettyPrintStats();
+        e.Upgrade();
+        //e.PrettyPrintStats();
+
+        item._toolTip.e = e;
+
+        item.InitializeDragItem(e, item.currentLocation);
+        
+        ForgeManager._instance.ShowPrice(e);
+        return item;
+    }
+    public DragItem EnhanceEquipment(DragItem item)
+    {
+        Equipment e = item.e;
+
+        if (e.stats[Stats.Rarity] >= 3)
+            return item;
+        
+        item._toolTip.CloseTip();
+
+        //e.PrettyPrintStats();
+        e.Enhance();
+        //e.PrettyPrintStats();
+        
+        item._toolTip.e = e;
+
+
+        item.InitializeDragItem(e, item.currentLocation);
+        ForgeManager._instance.ShowPrice(e);
+
+        return item;
+    }
+
 
     
     

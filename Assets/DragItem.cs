@@ -5,6 +5,7 @@ using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
@@ -31,7 +32,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] public RectTransform _rectTransform;
     [SerializeField] private Canvas canvas;
     [SerializeField] private CanvasGroup canvasGroup;
-    [SerializeField] private ToolTip _toolTip;
+    [SerializeField] public ToolTip _toolTip;
 
     public bool canBeDragged = true;
     
@@ -44,6 +45,11 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
+        // we have to clear the previous equipment
+        //remove slot, remove stats
+        _toolTip.ResetTooltip();
+        _toolTip.is_item = true;
+        
         canvas = location.transform.parent.parent.GetComponent<Canvas>();
         e = equip;
         currentLocation = location;
@@ -125,7 +131,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
             _toolTip.Message = "Weapon: " + GetWeaponType(x.spellType1) + "\n" + _toolTip.Message;
         }
-
+        
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.alpha = 1f;
     }
     
     public void OnPointerDown(PointerEventData eventData)
@@ -134,6 +142,15 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if(e.isRelic)
             return;
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
+
+        if (ForgeManager._instance.Upgrading)
+        {
+            EquipmentManager._instance.UpgradeEquipment(this);
+        }
+        if (ForgeManager._instance.Enhancing)
+        {
+            EquipmentManager._instance.EnhanceEquipment(this);
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)

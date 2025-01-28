@@ -420,7 +420,7 @@ public class EquipmentCreator : MonoBehaviour
         return CreateArmor(level, (Equipment.Slot)slotIndex, rarity);
 
     }
-    public Equipment CreateArmor(int level, Equipment.Slot slot, int rarity = -1, Stats stat1 = Stats.None, Stats stat2 = Stats.None)
+    public Equipment CreateArmor(int level, Equipment.Slot slot, int rarity = -1, Stats stat1 = Stats.None, Stats stat2 = Stats.None, Stats def1 = Stats.None, Stats def2 = Stats.None, int defBudget = -1)
     {
         if (rarity == -1)
         {
@@ -440,7 +440,7 @@ public class EquipmentCreator : MonoBehaviour
         
         //decide % of defensive stats
         
-        (int,int) defAndModelIndex = GenerateDefensiveStats(PB, slot);
+        (int,int) defAndModelIndex = GenerateDefensiveStats(PB, slot, def1, def2, defBudget);
         
         //add name for item slot
         Sprite icon = AddSlotName(slot);
@@ -732,7 +732,13 @@ public class EquipmentCreator : MonoBehaviour
 
     private int GetPowerBudget(int level, int rarity)
     {
-        return level * ((3 * (rarity + 1)) + 2);
+        //old level×(3×(rarity+1)+2)
+        return level * (3 * rarity + 5);
+        
+        //5 x Level
+        //8 x level
+        //11 x level
+        // 14  level
     }
 
     private void GenerateStats(int powerBudget,Stats stat1 = Stats.None,Stats stat2 = Stats.None  )
@@ -742,9 +748,7 @@ public class EquipmentCreator : MonoBehaviour
             name = "Exquisite " + name;
             return;
         }
-
-       
-    
+        
         var v = Enum.GetValues (typeof (Stats));
         // Stats a = (Stats) v.GetValue (Random.Range(4, v.Length-1));
         // Stats b = (Stats) v.GetValue (Random.Range(4, v.Length-1));
@@ -794,8 +798,8 @@ public class EquipmentCreator : MonoBehaviour
             }
             else
             {
-                equipmentStats.Add(a, (powerBudget + 1)/2);
-                equipmentStats.Add(b, (powerBudget -1 )/2);
+                equipmentStats.Add(a, (powerBudget - 1)/2);
+                equipmentStats.Add(b, (powerBudget - 1)/2);
             }
         }
 
@@ -840,10 +844,18 @@ public class EquipmentCreator : MonoBehaviour
         //Debug.Log(name + "++++++++++++++++++++++++");
     }
 
-    private (int,int) GenerateDefensiveStats(int powerBudget, Equipment.Slot slot)
+    private (int,int) GenerateDefensiveStats(int powerBudget, Equipment.Slot slot, Stats def1 = Stats.None, Stats def2 = Stats.None, int defBudget = -1)
     {
-        int roll = Random.Range(0, powerBudget + 1);
-
+        int roll;
+        if (defBudget == -1)
+            roll = Random.Range(0, powerBudget + 1);
+        else
+        {
+            roll = defBudget;
+        }
+        //armor = 0
+        //MR = 1
+        //both = 2
         List<int> possibleType = new List<int>() { 0, 1, 2 };
 
         if (Modifiers._instance.CurrentMods.Contains(Mods.NoArmStat))
@@ -856,9 +868,47 @@ public class EquipmentCreator : MonoBehaviour
             possibleType.Remove(1);
             possibleType.Remove(2);
         }
-        
+
         //decide type
-        int type = Random.Range(0, 3);
+        int type;
+        
+        if (def1 == Stats.Armor)
+        {
+            if (def2 == Stats.MagicResist)
+            {
+                type = 2;
+            }
+            else
+            {
+                type = 0;
+            }
+        }
+        else if (def1 == Stats.MagicResist)
+        {
+            if (def2 == Stats.Armor)
+            {
+                type = 2;
+            }
+            else
+            {
+                type = 1;
+            }
+        }
+        else
+        {
+            if (def2 == Stats.Armor)
+            {
+                type = 0;
+            }
+            else if (def2 == Stats.MagicResist)
+            {
+                type = 1;
+            }
+            else
+            {
+                type = Random.Range(0, 3);
+            }
+        }
         
         //fix the roll;
         roll = FixTheRoll(roll, powerBudget);
@@ -896,7 +946,7 @@ public class EquipmentCreator : MonoBehaviour
             }
             else
             {
-                equipmentStats.Add(Stats.Armor, (roll + 1) / 2);
+                equipmentStats.Add(Stats.Armor, (roll - 1) / 2);
 
                 if (((roll - 1) / 2) <= 0)
                 {

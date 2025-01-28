@@ -113,8 +113,9 @@ public class InventorySlot : MonoBehaviour, IDropHandler
             {
                 di.currentLocation.Item = null;
                 di.currentLocation.LabelCheck();
-                EquipmentManager._instance.DropItem(di.e);
-                Destroy(di.gameObject);
+                //EquipmentManager._instance.DropItem(di.e);
+                EquipmentManager._instance.PoolItem(di);
+                //Destroy(di.gameObject);
                 SoundManager.Instance.Play2DSFX(dropItem, dropItemVol, 1, .05f);
                 return;
             }
@@ -133,10 +134,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
                 
                 di.currentLocation.Item = null;
                 di.currentLocation.LabelCheck();
-                EquipmentManager._instance.DropItem(di.e);
+                EquipmentManager._instance.PoolItem(di);
                 UIController._instance.PlaySellItem();
                 
-                Destroy(di.gameObject);
+                //Destroy(di.gameObject);
                 
                 
                 return;
