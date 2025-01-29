@@ -95,17 +95,18 @@ public class ShopManager : MonoBehaviour
             shopPrice += 25;
         }
 
-        InitializeShop(ShopType);
+        InitializeShop(ShopType, true);
         CombatController._instance.Player.UpdateStats();
 
 
     }
     
 
-    public void InitializeShop(InventorySlot.SellShopType type)
+    public void InitializeShop(InventorySlot.SellShopType type, bool reroll = false)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
-        Random.InitState(CombatController._instance.CurrentSeed);
+        if(!reroll)
+            Random.InitState(CombatController._instance.CurrentSeed);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
         //TODO REMOVE THIS ITS ONLY FOR TESTING THE POTIONS
