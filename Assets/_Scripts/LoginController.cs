@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -104,6 +105,13 @@ public class LoginController : MonoBehaviour
 
         // Deactivate the CanvasGroup's GameObject
         canvasGroup.gameObject.SetActive(false);
+    }
+
+    public async void SkipRegister()
+    {
+        EmailLog.text = "Guest@Guest.Guest";
+        PasswordLog.text = "GuestGuest";
+        Login();
     }
 
     public async void Register()
