@@ -16,6 +16,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
     [SerializeField] private GameObject ForgeUI;
+    [SerializeField] private GameObject EventUI;
 
     [SerializeField] private GameObject SettingUI;
     [SerializeField] private GameObject VictoryUI;
@@ -460,6 +461,33 @@ public class UIController : MonoBehaviour
         }
         
         PlayOpenLoot();
+    }
+    bool EventMoving = false;
+    private bool EventOn = false;
+
+    public void ToggleEventUI(int force = -1)
+    {
+        if (force == 0)
+        {
+            if (EventOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (EventOn == true)
+            {
+                return;
+            }
+        }
+
+        if(!EventMoving)
+        {
+            EventOn = !EventOn;
+            StartCoroutine(MoveLootObject(EventUI));
+        }
+        
     }
     
     bool forgeMoving = false;

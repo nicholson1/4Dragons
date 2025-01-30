@@ -283,7 +283,6 @@ public class CombatController : MonoBehaviour
                 break;
             case NodeType.Mystery:
                MysterySelect();
-                //todo spawn a random enemy shop or treasure
                 break;
         }
         
@@ -301,24 +300,28 @@ public class CombatController : MonoBehaviour
 
         if (roll >= 10)
         {
+            // 1 in 10 chance of happening
             //spawn treausre room
             nt = NodeType.Treasure;
         }
 
         else if (roll >= 8)
         {
+            // 2 in 10 chance of happening
             //spawn shop
             nt = NodeType.Store;
         }
 
-        else if (roll >= 6) // >5 when we have events
+        //TODO SET THIS BACK TO 5 WHEN YOU ARE DONE TESTING
+        else if (roll >= 0) // >5 when we have events
         {
             //event
-            // todo event
-            nt = NodeType.Store;
+            //3 in 10 chance of happening 
+            nt = NodeType.Mystery;
         }
         else
         {
+            //5 in 10 chance of happening
             //else just a random enemy
             nt = NodeType.MinorEnemy;
         }
@@ -327,10 +330,12 @@ public class CombatController : MonoBehaviour
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic24))
             {
-                //todo roll again for treasure store event
-                roll = Random.Range(0, 2);
-                if (roll == 1)
+                //roll again for treasure store event
+                roll = Random.Range(0, 3);
+                if (roll == 0)
                     nt = NodeType.Store;
+                else if (roll == 1)
+                    nt = NodeType.Mystery;
                 else
                     nt = NodeType.Treasure;
             }
@@ -346,6 +351,9 @@ public class CombatController : MonoBehaviour
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
                 MusicManager.Instance.PlayShopMusic();
+                break;
+            case NodeType.Mystery:
+                EventsManager._instance.RandomEvent();
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(false);
