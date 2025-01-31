@@ -24,32 +24,37 @@ public class Database : MonoBehaviour
         await ReadSheetDataAsync(GetRequestLink("Events"));
         eventsRaw = _jsonRaw;
         eventsTab.SetEntries(JsonToDictionaryArray(eventsRaw));
+        LogEvents();
 
         await ReadSheetDataAsync(GetRequestLink("Options"));
         optionsRaw = _jsonRaw;
         optionsTab.SetEntries(JsonToDictionaryArray(optionsRaw));
-
-        for (int i = 0; i < optionsTab.rowEntries.Length; i++)
-        {
-            string row = "";
-
-            for(int j = 0; j < optionsTab.rowEntries[i].columnList.Count; j++)
-            {
-                row += optionsTab.GetString(i, optionsTab.rowEntries[i].columnList[j].column);
-                row += ", ";
-            }
-
-            Debug.Log(i+": "+row);
-        }
 
         await ReadSheetDataAsync(GetRequestLink("Outcomes"));
         outcomesRaw = _jsonRaw;
         outcomesTab.SetEntries(JsonToDictionaryArray(outcomesRaw));
     }
 
+    private void LogEvents()
+    {
+        Debug.Log("Log Events: ");
+
+        for (int i = 0; i < eventsTab.rowEntries.Length; i++)
+        {
+            string row = "";
+
+            for (int j = 0; j < eventsTab.rowEntries[i].columnList.Count; j++)
+            {
+                row += eventsTab.GetString(i, eventsTab.rowEntries[i].columnList[j].column);
+                row += ", ";
+            }
+
+            Debug.Log(i + ": " + row);
+        }
+    }
+
     private Dictionary<string, string>[] JsonToDictionaryArray(string jsonRaw)
     {
-        eventsTab = new();
         var parsedJson = JSON.Parse(jsonRaw);
 
         if (parsedJson == null || !parsedJson.HasKey("values"))

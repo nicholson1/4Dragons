@@ -33,6 +33,8 @@ public class Chances<T>
         if (weight == 0)
             return;
 
+        //Debug.Log("Added " + outcome + " at " + weight);
+
         _weights.Add(weight);
         _outcomes.Add(outcome);
         _thresholds.Add(_totalWeight + weight);
@@ -45,6 +47,8 @@ public class Chances<T>
         if (Count == 0)
             return default;
 
+        // ensure any randomness is based on our current seed
+        Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
         float value = Random.Range(0, _totalWeight);
 
         for (int i = 0; i < _thresholds.Count - 1; i++)

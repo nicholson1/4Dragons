@@ -1,16 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
-/// <summary>
-/// Use EventManager.Instance to access the following methods for Event data:
-/// EventManager.Instance.GetRandomEvent(int trialCount);
-/// EventManager.Instance.GetOptions(EEvent eEvent);
-/// EventManager.Instance.GetOutcome(EOption option);
-/// </summary>
 public class EventManager : MonoBehaviour
 {
     [field: SerializeField] public Database Database { get; private set;}
@@ -42,8 +34,6 @@ public class EventManager : MonoBehaviour
         isInitialized = true;
     }
 
-    /// <param name="trialCount"></param>
-    /// <returns>A valid EEvent with weighted likelyhood. If no trialCount is provided, it checks CombatController._instance.TrialCounter.</returns>
     public EventInfo GetRandomEvent(int trialCount = -1)
     {
         if (trialCount < 0)
@@ -64,7 +54,7 @@ public class EventManager : MonoBehaviour
                     text = Database.eventsTab.GetString(i, "Text")
                 };
 
-                _eventChances.AddOutcome(eventInfo);
+                _eventChances.AddOutcome(eventInfo, Database.eventsTab.GetFloat(i, "Chance"));
             }
 
         EventInfo selectedEventInfo = new()
@@ -82,10 +72,11 @@ public class EventManager : MonoBehaviour
         return selectedEventInfo;
     }
 
-    /// <param name="eEvent"></param>
-    /// <returns>1 to 4 options based on the given EEvent</returns>
     public List<OptionInfo> GetOptions(EEvent eEvent)
     {
+        if (!isInitialized)
+            Initialize();
+
         List<OptionInfo> options = new(4);
         EOption option = EOption.None;
         int row = (int)eEvent;
@@ -121,8 +112,6 @@ public class EventManager : MonoBehaviour
         return options;
     }
 
-    /// <param name="option"></param>
-    /// <returns>A random outcome that comes from the given option with weighted likelyhood.</returns>
     public OutcomeInfo GetOutcome(EOption option)
     {
         if (!isInitialized)
@@ -130,12 +119,12 @@ public class EventManager : MonoBehaviour
 
         _outcomeChances.Clear();
 
-        for (int i = 0; i < Database.eventsTab.rowEntries.Length; i++)
+        for (int i = 0; i < Database.optionsTab.rowEntries.Length; i++)
         {
             for(int j = 0; j < 3; j++) // up to 3 outcomes available
             {
                 string chanceNumber = "Chance" + j;
-                float chance = Database.eventsTab.GetFloat(i, chanceNumber);
+                float chance = Database.optionsTab.GetFloat(i, chanceNumber);
 
                 if (chance > 0f)
                 {
@@ -149,7 +138,7 @@ public class EventManager : MonoBehaviour
                         text = Database.optionsTab.GetString(i, "Text"+j)
                     };
 
-                    _outcomeChances.AddOutcome(outcomeInfo);
+                    _outcomeChances.AddOutcome(outcomeInfo, Database.optionsTab.GetFloat(i, "Chance"+j));
                 }
             }            
         }

@@ -4,6 +4,11 @@ public enum EEvent
 {
     None = 0,
     Blacksmith = 1,
+    WellOWisp = 2,
+    BlackCat = 3,
+    OrangeCat = 4,
+    PileOfGold = 5,
+    RunedStone = 6,
 
 }
 
@@ -60,6 +65,13 @@ public enum EOption
     Blue = 48,
     High = 49,
     Low = 50,
+    Duel = 51,
+    Recharge = 52,
+    PlaceYourHand = 53,
+    PetBlackCat = 54,
+    RubBellyBlackCat = 55,
+    PetOrangeCat = 56,
+    RubBellyOrangeCat = 57,
 
 }
 
@@ -125,5 +137,8 @@ public enum EOutcome
     Battle = 57,
     ReviveGet = 58,
     ReviveLose = 59,
+    RandomRarityUp = 60,
+    RandomLevelUp = 61,
+    StartDamaged = 62,
 
 }

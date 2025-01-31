@@ -353,7 +353,7 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Mystery:
-                EventsManager._instance.RandomEvent();
+                EventUI.instance.RandomEvent();
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(false);
