@@ -15,16 +15,16 @@ public class DatabaseLoader : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("credentials"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("eventsRaw"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("optionsRaw"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("jsonRaw"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("eventsData"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("optionsData"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("outcomesRaw"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("eventsTab"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("optionsTab"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("outcomesTab"));
 
-        // Create a new section for the "Load Data" button
         GUILayout.BeginVertical();
-        GUILayout.Label("Load Data");
+        GUILayout.Label("Load Tabs");
         if (GUILayout.Button("Load"))
         {
-            _database.LoadData();
+            _database.LoadTabs();
         }
         GUILayout.EndVertical();
     }

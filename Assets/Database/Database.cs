@@ -5,37 +5,82 @@ using System.Collections.Generic;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
-using Unity.VisualScripting;
 
 public class Database : MonoBehaviour
 {
-    public string speadsheetID = "1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08";
-    public string credentials = "AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w";
-    public string eventsRaw = "";
-    public string optionsRaw = "";
-    public string jsonRaw = "";
+    [SerializeField] string speadsheetID = "1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08";
+    [SerializeField] string credentials = "AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w";
+    [SerializeField] string eventsRaw = "";
+    [SerializeField] string optionsRaw = "";
+    [SerializeField] string outcomesRaw = "";
+    string _jsonRaw = "";
 
-    public DataEntryContainer eventsData;
-    public DataEntryContainer optionsData;
+    public Tab eventsTab;
+    public Tab optionsTab;
+    public Tab outcomesTab;
 
-    public async void LoadData()
+    public async void LoadTabs()
     {
-        string requestLink = GetRequestLink("Events");
-        await ReadSheetDataAsync(requestLink);
-        LoadEvents(jsonRaw);
+        await ReadSheetDataAsync(GetRequestLink("Events"));
+        eventsRaw = _jsonRaw;
+        eventsTab.SetEntries(JsonToDictionaryArray(eventsRaw));
 
+        await ReadSheetDataAsync(GetRequestLink("Options"));
+        optionsRaw = _jsonRaw;
+        optionsTab.SetEntries(JsonToDictionaryArray(optionsRaw));
+
+        for (int i = 0; i < optionsTab.rowEntries.Length; i++)
+        {
+            string row = "";
+
+            for(int j = 0; j < optionsTab.rowEntries[i].columnList.Count; j++)
+            {
+                row += optionsTab.GetString(i, optionsTab.rowEntries[i].columnList[j].column);
+                row += ", ";
+            }
+
+            Debug.Log(i+": "+row);
+        }
+
+        await ReadSheetDataAsync(GetRequestLink("Outcomes"));
+        outcomesRaw = _jsonRaw;
+        outcomesTab.SetEntries(JsonToDictionaryArray(outcomesRaw));
     }
 
-    private void LoadEvents(string jsonRaw)
+    private Dictionary<string, string>[] JsonToDictionaryArray(string jsonRaw)
     {
-        eventsData = new();
-        eventsRaw = jsonRaw;
-        JSONNode jsonParse = JSON.Parse(eventsRaw);
+        eventsTab = new();
+        var parsedJson = JSON.Parse(jsonRaw);
 
-        Dictionary<string, string>[] source = new Dictionary<string, string>[0];
+        if (parsedJson == null || !parsedJson.HasKey("values"))
+        {
+            Debug.LogError("Invalid JSON format or missing 'values' key.");
+            return new Dictionary<string, string>[0];
+        }
 
-        // I want to store the json node data here to source
-        //eventsData.SetEntries(source);
+        var valuesArray = parsedJson["values"].AsArray;
+        if (valuesArray.Count < 2)
+        {
+            Debug.LogError("Insufficient data rows.");
+            return new Dictionary<string, string> [0];
+        }
+
+        JSONArray headers = valuesArray[0].AsArray;
+        Dictionary<string, string>[] source = new Dictionary<string, string>[valuesArray.Count - 1];
+
+        for (int i = 1; i < valuesArray.Count; i++)
+        {
+            JSONArray rowData = valuesArray[i].AsArray;
+            Dictionary<string, string> rowDict = new();
+
+            for (int j = 0; j < headers.Count && j < rowData.Count; j++)
+                if(headers[j] != "")
+                    rowDict[headers[j]] = rowData[j];
+
+            source[i - 1] = rowDict;
+        }
+
+        return source;
     }
 
     private string GetRequestLink(string tabName)
@@ -59,8 +104,9 @@ public class Database : MonoBehaviour
                 return;
             }
 
-            jsonRaw = request.downloadHandler.text;
+            _jsonRaw = request.downloadHandler.text;
             Debug.Log($"Successfully accessed json data from {requestLink}");
+            Debug.Log(_jsonRaw);
         }
     }
 }
@@ -85,7 +131,7 @@ public class ColumnValue
 }
 
 [System.Serializable]
-public class DataEntryContainer
+public class Tab
 {
     public RowEntry[] rowEntries = new RowEntry[0];
 
@@ -96,6 +142,7 @@ public class DataEntryContainer
         for (int i = 0; i < source.Length; i++)
         {
             Dictionary<string, string> rowEntry = source[i];
+            rowEntries[i] = new RowEntry();
 
             foreach (KeyValuePair<string, string> cellEntry in rowEntry)
                 rowEntries[i].columnList.Add(new ColumnValue { column = cellEntry.Key, value = cellEntry.Value });

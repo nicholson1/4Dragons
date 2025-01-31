@@ -54,14 +54,14 @@ public class EventManager : MonoBehaviour
 
         _eventChances.Clear();
 
-        for(int i = 0; i < Database.eventsData.rowEntries.Length; i++)
-            if(trialCount >= Database.eventsData.GetInt(i, "TrialMin"))
+        for(int i = 0; i < Database.eventsTab.rowEntries.Length; i++)
+            if(trialCount >= Database.eventsTab.GetInt(i, "TrialMin"))
             {
                 EventInfo eventInfo = new()
                 {
-                    eEvent = (EEvent)Database.eventsData.GetEnum(typeof(EEvent), i, "EEvent"),
-                    displayName = Database.eventsData.GetString(i, "DisplayName"),
-                    text = Database.eventsData.GetString(i, "Text")
+                    eEvent = (EEvent)Database.eventsTab.GetEnum(typeof(EEvent), i, "EEvent"),
+                    displayName = Database.eventsTab.GetString(i, "DisplayName"),
+                    text = Database.eventsTab.GetString(i, "Text")
                 };
 
                 _eventChances.AddOutcome(eventInfo);
@@ -87,20 +87,20 @@ public class EventManager : MonoBehaviour
     public List<OptionInfo> GetOptions(EEvent eEvent)
     {
         List<OptionInfo> options = new(4);
-        EOption eOption = EOption.None;
+        EOption option = EOption.None;
         int row = (int)eEvent;
 
         for (int i = 0; i < 4; i++)
         {
             string column = "Option" + i.ToString("0");
-            eOption = (EOption)Database.eventsData.GetEnum(typeof(EOption), row, column);
+            option = (EOption)Database.eventsTab.GetEnum(typeof(EOption), row, column);
 
-            if (eOption != EOption.None)
+            if (option != EOption.None)
             {
                 OptionInfo addOption = new()
                 {
-                    option = eOption,
-                    displayName = Database.eventsData.GetString(row, column)
+                    option = option,
+                    displayName = Database.optionsTab.GetString((int)option, "DisplayName")
                 };
 
                 options.Add(addOption);
@@ -130,20 +130,23 @@ public class EventManager : MonoBehaviour
 
         _outcomeChances.Clear();
 
-        for (int i = 0; i < Database.eventsData.rowEntries.Length; i++)
+        for (int i = 0; i < Database.eventsTab.rowEntries.Length; i++)
         {
-            for(int j = 0; j < 3; j++)
+            for(int j = 0; j < 3; j++) // up to 3 outcomes available
             {
                 string chanceNumber = "Chance" + j;
-                float chance = Database.eventsData.GetFloat(i, chanceNumber);
+                float chance = Database.eventsTab.GetFloat(i, chanceNumber);
 
                 if (chance > 0f)
                 {
+                    EOutcome outcome = (EOutcome)Database.optionsTab.GetEnum(typeof(EOutcome), i, "Outcome" + j);
+
                     OutcomeInfo outcomeInfo = new()
                     {
-                        outcome = (EOutcome)Database.eventsData.GetEnum(typeof(EOutcome), i, "Outcome"+j),
-                        value = Database.eventsData.GetFloat(i, "Value"+j),
-                        text = Database.eventsData.GetString(i, "Text"+j)
+                        outcome = outcome,
+                        displayName = Database.outcomesTab.GetString((int)outcome, "DisplayName"),
+                        value = Database.optionsTab.GetFloat(i, "Value"+j),
+                        text = Database.optionsTab.GetString(i, "Text"+j)
                     };
 
                     _outcomeChances.AddOutcome(outcomeInfo);
@@ -158,6 +161,7 @@ public class EventManager : MonoBehaviour
             OutcomeInfo outcomeInfo = new()
             {
                 outcome = EOutcome.None,
+                displayName = "Non-Event",
                 value = 0,
                 text = "Nothing Happens."
             };
@@ -186,6 +190,7 @@ public struct OptionInfo
 public struct OutcomeInfo
 {
     public EOutcome outcome;
+    public string displayName;
     public float value;
     public string text;
 }
