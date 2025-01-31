@@ -51,7 +51,7 @@ public class Weapon : Equipment
     }
 
 
-    public Weapon(string name, Slot slot,Dictionary<Stats,int> stats, Weapon.SpellTypes spell1, Weapon.SpellTypes spell2 = Weapon.SpellTypes.None, Sprite sprite = null, int modelIndex = -1, bool canBeLoot = true)
+    public Weapon(string name, Slot slot,Dictionary<Stats,int> stats, SpellTypes spell1, SpellTypes spell2 = SpellTypes.None, Sprite sprite = null, int modelIndex = -1, bool canBeLoot = true)
     {
         this.name = name;
         this.slot = slot;
@@ -75,50 +75,51 @@ public class Weapon : Equipment
     
     
     //like specific function based on spellType?
-    public enum SpellTypes
-    {
-        Dagger1 = 0,
-        Dagger2 = 1,
-        Dagger3 = 2,
-        Shield1 = 3,
-        Shield2 = 4,
-        Shield3 = 5,
-        Sword1 = 6,
-        Sword2 = 7,
-        Sword3 = 8,
-        Axe1 = 9,
-        Axe2 = 10,
-        Axe3 = 11,
-        Hammer1 = 12,
-        Hammer2 = 13,
-        Hammer3 = 14,
+    
+}
+public enum SpellTypes
+{
+    Dagger1 = 0,
+    Dagger2 = 1,
+    Dagger3 = 2,
+    Shield1 = 3,
+    Shield2 = 4,
+    Shield3 = 5,
+    Sword1 = 6,
+    Sword2 = 7,
+    Sword3 = 8,
+    Axe1 = 9,
+    Axe2 = 10,
+    Axe3 = 11,
+    Hammer1 = 12,
+    Hammer2 = 13,
+    Hammer3 = 14,
 
-        Nature1 = 15,
-        Nature2 = 16,
-        Nature3 = 17,
-        Nature4 = 18,
-        Nature5 = 19,
-        Fire1 = 20,
-        Fire2 = 21,
-        Fire3 = 22,
-        Fire4 = 23,
-        Fire5 = 24,
-        Ice1 = 25,
-        Ice2 = 26,
-        Ice3 = 27,
-        Ice4 = 28,
-        Ice5 = 29,
-        Blood1 = 30,
-        Blood2 = 31,
-        Blood3 = 32,
-        Blood4 = 33,
-        Blood5 = 34,
-        Shadow1 = 35,
-        Shadow2 = 36,
-        Shadow3 = 37,
-        Shadow4 = 38,
-        Shadow5 = 39,
+    Nature1 = 15,
+    Nature2 = 16,
+    Nature3 = 17,
+    Nature4 = 18,
+    Nature5 = 19,
+    Fire1 = 20,
+    Fire2 = 21,
+    Fire3 = 22,
+    Fire4 = 23,
+    Fire5 = 24,
+    Ice1 = 25,
+    Ice2 = 26,
+    Ice3 = 27,
+    Ice4 = 28,
+    Ice5 = 29,
+    Blood1 = 30,
+    Blood2 = 31,
+    Blood3 = 32,
+    Blood4 = 33,
+    Blood5 = 34,
+    Shadow1 = 35,
+    Shadow2 = 36,
+    Shadow3 = 37,
+    Shadow4 = 38,
+    Shadow5 = 39,
 
-        None = 40,
-    }
+    None = 40,
 }

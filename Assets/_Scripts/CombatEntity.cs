@@ -14,7 +14,7 @@ public class CombatEntity : MonoBehaviour
     public CombatEntity Target;
     [SerializeField] private Slider healthBar;
 
-    private Dictionary<Equipment.Stats, int> currentEquipmentStats;
+    private Dictionary<Stats, int> currentEquipmentStats;
     
     //target, type of damage, how much, crit chance
     public static event Action<CombatEntity, AbilityTypes, int, float> AttackEvent;
@@ -28,7 +28,7 @@ public class CombatEntity : MonoBehaviour
     public static event Action<CombatEntity, BuffTypes, int, float> BuffEvent;
     public static event Action<CombatEntity, DeBuffTypes, int, float> DeBuffEvent;
     
-    public static event Action<Character, Weapon.SpellTypes> AddIntent;
+    public static event Action<Character, SpellTypes> AddIntent;
     public static event Action<Character> RemoveIntent;
     public static event Action<Character> RemoveAllIntent;
     public static event Action<Character> ReduceDebuffCount;
@@ -36,13 +36,13 @@ public class CombatEntity : MonoBehaviour
 
     public static event Action<ErrorMessageManager.Errors> Notification;
     
-    public List<(Weapon.SpellTypes, Weapon)> Spells;
+    public List<(SpellTypes, Weapon)> Spells;
     
     public bool isMyTurn = false;
 
-    public List<(Weapon.SpellTypes, Weapon)> Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+    public List<(SpellTypes, Weapon)> Intentions = new List<(SpellTypes, Weapon)>();
     public CombatEntity attacker = null;
-    public Weapon.SpellTypes lastSpellCastTargeted = Weapon.SpellTypes.None;
+    public SpellTypes lastSpellCastTargeted = SpellTypes.None;
     public bool IntentionsRunning = false;
 
 
@@ -248,7 +248,7 @@ public class CombatEntity : MonoBehaviour
             return;
         }
 
-        lastSpellCastTargeted = Weapon.SpellTypes.None;
+        lastSpellCastTargeted = SpellTypes.None;
         
         if (myCharacter.isPlayerCharacter)
         {
@@ -270,7 +270,7 @@ public class CombatEntity : MonoBehaviour
             {
                 if (RelicManager._instance.CheckRelic(RelicType.Relic20))
                 {
-                    ParticleManager._instance.SpawnParticle(this, this, Weapon.SpellTypes.Shield2);
+                    ParticleManager._instance.SpawnParticle(this, this, SpellTypes.Shield2);
                     GetBuffed(this, BuffTypes.Block, 1, Mathf.RoundToInt(myCharacter._maxHealth * .05f));
                 }
             }
@@ -423,8 +423,8 @@ public class CombatEntity : MonoBehaviour
                 if (RelicManager._instance.CheckRelic(RelicType.Relic13))
                 {
                     Character c = CombatController._instance.Player;
-                    GetHitWithBlessing(c, BlessingTypes.Health, 1, .5f);
-                    RelicManager._instance.HeartSeekersCounter += .5f;
+                    GetHitWithBlessing(c, BlessingTypes.Health, 1, 1f);
+                    RelicManager._instance.HeartSeekersCounter += 1f;
                 }
             }
             damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
@@ -448,11 +448,11 @@ public class CombatEntity : MonoBehaviour
         {
             if (dt == AbilityTypes.PhysicalAttack)
             {
-                reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.Armor);
+                reductionAmount = CalculateDamageReduction(damagePreReduction, Stats.Armor);
             }
             else if (dt == AbilityTypes.SpellAttack)
             {
-                reductionAmount = CalculateDamageReduction(damagePreReduction, Equipment.Stats.MagicResist);
+                reductionAmount = CalculateDamageReduction(damagePreReduction, Stats.MagicResist);
             }
         }
         
@@ -550,7 +550,7 @@ public class CombatEntity : MonoBehaviour
             
         }
 
-        if (lastSpellCastTargeted == Weapon.SpellTypes.Blood1 || lastSpellCastTargeted == Weapon.SpellTypes.Blood2)
+        if (lastSpellCastTargeted == SpellTypes.Blood1 || lastSpellCastTargeted == SpellTypes.Blood2)
         {
             //Debug.Log("hey im healing because it was a blood spell " + lastSpellCastTargeted);
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
@@ -561,7 +561,7 @@ public class CombatEntity : MonoBehaviour
             attacker.Heal(attacker, Mathf.RoundToInt(attackDamage/(float)2), 0);
         }
         
-        if (lastSpellCastTargeted == Weapon.SpellTypes.Sword3)
+        if (lastSpellCastTargeted == SpellTypes.Sword3)
         {
             attacker.Buff(attacker, CombatEntity.BuffTypes.Block, 1, Mathf.RoundToInt(attackDamage/(float)2));
         }
@@ -574,7 +574,7 @@ public class CombatEntity : MonoBehaviour
             {
                 // do it for EACH thorn buff
                 //TriggerAllThorns(attacker);
-                ParticleManager._instance.SpawnParticle(this, this, Weapon.SpellTypes.Nature3, 0);
+                ParticleManager._instance.SpawnParticle(this, this, SpellTypes.Nature3, 0);
                 AttackEvent(attacker, AbilityTypes.SpellAttack, Mathf.RoundToInt(myCharacter.Buffs[thorns].Item3), 0);
                 CameraShake._instance.GetHit(1);
 
@@ -586,7 +586,7 @@ public class CombatEntity : MonoBehaviour
         
         //return 1;
         //Debug.Log(spell);
-        if (lastSpellCastTargeted != Weapon.SpellTypes.None)
+        if (lastSpellCastTargeted != SpellTypes.None)
         {
             
             //int cost =(int.Parse((scaling[(int)lastSpellCastTargeted][2]).ToString()));
@@ -595,7 +595,7 @@ public class CombatEntity : MonoBehaviour
         }
 
         // we had to disable this because it wasnt allowing multiple heals from life leech and essenace drain, as well as block from composed strike
-        //lastSpellCastTargeted = Weapon.SpellTypes.None;
+        //lastSpellCastTargeted = SpellTypes.None;
 
 
     }
@@ -607,35 +607,35 @@ public class CombatEntity : MonoBehaviour
     public void GetMySpells()
     {
         //Debug.Log(" spells gooten **************");
-        Spells = new List<(Weapon.SpellTypes, Weapon)>();
+        Spells = new List<(SpellTypes, Weapon)>();
         
-        //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) weaponSpells = myCharacter.GetWeaponSpells();
-        List<(Weapon.SpellTypes, Weapon)> weaponSpells = myCharacter.GetWeaponSpells();
-        //(Weapon.SpellTypes, Weapon.SpellTypes, Weapon, Weapon) spellScrolls = myCharacter.GetScollSpells();
+        //(SpellTypes, SpellTypes, Weapon, Weapon) weaponSpells = myCharacter.GetWeaponSpells();
+        List<(SpellTypes, Weapon)> weaponSpells = myCharacter.GetWeaponSpells();
+        //(SpellTypes, SpellTypes, Weapon, Weapon) spellScrolls = myCharacter.GetScollSpells();
 
-        List<(Weapon.SpellTypes, Weapon)> spellScrolls = myCharacter.GetSpells();
+        List<(SpellTypes, Weapon)> spellScrolls = myCharacter.GetSpells();
 
         foreach (var spell in weaponSpells)
         {
-            //if(spell.Item1 != Weapon.SpellTypes.None) 
+            //if(spell.Item1 != SpellTypes.None) 
                 //Spells.Add((spell.Item1, spell.Item2));
             Spells.Add((spell.Item1, spell.Item2));
 
         }
 
-        // if (weaponSpells.Item1 != Weapon.SpellTypes.None)
+        // if (weaponSpells.Item1 != SpellTypes.None)
         // {
         //     Spells.Add((weaponSpells.Item1, weaponSpells.Item3));
         // }
         //
-        // if (weaponSpells.Item2 != Weapon.SpellTypes.None)
+        // if (weaponSpells.Item2 != SpellTypes.None)
         // {
         //     Spells.Add((weaponSpells.Item2, weaponSpells.Item4));
         // }
         
         foreach (var spell in spellScrolls)
         {
-            //if(spell.Item1 != Weapon.SpellTypes.None)
+            //if(spell.Item1 != SpellTypes.None)
                 //Spells.Add((spell.Item1, spell.Item2));
             Spells.Add((spell.Item1, spell.Item2));
 
@@ -647,14 +647,14 @@ public class CombatEntity : MonoBehaviour
     
     
 
-    public List<(Weapon.SpellTypes spell, Weapon weapon)> SetMyIntentions()
+    public List<(SpellTypes spell, Weapon weapon)> SetMyIntentions()
     {
         
         IntentionsRunning = true;
         if(AddingIntents != null)
             StopCoroutine(AddingIntents);
         GetMySpells();
-        List<(Weapon.SpellTypes, Weapon)> intent = new List<(Weapon.SpellTypes, Weapon)>();
+        List<(SpellTypes, Weapon)> intent = new List<(SpellTypes, Weapon)>();
         //get max energy
         int energy = myCharacter._maxEnergy;
         int chilled = myCharacter.GetIndexOfDebuff(DeBuffTypes.Chilled);
@@ -667,7 +667,7 @@ public class CombatEntity : MonoBehaviour
                 // donot remove energy
                 //Debug.Log("we are not removing energy");
                 RemoveAllIntent(myCharacter);
-                Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+                Intentions = new List<(SpellTypes, Weapon)>();
 
             }
             else
@@ -675,14 +675,14 @@ public class CombatEntity : MonoBehaviour
                 energy -= 1;
                 RemoveAllIntent(myCharacter);
     
-                Intentions = new List<(Weapon.SpellTypes, Weapon)>();
+                Intentions = new List<(SpellTypes, Weapon)>();
             }
             
         }
 
         for (int i = Spells.Count - 1; i >= 0; i--)
         {
-            if (Spells[i].Item1 == Weapon.SpellTypes.None)
+            if (Spells[i].Item1 == SpellTypes.None)
             {
                 Spells.RemoveAt(i);
             }
@@ -703,7 +703,7 @@ public class CombatEntity : MonoBehaviour
             // we need spell energy;
             int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
 
-            if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow1)
+            if (Spells[roll].Item1 == SpellTypes.Shadow1)
             {
                 if ((energy != myCharacter._maxEnergy ||  (chilled != -1 && energy != myCharacter._maxEnergy -1)) && myCharacter._currentHealth > myCharacter._maxHealth * .25f && tapcount < 2)
                 {
@@ -717,7 +717,7 @@ public class CombatEntity : MonoBehaviour
                     continue;
                 }
             }
-            if (Spells[roll].Item1 == Weapon.SpellTypes.Blood3)
+            if (Spells[roll].Item1 == SpellTypes.Blood3)
             {
                 // can cast spell if i already have it
                 int bloodpact = myCharacter.GetIndexOfBuff(BuffTypes.Invulnerable);
@@ -740,7 +740,7 @@ public class CombatEntity : MonoBehaviour
 
                 }
             }
-            if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow5)
+            if (Spells[roll].Item1 == SpellTypes.Shadow5)
             {
                 // // can cast spell if i already have it
                 // int immortal = myCharacter.GetIndexOfBuff(BuffTypes.Immortal);
@@ -772,7 +772,7 @@ public class CombatEntity : MonoBehaviour
                 intent.Add((Spells[roll].Item1, Spells[roll].Item2));
                 energy -= spellE;
 
-                if (Spells[roll].Item1 == Weapon.SpellTypes.Shadow1)
+                if (Spells[roll].Item1 == SpellTypes.Shadow1)
                 {
                     energy += 1;
                 }
@@ -850,7 +850,7 @@ public class CombatEntity : MonoBehaviour
     
     
 
-    public void CastTheAbility(Weapon.SpellTypes spell, Weapon weapon)
+    public void CastTheAbility(SpellTypes spell, Weapon weapon)
     {
         // use spell book to determine targets, effect, and quantity
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
@@ -866,13 +866,13 @@ public class CombatEntity : MonoBehaviour
             return;
         
         //keep track of the abilities used for playfab
-        StatsTracker.Instance.TrackAbilityUsage(spell.ToString(), weapon.stats[Equipment.Stats.ItemLevel], weapon.stats[Equipment.Stats.Rarity] );
+        StatsTracker.Instance.TrackAbilityUsage(spell.ToString(), weapon.stats[Stats.ItemLevel], weapon.stats[Stats.Rarity] );
         
         if(TheSpellBook._instance.IsSpellNotPhysical(spell))
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic3))
             {
-                myCharacter.GetStats().TryGetValue(Equipment.Stats.SpellPower, out int sp);
+                myCharacter.GetStats().TryGetValue(Stats.SpellPower, out int sp);
                 float min = Mathf.Clamp((sp * .02f),.5f, (sp * .02f) );
                 GetHitWithBlessing(myCharacter, BlessingTypes.SpellPower, 1,min );
             }
@@ -881,7 +881,7 @@ public class CombatEntity : MonoBehaviour
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic5))
             {
-                myCharacter.GetStats().TryGetValue(Equipment.Stats.Strength, out int str);
+                myCharacter.GetStats().TryGetValue(Stats.Strength, out int str);
                 float min = Mathf.Clamp((str * .02f),.5f, (str * .02f) );
                 GetHitWithBlessing(myCharacter, BlessingTypes.Strength, 1, min);
             }
@@ -1023,7 +1023,7 @@ public class CombatEntity : MonoBehaviour
 
     }
 
-    public int CalculateDamageReduction(int damage, Equipment.Stats armOrMagicResit )
+    public int CalculateDamageReduction(int damage, Stats armOrMagicResit )
     {
         //get percent reduction
 

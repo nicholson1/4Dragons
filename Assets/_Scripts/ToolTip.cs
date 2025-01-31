@@ -28,6 +28,17 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private float timer = .5f;
 
+    public void ResetTooltip()
+    {
+        is_spell = false;
+        is_item = false;
+        is_relic = false;
+        Title = "";
+        Message = "";
+        Cost = "";
+        iLvl = "";
+    }
+
     // private void OnMouseEnter()
     // {
     //     //start counting for 3 sec
@@ -44,6 +55,33 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData pointer)
     {
         count1 = true;
+
+        if (is_item)
+        {
+            if (ForgeManager._instance.Upgrading || ForgeManager._instance.Enhancing)
+            {
+                ForgeManager._instance.ShowPrice(e);
+            }
+            
+        }
+    }
+
+    public void CloseTip()
+    {
+        if (count1 == true)
+        {
+            //count1 = false;
+            timer = .5f;
+            ToolTipManager._instance.HideToolTipAll();
+        }
+        
+        if (is_item)
+        {
+            if (ForgeManager._instance.Upgrading || ForgeManager._instance.Enhancing)
+            {
+                ForgeManager._instance.HidePrice();
+            }
+        }
     }
 
     public void OnPointerExit(PointerEventData pointer)
@@ -53,6 +91,14 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             count1 = false;
             timer = .5f;
             ToolTipManager._instance.HideToolTipAll();
+        }
+        
+        if (is_item)
+        {
+            if (ForgeManager._instance.Upgrading || ForgeManager._instance.Enhancing)
+            {
+                ForgeManager._instance.HidePrice();
+            }
         }
         
     }

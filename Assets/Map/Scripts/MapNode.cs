@@ -286,7 +286,7 @@ namespace Map
                     toolTip.Message = "Duel against an adventurer";
                     break;
                 case NodeType.EliteEnemy:
-                    (Equipment.Stats, Equipment.Stats) stats = EliteManager._instance.GetStatTypesFromElite((EliteType)n.specialNodeType);
+                    (Stats, Stats) stats = EliteManager._instance.GetStatTypesFromElite((EliteType)n.specialNodeType);
                     (string, Sprite, Color, string) info1 = StatDisplayManager._instance.GetValues(stats.Item1);
                     (string, Sprite, Color, string) info2 = StatDisplayManager._instance.GetValues(stats.Item2);
 
@@ -318,7 +318,7 @@ namespace Map
                     toolTip.Message = "You dont know what will be here";
                     break;
                 case NodeType.Boss:
-                    Equipment.Stats stat = EliteManager._instance.GetStatFromSpellType((SpellSchool)Node.specialNodeType);
+                    Stats stat = EliteManager._instance.GetStatFromSpellType((SpellSchool)Node.specialNodeType);
                     (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues(stat);
                     
                     string[] split = info.Item4.Split(" ");

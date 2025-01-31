@@ -266,7 +266,7 @@ public class EquipmentModelManager : MonoBehaviour
         // put the shield in hand 2
         if (wep2 != null)
         {
-            if (wep2.spellType1 == Weapon.SpellTypes.Hammer2 || wep2.spellType1 == Weapon.SpellTypes.Hammer3 || wep2.spellType1 == Weapon.SpellTypes.Axe3)
+            if (wep2.spellType1 == SpellTypes.Hammer2 || wep2.spellType1 == SpellTypes.Hammer3 || wep2.spellType1 == SpellTypes.Axe3)
             {
                 (wep1, wep2) = (wep2, wep1);
                 //Debug.Log("put hammer in right hand");
@@ -279,7 +279,7 @@ public class EquipmentModelManager : MonoBehaviour
         if (wep1 != null)
         {
             
-            if (wep1.spellType1 == Weapon.SpellTypes.Shield2 || wep1.spellType1 == Weapon.SpellTypes.Shield3)
+            if (wep1.spellType1 == SpellTypes.Shield2 || wep1.spellType1 == SpellTypes.Shield3)
             {
                 (wep1, wep2) = (wep2, wep1);
 

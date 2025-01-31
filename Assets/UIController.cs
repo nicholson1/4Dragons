@@ -15,6 +15,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
+    [SerializeField] private GameObject ForgeUI;
+    [SerializeField] private GameObject EventUI;
+
     [SerializeField] private GameObject SettingUI;
     [SerializeField] private GameObject VictoryUI;
     [SerializeField] private GameObject TitleScreen;
@@ -44,6 +47,9 @@ public class UIController : MonoBehaviour
     [SerializeField] public GameObject CinemaUI;
     [SerializeField] public VictorySequence VictorySequence;
 
+    [SerializeField] public GameObject[] KeybindVisuals;
+    private bool showKeybinds = true;
+
     
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
     [SerializeField] private GameObject retryCombatButton;
@@ -61,6 +67,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private float clickVol;
     [SerializeField] public AudioClip _OpenShopSFX;
     [SerializeField] private float openShopVol;
+    [SerializeField] public AudioClip _OpenForgeSFX;
+    [SerializeField] private float openForgeVol;
     public AudioClip _openLootSFX;
     [SerializeField] private float OpenLootVol;
     public AudioClip _openMapSFX;
@@ -350,6 +358,9 @@ public class UIController : MonoBehaviour
 
         }
         
+        if(InventoryOn)
+            ToggleMapUI(0);
+        
         if (!haveInitializedEquipmentItems)
         {
             EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
@@ -451,6 +462,62 @@ public class UIController : MonoBehaviour
         
         PlayOpenLoot();
     }
+    bool EventMoving = false;
+    private bool EventOn = false;
+
+    public void ToggleEventUI(int force = -1)
+    {
+        if (force == 0)
+        {
+            if (EventOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (EventOn == true)
+            {
+                return;
+            }
+        }
+
+        if(!EventMoving)
+        {
+            EventOn = !EventOn;
+            StartCoroutine(MoveLootObject(EventUI));
+        }
+        
+    }
+    
+    bool forgeMoving = false;
+    private bool forgeOn = false;
+    public void ToggleForgeUI(int force = -1)
+    {
+        if (force == 0)
+        {
+            if (forgeOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (forgeOn == true)
+            {
+                return;
+            }
+        }
+
+        if(!forgeMoving)
+        {
+            forgeOn = !forgeOn;
+            StartCoroutine(MoveForgeObject(ForgeUI));
+        }
+        
+        PlayOpenForge();
+
+    }
 
     IEnumerator MoveObject(GameObject moveObj)
     { 
@@ -516,6 +583,29 @@ public class UIController : MonoBehaviour
 
         shopMoving = false;
     }
+    IEnumerator MoveForgeObject(GameObject moveObj)
+    {
+        
+        forgeMoving = true;
+        
+        Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 endpos = new Vector2(-startpos.x, startpos.y);
+        
+        //Debug.Log(startpos);
+        //Debug.Log(endpos);
+            
+        float t = 0;
+        while (t < 1)
+        {
+            moveObj.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
+
+        forgeMoving = false;
+    }
     IEnumerator MoveLootObject(GameObject moveObj)
     {
         
@@ -553,6 +643,28 @@ public class UIController : MonoBehaviour
         {
             retryCombatButton.SetActive(false);
         }
+    }
+
+    private void Start()
+    {
+        if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
+        {
+            ToggleKeyBindVisual();
+        }
+    }
+
+    public void ToggleKeyBindVisual()
+    {
+        showKeybinds = !showKeybinds;
+        foreach (var keybind in KeybindVisuals)
+        {
+            keybind.SetActive(showKeybinds);
+        }
+        
+        if(showKeybinds)
+            PlayerPrefsManager.SetKeyBindEnabled(1);
+        else
+            PlayerPrefsManager.SetKeyBindEnabled(0);
     }
 
 
@@ -595,6 +707,10 @@ public class UIController : MonoBehaviour
     public void PlayOpenShop()
     {
         SoundManager.Instance.Play2DSFX(_OpenShopSFX, openShopVol);
+    }
+    public void PlayOpenForge()
+    {
+        SoundManager.Instance.Play2DSFX(_OpenForgeSFX, openForgeVol);
     }
     public void PlayOpenLoot()
     {
@@ -640,7 +756,7 @@ public class UIController : MonoBehaviour
     
     public void OpenDiscordLink()
     {
-        Application.OpenURL("https://discord.gg/RTQUhQKAyR");
+        Application.OpenURL("https://discord.gg/8rNMwuhpkp");
     }
     public void OpenSteamLink()
     {

@@ -13,6 +13,7 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private Toggle ShowHelm;
     [SerializeField] private Toggle ScreenShake;
     [SerializeField] private Toggle Tutorials;
+    [SerializeField] private Toggle Keybinds;
 
     [SerializeField] private TextMeshProUGUI difficultyTextHUD;
 
@@ -22,6 +23,8 @@ public class SettingsManager : MonoBehaviour
         ShowHelm.SetIsOnWithoutNotify(PlayerPrefsManager.GetShowHelm() == 1);
         ScreenShake.SetIsOnWithoutNotify(PlayerPrefsManager.getScreenShake() == 1);
         Tutorials.SetIsOnWithoutNotify(PlayerPrefsManager.GetTutorialEnabled() == 1);
+        Keybinds.SetIsOnWithoutNotify(PlayerPrefsManager.GetKeyBindEnabled() == 1);
+
 
         int diff = PlayerPrefsManager.GetDifficulty();
         difficultySlider.SetValueWithoutNotify(diff);
@@ -34,15 +37,15 @@ public class SettingsManager : MonoBehaviour
     private string[] DifficultyTexts = new[]
     {
         "Beginner",
-        "Enemies have more health",
+        "Enemies are Tougher",
         "Potions less common",
         "Enemies drop less gold",
         "You have less max Health",
-        "Enemies do more damage",
+        "Enemies are Mightier",
         "Increase the chance of elites",
         "Shops are more expensive",
-        "Enemies have MORE health",
-        "Enemies do MORE damage",
+        "Enemies are Relentless",
+        "Enemies are Unyielding",
         "Dragons are more difficult"
     };
 

@@ -53,6 +53,8 @@ public class ShopManager : MonoBehaviour
         // Scrolls,
         // Weapons,
         // FullHalfPrice,
+        
+        Random.InitState(CombatController._instance.CurrentSeed);
 
         int roll;
         if (CombatController._instance.Player._gold < 200)
@@ -103,6 +105,7 @@ public class ShopManager : MonoBehaviour
     public void InitializeShop(InventorySlot.SellShopType type)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
+        Random.InitState(CombatController._instance.CurrentSeed);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
         //TODO REMOVE THIS ITS ONLY FOR TESTING THE POTIONS
@@ -255,7 +258,7 @@ public class ShopManager : MonoBehaviour
     {
         
         TextMeshProUGUI goldText = slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>() ;
-        int cost = (slot.Item.e.stats[Equipment.Stats.Rarity] + 1) * 60;
+        int cost = (slot.Item.e.stats[Stats.Rarity] + 1) * 60;
         if (CombatController._instance.Difficulty >= 7)
             cost += Mathf.RoundToInt(cost * .2f);  
         goldText.text = (cost).ToString();

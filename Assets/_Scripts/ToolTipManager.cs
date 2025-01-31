@@ -226,7 +226,7 @@ public class ToolTipManager : MonoBehaviour
          UpdateGetGainsAndLosses(Comparison1tip, newItem, oldItem1);
          Comparison1tip.gameObject.SetActive(true);
          Comparison1tip.tiptitle.text = oldItem1.name;
-         Comparison1tip.tiptitle.color = rarityColors[oldItem1.stats[Equipment.Stats.Rarity]];
+         Comparison1tip.tiptitle.color = rarityColors[oldItem1.stats[Stats.Rarity]];
 
       }
       if (oldItem2 != null)
@@ -234,7 +234,7 @@ public class ToolTipManager : MonoBehaviour
          UpdateGetGainsAndLosses(Comparison2tip, newItem, oldItem2);
          Comparison2tip.gameObject.SetActive(true);
          Comparison2tip.tiptitle.text = oldItem2.name;
-         Comparison2tip.tiptitle.color = rarityColors[oldItem2.stats[Equipment.Stats.Rarity]];
+         Comparison2tip.tiptitle.color = rarityColors[oldItem2.stats[Stats.Rarity]];
 
       }
    }
@@ -242,9 +242,9 @@ public class ToolTipManager : MonoBehaviour
    private void UpdateGetGainsAndLosses(ToolTipDisplay current, Equipment newItem,
       Equipment oldItem)
    {
-      Dictionary<Equipment.Stats, int> Gains = new Dictionary<Equipment.Stats, int>();
+      Dictionary<Stats, int> Gains = new Dictionary<Stats, int>();
       Gains.AddRange(newItem.stats);
-      Dictionary<Equipment.Stats, int> Losses = new Dictionary<Equipment.Stats, int>();
+      Dictionary<Stats, int> Losses = new Dictionary<Stats, int>();
 
       foreach (var kvp in oldItem.stats)
       {
@@ -285,7 +285,7 @@ public class ToolTipManager : MonoBehaviour
       int count = 0;
       foreach (var kvp in Gains)
       {
-         if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+         if (kvp.Key != Stats.Rarity && kvp.Key != Stats.ItemLevel)
          {
             current.stats[count].UpdateValues(kvp.Key, kvp.Value, 1);
             count += 1;
@@ -301,7 +301,7 @@ public class ToolTipManager : MonoBehaviour
       int count2 = 0;
       foreach (var kvp in Losses)
       {
-         if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+         if (kvp.Key != Stats.Rarity && kvp.Key != Stats.ItemLevel)
          {
             current.lossesStats[count2].UpdateValues(kvp.Key, kvp.Value, -1);
             count2 += 1;
@@ -321,7 +321,7 @@ public class ToolTipManager : MonoBehaviour
 
       //Debug.Log("Updating spell tip");
       Weapon w = (Weapon) e;
-      Weapon.SpellTypes s = w.spellType1;
+      SpellTypes s = w.spellType1;
       (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValuesFromSpell(s);
 
         
@@ -342,8 +342,8 @@ public class ToolTipManager : MonoBehaviour
       current.tiptitle.color = info.Item3;
       current.tiptext.text = AdjustDescriptionValues(DataTable[(int)s][3].ToString(), power[1], power[0]);
       current.spellCost.text = DataTable[(int)s][2].ToString();
-      current.iLvl.text = "Lvl: " +e.stats[Equipment.Stats.ItemLevel].ToString();
-      current.iLvl.color = rarityColors[e.stats[Equipment.Stats.Rarity]];
+      current.iLvl.text = "Lvl: " +e.stats[Stats.ItemLevel].ToString();
+      current.iLvl.color = rarityColors[e.stats[Stats.Rarity]];
       gameObject.SetActive(true);
    }
    private void UpdateRelicTip(ToolTipDisplay current, Equipment e)
@@ -370,7 +370,7 @@ public class ToolTipManager : MonoBehaviour
       current.tiptext.text = c.description;
         
       current.tiptitle.text = c.name;
-      current.tiptitle.color = rarityColors[c.stats[Equipment.Stats.Rarity]];
+      current.tiptitle.color = rarityColors[c.stats[Stats.Rarity]];
       current.icon.sprite = c.getIcon;
       gameObject.SetActive(true);
    }
@@ -448,7 +448,7 @@ public class ToolTipManager : MonoBehaviour
       int count = 0;
       foreach (var kvp in e.stats)
       {
-         if (kvp.Key != Equipment.Stats.Rarity && kvp.Key != Equipment.Stats.ItemLevel)
+         if (kvp.Key != Stats.Rarity && kvp.Key != Stats.ItemLevel)
          {
             current.stats[count].UpdateValues(kvp.Key, kvp.Value);
             count += 1;

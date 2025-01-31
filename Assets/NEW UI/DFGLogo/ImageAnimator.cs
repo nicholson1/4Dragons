@@ -20,6 +20,9 @@ public class ImageAnimatior : MonoBehaviour {
     [SerializeField] private CanvasGroup Logo;
     [SerializeField] private CanvasGroup parent;
 
+    
+    public AudioClip _logoSFX;
+    [SerializeField] private float logoVol;
     void Awake() {
         image = GetComponent<Image> ();
     }
@@ -32,14 +35,15 @@ public class ImageAnimatior : MonoBehaviour {
             return;
         }
 
+        PlayLogoSound();
         parent.alpha = 1;
         StartCoroutine(FadeCanvasGroup(Logo, 1, 2,0));
-        StartCoroutine(ChangeSpritesSequentially(3));
+        StartCoroutine(ChangeSpritesSequentially(3.5f));
     }
 
     void FadeOut()
     {
-        StartCoroutine(FadeCanvasGroup(parent, 0, 1,2));
+        StartCoroutine(FadeCanvasGroup(parent, 0, 1,3));
     }
     
     
@@ -105,5 +109,10 @@ public class ImageAnimatior : MonoBehaviour {
             canvasGroup.gameObject.SetActive(false);
         
 
+    }
+    
+    public void PlayLogoSound()
+    {
+        SoundManager.Instance.Play2DSFXOnDelay(_logoSFX, 0f, logoVol, 1, .05f);
     }
 }

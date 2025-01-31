@@ -44,12 +44,21 @@ public class CombatController : MonoBehaviour
     private float _normalDamageMultiplier = .5f;    
     private float _eliteDamageMultiplier = .5f;
     private float _dragonDamageMultiplier = .5f;
+    
+    private float _normalHealingMultiplier = .5f;    
+    private float _eliteHealingMultiplier = .33f;
+    private float _dragonHealingMultiplier = .25f;
+
 
     public MoveAndSpin Guide;
 
     public float DragonDamageMultipler => _dragonDamageMultiplier;
     public float EliteDamageMultiplier => _eliteDamageMultiplier;
     public float NormalDamageMultiplier => _normalDamageMultiplier;
+    
+    public float DragonHealingMultipler => _dragonHealingMultiplier;
+    public float EliteHealingMultiplier => _eliteHealingMultiplier;
+    public float NormalHealingMultiplier => _normalHealingMultiplier;
 
     public static event Action EndTurn;
     // public static event Action EndCombatEvent;
@@ -116,36 +125,77 @@ public class CombatController : MonoBehaviour
                 _normalDamageMultiplier = .5f;
                 _eliteDamageMultiplier = .4f;
                 _dragonDamageMultiplier = .5f;
+                
+                
                 break;
             case 2:
                 _normalDamageMultiplier = .75f;
                 _eliteDamageMultiplier = .5f;
                 _dragonDamageMultiplier = .75f;
+                
+                
+                
                 break;
             case 3:
                 _normalDamageMultiplier = 1f;
                 _eliteDamageMultiplier = .66f;
                 _dragonDamageMultiplier = 1f;
+                
+                
                 break;
             case 4:
                 _normalDamageMultiplier = 1.25f;
                 _eliteDamageMultiplier = 1f;
                 _dragonDamageMultiplier = 1.25f;
+                
+                
                 break;
         }
+        
+        
 
         if (Difficulty >= 9)
+        {
+            _normalDamageMultiplier += .5f;
+            _eliteDamageMultiplier += .3f;
+            _dragonDamageMultiplier += .3f;
+            
+            _normalHealingMultiplier= .75f;
+            _eliteHealingMultiplier = .66f;
+            _dragonHealingMultiplier = .5f;
+        }
+        else if (Difficulty >= 8)
         {
             _normalDamageMultiplier += .4f;
             _eliteDamageMultiplier += .2f;
             _dragonDamageMultiplier += .2f;
+            
+            _normalHealingMultiplier= .75f;
+            _eliteHealingMultiplier = .66f;
+            _dragonHealingMultiplier = .5f;
         }
-        else if (Difficulty < 5)
+        else if (Difficulty >= 5)
         {
             _normalDamageMultiplier -= .1f;
             _eliteDamageMultiplier -= .1f;
             _dragonDamageMultiplier -= .1f;
+            
+            _normalHealingMultiplier= .66f;
+            _eliteHealingMultiplier = .5f;
+            _dragonHealingMultiplier = .33f;
+            
         }
+        else if (Difficulty >= 1)
+        {
+            _normalDamageMultiplier -= .2f;
+            _eliteDamageMultiplier -= .2f;
+            _dragonDamageMultiplier -= .2f;
+            
+            _normalHealingMultiplier= .5f;
+            _eliteHealingMultiplier = .33f;
+            _dragonHealingMultiplier = .25f;
+        }
+        
     }
 
     public void DecideShopOrCombat()
@@ -233,7 +283,6 @@ public class CombatController : MonoBehaviour
                 break;
             case NodeType.Mystery:
                MysterySelect();
-                //todo spawn a random enemy shop or treasure
                 break;
         }
         
@@ -243,28 +292,36 @@ public class CombatController : MonoBehaviour
 
     public void MysterySelect()
     {
+        //9126268
+        Random.InitState(LastNodeClicked.nodeSeed);
         int roll = Random.Range(0, 11);
+
         NodeType nt;
 
         if (roll >= 10)
         {
+            // 1 in 10 chance of happening
             //spawn treausre room
             nt = NodeType.Treasure;
         }
 
         else if (roll >= 8)
         {
+            // 2 in 10 chance of happening
             //spawn shop
             nt = NodeType.Store;
         }
 
-        else if (roll >= 6) // >5 when we have events
+        //TODO SET THIS BACK TO 5 WHEN YOU ARE DONE TESTING
+        else if (roll >= 0) // >5 when we have events
         {
             //event
-            nt = NodeType.Store;
+            //3 in 10 chance of happening 
+            nt = NodeType.Mystery;
         }
         else
         {
+            //5 in 10 chance of happening
             //else just a random enemy
             nt = NodeType.MinorEnemy;
         }
@@ -273,10 +330,12 @@ public class CombatController : MonoBehaviour
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic24))
             {
-                //todo roll again for treasure store event
-                roll = Random.Range(0, 2);
-                if (roll == 1)
+                //roll again for treasure store event
+                roll = Random.Range(0, 3);
+                if (roll == 0)
                     nt = NodeType.Store;
+                else if (roll == 1)
+                    nt = NodeType.Mystery;
                 else
                     nt = NodeType.Treasure;
             }
@@ -292,6 +351,9 @@ public class CombatController : MonoBehaviour
             case NodeType.Store:
                 ShopManager._instance.RandomShop();
                 MusicManager.Instance.PlayShopMusic();
+                break;
+            case NodeType.Mystery:
+                EventsManager._instance.RandomEvent();
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(false);
@@ -446,12 +508,12 @@ public class CombatController : MonoBehaviour
         if (RelicManager._instance.CheckRelic(RelicType.Relic21))
         {
             entitiesInCombat[0].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
-            ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, Weapon.SpellTypes.Nature5);
+            ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, SpellTypes.Nature5);
         }
         if (RelicManager._instance.CheckRelic(RelicType.Relic17))
         {
             entitiesInCombat[1].DeBuff(entitiesInCombat[1], CombatEntity.DeBuffTypes.Chilled, 1,1);
-            ParticleManager._instance.SpawnParticle(entitiesInCombat[1], entitiesInCombat[1], Weapon.SpellTypes.Ice4);
+            ParticleManager._instance.SpawnParticle(entitiesInCombat[1], entitiesInCombat[1], SpellTypes.Ice4);
 
         }
 

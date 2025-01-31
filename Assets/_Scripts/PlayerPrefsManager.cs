@@ -28,6 +28,7 @@ public class PlayerPrefsManager : MonoBehaviour
     private const string SHOW_HELM_KEY = "ShowHelm";
     private const string SCREEN_SHAKE_KEY = "ScreenShake";
     private const string TUTORIAL_ENABLED_KEY = "TutorialEnabled";
+    private const string KEYBINDS_ENABLED_KEY = "KeybindsEnabled";
 
     
 
@@ -42,6 +43,8 @@ public class PlayerPrefsManager : MonoBehaviour
     private const int DEFAULT_SCREEN_SHAKE = 1;
     
     private const int DEFAULT_TUTORIAL_ENABLED = 1;
+    private const int DEFAULT_KEYBINDS_ENABLED = 1;
+
 
 
     private const int DEFAULT_HELMET = 0;
@@ -85,6 +88,7 @@ public class PlayerPrefsManager : MonoBehaviour
     public static void SetShowHelm(int value) => PlayerPrefs.SetInt(SHOW_HELM_KEY, value);
     public static void SetScreenShake(int value) => PlayerPrefs.SetInt(SCREEN_SHAKE_KEY, value);
     public static void SetTutorialEnabled(int value) => PlayerPrefs.SetInt(TUTORIAL_ENABLED_KEY, value);
+    public static void SetKeyBindEnabled(int value) => PlayerPrefs.SetInt(KEYBINDS_ENABLED_KEY, value);
 
     
 
@@ -113,6 +117,7 @@ public class PlayerPrefsManager : MonoBehaviour
     public static int GetShowHelm() => PlayerPrefs.GetInt(SHOW_HELM_KEY, DEFAULT_SHOW_HELM);
     public static int getScreenShake() => PlayerPrefs.GetInt(SCREEN_SHAKE_KEY, DEFAULT_SCREEN_SHAKE);
     public static int GetTutorialEnabled() => PlayerPrefs.GetInt(TUTORIAL_ENABLED_KEY, DEFAULT_TUTORIAL_ENABLED);
+    public static int GetKeyBindEnabled() => PlayerPrefs.GetInt(KEYBINDS_ENABLED_KEY, DEFAULT_KEYBINDS_ENABLED);
 
     // Utility Functions
     public static void SavePreferences() => PlayerPrefs.Save();
@@ -143,6 +148,7 @@ public class PlayerPrefsManager : MonoBehaviour
         SetShowHelm(DEFAULT_SHOW_HELM);
         SetScreenShake(DEFAULT_SCREEN_SHAKE);
         SetTutorialEnabled(DEFAULT_TUTORIAL_ENABLED);
+        SetKeyBindEnabled(DEFAULT_KEYBINDS_ENABLED);
         
         SavePreferences();
     }

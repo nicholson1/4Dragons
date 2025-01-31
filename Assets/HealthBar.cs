@@ -27,7 +27,7 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private TextMeshProUGUI BlockText;
 
 
-    private Dictionary<Equipment.Stats, int> stats = new Dictionary<Equipment.Stats, int>();
+    private Dictionary<Stats, int> stats = new Dictionary<Stats, int>();
 
     [SerializeField] private IntentDisplay intentPrefab;
     [SerializeField] private Transform intentDisplay;
@@ -174,7 +174,7 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    private void AddIntent(Character c, Weapon.SpellTypes spell)
+    private void AddIntent(Character c, SpellTypes spell)
     {
         if (c != displayCharacter)
             return;
@@ -345,7 +345,10 @@ public class HealthBar : MonoBehaviour
 
                     if (buff == CombatEntity.BuffTypes.Thorns)
                     {
-                        b._amount += amount;
+                        float tempAmount = b._amount;
+                        if (amount > tempAmount)
+                            tempAmount = amount;
+                        b._amount = tempAmount;
                     }
                     //if(buff == CombatEntity.BuffTypes.Rejuvenate || 
                     b._turns += turns;

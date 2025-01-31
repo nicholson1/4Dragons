@@ -94,9 +94,7 @@ public class BuffDebuffElement : MonoBehaviour
             //Debug.Log("updateing values of  blessing + "  + _amount);
             return;
         }
-        
-        
-        if (isDebuff)
+        else if (isDebuff)
         {
             toolTip.Message = AdjustDescriptionValues(TheSpellBook._instance.GetDesc(_debuff), _turns, _amount);
         }

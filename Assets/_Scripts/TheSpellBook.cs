@@ -10,7 +10,7 @@ public class TheSpellBook : MonoBehaviour
     public static TheSpellBook _instance;
     
     private List<List<object>> WeaponScalingTable;
-    private Dictionary<Equipment.Stats, int> casterStats;
+    private Dictionary<Stats, int> casterStats;
 
     [SerializeField] private Sprite[] AbilityTypeSprites;
     [SerializeField] private String[] IntentDescriptions;
@@ -38,7 +38,7 @@ public class TheSpellBook : MonoBehaviour
         }
     }
 
-    public Sprite GetSpriteFromSpell(Weapon.SpellTypes spell)
+    public Sprite GetSpriteFromSpell(SpellTypes spell)
     {
         return SpellSprites[(int)spell];
     }
@@ -52,7 +52,7 @@ public class TheSpellBook : MonoBehaviour
         if ((int)blessing <= 17)
         {
             //we are just a stat
-            (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues((Equipment.Stats)blessing);
+            (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues((Stats)blessing);
             return (info.Item2, info.Item3);
         }
         else
@@ -67,9 +67,9 @@ public class TheSpellBook : MonoBehaviour
     }
     
     
-    public (Sprite, Sprite) GetAbilityTypeIcons(Weapon.SpellTypes spell)
+    public (Sprite, Sprite) GetAbilityTypeIcons(SpellTypes spell)
     {
-        if (spell == Weapon.SpellTypes.None)
+        if (spell == SpellTypes.None)
         {
             Debug.Log("Spell is none still");
         }
@@ -87,7 +87,7 @@ public class TheSpellBook : MonoBehaviour
         }
     }
 
-    public (string,string, string, string) GetIntentTitleAndDescription(Weapon.SpellTypes spell)
+    public (string,string, string, string) GetIntentTitleAndDescription(SpellTypes spell)
     {
         List<List<object>> scaling = WeaponScalingTable;
         IList abilities = (IList)scaling[(int)spell][4];
@@ -101,10 +101,10 @@ public class TheSpellBook : MonoBehaviour
         }
 
     }
-    public int GetEnergy(Weapon.SpellTypes spell)
+    public int GetEnergy(SpellTypes spell)
     {
         //get scaling 
-        if (spell == Weapon.SpellTypes.None || spell == null)
+        if (spell == SpellTypes.None || spell == null)
         {
             return 0;
         }
@@ -140,21 +140,21 @@ public class TheSpellBook : MonoBehaviour
         WeaponScalingTable = GetComponent<DataReader>().GetWeaponScalingTable();
     }
 
-    public void CastAbility(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void CastAbility(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         // get the scaling
         //IList scaling = (IList)WeaponScalingTable[(int)spell][1];
 
         //if its a buff
-        if (caster.myCharacter.isPlayerCharacter && (spell == Weapon.SpellTypes.Shield3 ||
-                                                     spell == Weapon.SpellTypes.Sword2 ||
-                                                     spell == Weapon.SpellTypes.Hammer3 ||
-                                                     spell == Weapon.SpellTypes.Nature1 ||
-                                                     spell == Weapon.SpellTypes.Nature3 ||
-                                                     spell == Weapon.SpellTypes.Nature5 ||
-                                                     spell == Weapon.SpellTypes.Fire5 ||
-                                                     spell == Weapon.SpellTypes.Ice2 ||
-                                                     spell == Weapon.SpellTypes.Blood4))
+        if (caster.myCharacter.isPlayerCharacter && (spell == SpellTypes.Shield3 ||
+                                                     spell == SpellTypes.Sword2 ||
+                                                     spell == SpellTypes.Hammer3 ||
+                                                     spell == SpellTypes.Nature1 ||
+                                                     spell == SpellTypes.Nature3 ||
+                                                     spell == SpellTypes.Nature5 ||
+                                                     spell == SpellTypes.Fire5 ||
+                                                     spell == SpellTypes.Ice2 ||
+                                                     spell == SpellTypes.Blood4))
         {
             if (!RelicManager._instance.UsedRelic23)
             {
@@ -170,149 +170,149 @@ public class TheSpellBook : MonoBehaviour
 
         switch (spell)
         {
-                case Weapon.SpellTypes.Dagger1:
+                case SpellTypes.Dagger1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Dagger2:
+                case SpellTypes.Dagger2:
                     BasicPhysicalAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Dagger3:
+                case SpellTypes.Dagger3:
                     BasicPhysicalAttack(spell, w, caster, target);
                     WeakenTarget(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Shield1:
+                case SpellTypes.Shield1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Shield2:
+                case SpellTypes.Shield2:
                     BasicBlock(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Shield3:
+                case SpellTypes.Shield3:
                     BasicBlock(spell, w, caster, caster);
                     BasicNonDamageBuff(spell, w, caster, caster);
                     BasicNonDamageBuff(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Sword1:
+                case SpellTypes.Sword1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Sword2:
+                case SpellTypes.Sword2:
                     BasicAOEAttack(spell, w, caster, target);
                     ReduceAllDebuffs(caster,1);
                     break;
-                case Weapon.SpellTypes.Sword3:
+                case SpellTypes.Sword3:
                     BasicAOEAttack(spell, w, caster, target);
                     // add block later
                     break;
-                case Weapon.SpellTypes.Axe1:
+                case SpellTypes.Axe1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Axe2:
+                case SpellTypes.Axe2:
                     BasicPhysicalAttack(spell, w, caster, target);
                     BasicDoT(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Axe3:
+                case SpellTypes.Axe3:
                     BasicPhysicalAttack(spell, w, caster, target);
                     ReduceAllBuffs(target, 1);
                     break;
-                case Weapon.SpellTypes.Hammer1:
+                case SpellTypes.Hammer1:
                     BasicPhysicalAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Hammer2:
+                case SpellTypes.Hammer2:
                     BasicPhysicalAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Hammer3:
+                case SpellTypes.Hammer3:
                     BasicPhysicalAttack(spell, w, caster, target);
                     EmpowerTarget(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Nature1:
+                case SpellTypes.Nature1:
                     BasicHeal(spell, w, caster, caster);
                     BasicNonDamageBuff(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Nature2:
+                case SpellTypes.Nature2:
                     BasicHeal(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Nature3:
+                case SpellTypes.Nature3:
                     BasicNonDamageBuff(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Nature4:
+                case SpellTypes.Nature4:
                     BasicSpellAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Nature5:
+                case SpellTypes.Nature5:
                     BasicNonDamageBuff(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Fire1:
+                case SpellTypes.Fire1:
                     RemoveBlock(target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Fire2:
+                case SpellTypes.Fire2:
                     BasicSpellAttack(spell, w, caster, target);
                     BasicDoT(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Fire3:
+                case SpellTypes.Fire3:
                     BasicSpellAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Fire4:
+                case SpellTypes.Fire4:
                     Pyroblast(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Fire5:
+                case SpellTypes.Fire5:
                     EmpowerTarget(spell, w, caster, caster);
                     BasicNonDamageBuff(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Ice1:
+                case SpellTypes.Ice1:
                     BasicBlock(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Ice2:
+                case SpellTypes.Ice2:
                     //BasicNonDamageBuff(spell, w, caster, caster, scaling);
                     ShatterTarget(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Ice3:
+                case SpellTypes.Ice3:
                     BasicAOEAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Ice4:
+                case SpellTypes.Ice4:
                     BasicSpellAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Ice5:
+                case SpellTypes.Ice5:
                     //BasicSpellAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Blood1:
+                case SpellTypes.Blood1:
                     BasicSpellAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Blood2:
+                case SpellTypes.Blood2:
                     BasicAOEAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Blood3:
+                case SpellTypes.Blood3:
                     BasicNonDamageBuff(spell, w, caster, caster);
                     ReduceAllDebuffs(caster, 1);
                     BasicDirectDamage(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Blood4:
+                case SpellTypes.Blood4:
                     EmpowerTarget(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.Blood5:
+                case SpellTypes.Blood5:
                     ReduceAllBuffs(target, 1);
                     break;
-                case Weapon.SpellTypes.Shadow1:
+                case SpellTypes.Shadow1:
                     BasicDirectDamage(spell, w, caster, caster);
                     GainEnergy(caster,1);
                     break;
-                case Weapon.SpellTypes.Shadow2:
+                case SpellTypes.Shadow2:
                     WeakenTarget(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Shadow3:
+                case SpellTypes.Shadow3:
                     BasicSpellAttack(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Shadow4:
+                case SpellTypes.Shadow4:
                     BasicSpellAttack(spell, w, caster, target);
                     BasicNonDamageDebuff(spell, w, caster, target);
                     break;
-                case Weapon.SpellTypes.Shadow5:
+                case SpellTypes.Shadow5:
                     BasicNonDamageBuff(spell, w, caster, caster);
                     BasicDirectDamage(spell, w, caster, caster);
                     break;
-                case Weapon.SpellTypes.None:
+                case SpellTypes.None:
                     break;
         }
         
@@ -324,12 +324,12 @@ public class TheSpellBook : MonoBehaviour
         {
             case CombatEntity.DeBuffTypes.Lacerate:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.PhysicalAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
-                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Axe2, 0);
+                ParticleManager._instance.SpawnParticle(null, target, SpellTypes.Axe2, 0);
 
                 break;
             case CombatEntity.DeBuffTypes.Burn:
                 target.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, Mathf.RoundToInt(debuff.Item3), 0, 0);
-                ParticleManager._instance.SpawnParticle(null, target, Weapon.SpellTypes.Fire2, 0);
+                ParticleManager._instance.SpawnParticle(null, target, SpellTypes.Fire2, 0);
 
                 break;
         }
@@ -353,13 +353,13 @@ public class TheSpellBook : MonoBehaviour
         {
             case CombatEntity.BuffTypes.Rejuvenate:
                 target.Heal(target, Mathf.RoundToInt(buff.Item3), 0);
-                ParticleManager._instance.SpawnParticle(target, null, Weapon.SpellTypes.Nature1);
+                ParticleManager._instance.SpawnParticle(target, null, SpellTypes.Nature1);
 
                 break;
             
         }
     }
-    public void BasicNonDamageDebuff(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicNonDamageDebuff(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
@@ -367,27 +367,27 @@ public class TheSpellBook : MonoBehaviour
         CombatEntity.DeBuffTypes Debuff = CombatEntity.DeBuffTypes.None;
         switch (spell)
         {
-            case Weapon.SpellTypes.Ice3:
+            case SpellTypes.Ice3:
                 Debuff = CombatEntity.DeBuffTypes.Chilled;
                 break;
-            case Weapon.SpellTypes.Ice4:
+            case SpellTypes.Ice4:
                 Debuff = CombatEntity.DeBuffTypes.Chilled;
                 break;
-            case Weapon.SpellTypes.Ice5:
+            case SpellTypes.Ice5:
                 Debuff = CombatEntity.DeBuffTypes.Chilled;
                 caster.DeBuff(target, CombatEntity.DeBuffTypes.Exposed, power[1], 10);
                 break;
-            case Weapon.SpellTypes.Dagger2:
+            case SpellTypes.Dagger2:
                 Debuff = CombatEntity.DeBuffTypes.Wounded;
                 break;
-            case Weapon.SpellTypes.Shadow4:
+            case SpellTypes.Shadow4:
                 Debuff = CombatEntity.DeBuffTypes.Wounded;
                 break;
-            case Weapon.SpellTypes.Fire1:
+            case SpellTypes.Fire1:
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
                 power[0] = 30;
                 break;
-            case Weapon.SpellTypes.Hammer2:
+            case SpellTypes.Hammer2:
                 Debuff = CombatEntity.DeBuffTypes.Exposed;
                 power[0] = 20;
                 break;
@@ -401,38 +401,38 @@ public class TheSpellBook : MonoBehaviour
 
     }
 
-    public void BasicNonDamageBuff(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicNonDamageBuff(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
         CombatEntity.BuffTypes buff = CombatEntity.BuffTypes.None;
         switch (spell)
         {
-            case Weapon.SpellTypes.Nature1:
+            case SpellTypes.Nature1:
                 buff = CombatEntity.BuffTypes.Rejuvenate;
                 break;
-            case Weapon.SpellTypes.Nature3:
+            case SpellTypes.Nature3:
                 buff = CombatEntity.BuffTypes.Thorns;
                 break;
-            case Weapon.SpellTypes.Nature5:
+            case SpellTypes.Nature5:
                 buff = CombatEntity.BuffTypes.Prepared;
                 break;
-            case Weapon.SpellTypes.Fire5:
+            case SpellTypes.Fire5:
                 buff = CombatEntity.BuffTypes.Prepared;
                 break;
-            case Weapon.SpellTypes.Shield3:
+            case SpellTypes.Shield3:
                 buff = CombatEntity.BuffTypes.Prepared;
                 break;
-            case Weapon.SpellTypes.Blood3:
+            case SpellTypes.Blood3:
                 buff = CombatEntity.BuffTypes.Invulnerable;
                 break;
-            case Weapon.SpellTypes.Blood4:
+            case SpellTypes.Blood4:
                 buff = CombatEntity.BuffTypes.Empowered;
                 break;
-            case Weapon.SpellTypes.Ice2:
+            case SpellTypes.Ice2:
                 buff = CombatEntity.BuffTypes.Shatter;
                 break;
-            case Weapon.SpellTypes.Shadow5:
+            case SpellTypes.Shadow5:
                 buff = CombatEntity.BuffTypes.Immortal;
                 break;
         }
@@ -460,13 +460,13 @@ public class TheSpellBook : MonoBehaviour
         caster.Buff(target, buff, power[1], Mathf.FloorToInt(Amount));
 
     }
-    public void WeakenTarget(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void WeakenTarget(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
         CombatEntity.DeBuffTypes Debuff = CombatEntity.DeBuffTypes.Weakened;
 
-        if (spell == Weapon.SpellTypes.Dagger3)
+        if (spell == SpellTypes.Dagger3)
         {
             caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[1]));
             return;
@@ -485,13 +485,13 @@ public class TheSpellBook : MonoBehaviour
 
     }
     
-    public void EmpowerTarget(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void EmpowerTarget(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
         CombatEntity.BuffTypes buff = CombatEntity.BuffTypes.Empowered;
         
-        if (spell == Weapon.SpellTypes.Hammer3)
+        if (spell == SpellTypes.Hammer3)
         {
             caster.Buff(target, buff,2, Mathf.RoundToInt(power[1]));
             return;
@@ -502,17 +502,17 @@ public class TheSpellBook : MonoBehaviour
 
     }
 
-    public void BasicDoT(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicDoT(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
         CombatEntity.AbilityTypes abilityType = CombatEntity.AbilityTypes.PhysicalAttack;
         
         switch (spell)
         {
-            case Weapon.SpellTypes.Axe2:
+            case SpellTypes.Axe2:
                 abilityType = CombatEntity.AbilityTypes.PhysicalAttack;
                 break;
-            case Weapon.SpellTypes.Fire2:
+            case SpellTypes.Fire2:
                 abilityType = CombatEntity.AbilityTypes.SpellAttack;
                 break;
            
@@ -537,7 +537,7 @@ public class TheSpellBook : MonoBehaviour
         
     }
 
-    public void BasicDirectDamage(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicDirectDamage(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         
         List<int> power = GetPowerValues(spell, w, caster);
@@ -551,7 +551,7 @@ public class TheSpellBook : MonoBehaviour
         target.myCharacter.UpdateEnergyCount(1);
     }
 
-    public void BasicBlock(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicBlock(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
         target.lastSpellCastTargeted = spell;
@@ -561,11 +561,11 @@ public class TheSpellBook : MonoBehaviour
 
     }
 
-    public void BasicPhysicalAttack(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicPhysicalAttack(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
-        // if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        // if (spell == SpellTypes.Dagger3 || spell == SpellTypes.Hammer3)
         // {
         //     power[0] = power[1];
         // }
@@ -583,22 +583,22 @@ public class TheSpellBook : MonoBehaviour
         
     }
     
-     public void BasicAOEAttack(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+     public void BasicAOEAttack(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
      {
 
          CombatEntity.AbilityTypes damageType = CombatEntity.AbilityTypes.PhysicalAttack;
          switch (spell)
          {
-             case Weapon.SpellTypes.Sword2:
+             case SpellTypes.Sword2:
                  damageType = CombatEntity.AbilityTypes.PhysicalAttack;
                  break;
-             case Weapon.SpellTypes.Fire4:
+             case SpellTypes.Fire4:
                  damageType = CombatEntity.AbilityTypes.SpellAttack;
                  break;
-             case Weapon.SpellTypes.Ice3:
+             case SpellTypes.Ice3:
                  damageType = CombatEntity.AbilityTypes.SpellAttack;
                  break;
-             case Weapon.SpellTypes.Blood2:
+             case SpellTypes.Blood2:
                  damageType = CombatEntity.AbilityTypes.SpellAttack;
                  break;
          }
@@ -612,7 +612,7 @@ public class TheSpellBook : MonoBehaviour
             {
                 t.lastSpellCastTargeted = spell;
                 caster.AttackBasic(t, damageType, powerValues[0], crit, WaitTimeForAnimation((AnimationTriggerNames)powerValues[2]));
-                if (spell == Weapon.SpellTypes.Ice3)
+                if (spell == SpellTypes.Ice3)
                 {
                     BasicNonDamageDebuff(spell, w, caster, t);
                 }
@@ -620,7 +620,7 @@ public class TheSpellBook : MonoBehaviour
         }
      }
     
-    public void BasicSpellAttack(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicSpellAttack(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
@@ -635,7 +635,7 @@ public class TheSpellBook : MonoBehaviour
 
     }
     
-    public void BasicHeal(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void BasicHeal(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
 
         List<int> power = GetPowerValues(spell, w, caster);
@@ -650,7 +650,7 @@ public class TheSpellBook : MonoBehaviour
         caster.Heal(target, healAmount, crit);
         
     }
-    public void ShatterTarget(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    public void ShatterTarget(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
@@ -682,7 +682,7 @@ public class TheSpellBook : MonoBehaviour
             target.Buff(target, CombatEntity.BuffTypes.Block, -1,-target.myCharacter.Buffs[block].Item3 );
         }
     }
-    private void Pyroblast(Weapon.SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
+    private void Pyroblast(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
 
@@ -707,10 +707,10 @@ public class TheSpellBook : MonoBehaviour
         
     }
 
-    public List<int> GetPowerValues(Weapon.SpellTypes spell, Weapon w, CombatEntity caster)
+    public List<int> GetPowerValues(SpellTypes spell, Weapon w, CombatEntity caster)
     {
         //Debug.Log(spell);
-        if (spell == Weapon.SpellTypes.None)
+        if (spell == SpellTypes.None)
         {
             return null;
         }
@@ -724,7 +724,7 @@ public class TheSpellBook : MonoBehaviour
 
         ////////// lvl scaled power ///////////////////
         int lvl;
-        w.stats.TryGetValue(Equipment.Stats.ItemLevel, out lvl);
+        w.stats.TryGetValue(Stats.ItemLevel, out lvl);
         power += (int)scaling[1] * lvl;
         /// animation stuff ///////////////////
         AnimationTriggerNames animTrigger = AnimationTriggerNames.Reset;
@@ -736,200 +736,200 @@ public class TheSpellBook : MonoBehaviour
         int turn = 0;
         switch (spell)
         {
-            case Weapon.SpellTypes.Dagger1:
-                casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
+            case SpellTypes.Dagger1:
+                casterStats.TryGetValue(Stats.Daggers, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Stab;
                 break;
-            case Weapon.SpellTypes.Dagger2:
-                casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
+            case SpellTypes.Dagger2:
+                casterStats.TryGetValue(Stats.Daggers, out p);
                 turn = 1;
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Stab;
                 break;
-            case Weapon.SpellTypes.Dagger3:
-                casterStats.TryGetValue(Equipment.Stats.Daggers, out p);
+            case SpellTypes.Dagger3:
+                casterStats.TryGetValue(Stats.Daggers, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hack;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Shield1:
-                casterStats.TryGetValue(Equipment.Stats.Shields, out p);
+            case SpellTypes.Shield1:
+                casterStats.TryGetValue(Stats.Shields, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hack;
                 break;
-            case Weapon.SpellTypes.Shield2:
-                casterStats.TryGetValue(Equipment.Stats.Shields, out p);
+            case SpellTypes.Shield2:
+                casterStats.TryGetValue(Stats.Shields, out p);
                 turn = 1;
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Block;
                 break;
-            case Weapon.SpellTypes.Shield3:
-                casterStats.TryGetValue(Equipment.Stats.Shields, out p);
+            case SpellTypes.Shield3:
+                casterStats.TryGetValue(Stats.Shields, out p);
                 turn = 1;
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Block;
                 break;
-            case Weapon.SpellTypes.Sword1:
-                casterStats.TryGetValue(Equipment.Stats.Swords, out p);
+            case SpellTypes.Sword1:
+                casterStats.TryGetValue(Stats.Swords, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hack;
                 break;
-            case Weapon.SpellTypes.Sword2:
-                casterStats.TryGetValue(Equipment.Stats.Swords, out p);
+            case SpellTypes.Sword2:
+                casterStats.TryGetValue(Stats.Swords, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Spin;
                 break;
-            case Weapon.SpellTypes.Sword3:
-                casterStats.TryGetValue(Equipment.Stats.Swords, out p);
+            case SpellTypes.Sword3:
+                casterStats.TryGetValue(Stats.Swords, out p);
                 animTrigger = AnimationTriggerNames.SmallSpell;
                 useSP = false;
                 break;
-            case Weapon.SpellTypes.Axe1:
-                casterStats.TryGetValue(Equipment.Stats.Axes, out p);
+            case SpellTypes.Axe1:
+                casterStats.TryGetValue(Stats.Axes, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hack;
                 break;
-            case Weapon.SpellTypes.Axe2:
-                casterStats.TryGetValue(Equipment.Stats.Axes, out p);
+            case SpellTypes.Axe2:
+                casterStats.TryGetValue(Stats.Axes, out p);
                 animTrigger = AnimationTriggerNames.Hack;
                 turn = 1;
                 useSP = false;
                 break;
-            case Weapon.SpellTypes.Axe3:
-                casterStats.TryGetValue(Equipment.Stats.Axes, out p);
+            case SpellTypes.Axe3:
+                casterStats.TryGetValue(Stats.Axes, out p);
                 animTrigger = AnimationTriggerNames.Hammer;
                 useSP = false;
                 break;
-            case Weapon.SpellTypes.Hammer1:
-                casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
+            case SpellTypes.Hammer1:
+                casterStats.TryGetValue(Stats.Hammers, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hack;
                 break;
-            case Weapon.SpellTypes.Hammer2:
-                casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
+            case SpellTypes.Hammer2:
+                casterStats.TryGetValue(Stats.Hammers, out p);
                 turn = 2;
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hammer;
                 break;
-            case Weapon.SpellTypes.Hammer3:
-                casterStats.TryGetValue(Equipment.Stats.Hammers, out p);
+            case SpellTypes.Hammer3:
+                casterStats.TryGetValue(Stats.Hammers, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hammer;
                 break;
-            case Weapon.SpellTypes.Nature1:
-                casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+            case SpellTypes.Nature1:
+                casterStats.TryGetValue(Stats.NaturePower, out p);
                 turn = 2;
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
-            case Weapon.SpellTypes.Nature2:
-                casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+            case SpellTypes.Nature2:
+                casterStats.TryGetValue(Stats.NaturePower, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
-            case Weapon.SpellTypes.Nature3:
-                casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+            case SpellTypes.Nature3:
+                casterStats.TryGetValue(Stats.NaturePower, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 2;
                 break;
-            case Weapon.SpellTypes.Nature4:
-                casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+            case SpellTypes.Nature4:
+                casterStats.TryGetValue(Stats.NaturePower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 break;
-            case Weapon.SpellTypes.Nature5:
-                casterStats.TryGetValue(Equipment.Stats.NaturePower, out p);
+            case SpellTypes.Nature5:
+                casterStats.TryGetValue(Stats.NaturePower, out p);
                 turn = 1;
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
-            case Weapon.SpellTypes.Fire1:
-                casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+            case SpellTypes.Fire1:
+                casterStats.TryGetValue(Stats.FirePower, out p);
                 turn = 2;
                 animTrigger = AnimationTriggerNames.BigSpell;
                 break;
-            case Weapon.SpellTypes.Fire2:
-                casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+            case SpellTypes.Fire2:
+                casterStats.TryGetValue(Stats.FirePower, out p);
                 turn = 2;
                 animTrigger = AnimationTriggerNames.BigSpell;
                 break;
-            case Weapon.SpellTypes.Fire3:
-                casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+            case SpellTypes.Fire3:
+                casterStats.TryGetValue(Stats.FirePower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 break;
-            case Weapon.SpellTypes.Fire4:
-                casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+            case SpellTypes.Fire4:
+                casterStats.TryGetValue(Stats.FirePower, out p);
                 animTrigger = AnimationTriggerNames.VeryBigSpell;
                 break;
-            case Weapon.SpellTypes.Fire5:
-                casterStats.TryGetValue(Equipment.Stats.FirePower, out p);
+            case SpellTypes.Fire5:
+                casterStats.TryGetValue(Stats.FirePower, out p);
                 turn = 2;
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
-            case Weapon.SpellTypes.Ice1:
-                casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+            case SpellTypes.Ice1:
+                casterStats.TryGetValue(Stats.IcePower, out p);
                 turn = 1;
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
-            case Weapon.SpellTypes.Ice2:
-                casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+            case SpellTypes.Ice2:
+                casterStats.TryGetValue(Stats.IcePower, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 2;
                 break;
-            case Weapon.SpellTypes.Ice3:
-                casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+            case SpellTypes.Ice3:
+                casterStats.TryGetValue(Stats.IcePower, out p);
                 animTrigger = AnimationTriggerNames.BigSpell;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Ice4:
-                casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+            case SpellTypes.Ice4:
+                casterStats.TryGetValue(Stats.IcePower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Ice5:
-                casterStats.TryGetValue(Equipment.Stats.IcePower, out p);
+            case SpellTypes.Ice5:
+                casterStats.TryGetValue(Stats.IcePower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Blood1:
-                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
+            case SpellTypes.Blood1:
+                casterStats.TryGetValue(Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.BigSpellRev;
                 break;
-            case Weapon.SpellTypes.Blood2:
-                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
+            case SpellTypes.Blood2:
+                casterStats.TryGetValue(Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.BigSpellRev;
                 break;
-            case Weapon.SpellTypes.Blood3:
-                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
+            case SpellTypes.Blood3:
+                casterStats.TryGetValue(Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Blood4:
-                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
+            case SpellTypes.Blood4:
+                casterStats.TryGetValue(Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Blood5:
-                casterStats.TryGetValue(Equipment.Stats.LifeForce, out p);
+            case SpellTypes.Blood5:
+                casterStats.TryGetValue(Stats.LifeForce, out p);
                 animTrigger = AnimationTriggerNames.SmallSpell;
                 break;
-            case Weapon.SpellTypes.Shadow1:
-                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+            case SpellTypes.Shadow1:
+                casterStats.TryGetValue(Stats.ShadowPower, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 break;
-            case Weapon.SpellTypes.Shadow2:
-                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+            case SpellTypes.Shadow2:
+                casterStats.TryGetValue(Stats.ShadowPower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Shadow3:
-                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+            case SpellTypes.Shadow3:
+                casterStats.TryGetValue(Stats.ShadowPower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpellTravel;
                 break;
-            case Weapon.SpellTypes.Shadow4:
-                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+            case SpellTypes.Shadow4:
+                casterStats.TryGetValue(Stats.ShadowPower, out p);
                 animTrigger = AnimationTriggerNames.SmallSpell;
                 turn = 1;
                 break;
-            case Weapon.SpellTypes.Shadow5:
-                casterStats.TryGetValue(Equipment.Stats.ShadowPower, out p);
+            case SpellTypes.Shadow5:
+                casterStats.TryGetValue(Stats.ShadowPower, out p);
                 animTrigger = AnimationTriggerNames.HealOrBuff;
                 turn = 1;
                 break;
@@ -958,11 +958,11 @@ public class TheSpellBook : MonoBehaviour
         int SPorAD;
         if (useSP)
         {
-            casterStats.TryGetValue(Equipment.Stats.SpellPower, out SPorAD);
+            casterStats.TryGetValue(Stats.SpellPower, out SPorAD);
         }
         else
         {
-            casterStats.TryGetValue(Equipment.Stats.Strength, out SPorAD);
+            casterStats.TryGetValue(Stats.Strength, out SPorAD);
         }
 
         power += SPorAD * cost;
@@ -972,7 +972,7 @@ public class TheSpellBook : MonoBehaviour
         //    -30% : uncommon
         //    -20% : rare
         int r;
-        w.stats.TryGetValue(Equipment.Stats.Rarity, out r);
+        w.stats.TryGetValue(Stats.Rarity, out r);
         switch (r)
         {
             case 0:
@@ -993,30 +993,30 @@ public class TheSpellBook : MonoBehaviour
                 break;
         }
 
-        // if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        // if (spell == SpellTypes.Dagger3 || spell == SpellTypes.Hammer3)
         // {
         //     turn = power;
         // }
 
-        if (spell == Weapon.SpellTypes.Blood3 || spell == Weapon.SpellTypes.Shadow1 || spell == Weapon.SpellTypes.Shadow5)
+        if (spell == SpellTypes.Blood3 || spell == SpellTypes.Shadow1 || spell == SpellTypes.Shadow5)
         {
             float MaxPercentHealth = 0;
             float MinPercentHealth = 0;
 
             switch (spell)
             {
-                case Weapon.SpellTypes.Shadow1:
+                case SpellTypes.Shadow1:
                     // 20 to 10
                     MaxPercentHealth = 21;
                     MinPercentHealth = 10;
 
                     break;
-                case Weapon.SpellTypes.Blood3:
+                case SpellTypes.Blood3:
                     // 40 to 25
                     MaxPercentHealth = 41;
                     MinPercentHealth = 24;
                     break;
-                case Weapon.SpellTypes.Shadow5:
+                case SpellTypes.Shadow5:
                     // 30 to 20
                     MaxPercentHealth = 31;
                     MinPercentHealth = 19;
@@ -1059,11 +1059,29 @@ public class TheSpellBook : MonoBehaviour
             }
             
             power = Mathf.RoundToInt(power * adjustment);
-           
 
+            if (IsSpellType(SpellClass.Heal, spell))
+            {
+                //.Log("we are heal");
+                float healingAdjustment = CombatController._instance.NormalHealingMultiplier;
+
+                if (caster.myCharacter.isElite)
+                {
+                    healingAdjustment = CombatController._instance.EliteHealingMultiplier;
+                }
+            
+                if (caster.myCharacter.isDragon)
+                {
+                    healingAdjustment = CombatController._instance.DragonHealingMultipler;
+                }
+                //Debug.Log("power before: " + power);
+                power = Mathf.RoundToInt(power * healingAdjustment);
+                //Debug.Log("power after: " + power);
+            }
+            
         }
         
-        if (spell == Weapon.SpellTypes.Shadow2 || spell == Weapon.SpellTypes.Blood4 || spell == Weapon.SpellTypes.Fire5 || spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+        if (spell == SpellTypes.Shadow2 || spell == SpellTypes.Blood4 || spell == SpellTypes.Fire5 || spell == SpellTypes.Dagger3 || spell == SpellTypes.Hammer3)
         {
             int Amount = Mathf.RoundToInt(((float)power/ (power +200))* 25);
 
@@ -1072,7 +1090,7 @@ public class TheSpellBook : MonoBehaviour
                 Amount = 1;
             }
 
-            if (spell == Weapon.SpellTypes.Dagger3 || spell == Weapon.SpellTypes.Hammer3)
+            if (spell == SpellTypes.Dagger3 || spell == SpellTypes.Hammer3)
             {
                 // cap at a 10% increase
                 if (Amount > 10)
@@ -1089,7 +1107,7 @@ public class TheSpellBook : MonoBehaviour
             }
         }
 
-        if (spell == Weapon.SpellTypes.Ice2)
+        if (spell == SpellTypes.Ice2)
         {
             // Max amount you can add is 10%
             // it will cap out at 30% tho
@@ -1150,7 +1168,7 @@ public class TheSpellBook : MonoBehaviour
         //get base
         float critBase = 0;
         int tempValue;
-        casterStats.TryGetValue(Equipment.Stats.CritChance, out tempValue);
+        casterStats.TryGetValue(Stats.CritChance, out tempValue);
         critBase += tempValue;
         
 
@@ -1246,14 +1264,14 @@ public class TheSpellBook : MonoBehaviour
         Heal = 4,
         Defensive = 5,
     }
-    public bool IsSpellType(SpellClass spellClass, Weapon.SpellTypes spell)
+    public bool IsSpellType(SpellClass spellClass, SpellTypes spell)
     {
         List<int> sc = (List<int>)WeaponScalingTable[(int)spell][4];
         if (sc.Contains((int)spellClass))
             return true;
         return false;
     }
-    public bool IsSpellNotPhysical(Weapon.SpellTypes spell)
+    public bool IsSpellNotPhysical(SpellTypes spell)
     {
         if ((int)spell > 14) //14 is based on the 15 physical abilities
         {
@@ -1308,7 +1326,7 @@ public class TheSpellBook : MonoBehaviour
         }
     }
 
-    public int AdjustPowerWithModifiers(int power, Weapon.SpellTypes spell)
+    public int AdjustPowerWithModifiers(int power, SpellTypes spell)
     {
         float modifiedPower = power;
         SpellSchool spellSchool = GetSpellSchoolFromSpell(spell);
@@ -1369,129 +1387,129 @@ public class TheSpellBook : MonoBehaviour
 
     }
 
-    public SpellSchool GetSpellSchoolFromSpell(Weapon.SpellTypes spell)
+    public SpellSchool GetSpellSchoolFromSpell(SpellTypes spell)
     {
         SpellSchool spellSchool = SpellSchool.Dagger;
        switch (spell)
         {
-            case Weapon.SpellTypes.Dagger1:
+            case SpellTypes.Dagger1:
                 spellSchool = SpellSchool.Dagger;
                 break;
-            case Weapon.SpellTypes.Dagger2:
+            case SpellTypes.Dagger2:
                 spellSchool = SpellSchool.Dagger;
                 break;
-            case Weapon.SpellTypes.Dagger3:
+            case SpellTypes.Dagger3:
                 spellSchool = SpellSchool.Dagger;
                 break;
-            case Weapon.SpellTypes.Shield1:
+            case SpellTypes.Shield1:
                 spellSchool = SpellSchool.Shield;
                 break;
-            case Weapon.SpellTypes.Shield2:
+            case SpellTypes.Shield2:
                 spellSchool = SpellSchool.Shield;
                 break;
-            case Weapon.SpellTypes.Shield3:
+            case SpellTypes.Shield3:
                 spellSchool = SpellSchool.Shield;
                 break;
-            case Weapon.SpellTypes.Sword1:
+            case SpellTypes.Sword1:
                 spellSchool = SpellSchool.Sword;
                 break;
-            case Weapon.SpellTypes.Sword2:
+            case SpellTypes.Sword2:
                 spellSchool = SpellSchool.Sword;
                 break;
-            case Weapon.SpellTypes.Sword3:
+            case SpellTypes.Sword3:
                 spellSchool = SpellSchool.Sword;
                 break;
-            case Weapon.SpellTypes.Axe1:
+            case SpellTypes.Axe1:
                 spellSchool = SpellSchool.Axe;
                 break;
-            case Weapon.SpellTypes.Axe2:
+            case SpellTypes.Axe2:
                 spellSchool = SpellSchool.Axe;
                 break;
-            case Weapon.SpellTypes.Axe3:
+            case SpellTypes.Axe3:
                 spellSchool = SpellSchool.Axe;
                 break;
-            case Weapon.SpellTypes.Hammer1:
+            case SpellTypes.Hammer1:
                 spellSchool = SpellSchool.Hammer;
                 break;
-            case Weapon.SpellTypes.Hammer2:
+            case SpellTypes.Hammer2:
                 spellSchool = SpellSchool.Hammer;
                 break;
-            case Weapon.SpellTypes.Hammer3:
+            case SpellTypes.Hammer3:
                 spellSchool = SpellSchool.Hammer;
                 break;
-            case Weapon.SpellTypes.Nature1:
+            case SpellTypes.Nature1:
                 spellSchool = SpellSchool.Nature;
                 break;
-            case Weapon.SpellTypes.Nature2:
+            case SpellTypes.Nature2:
                 spellSchool = SpellSchool.Nature;
                 break;
-            case Weapon.SpellTypes.Nature3:
+            case SpellTypes.Nature3:
                 spellSchool = SpellSchool.Nature;
                 break;
-            case Weapon.SpellTypes.Nature4:
+            case SpellTypes.Nature4:
                 spellSchool = SpellSchool.Nature;
                 break;
-            case Weapon.SpellTypes.Nature5:
+            case SpellTypes.Nature5:
                 spellSchool = SpellSchool.Nature;
                 break;
-            case Weapon.SpellTypes.Fire1:
+            case SpellTypes.Fire1:
                 spellSchool = SpellSchool.Fire;
                 break;
-            case Weapon.SpellTypes.Fire2:
+            case SpellTypes.Fire2:
                 spellSchool = SpellSchool.Fire;
                 break;
-            case Weapon.SpellTypes.Fire3:
+            case SpellTypes.Fire3:
                 spellSchool = SpellSchool.Fire;
                 break;
-            case Weapon.SpellTypes.Fire4:
+            case SpellTypes.Fire4:
                 spellSchool = SpellSchool.Fire;
                 break;
-            case Weapon.SpellTypes.Fire5:
+            case SpellTypes.Fire5:
                 spellSchool = SpellSchool.Fire;
                 break;
-            case Weapon.SpellTypes.Ice1:
+            case SpellTypes.Ice1:
                 spellSchool = SpellSchool.Ice;
                 break;
-            case Weapon.SpellTypes.Ice2:
+            case SpellTypes.Ice2:
                 spellSchool = SpellSchool.Ice;
                 break;
-            case Weapon.SpellTypes.Ice3:
+            case SpellTypes.Ice3:
                 spellSchool = SpellSchool.Ice;
                 break;
-            case Weapon.SpellTypes.Ice4:
+            case SpellTypes.Ice4:
                 spellSchool = SpellSchool.Ice;
                 break;
-            case Weapon.SpellTypes.Ice5:
+            case SpellTypes.Ice5:
                 spellSchool = SpellSchool.Ice;
                 break;
-            case Weapon.SpellTypes.Blood1:
+            case SpellTypes.Blood1:
                 spellSchool = SpellSchool.Blood;
                 break;
-            case Weapon.SpellTypes.Blood2:
+            case SpellTypes.Blood2:
                 spellSchool = SpellSchool.Blood;
                 break;
-            case Weapon.SpellTypes.Blood3:
+            case SpellTypes.Blood3:
                 spellSchool = SpellSchool.Blood;
                 break;
-            case Weapon.SpellTypes.Blood4:
+            case SpellTypes.Blood4:
                 spellSchool = SpellSchool.Blood;
                 break;
-            case Weapon.SpellTypes.Blood5:
+            case SpellTypes.Blood5:
                 spellSchool = SpellSchool.Blood;
                 break;
-            case Weapon.SpellTypes.Shadow1:
+            case SpellTypes.Shadow1:
                 spellSchool = SpellSchool.Shadow;
                 break;
-            case Weapon.SpellTypes.Shadow2:
+            case SpellTypes.Shadow2:
                 spellSchool = SpellSchool.Shadow;
                 break;
-            case Weapon.SpellTypes.Shadow3:
+            case SpellTypes.Shadow3:
                 spellSchool = SpellSchool.Shadow;
                 break;
-            case Weapon.SpellTypes.Shadow4:
+            case SpellTypes.Shadow4:
                 spellSchool = SpellSchool.Shadow;
                 break;
-            case Weapon.SpellTypes.Shadow5:
+            case SpellTypes.Shadow5:
                 spellSchool = SpellSchool.Shadow;
                 break;
         }
@@ -1499,34 +1517,167 @@ public class TheSpellBook : MonoBehaviour
        return spellSchool;
     }
     
-    // public CombatEntity.DamageTypes FigureOutWhatDamageType(Equipment.Stats attackType)
+    public Stats GetSpellStatFromSpell(SpellTypes spell)
+    { 
+        Stats stats = Stats.None;
+       switch (spell)
+        {
+            case SpellTypes.Dagger1:
+                stats = Stats.Daggers;
+                break;
+            case SpellTypes.Dagger2:
+                stats = Stats.Daggers;
+                break;
+            case SpellTypes.Dagger3:
+                stats = Stats.Daggers;
+                break;
+            case SpellTypes.Shield1:
+                stats = Stats.Shields;
+                break;
+            case SpellTypes.Shield2:
+                stats = Stats.Shields;
+                break;
+            case SpellTypes.Shield3:
+                stats = Stats.Shields;
+                break;
+            case SpellTypes.Sword1:
+                stats = Stats.Swords;
+                break;
+            case SpellTypes.Sword2:
+                stats = Stats.Swords;
+                break;
+            case SpellTypes.Sword3:
+                stats = Stats.Swords;
+                break;
+            case SpellTypes.Axe1:
+                stats = Stats.Axes;
+                break;
+            case SpellTypes.Axe2:
+                stats = Stats.Axes;
+                break;
+            case SpellTypes.Axe3:
+                stats = Stats.Axes;
+                break;
+            case SpellTypes.Hammer1:
+                stats = Stats.Hammers;
+                break;
+            case SpellTypes.Hammer2:
+                stats = Stats.Hammers;
+                break;
+            case SpellTypes.Hammer3:
+                stats = Stats.Hammers;
+                break;
+            case SpellTypes.Nature1:
+                stats = Stats.NaturePower;
+                break;
+            case SpellTypes.Nature2:
+                stats = Stats.NaturePower;
+                break;
+            case SpellTypes.Nature3:
+                stats = Stats.NaturePower;
+                break;
+            case SpellTypes.Nature4:
+                stats = Stats.NaturePower;
+                break;
+            case SpellTypes.Nature5:
+                stats = Stats.NaturePower;
+                break;
+            case SpellTypes.Fire1:
+                stats = Stats.FirePower;
+                break;
+            case SpellTypes.Fire2:
+                stats = Stats.FirePower;
+                break;
+            case SpellTypes.Fire3:
+                stats = Stats.FirePower;
+                break;
+            case SpellTypes.Fire4:
+                stats = Stats.FirePower;
+                break;
+            case SpellTypes.Fire5:
+                stats = Stats.FirePower;
+                break;
+            case SpellTypes.Ice1:
+                stats = Stats.IcePower;
+                break;
+            case SpellTypes.Ice2:
+                stats = Stats.IcePower;
+                break;
+            case SpellTypes.Ice3:
+                stats = Stats.IcePower;
+                break;
+            case SpellTypes.Ice4:
+                stats = Stats.IcePower;
+                break;
+            case SpellTypes.Ice5:
+                stats = Stats.IcePower;
+                break;
+            case SpellTypes.Blood1:
+                stats = Stats.LifeForce;
+                break;
+            case SpellTypes.Blood2:
+                stats = Stats.LifeForce;
+                break;
+            case SpellTypes.Blood3:
+                stats = Stats.LifeForce;
+                break;
+            case SpellTypes.Blood4:
+                stats = Stats.LifeForce;
+                break;
+            case SpellTypes.Blood5:
+                stats = Stats.LifeForce;
+                break;
+            case SpellTypes.Shadow1:
+                stats = Stats.ShadowPower;
+                break;
+            case SpellTypes.Shadow2:
+                stats = Stats.ShadowPower;
+                break;
+            case SpellTypes.Shadow3:
+                stats = Stats.ShadowPower;
+                break;
+            case SpellTypes.Shadow4:
+                stats = Stats.ShadowPower;
+                break;
+            case SpellTypes.Shadow5:
+                stats = Stats.ShadowPower;
+                break;
+            default:
+                stats = Stats.None;
+                break;
+        }
+
+       return stats;
+    }
+    
+    // public CombatEntity.DamageTypes FigureOutWhatDamageType(Stats attackType)
     // {
     //     switch (attackType)
     //     {
-    //         case Equipment.Stats.AttackDamage:
+    //         case Stats.AttackDamage:
     //             return CombatEntity.DamageTypes.Physical;
-    //         case Equipment.Stats.Swords:
+    //         case Stats.Swords:
     //             return CombatEntity.DamageTypes.Physical;
-    //         case Equipment.Stats.Axes:
+    //         case Stats.Axes:
     //             return CombatEntity.DamageTypes.Physical;
-    //         case Equipment.Stats.Hammers:
+    //         case Stats.Hammers:
     //             return CombatEntity.DamageTypes.Physical;
-    //         case Equipment.Stats.Daggers:
+    //         case Stats.Daggers:
     //             return CombatEntity.DamageTypes.Physical;
-    //         case Equipment.Stats.Shields:
+    //         case Stats.Shields:
     //             return CombatEntity.DamageTypes.Physical;
     //         
-    //         case Equipment.Stats.SpellPower:
+    //         case Stats.SpellPower:
     //             return CombatEntity.DamageTypes.Spell;
-    //         case Equipment.Stats.NaturePower:
+    //         case Stats.NaturePower:
     //             return CombatEntity.DamageTypes.Spell;
-    //         case Equipment.Stats.FirePower:
+    //         case Stats.FirePower:
     //             return CombatEntity.DamageTypes.Spell;
-    //         case Equipment.Stats.IcePower:
+    //         case Stats.IcePower:
     //             return CombatEntity.DamageTypes.Spell;
-    //         case Equipment.Stats.ShadowPower:
+    //         case Stats.ShadowPower:
     //             return CombatEntity.DamageTypes.Spell;
-    //         case Equipment.Stats.BloodPower:
+    //         case Stats.BloodPower:
     //             return CombatEntity.DamageTypes.Spell;
     //     }
     //

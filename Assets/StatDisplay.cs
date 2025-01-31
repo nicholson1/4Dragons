@@ -14,7 +14,7 @@ public class StatDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text;
 
     [SerializeField] private CombatEntity player;
-    public Equipment.Stats stat;
+    public Stats stat;
     public int value;
     [SerializeField] private ToolTip toolTip;
     public bool charStats = false;
@@ -30,7 +30,7 @@ public class StatDisplay : MonoBehaviour
         // }
     }
 
-    public void UpdateValues(Equipment.Stats s, int v, int LossOrGain = 0)
+    public void UpdateValues(Stats s, int v, int LossOrGain = 0)
     {
         if (player == null)
         {
@@ -55,7 +55,7 @@ public class StatDisplay : MonoBehaviour
         
         
         stat = s;
-        if (s == Equipment.Stats.CritChance && charStats)
+        if (s == Stats.CritChance && charStats)
         {
             //Debug.Log();
             
@@ -92,22 +92,22 @@ public class StatDisplay : MonoBehaviour
         
     }
 
-    public string AdjustDescriptionValues(string message, Equipment.Stats s)
+    public string AdjustDescriptionValues(string message, Stats s)
     {
         int value =0;
-        if (s == Equipment.Stats.Armor)
+        if (s == Stats.Armor)
         {
             int tempValue = 0;
-            player.myCharacter.GetStats().TryGetValue(Equipment.Stats.Armor, out tempValue);
+            player.myCharacter.GetStats().TryGetValue(Stats.Armor, out tempValue);
             value = Mathf.RoundToInt(player.DamageReductionPercent(tempValue) * 100);
         }
-        if (s == Equipment.Stats.MagicResist)
+        if (s == Stats.MagicResist)
         {
             int tempValue = 0;
-            player.myCharacter.GetStats().TryGetValue(Equipment.Stats.MagicResist, out tempValue);
+            player.myCharacter.GetStats().TryGetValue(Stats.MagicResist, out tempValue);
             value = Mathf.RoundToInt(player.DamageReductionPercent(tempValue) * 100);
         }
-        if (s == Equipment.Stats.CritChance)
+        if (s == Stats.CritChance)
         {
             value =  Mathf.RoundToInt(TheSpellBook._instance.FigureOutHowMuchCrit(player) * 100);
 

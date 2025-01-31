@@ -128,117 +128,117 @@ public class EliteManager : MonoBehaviour
         return (EliteType)typeIndex;
     }
 
-    public (Equipment.Stats, Equipment.Stats) GetStatTypesFromElite(EliteType eliteType)
+    public (Stats, Stats) GetStatTypesFromElite(EliteType eliteType)
     {
-        Equipment.Stats stat1 = Equipment.Stats.CritChance;
-        Equipment.Stats stat2 = Equipment.Stats.CritChance;
+        Stats stat1 = Stats.CritChance;
+        Stats stat2 = Stats.CritChance;
         switch (eliteType)
         {
             case EliteType.Ranger:
-                stat1 = Equipment.Stats.NaturePower;
-                stat2 = Equipment.Stats.Swords;
+                stat1 = Stats.NaturePower;
+                stat2 = Stats.Swords;
                 break;
             case EliteType.Woodsman:
-                stat1 = Equipment.Stats.NaturePower;
-                stat2 = Equipment.Stats.Axes;
+                stat1 = Stats.NaturePower;
+                stat2 = Stats.Axes;
                 break;
             case EliteType.Gladiator:
-                stat1 = Equipment.Stats.Shields;
-                stat2 = Equipment.Stats.Daggers;
+                stat1 = Stats.Shields;
+                stat2 = Stats.Daggers;
                 break;
             case EliteType.Cultist:
-                stat1 = Equipment.Stats.Daggers;
-                stat2 = Equipment.Stats.ShadowPower;
+                stat1 = Stats.Daggers;
+                stat2 = Stats.ShadowPower;
                 break;
             case EliteType.Knight:
-                stat1 = Equipment.Stats.Swords;
-                stat2 = Equipment.Stats.Shields;
+                stat1 = Stats.Swords;
+                stat2 = Stats.Shields;
                 break;
             case EliteType.Commander:
-                stat1 = Equipment.Stats.CritChance;
-                stat2 = Equipment.Stats.Hammers;
+                stat1 = Stats.CritChance;
+                stat2 = Stats.Hammers;
                 break;
             case EliteType.Druid:
-                stat1 = Equipment.Stats.NaturePower;
-                stat2 = Equipment.Stats.SpellPower;
+                stat1 = Stats.NaturePower;
+                stat2 = Stats.SpellPower;
                 break;
             case EliteType.Witchdoctor:
-                stat1 = Equipment.Stats.ShadowPower;
-                stat2 = Equipment.Stats.NaturePower;
+                stat1 = Stats.ShadowPower;
+                stat2 = Stats.NaturePower;
                 break;
             case EliteType.Pyromancer:
-                stat1 = Equipment.Stats.FirePower;
-                stat2 = Equipment.Stats.SpellPower;
+                stat1 = Stats.FirePower;
+                stat2 = Stats.SpellPower;
                 break;
             case EliteType.Bloodbender:
-                stat1 = Equipment.Stats.LifeForce;
-                stat2 = Equipment.Stats.SpellPower;
+                stat1 = Stats.LifeForce;
+                stat2 = Stats.SpellPower;
                 break;
             case EliteType.HillGiant:
-                stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.NaturePower;
+                stat1 = Stats.Health;
+                stat2 = Stats.NaturePower;
                 break;
             case EliteType.FireGiant:
-                stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.FirePower;
+                stat1 = Stats.Health;
+                stat2 = Stats.FirePower;
                 break;
             case EliteType.FrostGiant:
-                stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.IcePower;
+                stat1 = Stats.Health;
+                stat2 = Stats.IcePower;
                 break;
             case EliteType.VoidGiant:
-                stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.ShadowPower;
+                stat1 = Stats.Health;
+                stat2 = Stats.ShadowPower;
                 break;
             case EliteType.BloodGiant:
-                stat1 = Equipment.Stats.Health;
-                stat2 = Equipment.Stats.LifeForce;
+                stat1 = Stats.Health;
+                stat2 = Stats.LifeForce;
                 break;
             case EliteType.FireKing:
-                stat1 = Equipment.Stats.Swords;
-                stat2 = Equipment.Stats.FirePower;
+                stat1 = Stats.Swords;
+                stat2 = Stats.FirePower;
                 break;
             case EliteType.IceQueen:
-                stat1 = Equipment.Stats.IcePower;
-                stat2 = Equipment.Stats.ShadowPower;
+                stat1 = Stats.IcePower;
+                stat2 = Stats.ShadowPower;
                 break;
             case EliteType.Assassin:
-                stat1 = Equipment.Stats.Daggers;
-                stat2 = Equipment.Stats.Daggers;
+                stat1 = Stats.Daggers;
+                stat2 = Stats.Daggers;
                 break;
             case EliteType.Shaman:
-                stat1 = Equipment.Stats.SpellPower;
-                stat2 = Equipment.Stats.Axes;
+                stat1 = Stats.SpellPower;
+                stat2 = Stats.Axes;
                 break;
             case EliteType.Paladin:
-                stat1 = Equipment.Stats.Shields;
-                stat2 = Equipment.Stats.SpellPower;
+                stat1 = Stats.Shields;
+                stat2 = Stats.SpellPower;
                 break;
         }
         return (stat1,stat2);
     }
 
-    public Equipment.Stats GetStatFromSpellType(SpellSchool school)
+    public Stats GetStatFromSpellType(SpellSchool school)
     {
         switch (school)
         {
             case SpellSchool.Nature:
-                return Equipment.Stats.NaturePower;
+                return Stats.NaturePower;
             case SpellSchool.Fire:
-                return Equipment.Stats.FirePower;
+                return Stats.FirePower;
             case SpellSchool.Blood:
-                return Equipment.Stats.LifeForce;
+                return Stats.LifeForce;
             case SpellSchool.Shadow:
-                return Equipment.Stats.ShadowPower;
+                return Stats.ShadowPower;
             case SpellSchool.Ice:
-                return Equipment.Stats.IcePower;
+                return Stats.IcePower;
             default:
                 Debug.LogWarning("INCORRECT SPELL SCHOOL");
                 break;
         }
 
         Debug.LogError("SOMETHING IS WRONG WITH THE SPELL SCHOOLS");
-        return Equipment.Stats.MagicResist;
+        return Stats.MagicResist;
     }
 }
 

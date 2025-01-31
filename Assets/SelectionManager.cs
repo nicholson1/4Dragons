@@ -407,7 +407,7 @@ public class SelectionManager : MonoBehaviour
         int level = CombatController._instance.Player._level;
         
         if(!Modifiers._instance.CurrentMods.Contains(Mods.NoShieldSpells))
-            selection1.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
+            selection1.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, SpellTypes.Shield2));
         else
             selection1.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
         // present 4 spells
@@ -423,12 +423,12 @@ public class SelectionManager : MonoBehaviour
                 if (!HasDamageSpell(selection1))
                 {
                     eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,
-                        (Weapon.SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
+                        (SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
 
                 }
                 //test
 
-                //eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander, Weapon.SpellTypes.Axe2);
+                //eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander, SpellTypes.Axe2);
 
             }
 
@@ -470,11 +470,11 @@ public class SelectionManager : MonoBehaviour
                 {
                     if (!HasDamageSpell(selection2))
                     {
-                        eq = EquipmentCreator._instance.CreateSpellScroll(level, 0, (Weapon.SpellTypes)EquipmentCreator._instance.GetRandomDamageSpellInt());
+                        eq = EquipmentCreator._instance.CreateSpellScroll(level, 0, (SpellTypes)EquipmentCreator._instance.GetRandomDamageSpellInt());
                     }
                     //test
                     
-                    //eq = EquipmentCreator._instance.CreateSpellScroll(level, 0, Weapon.SpellTypes.Fire2);
+                    //eq = EquipmentCreator._instance.CreateSpellScroll(level, 0, SpellTypes.Fire2);
 
                 }
                 
@@ -563,7 +563,7 @@ public class SelectionManager : MonoBehaviour
             // present 4 spells
             int spellCount = 1;
             
-            equipments.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, Weapon.SpellTypes.Shield2));
+            equipments.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, SpellTypes.Shield2));
 
             while (spellCount < 4)
             {
@@ -573,7 +573,7 @@ public class SelectionManager : MonoBehaviour
                 {
                     if (!HasDamageSpell(equipments))
                     {
-                        eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,(Weapon.SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
+                        eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,(SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
                     }
                 }
                 
@@ -613,7 +613,7 @@ public class SelectionManager : MonoBehaviour
                 {
                     if (!HasDamageSpell(equipments))
                     {
-                        eq = EquipmentCreator._instance.CreateSpellScroll(level, 0, (Weapon.SpellTypes)EquipmentCreator._instance.GetRandomDamageSpellInt());
+                        eq = EquipmentCreator._instance.CreateSpellScroll(level, 0, (SpellTypes)EquipmentCreator._instance.GetRandomDamageSpellInt());
                     }
                 }
                 Weapon w = (Weapon)eq;
