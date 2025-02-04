@@ -236,15 +236,15 @@ public class Elite : MonoBehaviour
         generatedEquipment.AddRange(weapons);
         generatedEquipment.AddRange(spells);
 
-        foreach (var equip in generatedEquipment)
-        {
-            string s = "";
-            foreach (var VARIABLE in equip.stats)
-            {
-                s += VARIABLE.Key + "-" + VARIABLE.Value + " \n";
-            }
-            Debug.Log(s);
-        }
+        // foreach (var equip in generatedEquipment)
+        // {
+        //     string s = "";
+        //     foreach (var VARIABLE in equip.stats)
+        //     {
+        //         s += VARIABLE.Key + "-" + VARIABLE.Value + " \n";
+        //     }
+        //     Debug.Log(s);
+        // }
 
         return generatedEquipment;
     }

@@ -119,7 +119,53 @@ public class EventUI : MonoBehaviour
 
         switch (outcome)
         {
-            case EOutcome.None: /* nothing happens*/ break;
+            case EOutcome.None: /* nothing happens*/ 
+                break;
+            case EOutcome.ReviveGet: /* increase revives*/
+                CombatController._instance.retryAvailable += Mathf.RoundToInt(value);
+                break;
+            case EOutcome.ReviveLose: /* decrease revives*/
+                CombatController._instance.retryAvailable -= Mathf.RoundToInt(value);
+                break;
+            case EOutcome.GoldGet:
+                CombatController._instance.Player.GetGold(Mathf.RoundToInt(value));
+                break;
+            case EOutcome.GoldLose:
+                CombatController._instance.Player.GetGold(Mathf.RoundToInt(value));
+                break;
+            case EOutcome.GetGoldPercent:
+                int gainGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value/100);
+                CombatController._instance.Player.GetGold(gainGold);
+                break;
+            case EOutcome.LoseGoldPercent:
+                int lossGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value/100);
+                CombatController._instance.Player.GetGold(-lossGold);
+                break;
+            case EOutcome.StrengthUp:
+                CombatController._instance.StrengthBlessing += Mathf.RoundToInt(value);
+                break;
+            case EOutcome.StrengthDown:
+                CombatController._instance.StrengthBlessing -= Mathf.RoundToInt(value);
+                break;
+            case EOutcome.SpellPowerUp:
+                CombatController._instance.SpellPowerBlessing += Mathf.RoundToInt(value);
+                break;
+            case EOutcome.SpellPowerDown:
+                CombatController._instance.SpellPowerBlessing -= Mathf.RoundToInt(value);
+                break;
+            case EOutcome.ArmorDown:
+                CombatController._instance.ArmorBlessing -= Mathf.RoundToInt(value);
+                break;
+            case EOutcome.ArmorUp:
+                CombatController._instance.ArmorBlessing += Mathf.RoundToInt(value);
+                break;
+            case EOutcome.MagicResistUp:
+                CombatController._instance.MRBlessing += Mathf.RoundToInt(value);
+                break;
+            case EOutcome.MagicResistDown:
+                CombatController._instance.MRBlessing -= Mathf.RoundToInt(value);
+                break;
+            
 
             default:Debug.LogError("Neil, please write code for the " + outcome.ToString() + " outcome."); break;
         }
