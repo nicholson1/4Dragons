@@ -107,7 +107,9 @@ public class EventUI : MonoBehaviour
         _hasSelectedOption = false;
 
         // Continue the game flow
-        Debug.LogError("Neil, make the game keep moving here");
+        //Debug.LogError("Neil, make the game keep moving here");
+        CombatController._instance.SetMapCanBeClicked(true);
+        UIController._instance.ToggleMapUI(1);
     }
 
     private void ActivateOutcome(OutcomeInfo outcomeInfo)
