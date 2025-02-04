@@ -6,33 +6,36 @@ using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Database : MonoBehaviour
+[CreateAssetMenu(fileName = "Database", menuName = "Database")]
+public class Database : ScriptableObject
 {
+    [SerializeField] bool saveToggle;
     [SerializeField] string speadsheetID = "1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08";
     [SerializeField] string credentials = "AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w";
-    [SerializeField] string eventsRaw = "";
-    [SerializeField] string optionsRaw = "";
-    [SerializeField] string outcomesRaw = "";
-    string _jsonRaw = "";
-
+    
     public Tab eventsTab;
     public Tab optionsTab;
     public Tab outcomesTab;
 
+    string _jsonRaw = "";
+    string _eventsRaw = "";
+    string _optionsRaw = "";
+    string _outcomesRaw = "";
+
     public async void LoadTabs()
     {
         await ReadSheetDataAsync(GetRequestLink("Events"));
-        eventsRaw = _jsonRaw;
-        eventsTab.SetEntries(JsonToDictionaryArray(eventsRaw));
+        _eventsRaw = _jsonRaw;
+        eventsTab.SetEntries(JsonToDictionaryArray(_eventsRaw));
         LogEvents();
 
         await ReadSheetDataAsync(GetRequestLink("Options"));
-        optionsRaw = _jsonRaw;
-        optionsTab.SetEntries(JsonToDictionaryArray(optionsRaw));
+        _optionsRaw = _jsonRaw;
+        optionsTab.SetEntries(JsonToDictionaryArray(_optionsRaw));
 
         await ReadSheetDataAsync(GetRequestLink("Outcomes"));
-        outcomesRaw = _jsonRaw;
-        outcomesTab.SetEntries(JsonToDictionaryArray(outcomesRaw));
+        _outcomesRaw = _jsonRaw;
+        outcomesTab.SetEntries(JsonToDictionaryArray(_outcomesRaw));
     }
 
     private void LogEvents()
@@ -115,12 +118,6 @@ public class Database : MonoBehaviour
         }
     }
 }
-
-public class DataContainer
-{
-
-}
-
 
 [System.Serializable]
 public class RowEntry
