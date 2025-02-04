@@ -153,7 +153,7 @@ public class Tab
 
     public string GetString(int row, string column)
     {
-        if (row < 0 || row > rowEntries.Length)
+        if (row < 0 || row >= rowEntries.Length)
         {
             Debug.LogError("Invalid row: " + row);
             return "";

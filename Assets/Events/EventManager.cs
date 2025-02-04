@@ -119,28 +119,28 @@ public class EventManager : MonoBehaviour
 
         _outcomeChances.Clear();
 
-        for (int i = 0; i < Database.optionsTab.rowEntries.Length; i++)
+        int optionRow = (int)option;
+
+        for (int i = 0; i < 3; i++) // up to 3 outcomes available
         {
-            for(int j = 0; j < 3; j++) // up to 3 outcomes available
+            string chanceColumn = "Chance" + i;
+            float chance = Database.optionsTab.GetFloat(optionRow, chanceColumn);
+
+            if (chance > 0f)
             {
-                string chanceNumber = "Chance" + j;
-                float chance = Database.optionsTab.GetFloat(i, chanceNumber);
+                EOutcome outcome = (EOutcome)Database.optionsTab.GetEnum(typeof(EOutcome), optionRow, "Outcome" + i);
 
-                if (chance > 0f)
+                OutcomeInfo outcomeInfo = new()
                 {
-                    EOutcome outcome = (EOutcome)Database.optionsTab.GetEnum(typeof(EOutcome), i, "Outcome" + j);
+                    outcome = outcome,
+                    displayName = Database.outcomesTab.GetString((int)outcome, "DisplayName"),
+                    value = Database.optionsTab.GetFloat(optionRow, "Value" + i),
+                    text = Database.optionsTab.GetString(optionRow, "Text" + i)
+                };
 
-                    OutcomeInfo outcomeInfo = new()
-                    {
-                        outcome = outcome,
-                        displayName = Database.outcomesTab.GetString((int)outcome, "DisplayName"),
-                        value = Database.optionsTab.GetFloat(i, "Value"+j),
-                        text = Database.optionsTab.GetString(i, "Text"+j)
-                    };
-
-                    _outcomeChances.AddOutcome(outcomeInfo, Database.optionsTab.GetFloat(i, "Chance"+j));
-                }
-            }            
+                _outcomeChances.AddOutcome(outcomeInfo, chance);
+                Debug.Log("Add " + outcome + " @ " + chance.ToString("##0%"));
+            }
         }
 
         if (_eventChances.Count <= 0)
@@ -158,7 +158,9 @@ public class EventManager : MonoBehaviour
             return outcomeInfo;
         }
 
-        return _outcomeChances.GetRandomOutcome();
+        OutcomeInfo randomOutcomeInfo = _outcomeChances.GetRandomOutcome();
+        Debug.Log("Selected outcome: "+ randomOutcomeInfo.outcome);
+        return randomOutcomeInfo;
     }
 }
 
