@@ -9,6 +9,15 @@ public enum EEvent
     OrangeCat = 4,
     PileOfGold = 5,
     RunedStone = 6,
+    MysteriousBook = 7,
+    TheDummy = 8,
+    TheWagon = 9,
+    CorruptedWell = 10,
+    Mushroom = 11,
+    Music = 12,
+    Backpack = 13,
+    Trickster = 14,
+    Clearing = 15,
 
 }
 
@@ -72,6 +81,10 @@ public enum EOption
     RubBellyBlackCat = 55,
     PetOrangeCat = 56,
     RubBellyOrangeCat = 57,
+    Drink = 58,
+    Gamble = 59,
+    Meditate = 60,
+    Rest = 61,
 
 }
 
@@ -140,5 +153,8 @@ public enum EOutcome
     RandomRarityUp = 60,
     RandomLevelUp = 61,
     StartDamaged = 62,
+    BreakWeapon = 63,
+    GetGoldPercent = 64,
+    LoseGoldPercent = 65,
 
 }
