@@ -30,8 +30,6 @@ public class EventUI : MonoBehaviour
 
     public void RandomEvent()
     {
-        // ensure any randomness is based on our current seed
-        Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
 
         // select which event to show
         _currentEventInfo = EventManager.Instance.GetRandomEvent();

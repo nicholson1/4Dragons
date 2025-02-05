@@ -60,7 +60,7 @@ public class EventManager : MonoBehaviour
         EventInfo selectedEventInfo = new()
         {
             eEvent = EEvent.Blacksmith,
-            displayName = "Travelling Blacksmith",
+            displayName = "Wandering Blacksmith",
             text = "You Encounter a strange traveling blacksmith. He seems willing to do business with you."
         };
 
