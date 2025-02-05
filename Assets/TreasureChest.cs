@@ -42,6 +42,7 @@ public class TreasureChest : MonoBehaviour
         {
             if (startingChest && !isOpen)
             {
+                TutorialManager.Instance.CloseTip(TutorialNames.Start);
                 SelectionManager._instance.CreateEquipmentListsStart();
             }
 
@@ -94,6 +95,14 @@ public class TreasureChest : MonoBehaviour
             Lid.transform.localRotation = Quaternion.Lerp(Lid.transform.localRotation, Quaternion.Euler(targetRotation, 0, 0), rotationSpeed * Time.deltaTime);
             if (Lid.transform.eulerAngles.x + 1 < targetRotation)
                 isRotating = false;
+        }
+
+        if (isActiveAndEnabled)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ClickOnTreaure(true);
+            }
         }
     }
 

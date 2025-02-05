@@ -92,7 +92,7 @@ public class CombatButtonController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (endTurn.interactable)
+            if (endTurn.isActiveAndEnabled && endTurn.interactable)
             {
                 character.EndTurn();
             }
