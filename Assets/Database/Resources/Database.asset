@@ -1,0 +1,3037 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12e246289ab731a41a210e157011ae28, type: 3}
+  m_Name: Database
+  m_EditorClassIdentifier: 
+  saveToggle: 1
+  speadsheetID: 1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08
+  credentials: AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w
+  eventsTab:
+    rowEntries:
+    - columnList:
+      - column: ID
+        value: 0
+      - column: EEvent
+        value: None
+      - column: DisplayName
+        value: None
+      - column: TrialMin
+        value: 0
+      - column: Chance
+        value: 0
+      - column: Text
+        value: Null Event
+      - column: Option0
+        value: Leave
+      - column: Option1
+        value: None
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 1
+      - column: EEvent
+        value: Blacksmith
+      - column: DisplayName
+        value: Travelling Blacksmith
+      - column: TrialMin
+        value: 0
+      - column: Chance
+        value: 1
+      - column: Text
+        value: You Encounter a traveling blacksmith. He beakons you over and in a
+          deep joyful voice says "You look like your on quite the adventure, maybe
+          I can help you with some supplies or some upgrades, for a small fee of
+          course.."
+      - column: Option0
+        value: Forge
+      - column: Option1
+        value: Shop
+      - column: Option2
+        value: Duel
+      - column: Option3
+        value: Leave
+    - columnList:
+      - column: ID
+        value: 2
+      - column: EEvent
+        value: WellOWisp
+      - column: DisplayName
+        value: Well O' Wisps
+      - column: TrialMin
+        value: 0
+      - column: Chance
+        value: 1
+      - column: Text
+        value: You come apon a pool of water, faintly glowing with some kind of energy.
+          Excitedly your spirit friend dives in and swirls about. "This is a Well
+          O' Wisps a natural spring that is infused with ancient spirits magic! This
+          should give me enough energy to save you an extra time if you fall."
+      - column: Option0
+        value: Recharge
+      - column: Option1
+        value: None
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 3
+      - column: EEvent
+        value: BlackCat
+      - column: DisplayName
+        value: Small Black Cat
+      - column: TrialMin
+        value: 0
+      - column: Chance
+        value: 1
+      - column: Text
+        value: A small black cat crosses the path, it looks friendly with a mischievous
+          twinkle in its eye.
+      - column: Option0
+        value: PetBlackCat
+      - column: Option1
+        value: RubBellyBlackCat
+      - column: Option2
+        value: Leave
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 4
+      - column: EEvent
+        value: OrangeCat
+      - column: DisplayName
+        value: Small Orange Cat
+      - column: TrialMin
+        value: 0
+      - column: Chance
+        value: 1
+      - column: Text
+        value: A small orange cat crosses the path, it looks friendly with a mischievous
+          twinkle in its eye.
+      - column: Option0
+        value: PetOrangeCat
+      - column: Option1
+        value: RubBellyOrangeCat
+      - column: Option2
+        value: Leave
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 5
+      - column: EEvent
+        value: PileOfGold
+      - column: DisplayName
+        value: Pile Of Gold
+      - column: TrialMin
+        value: 0
+      - column: Chance
+        value: 1
+      - column: Text
+        value: Out of the corner of your eye you see the sun reflect off something
+          under a bush, curiosity gets the better of you and you go to invetigate...
+          Its a pile of gold! What luck! What should we do?
+      - column: Option0
+        value: Take
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 6
+      - column: EEvent
+        value: RunedStone
+      - column: DisplayName
+        value: Glowing Runed Stone
+      - column: TrialMin
+        value: 1
+      - column: Chance
+        value: 1
+      - column: Text
+        value: You stumble upon a peculiar stone embedded in the earth, its surface
+          pulsing with faint, glowing runes. Your spirit guide hums with intrigue,
+          sensing the ancient power woven into its core. "This stone holds potential,"
+          they whisper. "With the right touch, it could awaken hidden strength in
+          your gear... or perhaps something more."
+      - column: Option0
+        value: PlaceYourHand
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 7
+      - column: EEvent
+        value: MysteriousBook
+      - column: DisplayName
+        value: Mysterious Floating Book
+      - column: TrialMin
+        value: 1
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "As you step forward, a leather-bound tome hovers in midair, its pages
+          fluttering as if caught in an unseen breeze. Faint symbols dance along
+          its worn cover, shifting and reshaping before your eyes. Your spirit guide
+          hesitates, their voice low with caution. \"This knowledge was left behind
+          for a reason\u2026 but whether it was to teach or to trap, I cannot say.\""
+      - column: Option0
+        value: Read
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 8
+      - column: EEvent
+        value: TheDummy
+      - column: DisplayName
+        value: Weathered Training Dummy
+      - column: TrialMin
+        value: 1
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "Standing alone in a clearing, a battered training dummy sways slightly
+          in the breeze, its straw stuffing spilling from deep gashes. Faint marks
+          of countless strikes scar its surface, evidence of warriors long past testing
+          their might against it. Your spirit guide eyes it curiously before nodding.
+          \"A worthy tool for honing your strength\u2026 but be warned, not all weapons
+          endure the lesson.\""
+      - column: Option0
+        value: Train
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 9
+      - column: EEvent
+        value: TheWagon
+      - column: DisplayName
+        value: Abandoned Wagon
+      - column: TrialMin
+        value: 1
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "A broken wagon rests by the roadside, its wheels cracked and its
+          cargo spilled into the dirt. Tattered cloth flaps in the wind, and deep
+          grooves in the ground suggest a hurried departure\u2014or a struggle. Scattered
+          supplies lie within reach, but there\u2019s no sign of the owner. Your
+          spirit guide speaks in a hushed tone, \"Whatever happened here\u2026 it
+          was recent.\""
+      - column: Option0
+        value: Loot
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 10
+      - column: EEvent
+        value: CorruptedWell
+      - column: DisplayName
+        value: Corrupted Well
+      - column: TrialMin
+        value: 1
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "You come upon a pool of water, its surface dark and swirling with
+          an eerie, unnatural glow. Your spirit friend hovers hesitantly at the edge,
+          their usual excitement replaced with unease. \"Something is wrong here\u2026
+          this well is not like the others. Its magic is twisted, and I dare not
+          swim in it.\" Your throat is dry, the water tempting despite its ominous
+          presence."
+      - column: Option0
+        value: Drink
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 11
+      - column: EEvent
+        value: Mushroom
+      - column: DisplayName
+        value: Delicous Looking Mushroom
+      - column: TrialMin
+        value: 2
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "Nestled among the roots of an ancient tree, a large mushroom stands
+          out, its vibrant colors and rich aroma almost irresistible. The way it
+          glistens under the light makes it look undeniably delicious, as if nature
+          itself is offering you a gift. Your spirit guide eyes it warily, their
+          voice cautious. \"Strange things grow in these lands\u2026 some nourish,
+          some poison. This one? Hard to say.\""
+      - column: Option0
+        value: Eat
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 12
+      - column: EEvent
+        value: Music
+      - column: DisplayName
+        value: The Enchanted Music
+      - column: TrialMin
+        value: 2
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "As you walk, a haunting yet beautiful melody drifts through the air,
+          seeming to come from nowhere and everywhere at once. The sound tugs at
+          something deep inside you, an invitation\u2014or perhaps a challenge. Your
+          spirit guide sways uncertainly, their voice hushed. \"This music is not
+          of the ordinary world\u2026 it calls to the soul. But how will you answer?\""
+      - column: Option0
+        value: Dance
+      - column: Option1
+        value: Sing
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 13
+      - column: EEvent
+        value: Backpack
+      - column: DisplayName
+        value: Forgotten Backpack
+      - column: TrialMin
+        value: 2
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "By the side of the path, a lone backpack rests against a fallen log,
+          its straps frayed and its fabric worn by the elements. It doesn\u2019t
+          look like it\u2019s been here long\u2014whoever left it behind may not
+          be far. The flap is slightly open, revealing a glimpse of supplies inside,
+          tempting yet uncertain."
+      - column: Option0
+        value: Search
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 14
+      - column: EEvent
+        value: Trickster
+      - column: DisplayName
+        value: The Traveling Trickster
+      - column: TrialMin
+        value: 2
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "A flamboyantly dressed traveler lounges by the roadside, a sly grin
+          playing across their lips as they shuffle a deck of ornate cards. With
+          a flourish, they beckon you closer, their voice smooth as silk. \"Ah, a
+          weary traveler! Care for a little game of chance? Win, and your pockets
+          grow heavy with gold. Lose\u2026 well, fortune favors the bold.\" Your
+          spirit guide shifts uneasily, sensing mischief in the air."
+      - column: Option0
+        value: Gamble
+      - column: Option1
+        value: Leave
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 15
+      - column: EEvent
+        value: Clearing
+      - column: DisplayName
+        value: Silent Clearing
+      - column: TrialMin
+        value: 2
+      - column: Chance
+        value: 1
+      - column: Text
+        value: "You step into a quiet clearing, untouched by time, where the air
+          is still and the world feels momentarily at peace. The grass sways gently,
+          and a soft breeze whispers through the trees, as if inviting you to stay
+          a while. Your spirit guide floats beside you, their voice calm. \"A rare
+          moment of stillness\u2026 perhaps there is something to be gained from
+          it.\""
+      - column: Option0
+        value: Meditate
+      - column: Option1
+        value: Rest
+      - column: Option2
+        value: Leave
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 16
+      - column: EEvent
+        value: 
+      - column: DisplayName
+        value: 
+      - column: TrialMin
+        value: 3
+      - column: Chance
+        value: 0
+      - column: Text
+        value: 
+      - column: Option0
+        value: 
+      - column: Option1
+        value: 
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 17
+      - column: EEvent
+        value: 
+      - column: DisplayName
+        value: 
+      - column: TrialMin
+        value: 3
+      - column: Chance
+        value: 0
+      - column: Text
+        value: 
+      - column: Option0
+        value: 
+      - column: Option1
+        value: 
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 18
+      - column: EEvent
+        value: 
+      - column: DisplayName
+        value: 
+      - column: TrialMin
+        value: 3
+      - column: Chance
+        value: 0
+      - column: Text
+        value: 
+      - column: Option0
+        value: 
+      - column: Option1
+        value: 
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 19
+      - column: EEvent
+        value: 
+      - column: DisplayName
+        value: 
+      - column: TrialMin
+        value: 3
+      - column: Chance
+        value: 0
+      - column: Text
+        value: 
+      - column: Option0
+        value: 
+      - column: Option1
+        value: 
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+    - columnList:
+      - column: ID
+        value: 20
+      - column: EEvent
+        value: 
+      - column: DisplayName
+        value: 
+      - column: TrialMin
+        value: 3
+      - column: Chance
+        value: 0
+      - column: Text
+        value: 
+      - column: Option0
+        value: 
+      - column: Option1
+        value: 
+      - column: Option2
+        value: None
+      - column: Option3
+        value: None
+  optionsTab:
+    rowEntries:
+    - columnList:
+      - column: ID
+        value: 0
+      - column: EOption
+        value: None
+      - column: DisplayName
+        value: None
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 1
+      - column: EOption
+        value: Leave
+      - column: DisplayName
+        value: Leave
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: You leave and continue on your journey.
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 2
+      - column: EOption
+        value: Ignore
+      - column: DisplayName
+        value: Ignore
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 0.80
+      - column: Text0
+        value: You ignore the blacksmith, and he ignores you.
+      - column: Outcome1
+        value: Battle
+      - column: Value1
+        value: 1
+      - column: Chance1
+        value: 0.20
+      - column: Text1
+        value: You try to ignore the blacksmith, but he is insulted by your smug
+          attitude! En Garde!
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 3
+      - column: EOption
+        value: Run
+      - column: DisplayName
+        value: Run
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 4
+      - column: EOption
+        value: Hide
+      - column: DisplayName
+        value: Hide
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 5
+      - column: EOption
+        value: Dodge
+      - column: DisplayName
+        value: Dodge
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 6
+      - column: EOption
+        value: Feint
+      - column: DisplayName
+        value: Feint
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 7
+      - column: EOption
+        value: Bluff
+      - column: DisplayName
+        value: Bluff
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 8
+      - column: EOption
+        value: Intemidate
+      - column: DisplayName
+        value: Intemidate
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 9
+      - column: EOption
+        value: Fight
+      - column: DisplayName
+        value: Fight
+      - column: Outcome0
+        value: Battle
+      - column: Value0
+        value: 1
+      - column: Chance0
+        value: 0.80
+      - column: Text0
+        value: Why pay when you can pillage? You charge at the blacksmith with a
+          cry of greed!
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.20
+      - column: Text1
+        value: As you plan your attack, the blacksmith notices your greedy bloodlust
+          and flees!
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 10
+      - column: EOption
+        value: Spar
+      - column: DisplayName
+        value: Spar
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 11
+      - column: EOption
+        value: Search
+      - column: DisplayName
+        value: Search
+      - column: Outcome0
+        value: RelicGet
+      - column: Value0
+        value: 1
+      - column: Chance0
+        value: 0.75
+      - column: Text0
+        value: "As you carefully sift through the backpack, your fingers brush against
+          something cool and smooth\u2014hidden beneath the usual supplies lies a
+          relic pulsing with faint energy"
+      - column: Outcome1
+        value: GoldGet
+      - column: Value1
+        value: 400
+      - column: Chance1
+        value: 0.25
+      - column: Text1
+        value: You find 400 gold.
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 12
+      - column: EOption
+        value: Enter
+      - column: DisplayName
+        value: Enter
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 13
+      - column: EOption
+        value: Camp
+      - column: DisplayName
+        value: Camp
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 14
+      - column: EOption
+        value: Continue
+      - column: DisplayName
+        value: Continue
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 15
+      - column: EOption
+        value: Open
+      - column: DisplayName
+        value: Open
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 16
+      - column: EOption
+        value: Close
+      - column: DisplayName
+        value: Close
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 17
+      - column: EOption
+        value: Loot
+      - column: DisplayName
+        value: Loot
+      - column: Outcome0
+        value: GoldGet
+      - column: Value0
+        value: 150
+      - column: Chance0
+        value: 0.50
+      - column: Text0
+        value: Rifling through the scattered belongings, you uncover a hidden pouch
+          of gold coins, their surfaces still gleaming beneath a fine layer of dust.
+      - column: Outcome1
+        value: RelicGet
+      - column: Value1
+        value: 1
+      - column: Chance1
+        value: 0.10
+      - column: Text1
+        value: Buried beneath the wreckage, your fingers close around a curious relic,
+          you wonder what it does.
+      - column: Outcome2
+        value: EquipmentGet
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.40
+      - column: Text2
+        value: "Amid the wreckage, you spot a well-crafted piece of equipment, miraculously
+          intact and waiting for a new owner\u2014perhaps fate meant it for you."
+    - columnList:
+      - column: ID
+        value: 18
+      - column: EOption
+        value: Take
+      - column: DisplayName
+        value: Take
+      - column: Outcome0
+        value: GoldGet
+      - column: Value0
+        value: 200
+      - column: Chance0
+        value: 0.10
+      - column: Text0
+        value: You gain 200 gold, the thought crosses your mind "who would have left
+          this here?" best not to dwell on it...
+      - column: Outcome1
+        value: GoldGet
+      - column: Value1
+        value: 150
+      - column: Chance1
+        value: 0.50
+      - column: Text1
+        value: You gain 150 gold
+      - column: Outcome2
+        value: GoldGet
+      - column: Value2
+        value: 100
+      - column: Chance2
+        value: 0.40
+      - column: Text2
+        value: You gain 100 gold
+    - columnList:
+      - column: ID
+        value: 19
+      - column: EOption
+        value: Steal
+      - column: DisplayName
+        value: Steal
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 20
+      - column: EOption
+        value: Trade
+      - column: DisplayName
+        value: Trade
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 21
+      - column: EOption
+        value: Give
+      - column: DisplayName
+        value: Give
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 22
+      - column: EOption
+        value: Offer
+      - column: DisplayName
+        value: Offer
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 23
+      - column: EOption
+        value: Donate
+      - column: DisplayName
+        value: Donate
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 24
+      - column: EOption
+        value: Shop
+      - column: DisplayName
+        value: Shop
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Take a look at my wares, see if anything intrests you...
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 25
+      - column: EOption
+        value: Buy
+      - column: DisplayName
+        value: Buy
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 26
+      - column: EOption
+        value: Sell
+      - column: DisplayName
+        value: Sell
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 27
+      - column: EOption
+        value: Forge
+      - column: DisplayName
+        value: Forge
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 28
+      - column: EOption
+        value: Play
+      - column: DisplayName
+        value: Play
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 29
+      - column: EOption
+        value: Train
+      - column: DisplayName
+        value: Train
+      - column: Outcome0
+        value: StrengthUp
+      - column: Value0
+        value: 50
+      - column: Chance0
+        value: 0.75
+      - column: Text0
+        value: "You steady yourself and strike the dummy with precision, each impact
+          sharpening your form and refining your technique. With every blow, your
+          movements grow stronger, more controlled\u2014until finally, you step back,
+          heart pounding with newfound power. Your spirit guide watches with approval,
+          a flicker of pride in their voice. \"Strength is not just in the body,
+          but in the will to improve. You have gained both today.\""
+      - column: Outcome1
+        value: BreakWeapon
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.25
+      - column: Text1
+        value: "You unleash a flurry of strikes against the dummy, pushing your weapon\u2014and
+          yourself\u2014to the limit. With one final, forceful blow, a sharp crack
+          echoes through the air as your weapon splinters in your hands. Your spirit
+          guide exhales softly, their tone unreadable. \"Strength is earned through
+          trial\u2026 but even the strongest tools have their breaking point.\""
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 30
+      - column: EOption
+        value: Talk
+      - column: DisplayName
+        value: Talk
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 31
+      - column: EOption
+        value: Sing
+      - column: DisplayName
+        value: Sing
+      - column: Outcome0
+        value: MagicResistUp
+      - column: Value0
+        value: 75
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: "As you raise your voice to join the melody, the song swells around
+          you, twisting and weaving through your very essence. The notes shape themselves
+          to your tune, pulling you deeper into their rhythm until your voice is
+          no longer your own\u2014it belongs to the music. Just as the sensation
+          threatens to overwhelm you, the melody fades, releasing you with a final,
+          lingering note. A strange energy hums beneath your skin, a protective force
+          settling over you. Your spirit guide watches in quiet wonder. \"The music
+          has left its mark\u2026 a shield woven from sound itself.\""
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 32
+      - column: EOption
+        value: Dance
+      - column: DisplayName
+        value: Dance
+      - column: Outcome0
+        value: ArmorUp
+      - column: Value0
+        value: 75
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: "As you step into the rhythm, your body moves on its own, guided by
+          an unseen force. The melody swells, each beat commanding your limbs with
+          an unnatural grace, faster, stronger, unrelenting. Just as fear creeps
+          in, the music fades, leaving you breathless yet unharmed\u2014no, more
+          than that. Your body feels lighter, your stance steadier, as if wrapped
+          in an invisible armor. Your spirit guide exhales in awe. \"The music has
+          tested you\u2026 and found you worthy.\""
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 33
+      - column: EOption
+        value: Agree
+      - column: DisplayName
+        value: Agree
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 34
+      - column: EOption
+        value: Argue
+      - column: DisplayName
+        value: Argue
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 35
+      - column: EOption
+        value: Laugh
+      - column: DisplayName
+        value: Laugh
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 36
+      - column: EOption
+        value: Hug
+      - column: DisplayName
+        value: Hug
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 37
+      - column: EOption
+        value: Read
+      - column: DisplayName
+        value: Read
+      - column: Outcome0
+        value: SpellPowerUp
+      - column: Value0
+        value: 50
+      - column: Chance0
+        value: 0.75
+      - column: Text0
+        value: "s your fingers brush the pages, the ink writhes and reshapes, forming
+          words meant only for you. A surge of understanding floods your mind\u2014ancient
+          techniques, forgotten spells, or raw, untamed power now at your command."
+      - column: Outcome1
+        value: StartDamaged
+      - column: Value1
+        value: 25
+      - column: Chance1
+        value: 0.25
+      - column: Text1
+        value: The moment your eyes trace the shifting text, a searing pain lances
+          through your mind, as if something ancient and hungry is clawing at your
+          very essence. The words twist and dissolve, leaving behind only a dull
+          ache and the faint scent of burning parchment.
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 38
+      - column: EOption
+        value: Eat
+      - column: DisplayName
+        value: Eat
+      - column: Outcome0
+        value: StrengthDown
+      - column: Value0
+        value: 25
+      - column: Chance0
+        value: 0.50
+      - column: Text0
+        value: "As you swallow the mushroom, a bitter, burning sensation spreads
+          through your body, your stomach twisting in protest. A wave of weakness
+          washes over you, your limbs sluggish as if sapped of their strength. Your
+          spirit guide flutters anxiously, their voice filled with regret. \"I feared
+          as much\u2026 not all gifts from the earth are meant to be taken.\""
+      - column: Outcome1
+        value: StrengthUp
+      - column: Value1
+        value: 50
+      - column: Chance1
+        value: 0.50
+      - column: Text1
+        value: "The moment you swallow the mushroom, a rush of warmth spreads through
+          your limbs, filling you with a newfound vigor. Your muscles feel tighter,
+          your grip stronger\u2014every movement charged with raw power. Your spirit
+          guide tilts their head in surprise. \"Well\u2026 it seems this land still
+          offers its blessings. Use it well.\""
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 39
+      - column: EOption
+        value: Quaff
+      - column: DisplayName
+        value: Quaff
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 40
+      - column: EOption
+        value: Rock
+      - column: DisplayName
+        value: Rock
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 41
+      - column: EOption
+        value: Paper
+      - column: DisplayName
+        value: Paper
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 42
+      - column: EOption
+        value: Scissors
+      - column: DisplayName
+        value: Scissors
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 43
+      - column: EOption
+        value: Right
+      - column: DisplayName
+        value: Right
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 44
+      - column: EOption
+        value: Middle
+      - column: DisplayName
+        value: Middle
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 45
+      - column: EOption
+        value: Left
+      - column: DisplayName
+        value: Left
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 46
+      - column: EOption
+        value: Red
+      - column: DisplayName
+        value: Red
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 47
+      - column: EOption
+        value: Green
+      - column: DisplayName
+        value: Green
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 48
+      - column: EOption
+        value: Blue
+      - column: DisplayName
+        value: Blue
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 49
+      - column: EOption
+        value: High
+      - column: DisplayName
+        value: High
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 50
+      - column: EOption
+        value: Low
+      - column: DisplayName
+        value: Low
+      - column: Outcome0
+        value: None
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 51
+      - column: EOption
+        value: Duel
+      - column: DisplayName
+        value: Duel
+      - column: Outcome0
+        value: Battle
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: '"I do love a good challenge" he chuckles, "ON GAURD!"'
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 52
+      - column: EOption
+        value: Recharge
+      - column: DisplayName
+        value: Recharge
+      - column: Outcome0
+        value: ReviveGet
+      - column: Value0
+        value: 0
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: The spirit glows a bit brighter as you continue on your path, and
+          you feel a little bit safer.
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 53
+      - column: EOption
+        value: PlaceYourHand
+      - column: DisplayName
+        value: Place your hand on the stone
+      - column: Outcome0
+        value: RandomRarityUp
+      - column: Value0
+        value: 1
+      - column: Chance0
+        value: 0.50
+      - column: Text0
+        value: The Runed Stone glows and shakes a little, a small bit of energy is
+          infused into your gear.
+      - column: Outcome1
+        value: RandomRarityUp
+      - column: Value1
+        value: 2
+      - column: Chance1
+        value: 0.40
+      - column: Text1
+        value: The Runed Stone glows brightly and shakes the ground below your feat,
+          a surge of energy is infused into your gear.
+      - column: Outcome2
+        value: RandomRarityUp
+      - column: Value2
+        value: 3
+      - column: Chance2
+        value: 0.10
+      - column: Text2
+        value: The Runed Stone glows so brightly it blinds you and you can barely
+          stay on your feat as the stone is shaking so much, your body tingles as
+          a large amount of energy is infused into your gear.
+    - columnList:
+      - column: ID
+        value: 53
+      - column: EOption
+        value: PetBlackCat
+      - column: DisplayName
+        value: Pet
+      - column: Outcome0
+        value: RandomLevelUp
+      - column: Value0
+        value: 2
+      - column: Chance0
+        value: 0.10
+      - column: Text0
+        value: The cat melts into your touch, eyes half-lidded in bliss as it leans
+          harder into your hand, purring.
+      - column: Outcome1
+        value: RandomLevelUp
+      - column: Value1
+        value: 1
+      - column: Chance1
+        value: 0.90
+      - column: Text1
+        value: The cat accepts your touch with a slow blink and a faint purr, but
+          its tail flicks, and it scurries off.
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 54
+      - column: EOption
+        value: RubBellyBlackCat
+      - column: DisplayName
+        value: Rub Belly
+      - column: Outcome0
+        value: StartDamaged
+      - column: Value0
+        value: 25
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: The cat stiffens under your touch, ears flattening in warning before
+          it lashes out with a swift scratch, making its displeasure crystal clear.
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 54
+      - column: EOption
+        value: PetOrangeCat
+      - column: DisplayName
+        value: Pet
+      - column: Outcome0
+        value: StartDamaged
+      - column: Value0
+        value: 25
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: The cat stiffens under your touch, ears flattening in warning before
+          it lashes out with a swift scratch, making its displeasure crystal clear.
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 55
+      - column: EOption
+        value: RubBellyOrangeCat
+      - column: DisplayName
+        value: Rub Belly
+      - column: Outcome0
+        value: RandomLevelUp
+      - column: Value0
+        value: 1
+      - column: Chance0
+        value: 0.10
+      - column: Text0
+        value: The cat melts into your touch, eyes half-lidded in bliss as it leans
+          harder into your hand, purring
+      - column: Outcome1
+        value: RandomLevelUp
+      - column: Value1
+        value: 1
+      - column: Chance1
+        value: 0.90
+      - column: Text1
+        value: The cat accepts your touch with a slow blink and a faint purr, but
+          its tail flicks, and it scurries off.
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 56
+      - column: EOption
+        value: Drink
+      - column: DisplayName
+        value: Drink
+      - column: Outcome0
+        value: SpellPowerDown
+      - column: Value0
+        value: 25
+      - column: Chance0
+        value: 0.25
+      - column: Text0
+        value: "The moment the tainted water touches your lips, a bitter, acrid taste
+          burns your throat. A sharp pain pulses through your body, as if something
+          inside you is fighting against the corruption. Your spirit friend flutters
+          anxiously, their voice filled with regret. \"I warned you\u2026 this well
+          does not give, it only takes.\""
+      - column: Outcome1
+        value: SpellPowerUp
+      - column: Value1
+        value: 50
+      - column: Chance1
+        value: 0.75
+      - column: Text1
+        value: "As the tainted water slides down your throat, a strange warmth spreads
+          through your body, setting your veins alight with raw energy. The air around
+          you crackles, your magic surging with newfound potency, though an unsettling
+          aftertaste lingers. Your spirit friend watches warily, their voice uncertain.
+          \"Power can come from many sources\u2026 but not all of them are kind.\""
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 57
+      - column: EOption
+        value: Gamble
+      - column: DisplayName
+        value: Gamble
+      - column: Outcome0
+        value: GetGoldPercent
+      - column: Value0
+        value: 100
+      - column: Chance0
+        value: 0.25
+      - column: Text0
+        value: "With a confident hand, you make your choice, and the trickster\u2019s
+          smirk falters ever so slightly. They flip the final card, their eyes widening
+          in mock surprise before they let out a hearty laugh. \"Well, well! Seems
+          luck favors you today, friend!\" With a dramatic bow, they slide a hefty
+          pouch of gold into your hands, the coins jingling with promise. Your spirit
+          guide hums approvingly. \"A rare thing\u2014to best a trickster at their
+          own game. Spend it wisely.\""
+      - column: Outcome1
+        value: LoseGoldPercent
+      - column: Value1
+        value: 100
+      - column: Chance1
+        value: 0.75
+      - column: Text1
+        value: "You make your choice, heart pounding as the trickster flips the final
+          card\u2014only for their grin to stretch wider, eyes twinkling with amusement.
+          \"Ah, fate can be so cruel!\" they muse, effortlessly sweeping up every
+          last coin from your pouch with a practiced hand. With a theatrical bow,
+          they tip their hat and step back. \"A pleasure doing business! Perhaps
+          luck will smile on you next time\u2026 if you have anything left to wager.\"
+          Your spirit guide sighs, shaking their head. \"Tricksters rarely play fair\u2026
+          but we knew the risk.\""
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 58
+      - column: EOption
+        value: Meditate
+      - column: DisplayName
+        value: Meditate
+      - column: Outcome0
+        value: Buff
+      - column: Value0
+        value: 1
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: "You close your eyes and steady your breath, letting the silence of
+          the clearing wash over you. The tension in your body fades as your mind
+          sharpens, each inhale filling you with clarity, each exhale releasing doubt.
+          When you rise, you feel lighter, more focused\u2014ready for whatever battle
+          lies ahead. Your spirit guide nods approvingly. \"A clear mind wields a
+          sharper blade\u2026 you are prepared.\""
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 59
+      - column: EOption
+        value: Rest
+      - column: DisplayName
+        value: Rest
+      - column: Outcome0
+        value: ReviveGet
+      - column: Value0
+        value: 1
+      - column: Chance0
+        value: 1.00
+      - column: Text0
+        value: "You settle into the clearing, allowing yourself a moment of true
+          rest as the gentle sounds of nature lull you into comfort. Nearby, your
+          spirit guide drifts closer to the earth, their glow pulsing softly as they
+          absorb the ambient energy of the land. When you finally rise, they stretch
+          with renewed vigor, their voice filled with quiet gratitude. \"This place
+          is rich with life\u2026 I feel restored. We are ready to move forward.\""
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 0.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 
+      - column: EOption
+        value: 
+      - column: DisplayName
+        value: 
+      - column: Outcome0
+        value: 
+      - column: Value0
+        value: 
+      - column: Chance0
+        value: 
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: None
+      - column: Value1
+        value: 0
+      - column: Chance1
+        value: 0.00
+      - column: Text1
+        value: Nothing Happens
+      - column: Outcome2
+        value: None
+      - column: Value2
+        value: 0
+      - column: Chance2
+        value: 1.00
+      - column: Text2
+        value: Nothing Happens
+    - columnList:
+      - column: ID
+        value: 
+      - column: EOption
+        value: 
+      - column: DisplayName
+        value: 
+      - column: Outcome0
+        value: 
+      - column: Value0
+        value: 
+      - column: Chance0
+        value: 
+      - column: Text0
+        value: Nothing Happens
+      - column: Outcome1
+        value: 
+      - column: Value1
+        value: 
+      - column: Chance1
+        value: 
+      - column: Text1
+        value: Nothing Happens
+  outcomesTab:
+    rowEntries:
+    - columnList:
+      - column: ID
+        value: 0
+      - column: EOutcome
+        value: None
+      - column: DisplayName
+        value: Continue
+    - columnList:
+      - column: ID
+        value: 1
+      - column: EOutcome
+        value: GoldGet
+      - column: DisplayName
+        value: Get Gold
+    - columnList:
+      - column: ID
+        value: 2
+      - column: EOutcome
+        value: GoldLose
+      - column: DisplayName
+        value: Lose Gold
+    - columnList:
+      - column: ID
+        value: 3
+      - column: EOutcome
+        value: RelicGet
+      - column: DisplayName
+        value: Get Relic
+    - columnList:
+      - column: ID
+        value: 4
+      - column: EOutcome
+        value: RelicLose
+      - column: DisplayName
+        value: Lose Relic
+    - columnList:
+      - column: ID
+        value: 5
+      - column: EOutcome
+        value: RelicTrade
+      - column: DisplayName
+        value: Trade Relic
+    - columnList:
+      - column: ID
+        value: 6
+      - column: EOutcome
+        value: ItemLose
+      - column: DisplayName
+        value: Lose Item
+    - columnList:
+      - column: ID
+        value: 7
+      - column: EOutcome
+        value: ItemGet
+      - column: DisplayName
+        value: Get Item
+    - columnList:
+      - column: ID
+        value: 8
+      - column: EOutcome
+        value: EquipmentGet
+      - column: DisplayName
+        value: Get Equipment
+    - columnList:
+      - column: ID
+        value: 9
+      - column: EOutcome
+        value: EquipmentLose
+      - column: DisplayName
+        value: Lose Equipment
+    - columnList:
+      - column: ID
+        value: 10
+      - column: EOutcome
+        value: EquipmentTrade
+      - column: DisplayName
+        value: Trade Equipment
+    - columnList:
+      - column: ID
+        value: 11
+      - column: EOutcome
+        value: EquipmentUp
+      - column: DisplayName
+        value: Equipment Level Up
+    - columnList:
+      - column: ID
+        value: 12
+      - column: EOutcome
+        value: EquipmentDown
+      - column: DisplayName
+        value: Equipment Level Down
+    - columnList:
+      - column: ID
+        value: 13
+      - column: EOutcome
+        value: RarityUp
+      - column: DisplayName
+        value: Rarity Level Up
+    - columnList:
+      - column: ID
+        value: 14
+      - column: EOutcome
+        value: RarityDown
+      - column: DisplayName
+        value: Rarity Level Down
+    - columnList:
+      - column: ID
+        value: 15
+      - column: EOutcome
+        value: DaggerGet
+      - column: DisplayName
+        value: Get Dagger
+    - columnList:
+      - column: ID
+        value: 16
+      - column: EOutcome
+        value: ShieldGet
+      - column: DisplayName
+        value: Get Shield
+    - columnList:
+      - column: ID
+        value: 17
+      - column: EOutcome
+        value: SwordGet
+      - column: DisplayName
+        value: Get Sword
+    - columnList:
+      - column: ID
+        value: 18
+      - column: EOutcome
+        value: AxeGet
+      - column: DisplayName
+        value: Get Axe
+    - columnList:
+      - column: ID
+        value: 19
+      - column: EOutcome
+        value: HammerGet
+      - column: DisplayName
+        value: Get Hammer
+    - columnList:
+      - column: ID
+        value: 20
+      - column: EOutcome
+        value: WandGet
+      - column: DisplayName
+        value: Get Wand
+    - columnList:
+      - column: ID
+        value: 21
+      - column: EOutcome
+        value: ScrollGet
+      - column: DisplayName
+        value: Get Scroll
+    - columnList:
+      - column: ID
+        value: 22
+      - column: EOutcome
+        value: PotionGet
+      - column: DisplayName
+        value: Get Potion
+    - columnList:
+      - column: ID
+        value: 23
+      - column: EOutcome
+        value: DaggerUp
+      - column: DisplayName
+        value: Rarity Level Up
+    - columnList:
+      - column: ID
+        value: 24
+      - column: EOutcome
+        value: DaggerDown
+      - column: DisplayName
+        value: Rarity Level Down
+    - columnList:
+      - column: ID
+        value: 25
+      - column: EOutcome
+        value: SheildUp
+      - column: DisplayName
+        value: ' Get Dagger'
+    - columnList:
+      - column: ID
+        value: 26
+      - column: EOutcome
+        value: SheildDown
+      - column: DisplayName
+        value: ' Get Shield'
+    - columnList:
+      - column: ID
+        value: 27
+      - column: EOutcome
+        value: SwordUp
+      - column: DisplayName
+        value: ' Get Sword'
+    - columnList:
+      - column: ID
+        value: 28
+      - column: EOutcome
+        value: SwordDown
+      - column: DisplayName
+        value: ' Get Axe'
+    - columnList:
+      - column: ID
+        value: 29
+      - column: EOutcome
+        value: AxeUp
+      - column: DisplayName
+        value: ' Get Hammer'
+    - columnList:
+      - column: ID
+        value: 30
+      - column: EOutcome
+        value: AxeDown
+      - column: DisplayName
+        value: ' Get Wand'
+    - columnList:
+      - column: ID
+        value: 31
+      - column: EOutcome
+        value: HammerUp
+      - column: DisplayName
+        value: ' Get Scroll'
+    - columnList:
+      - column: ID
+        value: 32
+      - column: EOutcome
+        value: HammerDown
+      - column: DisplayName
+        value: ' Get Potion'
+    - columnList:
+      - column: ID
+        value: 33
+      - column: EOutcome
+        value: NatureUp
+      - column: DisplayName
+        value: Dagger Power Up
+    - columnList:
+      - column: ID
+        value: 34
+      - column: EOutcome
+        value: NatureDown
+      - column: DisplayName
+        value: Dagger Power Down
+    - columnList:
+      - column: ID
+        value: 35
+      - column: EOutcome
+        value: FireUp
+      - column: DisplayName
+        value: Sheild Power Up
+    - columnList:
+      - column: ID
+        value: 36
+      - column: EOutcome
+        value: FireDown
+      - column: DisplayName
+        value: Sheild Power Down
+    - columnList:
+      - column: ID
+        value: 37
+      - column: EOutcome
+        value: IceUp
+      - column: DisplayName
+        value: Sword Power Up
+    - columnList:
+      - column: ID
+        value: 38
+      - column: EOutcome
+        value: IceDown
+      - column: DisplayName
+        value: Sword Power Down
+    - columnList:
+      - column: ID
+        value: 39
+      - column: EOutcome
+        value: BloodUp
+      - column: DisplayName
+        value: Axe Power Up
+    - columnList:
+      - column: ID
+        value: 40
+      - column: EOutcome
+        value: BloodDown
+      - column: DisplayName
+        value: Axe Power Down
+    - columnList:
+      - column: ID
+        value: 41
+      - column: EOutcome
+        value: ShadowUp
+      - column: DisplayName
+        value: Hammer Power Up
+    - columnList:
+      - column: ID
+        value: 42
+      - column: EOutcome
+        value: ShadowDown
+      - column: DisplayName
+        value: Hammer Power Down
+    - columnList:
+      - column: ID
+        value: 43
+      - column: EOutcome
+        value: ArmorUp
+      - column: DisplayName
+        value: Nature Power Up
+    - columnList:
+      - column: ID
+        value: 44
+      - column: EOutcome
+        value: ArmorDown
+      - column: DisplayName
+        value: Nature Power Down
+    - columnList:
+      - column: ID
+        value: 45
+      - column: EOutcome
+        value: MagicResistUp
+      - column: DisplayName
+        value: Fire Power Up
+    - columnList:
+      - column: ID
+        value: 46
+      - column: EOutcome
+        value: MagicResistDown
+      - column: DisplayName
+        value: Fire Power Down
+    - columnList:
+      - column: ID
+        value: 47
+      - column: EOutcome
+        value: StrengthUp
+      - column: DisplayName
+        value: Strength Up
+    - columnList:
+      - column: ID
+        value: 48
+      - column: EOutcome
+        value: StrengthDown
+      - column: DisplayName
+        value: Strength Down
+    - columnList:
+      - column: ID
+        value: 49
+      - column: EOutcome
+        value: SpellPowerUp
+      - column: DisplayName
+        value: Fire Power Down
+    - columnList:
+      - column: ID
+        value: 50
+      - column: EOutcome
+        value: SpellPowerDown
+      - column: DisplayName
+        value: Ice Power Up
+    - columnList:
+      - column: ID
+        value: 51
+      - column: EOutcome
+        value: HealthUp
+      - column: DisplayName
+        value: Health Up
+    - columnList:
+      - column: ID
+        value: 52
+      - column: EOutcome
+        value: HealthDown
+      - column: DisplayName
+        value: Health Down
+    - columnList:
+      - column: ID
+        value: 53
+      - column: EOutcome
+        value: CritUp
+      - column: DisplayName
+        value: Blood Power Down
+    - columnList:
+      - column: ID
+        value: 54
+      - column: EOutcome
+        value: CritDown
+      - column: DisplayName
+        value: Shadow Power Up
+    - columnList:
+      - column: ID
+        value: 55
+      - column: EOutcome
+        value: Buff
+      - column: DisplayName
+        value: Buff Received
+    - columnList:
+      - column: ID
+        value: 56
+      - column: EOutcome
+        value: Debuff
+      - column: DisplayName
+        value: Debuff Received
+    - columnList:
+      - column: ID
+        value: 57
+      - column: EOutcome
+        value: Battle
+      - column: DisplayName
+        value: Battle
+    - columnList:
+      - column: ID
+        value: 58
+      - column: EOutcome
+        value: ReviveGet
+      - column: DisplayName
+        value: Revive Gained
+    - columnList:
+      - column: ID
+        value: 59
+      - column: EOutcome
+        value: ReviveLose
+      - column: DisplayName
+        value: Revive Lost
+    - columnList:
+      - column: ID
+        value: 60
+      - column: EOutcome
+        value: RandomRarityUp
+      - column: DisplayName
+        value: Random Rarity Up
+    - columnList:
+      - column: ID
+        value: 61
+      - column: EOutcome
+        value: RandomLevelUp
+      - column: DisplayName
+        value: Random Level Up
+    - columnList:
+      - column: ID
+        value: 62
+      - column: EOutcome
+        value: StartDamaged
+      - column: DisplayName
+        value: Start The Next Fight Damaged
+    - columnList:
+      - column: ID
+        value: 63
+      - column: EOutcome
+        value: LoseGoldPercent
+      - column: DisplayName
+        value: Lose Gold Percent
+    - columnList:
+      - column: ID
+        value: 64
+      - column: EOutcome
+        value: GetGoldPercent
+      - column: DisplayName
+        value: Get Gold Percent

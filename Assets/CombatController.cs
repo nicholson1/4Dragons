@@ -101,6 +101,13 @@ public class CombatController : MonoBehaviour
     public int retryAvailable = 1;
 
 
+    public int StrengthBlessing = 0;
+    public int SpellPowerBlessing = 0;
+    public int ArmorBlessing = 0;
+    public int MRBlessing = 0;
+    public int startDamaged = 0;
+   
+
     [SerializeField] private AudioClip _beginAdventure;
     private void Awake()
     {
@@ -353,7 +360,7 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Mystery:
-                EventsManager._instance.RandomEvent();
+                EventUI.instance.RandomEvent();
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(false);
@@ -562,6 +569,30 @@ public class CombatController : MonoBehaviour
         {
             entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, 5* entitiesInCombat[1].myCharacter._level  );
             entitiesInCombat[1].myCharacter._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, 5* entitiesInCombat[1].myCharacter._level  );
+        }
+        
+        // add permanant blessings from events
+        if (StrengthBlessing != 0)
+        {
+            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Strength, 1, StrengthBlessing);
+        }
+        if (SpellPowerBlessing != 0)
+        {
+            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.SpellPower, 1, SpellPowerBlessing);
+        }
+        if (ArmorBlessing != 0)
+        {
+            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Armor, 1, ArmorBlessing);
+        }
+        if (MRBlessing != 0)
+        {
+            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.MagicResist, 1, MRBlessing);
+        }
+        
+        //start damaged
+        if (startDamaged != 0)
+        {
+            Player._combatEntity.LoseHPDirect(Player._combatEntity,Mathf.RoundToInt(Player._maxHealth * (startDamaged/100f)));
         }
 
         UpdateUiButtons();
