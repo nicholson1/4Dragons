@@ -38,6 +38,19 @@ public class ForgeManager : MonoBehaviour
         }
     }
 
+    public void ShowIcon()
+    {
+        if(Upgrading)
+        {
+            UpgradePrice.SetActive(true);
+        }
+        if(Enhancing)
+        {
+            EnhancePrice.SetActive(true);
+        }
+    }
+    
+
     public void ShowPrice(Equipment e)
     {
         int Upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod);
@@ -45,19 +58,19 @@ public class ForgeManager : MonoBehaviour
         
         if(Upgrading)
         {
-            UpgradePrice.SetActive(true);
+            UpgradePriceText.gameObject.SetActive(true);
             UpgradePriceText.text = Upgrade.ToString();
         }
         if(Enhancing)
         {
-            EnhancePrice.SetActive(true);
+            EnhancePriceText.gameObject.SetActive(true);
             EnhancePriceText.text = Enchance.ToString();
         }
     }
     public void HidePrice()
     {
-        UpgradePrice.SetActive(false);
-        EnhancePrice.SetActive(false);
+        EnhancePriceText.gameObject.SetActive(false);
+        UpgradePriceText.gameObject.SetActive(false);
     }
 
     private void Start()
@@ -112,6 +125,8 @@ public class ForgeManager : MonoBehaviour
         // on click
         // upgrade item
         // take gold
+        HidePrice();
+
     }
     public void ClickEnhanceButtonFromForge()
     {
@@ -128,6 +143,8 @@ public class ForgeManager : MonoBehaviour
         // on click
         // upgrade item
         // take gold
+        HidePrice();
+
     }
 
    
@@ -138,6 +155,7 @@ public class ForgeManager : MonoBehaviour
         UpgradingFollow.gameObject.SetActive(false);
         EnhancingFollow.gameObject.SetActive(false);
         UIController._instance.ToggleForgeUI(0);
+        UIController._instance.ToggleInventoryUI(0);
         UIController._instance.ToggleMapUI(1);
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {

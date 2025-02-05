@@ -17,7 +17,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject ShopUI;
     [SerializeField] private GameObject ForgeUI;
     [SerializeField] private GameObject EventUI;
-
+    [SerializeField] private GameObject BlackSmithUI;
+    
     [SerializeField] private GameObject SettingUI;
     [SerializeField] private GameObject VictoryUI;
     [SerializeField] private GameObject TitleScreen;
@@ -485,7 +486,34 @@ public class UIController : MonoBehaviour
         if(!EventMoving)
         {
             EventOn = !EventOn;
-            StartCoroutine(MoveLootObject(EventUI));
+            StartCoroutine(MoveEventObject(EventUI));
+        }
+        
+    }
+    bool blackSmithMoving = false;
+    private bool blackSmithOn = false;
+
+    public void ToggleBlackSmithUI(int force = -1)
+    {
+        if (force == 0)
+        {
+            if (blackSmithOn == false)
+            {
+                return;
+            }
+        }
+        if (force == 1)
+        {
+            if (blackSmithOn == true)
+            {
+                return;
+            }
+        }
+
+        if(!blackSmithMoving)
+        {
+            blackSmithOn = !blackSmithOn;
+            StartCoroutine(MoveBlacksmithObject(BlackSmithUI));
         }
         
     }
@@ -628,6 +656,52 @@ public class UIController : MonoBehaviour
         moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
 
         LootMoving = false;
+    }
+    IEnumerator MoveEventObject(GameObject moveObj)
+    {
+        
+        EventMoving = true;
+        
+        Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 endpos = new Vector2(-startpos.x, startpos.y);
+        
+        //Debug.Log(startpos);
+        //Debug.Log(endpos);
+            
+        float t = 0;
+        while (t < 1)
+        {
+            moveObj.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
+
+        EventMoving = false;
+    }
+    IEnumerator MoveBlacksmithObject(GameObject moveObj)
+    {
+        
+        blackSmithMoving = true;
+        
+        Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 endpos = new Vector2(-startpos.x, startpos.y);
+        
+        //Debug.Log(startpos);
+        //Debug.Log(endpos);
+            
+        float t = 0;
+        while (t < 1)
+        {
+            moveObj.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
+
+        blackSmithMoving = false;
     }
 
     public void ActivateDeathScreen()

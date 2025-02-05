@@ -6,7 +6,7 @@ namespace Map
     {
         MinorEnemy,
         EliteEnemy,
-        RestSite,
+        BlackSmith,
         Treasure,
         Store,
         Boss,

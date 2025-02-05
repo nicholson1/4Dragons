@@ -76,7 +76,7 @@ namespace Map
                     break;
                 case NodeType.EliteEnemy:
                     break;
-                case NodeType.RestSite:
+                case NodeType.BlackSmith:
                     break;
                 case NodeType.Treasure:
                     break;

@@ -191,6 +191,23 @@ public class ShopManager : MonoBehaviour
 
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
+            case InventorySlot.SellShopType.Blacksmith:
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item1);
+                
+                e = EC.CreateRandomArmor(level);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item2);
+                
+                e = EC.CreateRandomWeapon(level, false);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item3);
+                
+                e = EC.CreateRandomWeapon(level, false);
+
+                EquipmentManager._instance.CreateDragItemInShop(e, Item4);
+                break;
             case InventorySlot.SellShopType.FullHalfPrice:
                 e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
@@ -300,6 +317,8 @@ public class ShopManager : MonoBehaviour
                 return "The Antiquitist";
             case InventorySlot.SellShopType.Potions:
                 return "The Alchemist";
+            case InventorySlot.SellShopType.Blacksmith:
+                return "The Blacksmith";
         }
 
         return "";

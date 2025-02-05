@@ -142,7 +142,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if(e.isRelic)
             return;
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
-
+        
         if (ForgeManager._instance.Upgrading)
         {
             EquipmentManager._instance.UpgradeEquipment(this);

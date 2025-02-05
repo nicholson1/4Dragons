@@ -631,6 +631,13 @@ public class EquipmentManager : MonoBehaviour
     
     public DragItem UpgradeEquipment(DragItem item)
     {
+        //check if we are at the forge(ie paying for it or free) 
+        //check for money
+        //if no money play sound
+        // if money
+        // do the thing
+        //if not at the store set upgrade to false (so you can only do 1) maybe check int value
+        
         Equipment e = item.e;
         
         item._toolTip.CloseTip();
@@ -642,12 +649,21 @@ public class EquipmentManager : MonoBehaviour
         item._toolTip.e = e;
 
         item.InitializeDragItem(e, item.currentLocation);
-        
+
+        ForgeManager._instance.ShowIcon();
         ForgeManager._instance.ShowPrice(e);
+
         return item;
     }
     public DragItem EnhanceEquipment(DragItem item)
     {
+        //check if we are at the forge(ie paying for it or free) 
+        //check for money
+        //if no money play sound
+        // if money
+        // do the thing
+        //if not at the store set upgrade to false (so you can only do 1) maybe check int value
+
         Equipment e = item.e;
 
         if (e.stats[Stats.Rarity] >= 3)
@@ -663,8 +679,8 @@ public class EquipmentManager : MonoBehaviour
 
 
         item.InitializeDragItem(e, item.currentLocation);
+        ForgeManager._instance.ShowIcon();
         ForgeManager._instance.ShowPrice(e);
-
         return item;
     }
 

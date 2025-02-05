@@ -278,6 +278,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         FullHalfPrice,
         Relics,
         Potions,
+        Blacksmith,
         None,
 
 

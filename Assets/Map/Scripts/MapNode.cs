@@ -317,6 +317,10 @@ namespace Map
                     toolTip.Title = "Unknown";
                     toolTip.Message = "You dont know what will be here";
                     break;
+                case NodeType.BlackSmith:
+                    toolTip.Title = "The Blacksmith";
+                    toolTip.Message = "Chose to Upgrade your gear at the store, buy items at the shop or duel for rewards";
+                    break;
                 case NodeType.Boss:
                     Stats stat = EliteManager._instance.GetStatFromSpellType((SpellSchool)Node.specialNodeType);
                     (string, Sprite, Color, string) info = StatDisplayManager._instance.GetValues(stat);

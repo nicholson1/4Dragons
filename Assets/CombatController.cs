@@ -288,9 +288,13 @@ public class CombatController : MonoBehaviour
                 TreasureNodeClicked(true);
                 MusicManager.Instance.PlayAdventureMusic();
                 break;
+            case NodeType.BlackSmith:
+                UIController._instance.ToggleBlackSmithUI();
+                MusicManager.Instance.PlayShopMusic();
+                break;
             case NodeType.Mystery:
                MysterySelect();
-                break;
+               break;
         }
         
         TutorialManager.Instance.CloseTip(TutorialNames.Cleanse);
