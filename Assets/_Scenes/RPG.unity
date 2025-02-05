@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.48311162, g: 0.52792275, b: 0.5974375, a: 1}
+  m_IndirectSpecularColor: {r: 0.48311162, g: 0.5279228, b: 0.5974375, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5196,6 +5196,11 @@ MonoBehaviour:
   previousDragonSchool: 8
   Difficulty: 0
   retryAvailable: 1
+  StrengthBlessing: 0
+  SpellPowerBlessing: 0
+  ArmorBlessing: 0
+  MRBlessing: 0
+  startDamaged: 0
   _beginAdventure: {fileID: 8300000, guid: 55d7e35724c1ef14c9fbf148d765793f, type: 3}
 --- !u!114 &112750801
 MonoBehaviour:
@@ -23304,6 +23309,38 @@ PrefabInstance:
     - target: {fileID: 6831785219334008445, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 13.799988
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1857384933480717991}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ClickOnTreaure
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: TreasureChest, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6831785219334008446, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7451899475511768857, guid: ffac727a02456ac44a0c3796fbde4574, type: 3}
       propertyPath: _tutorialID
@@ -67379,7 +67416,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1.23.2025
+  m_text: 2.5.2025
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -87797,6 +87834,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1858120171091744125, guid: 67d540c994e4b594abf7d7858f6c1e91, type: 3}
   m_PrefabInstance: {fileID: 1857384933480717989}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1857384933480717991 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1857384934298845201, guid: 67d540c994e4b594abf7d7858f6c1e91, type: 3}
+  m_PrefabInstance: {fileID: 1857384933480717989}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187426786015170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9802048b81c868499ffd890f6f61217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1935818659614596815
 PrefabInstance:
   m_ObjectHideFlags: 0
