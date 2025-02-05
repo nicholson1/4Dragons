@@ -25,10 +25,18 @@ public class TreasureChest : MonoBehaviour
 
     public bool testRun = false;
 
-    private void OnMouseDown()
+    private void  OnMouseDown()
     {
-        if(EventSystem.current.IsPointerOverGameObject())
-            return;
+        ClickOnTreaure();
+    }
+    
+    public void ClickOnTreaure(bool force = false)
+    {
+        if(!force)
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+        }
         
         if(!testRun)
         {
