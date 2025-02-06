@@ -18,7 +18,6 @@ public enum EEvent
     Backpack = 13,
     Trickster = 14,
     Clearing = 15,
-
 }
 
 public enum EOption
