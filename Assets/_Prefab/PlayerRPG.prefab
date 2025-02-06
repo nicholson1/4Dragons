@@ -295,6 +295,7 @@ GameObject:
   - component: {fileID: 4475524705538492350}
   - component: {fileID: 1887791475}
   - component: {fileID: 1887791476}
+  - component: {fileID: 5583783645349465511}
   m_Layer: 11
   m_Name: PlayerRPG
   m_TagString: Player
@@ -445,6 +446,7 @@ MonoBehaviour:
   getGold: {fileID: 8300000, guid: 33c3e592954a93b4ca97fcb0a444e2a9, type: 3}
   getGoldVol: 0.5
   getGoldpitch: 1
+  EnergyGlow: {fileID: 0}
 --- !u!114 &1887791476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +466,20 @@ MonoBehaviour:
   attacker: {fileID: 0}
   lastSpellCastTargeted: 40
   IntentionsRunning: 0
+--- !u!114 &5583783645349465511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3946359818273263686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8fb86a6c7235fb4db91cb0df1888122, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showRays: 0
+  pointParent: {fileID: 0}
 --- !u!1 &3946359818725569880
 GameObject:
   m_ObjectHideFlags: 0

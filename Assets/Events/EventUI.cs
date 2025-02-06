@@ -103,8 +103,12 @@ public class EventUI : MonoBehaviour
 
     private string GetOptionDetailsText(EOption option)
     {
-        string optionDetails = ": ";
         Database database = EventManager.Instance.Database;
+
+        if (!database.optionsTab.GetBool((int)option, "ShowOutcomes"))
+            return string.Empty;
+
+        string optionDetails = ": ";
         EOutcome[] outcomes = new EOutcome[EventManager.OUTCOME_COUNT];
         float[] chances = new float[EventManager.OUTCOME_COUNT];
         float[] values = new float[EventManager.OUTCOME_COUNT];
