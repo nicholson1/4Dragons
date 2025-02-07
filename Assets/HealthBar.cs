@@ -515,6 +515,7 @@ public class HealthBar : MonoBehaviour
     private void Update()
     {
         UpdateBarVisuals();
+        MoveTutorial();
 
         if (waitTimer > 0)
         {
@@ -556,6 +557,38 @@ public class HealthBar : MonoBehaviour
             MoveTempBar = true;
             TempBarTarget = bar.value;
         }
+    }
+
+    const int TUTORIAL_PLAYER_ID = 0;
+    const int TUTORIAL_ENEMY_ID = 1;
+    public Transform enemyTutorialTransform ;
+    private void MoveTutorial()
+    {
+        if(FindIt.instances == null)
+            return;
+
+        FindIt tutorial;
+
+        if (displayCharacter == CombatController._instance.Player)
+        {
+            if (FindIt.instances.Length <= TUTORIAL_PLAYER_ID)
+                return;
+
+            tutorial = FindIt.instances[TUTORIAL_PLAYER_ID];
+
+            if (tutorial != null)
+                tutorial.transform.position = transform.position;
+
+            return;
+        }
+
+        if (FindIt.instances.Length <= TUTORIAL_ENEMY_ID)
+            return;
+
+        tutorial = FindIt.instances[TUTORIAL_ENEMY_ID];
+
+        if (tutorial != null)
+            tutorial.transform.position = enemyTutorialTransform.position;
     }
 
     private void UpdateBarVisuals()
