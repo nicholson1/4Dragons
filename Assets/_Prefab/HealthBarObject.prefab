@@ -255,6 +255,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1323043235627263375}
   - component: {fileID: 1323043235627263374}
+  - component: {fileID: 1394579595571649463}
   m_Layer: 5
   m_Name: HealthBarObject
   m_TagString: Untagged
@@ -319,6 +320,23 @@ MonoBehaviour:
   eliteFrame: {fileID: 9220841360595297819}
   dragonFrame: {fileID: 379289669039868170}
   YValueStatusText: 550
+  displayMax: 0
+  displayCurrent: 0
+--- !u!114 &1394579595571649463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1323043235627263368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a417047ef8a78747b71f110c3e49c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RectTransform>k__BackingField: {fileID: 1323043235627263375}
+  <MinPosition>k__BackingField: {x: -520, y: -400}
+  <MaxPosition>k__BackingField: {x: 700, y: 0}
 --- !u!1 &1323043235771898467
 GameObject:
   m_ObjectHideFlags: 0

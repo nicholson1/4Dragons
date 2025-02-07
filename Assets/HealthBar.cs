@@ -514,30 +514,18 @@ public class HealthBar : MonoBehaviour
     
     private void Update()
     {
-        if(displayCharacter._maxHealth != displayMax || displayCharacter._currentHealth != displayCurrent)
-        {
-            if (displayCharacter == CombatController._instance.Player)
-            {
-                if (displayCharacter._maxHealth != displayMax)
-                    Debug.Log("Fix Max Health: " + displayMax + " -> " + displayCharacter._maxHealth);
-
-                if (displayCharacter._currentHealth != displayCurrent)
-                    Debug.Log("Fix Max Health: " + displayCurrent + " -> " + displayCharacter._currentHealth);
-            }
-
-            SetBarAndText(displayCharacter._currentHealth, displayCharacter._maxHealth);
-        }        
+        UpdateBarVisuals();
 
         if (waitTimer > 0)
         {
             waitTimer -= Time.deltaTime;
             return;
         }
-        
+
         if (MoveBar)
         {
             timer += Time.deltaTime;
-            bar.value = Mathf.Lerp(TargetValueStart, TargetValue, timer );
+            bar.value = Mathf.Lerp(TargetValueStart, TargetValue, timer);
             if (bar.value >= TargetValue)
             {
                 bar.value = TargetValue;
@@ -551,7 +539,7 @@ public class HealthBar : MonoBehaviour
         else if (MoveTempBar)
         {
             tempTimer += Time.deltaTime;
-            tempBar.value = Mathf.Lerp(TempBarStart, TempBarTarget, tempTimer );
+            tempBar.value = Mathf.Lerp(TempBarStart, TempBarTarget, tempTimer);
             if (tempBar.value <= TempBarTarget)
             {
                 tempBar.value = TempBarTarget;
@@ -560,14 +548,34 @@ public class HealthBar : MonoBehaviour
                 TempBarStart = 0;
                 timer = 0;
 
-                
+
             }
         }
-        else if(!Mathf.Approximately(tempBar.value,bar.value))
+        else if (!Mathf.Approximately(tempBar.value, bar.value))
         {
             MoveTempBar = true;
             TempBarTarget = bar.value;
         }
+    }
+
+    private void UpdateBarVisuals()
+    {
+        if (displayCharacter._maxHealth == displayMax &&
+                   displayCharacter._currentHealth == displayCurrent &&
+                   bar.value == displayCurrent &&
+                   bar.maxValue == displayMax)
+            return;
+
+        if (displayCharacter == CombatController._instance.Player)
+        {
+            if (displayCharacter._maxHealth != displayMax)
+                Debug.Log("Fix Max Health: " + displayMax + " -> " + displayCharacter._maxHealth);
+
+            if (displayCharacter._currentHealth != displayCurrent)
+                Debug.Log("Fix Max Health: " + displayCurrent + " -> " + displayCharacter._currentHealth);
+        }
+
+        SetBarAndText(displayCharacter._currentHealth, displayCharacter._maxHealth);
     }
 
     //private Coroutine MovingBar;
@@ -598,8 +606,6 @@ public class HealthBar : MonoBehaviour
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
         st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this);
-
-
     }
 
     private void SetBarAndText(int current, int max)
@@ -733,6 +739,9 @@ public class HealthBar : MonoBehaviour
         // get screen posiiton
 
         Vector3 screenPos = cam.WorldToScreenPoint(c.transform.position) - new Vector3(0, 50, 0);
+
+        //Debug.Log("screenPos: " + screenPos);
+
         this.transform.position = screenPos;
 
         

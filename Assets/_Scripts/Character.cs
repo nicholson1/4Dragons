@@ -31,6 +31,7 @@ public class Character : MonoBehaviour
 
     public int inventorySize = 6;
     public List<Equipment> _equipment = new List<Equipment>();
+    public Equipment[] equipmentArray;
     public List<Equipment> _inventory = new List<Equipment>();
     public List<Equipment> _Relics = new List<Equipment>();
 
@@ -557,6 +558,9 @@ public class Character : MonoBehaviour
 
         }
         // update the stats
+        /*if (blessing == CombatEntity.BlessingTypes.Health)
+            Debug.Log("Health with Blessing: " + blessing+" @ "+ amount);*/
+
         UpdateStats();
 
     }
@@ -928,65 +932,61 @@ public class Character : MonoBehaviour
 
     public void UpdateStats()
     {
+        equipmentArray = _equipment.ToArray();
         _stats = new Dictionary<Stats, int>();
 
         //base stats
         for (int i = 2; i < 18; i++)
-        {
-            //Debug.Log((Stats)i);
             _stats.Add((Stats)i, 0);
-        }
 
-        if (isPlayerCharacter)
-            Debug.Log("isPlayerCharacter");
+        /*if (isPlayerCharacter)
+            Debug.Log("isPlayerCharacter");*/
 
         foreach (Equipment e in _equipment)
-        {
             foreach (KeyValuePair<Stats, int> stat in e.stats)
-            {
                 if (_stats.ContainsKey(stat.Key))
-                {
                     _stats[stat.Key] += stat.Value;
-                }
                 else
-                {
                     _stats.Add(stat.Key, stat.Value);
-                }
 
-                if (isPlayerCharacter && stat.Key == Stats.Health)
-                    Debug.Log("Stats Health: "+ _stats[Stats.Health]);
+        /*if (isPlayerCharacter && _stats.ContainsKey(Stats.Health))
+            Debug.Log("Health After Equipment: " + _stats[Stats.Health]);*/
 
-                int blessingIndex = GetIndexOfBlessing((CombatEntity.BlessingTypes)stat.Key);
-                if ( blessingIndex != -1)
-                {
-                    //Debug.Log($"{stat.Key}");
-                    if(isPlayerCharacter && stat.Key == Stats.Health)
-                        Debug.Log(_stats[stat.Key] + " + " + Blessings[blessingIndex].Item3);
-                    _stats[stat.Key] = Mathf.RoundToInt(stat.Value + Blessings[blessingIndex].Item3);
-                    if (isPlayerCharacter && stat.Key == Stats.Health)
-                        Debug.Log( " = " + _stats[stat.Key] );
-                }
-            }
-        }
+        for (int i = 2; i < 18; i++)
+            AddBlessings((Stats)i);
+        
         //check to see if we dont have any base spell power form items but we do have a spell power blessing
         int SpellPowerCheck = GetIndexOfBlessing(CombatEntity.BlessingTypes.SpellPower);
         
         if (_stats[Stats.SpellPower] == 0 && SpellPowerCheck != -1)
-        {
             _stats[Stats.SpellPower] = Mathf.RoundToInt(Blessings[SpellPowerCheck].Item3);
-        }
         
         int strengthCheck = GetIndexOfBlessing(CombatEntity.BlessingTypes.Strength);
-        if (_stats[Stats.Strength] == 0 && strengthCheck != -1)
-        {
-            _stats[Stats.Strength] = Mathf.RoundToInt(Blessings[strengthCheck].Item3);
-        }
 
-        // max health = 50 * level + 50 + hp from stats
-        SetMaxHealth();       
-        
+        if (_stats[Stats.Strength] == 0 && strengthCheck != -1)
+            _stats[Stats.Strength] = Mathf.RoundToInt(Blessings[strengthCheck].Item3);
+
+        SetMaxHealth();    
         PrettyPrintStats();
         UpdateStatsEvent(this);
+    }
+
+    private void AddBlessings(Stats stat)
+    {
+        if (!_stats.ContainsKey(stat))
+            return;
+
+        int blessingIndex = GetIndexOfBlessing((CombatEntity.BlessingTypes)stat);
+
+        if (blessingIndex == -1)
+            return;
+
+        //Debug.Log($"{stat.Key}");
+        /*if (isPlayerCharacter && stat == Stats.Health)
+            Debug.Log(_stats[stat] + " + " + Blessings[blessingIndex].Item3);*/
+        _stats[stat] = Mathf.RoundToInt(_stats[stat] + Blessings[blessingIndex].Item3);
+        /*if (isPlayerCharacter && stat == Stats.Health)
+            Debug.Log(" = " + _stats[stat] + " after Blessing");*/
     }
 
     private void PrintEquip()
@@ -1075,12 +1075,12 @@ public class Character : MonoBehaviour
         _maxHealth = hp; // Set Max Health here
         _stats[Stats.Health] = hp;
 
-        if (isPlayerCharacter)
+        /*if (isPlayerCharacter)
         {
             Debug.Log("hpFromStats: " + hpFromStats + "\n" +
                 "_stats[Stats.Health]: " + _stats[Stats.Health] + "\n" +
                 "max hp:" + _maxHealth + "\n");
-        }
+        }*/
         
         //only set current health to max if we are out of combat
         if(CombatController._instance.entitiesInCombat.Count <= 1)

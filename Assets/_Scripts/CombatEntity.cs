@@ -425,6 +425,7 @@ public class CombatEntity : MonoBehaviour
                     Character c = CombatController._instance.Player;
                     GetHitWithBlessing(c, BlessingTypes.Health, 1, 1f);
                     RelicManager._instance.HeartSeekersCounter += 1f;
+                    c._currentHealth = Mathf.Min(c._maxHealth, c._currentHealth + 1);
                 }
             }
             damagePreReduction = Mathf.RoundToInt(damagePreReduction * critModifier);
