@@ -39,6 +39,9 @@ public class HealthBar : MonoBehaviour
 
     public int YValueStatusText = 550;
 
+    public int displayMax;
+    public int displayCurrent;
+
     private void Start()
     {
         CombatEntity.GetHitWithAttack += GetHitWithAttack;
@@ -511,6 +514,20 @@ public class HealthBar : MonoBehaviour
     
     private void Update()
     {
+        if(displayCharacter._maxHealth != displayMax || displayCharacter._currentHealth != displayCurrent)
+        {
+            if (displayCharacter == CombatController._instance.Player)
+            {
+                if (displayCharacter._maxHealth != displayMax)
+                    Debug.Log("Fix Max Health: " + displayMax + " -> " + displayCharacter._maxHealth);
+
+                if (displayCharacter._currentHealth != displayCurrent)
+                    Debug.Log("Fix Max Health: " + displayCurrent + " -> " + displayCharacter._currentHealth);
+            }
+
+            SetBarAndText(displayCharacter._currentHealth, displayCharacter._maxHealth);
+        }        
+
         if (waitTimer > 0)
         {
             waitTimer -= Time.deltaTime;
@@ -569,10 +586,10 @@ public class HealthBar : MonoBehaviour
         //MovingBar = StartCoroutine(LerpValueHeal(bar.value, (float)c._currentHealth, 2));
         MoveBar = true;
         TargetValue = c._currentHealth;
-        if(TargetValueStart == 0)
+        if (TargetValueStart == 0)
             TargetValueStart = bar.value;
-        
-        text.text = c._currentHealth + "/" + c._maxHealth;
+
+        SetBarAndText(c._currentHealth, c._maxHealth);
         waitTimer = 1.5f;
         timer = 0;
         MoveTempBar = false;
@@ -583,6 +600,15 @@ public class HealthBar : MonoBehaviour
         st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this);
 
 
+    }
+
+    private void SetBarAndText(int current, int max)
+    {
+        displayCurrent = current;
+        displayMax = max;
+        bar.value = displayCurrent;
+        bar.maxValue = displayMax;
+        text.text = displayCurrent + "/" + displayMax;
     }
 
     private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
@@ -613,7 +639,7 @@ public class HealthBar : MonoBehaviour
 
 
         MoveTempBar = true;
-        text.text = c._currentHealth + "/" + c._maxHealth;
+        SetBarAndText(c._currentHealth , c._maxHealth);
 
         TargetValueStart = 0;
         MoveBar = false;
@@ -711,9 +737,7 @@ public class HealthBar : MonoBehaviour
 
         
         //ratio = 100f / c._maxHealth;
-        bar.maxValue = c._maxHealth;
-        bar.value = c._currentHealth;
-        text.text = c._currentHealth + "/" + c._maxHealth;
+        SetBarAndText(c._currentHealth, c._maxHealth);
 
         tempBar.maxValue = c._maxHealth;
         tempBar.value = c._currentHealth;

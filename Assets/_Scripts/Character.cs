@@ -65,7 +65,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float getGoldVol;
     [SerializeField] private float getGoldpitch;
     [SerializeField] private ButtonGlow EnergyGlow;
-    
+
     public void ToggleShowHelm()
     {
         showHelm = !showHelm;
@@ -937,9 +937,12 @@ public class Character : MonoBehaviour
             _stats.Add((Stats)i, 0);
         }
 
+        if (isPlayerCharacter)
+            Debug.Log("isPlayerCharacter");
+
         foreach (Equipment e in _equipment)
         {
-            foreach (var stat in e.stats)
+            foreach (KeyValuePair<Stats, int> stat in e.stats)
             {
                 if (_stats.ContainsKey(stat.Key))
                 {
@@ -950,13 +953,18 @@ public class Character : MonoBehaviour
                     _stats.Add(stat.Key, stat.Value);
                 }
 
+                if (isPlayerCharacter && stat.Key == Stats.Health)
+                    Debug.Log("Stats Health: "+ _stats[Stats.Health]);
+
                 int blessingIndex = GetIndexOfBlessing((CombatEntity.BlessingTypes)stat.Key);
                 if ( blessingIndex != -1)
                 {
                     //Debug.Log($"{stat.Key}");
-                    //Debug.Log(_stats[stat.Key] + " + " + Blessings[blessingIndex].Item3);
+                    if(isPlayerCharacter && stat.Key == Stats.Health)
+                        Debug.Log(_stats[stat.Key] + " + " + Blessings[blessingIndex].Item3);
                     _stats[stat.Key] = Mathf.RoundToInt(stat.Value + Blessings[blessingIndex].Item3);
-                    //Debug.Log( " = " + _stats[stat.Key] );
+                    if (isPlayerCharacter && stat.Key == Stats.Health)
+                        Debug.Log( " = " + _stats[stat.Key] );
                 }
             }
         }
@@ -975,8 +983,7 @@ public class Character : MonoBehaviour
         }
 
         // max health = 50 * level + 50 + hp from stats
-        SetMaxHealth();
-        
+        SetMaxHealth();       
         
         PrettyPrintStats();
         UpdateStatsEvent(this);
@@ -1060,14 +1067,22 @@ public class Character : MonoBehaviour
             else
                 hp = 70 * _level;
         }
+
         int hpFromStats = 0;
         _stats.TryGetValue(Stats.Health, out hpFromStats);
-        hp += hpFromStats;
-        _maxHealth = hp;
 
-        _stats[Stats.Health] += hp;
+        hp += hpFromStats;
+        _maxHealth = hp; // Set Max Health here
+        _stats[Stats.Health] = hp;
+
+        if (isPlayerCharacter)
+        {
+            Debug.Log("hpFromStats: " + hpFromStats + "\n" +
+                "_stats[Stats.Health]: " + _stats[Stats.Health] + "\n" +
+                "max hp:" + _maxHealth + "\n");
+        }
         
-        //only set current health if we are out of combat
+        //only set current health to max if we are out of combat
         if(CombatController._instance.entitiesInCombat.Count <= 1)
             _currentHealth = _maxHealth;
     }
