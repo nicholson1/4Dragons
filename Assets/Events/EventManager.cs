@@ -11,7 +11,9 @@ public class EventManager : MonoBehaviour
 
     Chances<EventInfo> _eventChances = new();
     Chances<OutcomeInfo> _outcomeChances = new();
+    List<EEvent> _pastEvents = new();
 
+    public static readonly int OUTCOME_COUNT = 3;
     public static EventManager Instance => GetInstance();
     static EventManager _instance;
 
@@ -45,31 +47,59 @@ public class EventManager : MonoBehaviour
         _eventChances.Clear();
 
         for(int i = 0; i < Database.eventsTab.rowEntries.Length; i++)
-            if(trialCount >= Database.eventsTab.GetInt(i, "TrialMin"))
-            {
-                EventInfo eventInfo = new()
-                {
-                    eEvent = (EEvent)Database.eventsTab.GetEnum(typeof(EEvent), i, "EEvent"),
-                    displayName = Database.eventsTab.GetString(i, "DisplayName"),
-                    text = Database.eventsTab.GetString(i, "Text")
-                };
+        {
+            int trialMin = Database.eventsTab.GetInt(i, "TrialMin");
 
-                _eventChances.AddOutcome(eventInfo, Database.eventsTab.GetFloat(i, "Chance"));
+            if (trialCount < trialMin)
+            {
+                //Debug.Log("Player does not qualify for " + (EEvent)i + " because " + trialCount + " < " + trialMin);
+                continue;
             }
 
-        EventInfo selectedEventInfo = new()
-        {
-            eEvent = EEvent.Blacksmith,
-            displayName = "Wandering Blacksmith",
-            text = "You Encounter a strange traveling blacksmith. He seems willing to do business with you."
-        };
+            EEvent eEvent = (EEvent)Database.eventsTab.GetEnum(typeof(EEvent), i, "EEvent");
+
+            if (_pastEvents.Contains(eEvent))
+            {
+                //Debug.Log("Player did the " + eEvent + " event. (" + (EEvent)i + " == " + eEvent + ")");
+                continue;
+            }
+
+            float chance = Database.eventsTab.GetFloat(i, "Chance");
+
+            if (chance <= 0f)
+            {
+                //Debug.Log("The chance of " + eEvent + " is " + chance + " so we don't add it to chances.");
+                continue;
+            }
+
+            EventInfo eventInfo = new()
+            {
+                eEvent = eEvent,
+                displayName = Database.eventsTab.GetString(i, "DisplayName"),
+                text = Database.eventsTab.GetString(i, "Text")
+            };
+
+            _eventChances.AddOutcome(eventInfo, chance);
+            //Debug.Log("Added " + eEvent + " event @ " + chance);
+        }
 
         if (_eventChances.Count <= 0)
-            Debug.LogError("No valid events for player with TrialCount of " + trialCount + ".\n Selecting Default Event: " + selectedEventInfo.eEvent);
-        else
-            selectedEventInfo = _eventChances.GetRandomOutcome();
+        {
+            EventInfo defaultEvent = new()
+            {
+                eEvent = EEvent.Blacksmith,
+                displayName = "Wandering Blacksmith",
+                text = "You Encounter a strange traveling blacksmith. He seems willing to do business with you."
+            };
 
-        return selectedEventInfo;
+            Debug.LogError("No valid events for player with TrialCount of " + trialCount + ".\n Selecting Default Event: " + defaultEvent.eEvent);
+            return defaultEvent;
+        }
+
+        EventInfo selectedEvent = _eventChances.GetRandomOutcome();
+        //Debug.Log("Selected Event: " + selectedEvent.eEvent);
+        _pastEvents.Add(selectedEvent.eEvent);
+        return selectedEvent;
     }
 
     public List<OptionInfo> GetOptions(EEvent eEvent)
@@ -118,10 +148,9 @@ public class EventManager : MonoBehaviour
             Initialize();
 
         _outcomeChances.Clear();
-
         int optionRow = (int)option;
 
-        for (int i = 0; i < 3; i++) // up to 3 outcomes available
+        for (int i = 0; i < OUTCOME_COUNT; i++)
         {
             string chanceColumn = "Chance" + i;
             float chance = Database.optionsTab.GetFloat(optionRow, chanceColumn);
@@ -139,11 +168,11 @@ public class EventManager : MonoBehaviour
                 };
 
                 _outcomeChances.AddOutcome(outcomeInfo, chance);
-                Debug.Log("Add " + outcome + " @ " + chance.ToString("##0%"));
+                //Debug.Log("Add " + outcome + " @ " + chance.ToString("##0%"));
             }
         }
 
-        if (_eventChances.Count <= 0)
+        if (_outcomeChances.Count <= 0)
         {
             Debug.LogError("No valid outcomes for option: " + option + ".\n Selecting Default Outcome: None");
 
@@ -159,7 +188,7 @@ public class EventManager : MonoBehaviour
         }
 
         OutcomeInfo randomOutcomeInfo = _outcomeChances.GetRandomOutcome();
-        Debug.Log("Selected outcome: "+ randomOutcomeInfo.outcome);
+        //Debug.Log("Selected outcome: "+ randomOutcomeInfo.outcome);
         return randomOutcomeInfo;
     }
 }

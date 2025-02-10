@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,12 +13,44 @@ public class EventUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI eventTitle;
     [SerializeField] private Button[] optionButtons;
     [SerializeField] private TextMeshProUGUI[] optionTexts;
+    [SerializeField] private Image eventImage;
+    [SerializeField] private Sprite[] eventSprites;
+    [SerializeField] private bool loadEventSprites;
 
     EventInfo _currentEventInfo;
     List<OptionInfo> _currentOptionInfos;
     OutcomeInfo _currentOutcomeInfo;
 
     bool _hasSelectedOption = false;
+
+    private void OnValidate()
+    {
+        if (!loadEventSprites)
+            return;
+
+        loadEventSprites = false;
+        LoadEventSprites();
+
+    }
+
+    private void LoadEventSprites()
+    {
+        eventSprites = new Sprite[Enum.GetNames(typeof(EEvent)).Length];
+
+        for (int i = 0; i < eventSprites.Length; i++)
+        {
+            string spritePath = "EventSprites/" + ((EEvent)i).ToString();
+            Sprite sprite = Resources.Load<Sprite>(spritePath);
+
+            if (sprite == null)
+            {
+                Debug.LogError("Did not find " + spritePath);
+                continue;
+            }
+
+            eventSprites[i] = sprite;
+        }
+    }
 
     private void Awake()
     {
@@ -30,14 +64,12 @@ public class EventUI : MonoBehaviour
 
     public void RandomEvent()
     {
-
         // select which event to show
         _currentEventInfo = EventManager.Instance.GetRandomEvent();
 
         //fill out the info
         eventTitle.text = _currentEventInfo.displayName;
         eventText.text = _currentEventInfo.text;
-
         _currentOptionInfos = EventManager.Instance.GetOptions(_currentEventInfo.eEvent);
 
         for (int i = 0; i < optionButtons.Length; i++)
@@ -49,16 +81,88 @@ public class EventUI : MonoBehaviour
                 continue;
             }
 
-            optionButtons[i].gameObject.SetActive(_currentOptionInfos[i].option > EOption.None);
-            optionTexts[i].text = _currentOptionInfos[i].displayName;
+            bool hasOption = _currentOptionInfos[i].option > EOption.None;
+            optionButtons[i].gameObject.SetActive(hasOption);
+
+            if(hasOption)
+                optionTexts[i].text = _currentOptionInfos[i].displayName + GetOptionDetailsText(_currentOptionInfos[i].option);
             //Debug.Log(i+": "+_currentOptionInfos[i].option);
         }
+
+        if(eventSprites == null || eventSprites.Length < (int)_currentEventInfo.eEvent)
+            LoadEventSprites();
+
+        eventImage.sprite = eventSprites[(int)_currentEventInfo.eEvent];
 
         // toggle ui show
         UIController._instance.ToggleEventUI(1);
 
         // set state
         _hasSelectedOption = false;
+    }
+
+    private string GetOptionDetailsText(EOption option)
+    {
+        Database database = EventManager.Instance.Database;
+
+        if (!database.optionsTab.GetBool((int)option, "ShowOutcomes"))
+            return string.Empty;
+
+        string optionDetails = ": ";
+        EOutcome[] outcomes = new EOutcome[EventManager.OUTCOME_COUNT];
+        float[] chances = new float[EventManager.OUTCOME_COUNT];
+        float[] values = new float[EventManager.OUTCOME_COUNT];
+
+        for (int i = 0; i < outcomes.Length; i++) 
+        {
+            outcomes[i] = (EOutcome)database.optionsTab.GetEnum(typeof(EOutcome), (int)option, "Outcome"+i);
+            chances[i] = database.optionsTab.GetFloat((int)option, "Chance" + i);
+            values[i] = database.optionsTab.GetFloat((int)option, "Value" + i);
+        }
+
+        for (int i = 0; i < outcomes.Length; i++)        
+            if (outcomes[i] > EOutcome.None && chances[i] > 0f)
+            {
+                float positivity = database.outcomesTab.GetFloat((int)outcomes[i], "Positivity");
+
+                if (positivity == 0f)
+                    optionDetails += "<color=yellow>";
+                else if (positivity > 0f)
+                    optionDetails += "<color=green>";
+                else
+                    optionDetails += "<color=red>";
+
+                optionDetails += database.outcomesTab.GetString((int)outcomes[i], "DisplayName");
+
+                if (values[i] != 0f && values[i] != 1f)
+                {
+                    optionDetails += " x";
+
+                    if (values[i] > 0f && values[i] < 1f)
+                        optionDetails += values[i].ToString("0.00");
+                    else
+                        optionDetails += values[i].ToString("##0.##");
+                }
+
+                if (chances[i] > 0f && chances[i] < 1f)
+                    optionDetails += " ("+chances[i].ToString("##0%")+")";
+
+                optionDetails += "</color>";
+
+                for(int j = i+1; j < outcomes.Length; j++)
+                {
+                    if (outcomes[j] == EOutcome.None || chances[j] <= 0f)
+                        continue;
+
+                    optionDetails += ", ";
+                    break;
+                }
+            }
+
+        if (optionDetails.Length <= 2)
+            return string.Empty;
+
+        return optionDetails;
     }
 
     public void ClickOption(int buttonIndex)

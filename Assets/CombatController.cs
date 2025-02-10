@@ -572,7 +572,10 @@ public class CombatController : MonoBehaviour
         //add back permanent blessings
         if (RelicManager._instance.CheckRelic(RelicType.Relic13))
         {
-            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Health, 1, RelicManager._instance.HeartSeekersCounter);
+            int current = Player._currentHealth;
+            int additional = Mathf.RoundToInt(RelicManager._instance.HeartSeekersCounter);
+            Player._combatEntity.GetHitWithBlessingDirect(CombatEntity.BlessingTypes.Health, 1, additional);
+            Player._currentHealth = Mathf.Min(Player._maxHealth, current + additional);
         }
         
         if (RelicManager._instance.CheckRelic(RelicType.DragonRelic13))

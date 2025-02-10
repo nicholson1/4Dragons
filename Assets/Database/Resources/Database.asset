@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e246289ab731a41a210e157011ae28, type: 3}
   m_Name: Database
   m_EditorClassIdentifier: 
-  saveToggle: 1
+  saveToggle: 0
   speadsheetID: 1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08
   credentials: AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w
   eventsTab:
@@ -287,7 +287,7 @@ MonoBehaviour:
       - column: EEvent
         value: Mushroom
       - column: DisplayName
-        value: Delicous Looking Mushroom
+        value: Delicious Looking Mushroom
       - column: TrialMin
         value: 2
       - column: Chance
@@ -409,111 +409,6 @@ MonoBehaviour:
         value: Leave
       - column: Option3
         value: None
-    - columnList:
-      - column: ID
-        value: 16
-      - column: EEvent
-        value: 
-      - column: DisplayName
-        value: 
-      - column: TrialMin
-        value: 3
-      - column: Chance
-        value: 0
-      - column: Text
-        value: 
-      - column: Option0
-        value: 
-      - column: Option1
-        value: 
-      - column: Option2
-        value: None
-      - column: Option3
-        value: None
-    - columnList:
-      - column: ID
-        value: 17
-      - column: EEvent
-        value: 
-      - column: DisplayName
-        value: 
-      - column: TrialMin
-        value: 3
-      - column: Chance
-        value: 0
-      - column: Text
-        value: 
-      - column: Option0
-        value: 
-      - column: Option1
-        value: 
-      - column: Option2
-        value: None
-      - column: Option3
-        value: None
-    - columnList:
-      - column: ID
-        value: 18
-      - column: EEvent
-        value: 
-      - column: DisplayName
-        value: 
-      - column: TrialMin
-        value: 3
-      - column: Chance
-        value: 0
-      - column: Text
-        value: 
-      - column: Option0
-        value: 
-      - column: Option1
-        value: 
-      - column: Option2
-        value: None
-      - column: Option3
-        value: None
-    - columnList:
-      - column: ID
-        value: 19
-      - column: EEvent
-        value: 
-      - column: DisplayName
-        value: 
-      - column: TrialMin
-        value: 3
-      - column: Chance
-        value: 0
-      - column: Text
-        value: 
-      - column: Option0
-        value: 
-      - column: Option1
-        value: 
-      - column: Option2
-        value: None
-      - column: Option3
-        value: None
-    - columnList:
-      - column: ID
-        value: 20
-      - column: EEvent
-        value: 
-      - column: DisplayName
-        value: 
-      - column: TrialMin
-        value: 3
-      - column: Chance
-        value: 0
-      - column: Text
-        value: 
-      - column: Option0
-        value: 
-      - column: Option1
-        value: 
-      - column: Option2
-        value: None
-      - column: Option3
-        value: None
   optionsTab:
     rowEntries:
     - columnList:
@@ -523,6 +418,8 @@ MonoBehaviour:
         value: None
       - column: DisplayName
         value: None
+      - column: ShowOutcomes
+        value: FALSE
       - column: Outcome0
         value: None
       - column: Value0
@@ -554,6 +451,8 @@ MonoBehaviour:
         value: Leave
       - column: DisplayName
         value: Leave
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -585,6 +484,8 @@ MonoBehaviour:
         value: Ignore
       - column: DisplayName
         value: Ignore
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -617,6 +518,8 @@ MonoBehaviour:
         value: Run
       - column: DisplayName
         value: Run
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -648,6 +551,8 @@ MonoBehaviour:
         value: Hide
       - column: DisplayName
         value: Hide
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -679,6 +584,8 @@ MonoBehaviour:
         value: Dodge
       - column: DisplayName
         value: Dodge
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -710,6 +617,8 @@ MonoBehaviour:
         value: Feint
       - column: DisplayName
         value: Feint
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -741,6 +650,8 @@ MonoBehaviour:
         value: Bluff
       - column: DisplayName
         value: Bluff
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -772,6 +683,8 @@ MonoBehaviour:
         value: Intemidate
       - column: DisplayName
         value: Intemidate
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -803,6 +716,8 @@ MonoBehaviour:
         value: Fight
       - column: DisplayName
         value: Fight
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: Battle
       - column: Value0
@@ -836,6 +751,8 @@ MonoBehaviour:
         value: Spar
       - column: DisplayName
         value: Spar
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -867,6 +784,8 @@ MonoBehaviour:
         value: Search
       - column: DisplayName
         value: Search
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: RelicGet
       - column: Value0
@@ -900,6 +819,8 @@ MonoBehaviour:
         value: Enter
       - column: DisplayName
         value: Enter
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -931,6 +852,8 @@ MonoBehaviour:
         value: Camp
       - column: DisplayName
         value: Camp
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -962,6 +885,8 @@ MonoBehaviour:
         value: Continue
       - column: DisplayName
         value: Continue
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -993,6 +918,8 @@ MonoBehaviour:
         value: Open
       - column: DisplayName
         value: Open
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1024,6 +951,8 @@ MonoBehaviour:
         value: Close
       - column: DisplayName
         value: Close
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1055,6 +984,8 @@ MonoBehaviour:
         value: Loot
       - column: DisplayName
         value: Loot
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: GoldGet
       - column: Value0
@@ -1089,6 +1020,8 @@ MonoBehaviour:
         value: Take
       - column: DisplayName
         value: Take
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: GoldGet
       - column: Value0
@@ -1121,6 +1054,8 @@ MonoBehaviour:
         value: Steal
       - column: DisplayName
         value: Steal
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1152,6 +1087,8 @@ MonoBehaviour:
         value: Trade
       - column: DisplayName
         value: Trade
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1183,6 +1120,8 @@ MonoBehaviour:
         value: Give
       - column: DisplayName
         value: Give
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1214,6 +1153,8 @@ MonoBehaviour:
         value: Offer
       - column: DisplayName
         value: Offer
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1245,6 +1186,8 @@ MonoBehaviour:
         value: Donate
       - column: DisplayName
         value: Donate
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1276,6 +1219,8 @@ MonoBehaviour:
         value: Shop
       - column: DisplayName
         value: Shop
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1307,6 +1252,8 @@ MonoBehaviour:
         value: Buy
       - column: DisplayName
         value: Buy
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1338,6 +1285,8 @@ MonoBehaviour:
         value: Sell
       - column: DisplayName
         value: Sell
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1369,6 +1318,8 @@ MonoBehaviour:
         value: Forge
       - column: DisplayName
         value: Forge
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1400,6 +1351,8 @@ MonoBehaviour:
         value: Play
       - column: DisplayName
         value: Play
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1431,6 +1384,8 @@ MonoBehaviour:
         value: Train
       - column: DisplayName
         value: Train
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: StrengthUp
       - column: Value0
@@ -1471,6 +1426,8 @@ MonoBehaviour:
         value: Talk
       - column: DisplayName
         value: Talk
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1502,6 +1459,8 @@ MonoBehaviour:
         value: Sing
       - column: DisplayName
         value: Sing
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: MagicResistUp
       - column: Value0
@@ -1540,6 +1499,8 @@ MonoBehaviour:
         value: Dance
       - column: DisplayName
         value: Dance
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: ArmorUp
       - column: Value0
@@ -1577,6 +1538,8 @@ MonoBehaviour:
         value: Agree
       - column: DisplayName
         value: Agree
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1608,6 +1571,8 @@ MonoBehaviour:
         value: Argue
       - column: DisplayName
         value: Argue
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1639,6 +1604,8 @@ MonoBehaviour:
         value: Laugh
       - column: DisplayName
         value: Laugh
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1670,6 +1637,8 @@ MonoBehaviour:
         value: Hug
       - column: DisplayName
         value: Hug
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1701,6 +1670,8 @@ MonoBehaviour:
         value: Read
       - column: DisplayName
         value: Read
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: SpellPowerUp
       - column: Value0
@@ -1737,6 +1708,8 @@ MonoBehaviour:
         value: Eat
       - column: DisplayName
         value: Eat
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: StrengthDown
       - column: Value0
@@ -1776,6 +1749,8 @@ MonoBehaviour:
         value: Quaff
       - column: DisplayName
         value: Quaff
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1807,6 +1782,8 @@ MonoBehaviour:
         value: Rock
       - column: DisplayName
         value: Rock
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1838,6 +1815,8 @@ MonoBehaviour:
         value: Paper
       - column: DisplayName
         value: Paper
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1869,6 +1848,8 @@ MonoBehaviour:
         value: Scissors
       - column: DisplayName
         value: Scissors
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1900,6 +1881,8 @@ MonoBehaviour:
         value: Right
       - column: DisplayName
         value: Right
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1931,6 +1914,8 @@ MonoBehaviour:
         value: Middle
       - column: DisplayName
         value: Middle
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1962,6 +1947,8 @@ MonoBehaviour:
         value: Left
       - column: DisplayName
         value: Left
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -1993,6 +1980,8 @@ MonoBehaviour:
         value: Red
       - column: DisplayName
         value: Red
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -2024,6 +2013,8 @@ MonoBehaviour:
         value: Green
       - column: DisplayName
         value: Green
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -2055,6 +2046,8 @@ MonoBehaviour:
         value: Blue
       - column: DisplayName
         value: Blue
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -2086,6 +2079,8 @@ MonoBehaviour:
         value: High
       - column: DisplayName
         value: High
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -2117,6 +2112,8 @@ MonoBehaviour:
         value: Low
       - column: DisplayName
         value: Low
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: None
       - column: Value0
@@ -2148,6 +2145,8 @@ MonoBehaviour:
         value: Duel
       - column: DisplayName
         value: Duel
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: Battle
       - column: Value0
@@ -2179,6 +2178,8 @@ MonoBehaviour:
         value: Recharge
       - column: DisplayName
         value: Recharge
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: ReviveGet
       - column: Value0
@@ -2211,6 +2212,8 @@ MonoBehaviour:
         value: PlaceYourHand
       - column: DisplayName
         value: Place your hand on the stone
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: RandomRarityUp
       - column: Value0
@@ -2246,6 +2249,8 @@ MonoBehaviour:
         value: PetBlackCat
       - column: DisplayName
         value: Pet
+      - column: ShowOutcomes
+        value: FALSE
       - column: Outcome0
         value: RandomLevelUp
       - column: Value0
@@ -2279,6 +2284,8 @@ MonoBehaviour:
         value: RubBellyBlackCat
       - column: DisplayName
         value: Rub Belly
+      - column: ShowOutcomes
+        value: FALSE
       - column: Outcome0
         value: StartDamaged
       - column: Value0
@@ -2311,6 +2318,8 @@ MonoBehaviour:
         value: PetOrangeCat
       - column: DisplayName
         value: Pet
+      - column: ShowOutcomes
+        value: FALSE
       - column: Outcome0
         value: StartDamaged
       - column: Value0
@@ -2343,6 +2352,8 @@ MonoBehaviour:
         value: RubBellyOrangeCat
       - column: DisplayName
         value: Rub Belly
+      - column: ShowOutcomes
+        value: FALSE
       - column: Outcome0
         value: RandomLevelUp
       - column: Value0
@@ -2376,6 +2387,8 @@ MonoBehaviour:
         value: Drink
       - column: DisplayName
         value: Drink
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: SpellPowerDown
       - column: Value0
@@ -2415,6 +2428,8 @@ MonoBehaviour:
         value: Gamble
       - column: DisplayName
         value: Gamble
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: GetGoldPercent
       - column: Value0
@@ -2459,6 +2474,8 @@ MonoBehaviour:
         value: Meditate
       - column: DisplayName
         value: Meditate
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: Buff
       - column: Value0
@@ -2495,6 +2512,8 @@ MonoBehaviour:
         value: Rest
       - column: DisplayName
         value: Rest
+      - column: ShowOutcomes
+        value: TRUE
       - column: Outcome0
         value: ReviveGet
       - column: Value0
@@ -2524,60 +2543,6 @@ MonoBehaviour:
         value: 0.00
       - column: Text2
         value: Nothing Happens
-    - columnList:
-      - column: ID
-        value: 
-      - column: EOption
-        value: 
-      - column: DisplayName
-        value: 
-      - column: Outcome0
-        value: 
-      - column: Value0
-        value: 
-      - column: Chance0
-        value: 
-      - column: Text0
-        value: Nothing Happens
-      - column: Outcome1
-        value: None
-      - column: Value1
-        value: 0
-      - column: Chance1
-        value: 0.00
-      - column: Text1
-        value: Nothing Happens
-      - column: Outcome2
-        value: None
-      - column: Value2
-        value: 0
-      - column: Chance2
-        value: 1.00
-      - column: Text2
-        value: Nothing Happens
-    - columnList:
-      - column: ID
-        value: 
-      - column: EOption
-        value: 
-      - column: DisplayName
-        value: 
-      - column: Outcome0
-        value: 
-      - column: Value0
-        value: 
-      - column: Chance0
-        value: 
-      - column: Text0
-        value: Nothing Happens
-      - column: Outcome1
-        value: 
-      - column: Value1
-        value: 
-      - column: Chance1
-        value: 
-      - column: Text1
-        value: Nothing Happens
   outcomesTab:
     rowEntries:
     - columnList:
@@ -2587,6 +2552,8 @@ MonoBehaviour:
         value: None
       - column: DisplayName
         value: Continue
+      - column: Positivity
+        value: 0
     - columnList:
       - column: ID
         value: 1
@@ -2594,6 +2561,8 @@ MonoBehaviour:
         value: GoldGet
       - column: DisplayName
         value: Get Gold
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 2
@@ -2601,6 +2570,8 @@ MonoBehaviour:
         value: GoldLose
       - column: DisplayName
         value: Lose Gold
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 3
@@ -2608,6 +2579,8 @@ MonoBehaviour:
         value: RelicGet
       - column: DisplayName
         value: Get Relic
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 4
@@ -2615,6 +2588,8 @@ MonoBehaviour:
         value: RelicLose
       - column: DisplayName
         value: Lose Relic
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 5
@@ -2622,6 +2597,8 @@ MonoBehaviour:
         value: RelicTrade
       - column: DisplayName
         value: Trade Relic
+      - column: Positivity
+        value: 0
     - columnList:
       - column: ID
         value: 6
@@ -2629,6 +2606,8 @@ MonoBehaviour:
         value: ItemLose
       - column: DisplayName
         value: Lose Item
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 7
@@ -2636,6 +2615,8 @@ MonoBehaviour:
         value: ItemGet
       - column: DisplayName
         value: Get Item
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 8
@@ -2643,6 +2624,8 @@ MonoBehaviour:
         value: EquipmentGet
       - column: DisplayName
         value: Get Equipment
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 9
@@ -2650,6 +2633,8 @@ MonoBehaviour:
         value: EquipmentLose
       - column: DisplayName
         value: Lose Equipment
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 10
@@ -2657,6 +2642,8 @@ MonoBehaviour:
         value: EquipmentTrade
       - column: DisplayName
         value: Trade Equipment
+      - column: Positivity
+        value: 0
     - columnList:
       - column: ID
         value: 11
@@ -2664,6 +2651,8 @@ MonoBehaviour:
         value: EquipmentUp
       - column: DisplayName
         value: Equipment Level Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 12
@@ -2671,6 +2660,8 @@ MonoBehaviour:
         value: EquipmentDown
       - column: DisplayName
         value: Equipment Level Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 13
@@ -2678,6 +2669,8 @@ MonoBehaviour:
         value: RarityUp
       - column: DisplayName
         value: Rarity Level Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 14
@@ -2685,6 +2678,8 @@ MonoBehaviour:
         value: RarityDown
       - column: DisplayName
         value: Rarity Level Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 15
@@ -2692,6 +2687,8 @@ MonoBehaviour:
         value: DaggerGet
       - column: DisplayName
         value: Get Dagger
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 16
@@ -2699,6 +2696,8 @@ MonoBehaviour:
         value: ShieldGet
       - column: DisplayName
         value: Get Shield
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 17
@@ -2706,6 +2705,8 @@ MonoBehaviour:
         value: SwordGet
       - column: DisplayName
         value: Get Sword
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 18
@@ -2713,6 +2714,8 @@ MonoBehaviour:
         value: AxeGet
       - column: DisplayName
         value: Get Axe
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 19
@@ -2720,6 +2723,8 @@ MonoBehaviour:
         value: HammerGet
       - column: DisplayName
         value: Get Hammer
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 20
@@ -2727,6 +2732,8 @@ MonoBehaviour:
         value: WandGet
       - column: DisplayName
         value: Get Wand
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 21
@@ -2734,6 +2741,8 @@ MonoBehaviour:
         value: ScrollGet
       - column: DisplayName
         value: Get Scroll
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 22
@@ -2741,174 +2750,224 @@ MonoBehaviour:
         value: PotionGet
       - column: DisplayName
         value: Get Potion
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 23
       - column: EOutcome
         value: DaggerUp
       - column: DisplayName
-        value: Rarity Level Up
+        value: Dagger Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 24
       - column: EOutcome
         value: DaggerDown
       - column: DisplayName
-        value: Rarity Level Down
+        value: Dagger Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 25
       - column: EOutcome
         value: SheildUp
       - column: DisplayName
-        value: ' Get Dagger'
+        value: Shield Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 26
       - column: EOutcome
         value: SheildDown
       - column: DisplayName
-        value: ' Get Shield'
+        value: Shield Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 27
       - column: EOutcome
         value: SwordUp
       - column: DisplayName
-        value: ' Get Sword'
+        value: Sword Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 28
       - column: EOutcome
         value: SwordDown
       - column: DisplayName
-        value: ' Get Axe'
+        value: Sword Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 29
       - column: EOutcome
         value: AxeUp
       - column: DisplayName
-        value: ' Get Hammer'
+        value: Axe Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 30
       - column: EOutcome
         value: AxeDown
       - column: DisplayName
-        value: ' Get Wand'
+        value: Axe Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 31
       - column: EOutcome
         value: HammerUp
       - column: DisplayName
-        value: ' Get Scroll'
+        value: Hammer Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 32
       - column: EOutcome
         value: HammerDown
       - column: DisplayName
-        value: ' Get Potion'
+        value: Hammer Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 33
       - column: EOutcome
         value: NatureUp
       - column: DisplayName
-        value: Dagger Power Up
+        value: Nature Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 34
       - column: EOutcome
         value: NatureDown
       - column: DisplayName
-        value: Dagger Power Down
+        value: Nature Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 35
       - column: EOutcome
         value: FireUp
       - column: DisplayName
-        value: Sheild Power Up
+        value: Fire Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 36
       - column: EOutcome
         value: FireDown
       - column: DisplayName
-        value: Sheild Power Down
+        value: Fire Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 37
       - column: EOutcome
         value: IceUp
       - column: DisplayName
-        value: Sword Power Up
+        value: Ice Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 38
       - column: EOutcome
         value: IceDown
       - column: DisplayName
-        value: Sword Power Down
+        value: Ice Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 39
       - column: EOutcome
         value: BloodUp
       - column: DisplayName
-        value: Axe Power Up
+        value: Blood Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 40
       - column: EOutcome
         value: BloodDown
       - column: DisplayName
-        value: Axe Power Down
+        value: Blood Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 41
       - column: EOutcome
         value: ShadowUp
       - column: DisplayName
-        value: Hammer Power Up
+        value: Shadow Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 42
       - column: EOutcome
         value: ShadowDown
       - column: DisplayName
-        value: Hammer Power Down
+        value: Shadow Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 43
       - column: EOutcome
         value: ArmorUp
       - column: DisplayName
-        value: Nature Power Up
+        value: Armor Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 44
       - column: EOutcome
         value: ArmorDown
       - column: DisplayName
-        value: Nature Power Down
+        value: Armor Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 45
       - column: EOutcome
         value: MagicResistUp
       - column: DisplayName
-        value: Fire Power Up
+        value: Magic Resist Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 46
       - column: EOutcome
         value: MagicResistDown
       - column: DisplayName
-        value: Fire Power Down
+        value: Magic Resist Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 47
@@ -2916,6 +2975,8 @@ MonoBehaviour:
         value: StrengthUp
       - column: DisplayName
         value: Strength Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 48
@@ -2923,20 +2984,26 @@ MonoBehaviour:
         value: StrengthDown
       - column: DisplayName
         value: Strength Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 49
       - column: EOutcome
         value: SpellPowerUp
       - column: DisplayName
-        value: Fire Power Down
+        value: Spell Power Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 50
       - column: EOutcome
         value: SpellPowerDown
       - column: DisplayName
-        value: Ice Power Up
+        value: Spell Power Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 51
@@ -2944,6 +3011,8 @@ MonoBehaviour:
         value: HealthUp
       - column: DisplayName
         value: Health Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 52
@@ -2951,34 +3020,44 @@ MonoBehaviour:
         value: HealthDown
       - column: DisplayName
         value: Health Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 53
       - column: EOutcome
         value: CritUp
       - column: DisplayName
-        value: Blood Power Down
+        value: Crit Chance Up
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 54
       - column: EOutcome
         value: CritDown
       - column: DisplayName
-        value: Shadow Power Up
+        value: Crit Chance Down
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 55
       - column: EOutcome
         value: Buff
       - column: DisplayName
-        value: Buff Received
+        value: Receive Buff
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 56
       - column: EOutcome
         value: Debuff
       - column: DisplayName
-        value: Debuff Received
+        value: Suffer Debuff
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 57
@@ -2986,52 +3065,77 @@ MonoBehaviour:
         value: Battle
       - column: DisplayName
         value: Battle
+      - column: Positivity
+        value: 0
     - columnList:
       - column: ID
         value: 58
       - column: EOutcome
         value: ReviveGet
       - column: DisplayName
-        value: Revive Gained
+        value: Gain Revive
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 59
       - column: EOutcome
         value: ReviveLose
       - column: DisplayName
-        value: Revive Lost
+        value: Lose Revive
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 60
       - column: EOutcome
         value: RandomRarityUp
       - column: DisplayName
-        value: Random Rarity Up
+        value: Gain Item Rarity
+      - column: Positivity
+        value: 1
     - columnList:
       - column: ID
         value: 61
       - column: EOutcome
         value: RandomLevelUp
       - column: DisplayName
-        value: Random Level Up
+        value: Gain Item Level
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 62
       - column: EOutcome
         value: StartDamaged
       - column: DisplayName
-        value: Start The Next Fight Damaged
+        value: Receive Damage
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 63
       - column: EOutcome
-        value: LoseGoldPercent
+        value: BreakWeapon
       - column: DisplayName
-        value: Lose Gold Percent
+        value: Break Weapon
+      - column: Positivity
+        value: -1
     - columnList:
       - column: ID
         value: 64
       - column: EOutcome
         value: GetGoldPercent
       - column: DisplayName
-        value: Get Gold Percent
+        value: Gain Gold Portion
+      - column: Positivity
+        value: 1
+    - columnList:
+      - column: ID
+        value: 65
+      - column: EOutcome
+        value: LoseGoldPercent
+      - column: DisplayName
+        value: Lose Gold Portion
+      - column: Positivity
+        value: -1
