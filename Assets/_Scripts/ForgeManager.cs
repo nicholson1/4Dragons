@@ -25,7 +25,8 @@ public class ForgeManager : MonoBehaviour
     public Vector2 EnhancingFollowOffset;
 
     public float priceMod = 1;
-    
+    public int amountOfClicks = 0;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -49,12 +50,29 @@ public class ForgeManager : MonoBehaviour
             EnhancePrice.SetActive(true);
         }
     }
+
+    public void AdjustAmountOfClicks(int clicks)
+    {
+        if (amountOfClicks == -1)
+            amountOfClicks = clicks;
+        else
+        {
+            amountOfClicks += clicks;
+            if (amountOfClicks == 0)
+            {
+                Upgrading = false;
+                Enhancing = false;
+                UpgradingFollow.gameObject.SetActive(false);
+                EnhancingFollow.gameObject.SetActive(false);
+            }
+        }
+    }
     
 
     public void ShowPrice(Equipment e)
     {
         int Upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod);
-        int Enchance = Mathf.RoundToInt(((e.stats[Stats.ItemLevel] + 5)* e.stats[Stats.Rarity]) * priceMod);
+        int Enchance = Mathf.RoundToInt((e.stats[Stats.ItemLevel] + 5)* (e.stats[Stats.Rarity] + 1) * priceMod);
         
         if(Upgrading)
         {
@@ -126,7 +144,7 @@ public class ForgeManager : MonoBehaviour
         // upgrade item
         // take gold
         HidePrice();
-
+        amountOfClicks = -1;
     }
     public void ClickEnhanceButtonFromForge()
     {
@@ -144,6 +162,7 @@ public class ForgeManager : MonoBehaviour
         // upgrade item
         // take gold
         HidePrice();
+        amountOfClicks = -1;
 
     }
 
@@ -162,6 +181,8 @@ public class ForgeManager : MonoBehaviour
             if(slot.Item != null)
                 slot.Item.TurnOffSellPrice();
         }
+
+        amountOfClicks = 0;
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
     }
 }

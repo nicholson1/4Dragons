@@ -694,7 +694,15 @@ public class Character : MonoBehaviour
             return;
         }
         _gold += amount;
-        NotificationGold(ErrorMessageManager.Errors.GetGold, amount);
+        if (amount > 0)
+        {
+            NotificationGold(ErrorMessageManager.Errors.GetGold, amount);
+        }
+        else
+        {
+            NotificationGold(ErrorMessageManager.Errors.LoseGold, amount);
+
+        }
         UpdateStats();
         
         SoundManager.Instance.Play2DSFX(getGold, getGoldVol, getGoldpitch);

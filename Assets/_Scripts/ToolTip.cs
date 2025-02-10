@@ -58,9 +58,17 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (is_item)
         {
-            if (ForgeManager._instance.Upgrading || ForgeManager._instance.Enhancing)
+            if (ForgeManager._instance.Upgrading)
             {
                 ForgeManager._instance.ShowPrice(e);
+            }
+
+            if (ForgeManager._instance.Enhancing)
+            {
+                if (e.stats[Stats.Rarity] < 3)
+                {
+                    ForgeManager._instance.ShowPrice(e);
+                }
             }
             
         }

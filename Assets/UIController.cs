@@ -96,6 +96,13 @@ public class UIController : MonoBehaviour
     [SerializeField] private AudioClip CleanseSound;
     [SerializeField] private float CleanseSoundVol;
     [SerializeField] private float CleanseSoundDelay;
+    
+    [SerializeField] private AudioClip EnhanceSound;
+    [SerializeField] private float EnhanceSoundVol;
+
+    [SerializeField] private AudioClip UpgradeSound;
+    [SerializeField] private float UpgradeSoundVol;
+
     public void ToggleSettings()
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
@@ -777,6 +784,11 @@ public class UIController : MonoBehaviour
     {
         SoundManager.Instance.Play2DSFX(_buttonClickSFX, clickVol, 1, .05f);
     }
+    public void PlayUIError()
+    {
+        SoundManager.Instance.Play2DSFX(errorSFX, errorVol, 1, .05f);
+    }
+    
     
     public void PlayOpenShop()
     {
@@ -826,6 +838,14 @@ public class UIController : MonoBehaviour
     public void PlayCleanseSound()
     {
         SoundManager.Instance.Play2DSFXOnDelay(CleanseSound, CleanseSoundDelay,CleanseSoundVol, 1, .05f);
+    }
+    public void PlayEnhanceSound()
+    {
+        SoundManager.Instance.Play2DSFX(EnhanceSound, EnhanceSoundVol, 1, .05f);
+    }
+    public void PlayUpgradeSound()
+    {
+        SoundManager.Instance.Play2DSFX(UpgradeSound,UpgradeSoundVol, 1, .05f);
     }
     
     public void OpenDiscordLink()

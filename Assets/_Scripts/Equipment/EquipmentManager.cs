@@ -637,8 +637,39 @@ public class EquipmentManager : MonoBehaviour
         // if money
         // do the thing
         //if not at the store set upgrade to false (so you can only do 1) maybe check int value
-        
+        //int Upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod);
+
         Equipment e = item.e;
+        
+        if (ForgeManager._instance.amountOfClicks == 0)
+        {
+            Debug.LogError("YOU SHOULD NOT BE ABLE TO BE ENHANCING NOW");
+            return item;
+        }
+        
+        float priceMod = ForgeManager._instance.priceMod;
+        int upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod);
+        //it is not free
+        if ( priceMod > 0)
+        {
+            //check if we have the money
+            if (CombatController._instance.Player._gold <= upgrade)
+            {
+                // not enough money
+                item.currentLocation.NotEnoughGoldEvent();
+                UIController._instance.PlayUIError();
+                return item;
+            }
+            else
+            {
+                //take gold
+                CombatController._instance.Player.GetGold(-upgrade);
+            }
+        }
+        if (ForgeManager._instance.amountOfClicks != -1)
+        {
+            ForgeManager._instance.AdjustAmountOfClicks(-1);
+        }
         
         item._toolTip.CloseTip();
 
@@ -647,6 +678,8 @@ public class EquipmentManager : MonoBehaviour
         //e.PrettyPrintStats();
 
         item._toolTip.e = e;
+        
+        UIController._instance.PlayUpgradeSound();
 
         item.InitializeDragItem(e, item.currentLocation);
 
@@ -667,8 +700,44 @@ public class EquipmentManager : MonoBehaviour
         Equipment e = item.e;
 
         if (e.stats[Stats.Rarity] >= 3)
+        {
+            UIController._instance.PlayUIError();
             return item;
+        }
+
+        if (ForgeManager._instance.amountOfClicks == 0)
+        {
+            Debug.LogError("YOU SHOULD NOT BE ABLE TO BE ENHANCING NOW");
+            return item;
+        }
+
+        float priceMod = ForgeManager._instance.priceMod;
+        int enhance = Mathf.RoundToInt((e.stats[Stats.ItemLevel] + 5)* (e.stats[Stats.Rarity] + 1) * priceMod);
+        //it is not free
+        if ( priceMod > 0)
+        {
+            //check if we have the money
+            if (CombatController._instance.Player._gold <= enhance)
+            {
+                // not enough money
+                item.currentLocation.NotEnoughGoldEvent();
+                UIController._instance.PlayUIError();
+                return item;
+            }
+            else
+            {
+                //take gold
+                CombatController._instance.Player.GetGold(-enhance);
+            }
+        }
         
+        if (ForgeManager._instance.amountOfClicks != -1)
+        {
+            ForgeManager._instance.AdjustAmountOfClicks(-1);
+        }
+        
+        UIController._instance.PlayEnhanceSound();
+
         item._toolTip.CloseTip();
 
         //e.PrettyPrintStats();

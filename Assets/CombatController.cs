@@ -291,6 +291,7 @@ public class CombatController : MonoBehaviour
             case NodeType.BlackSmith:
                 UIController._instance.ToggleBlackSmithUI();
                 MusicManager.Instance.PlayShopMusic();
+                BlacksmithToggle(true);
                 break;
             case NodeType.Mystery:
                MysterySelect();
@@ -370,6 +371,21 @@ public class CombatController : MonoBehaviour
                 TreasureNodeClicked(false);
                 MusicManager.Instance.PlayAdventureMusic();
                 break;
+        }
+
+    }
+
+    private void BlacksmithToggle(bool isOn)
+    {
+        if (isOn)
+        {
+            // turn on blacksmith object
+            // make the blacksmith wave}
+        }
+        else
+        {
+            // turn off blacksmith object
+            
         }
 
     }
