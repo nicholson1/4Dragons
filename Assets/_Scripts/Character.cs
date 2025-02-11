@@ -27,7 +27,7 @@ public class Character : MonoBehaviour
     public bool isPlayerCharacter;
     public bool isDragon;
     public bool isElite;
-
+    [SerializeField] private bool isBlacksmith;
 
     public int inventorySize = 6;
     public List<Equipment> _equipment = new List<Equipment>();
@@ -826,7 +826,6 @@ public class Character : MonoBehaviour
 
                     }
                     
-                    Destroy(_combatEntity);
 
                     //CombatController._instance.Player._gold += _gold;
                     UIController._instance.PlayVictorySound();
@@ -838,18 +837,33 @@ public class Character : MonoBehaviour
                     }
                     // else
                     //{
-                    TutorialManager.Instance.QueueTip(TutorialNames.Cleanse);
-                    
-                    CombatController._instance.Guide.MoveToCleanse(this.transform);
-                    this.GetComponent<DarknessController>().Cleanse();
-                    _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Dizzy.ToString());
-                    Destroy(_combatEntity);
-                    StartCoroutine(WaitThenDestroy(10));
-                    CombatController._instance.EndCombat();
-                    WaitEndCombat = StartCoroutine(WaitThenEndCombat(7f));
-                    LootButtonManager._instance.SkipButton.gameObject.SetActive(true);
-                    LootButtonManager._instance.SkipButton.GetComponent<Button>().onClick.AddListener(SkipWaitEndCombat);
+                    if(!isBlacksmith)
+                    {
+                        TutorialManager.Instance.QueueTip(TutorialNames.Cleanse);
+                        CombatController._instance.Guide.MoveToCleanse(this.transform);
+                        this.GetComponent<DarknessController>().Cleanse();
+                        _am.SetTrigger(TheSpellBook.AnimationTriggerNames.Dizzy.ToString());
+                        Destroy(_combatEntity);
+                        StartCoroutine(WaitThenDestroy(10));
 
+
+                    }else
+                    {
+                        // todo make unique animation?
+                        //_am.SetTrigger(TheSpellBook.AnimationTriggerNames.Wave.ToString());
+                    }
+                    CombatController._instance.EndCombat();
+                    
+                    if(!isBlacksmith)
+                    {
+                        WaitEndCombat = StartCoroutine(WaitThenEndCombat(7f));
+                        LootButtonManager._instance.SkipButton.gameObject.SetActive(true);
+                        LootButtonManager._instance.SkipButton.GetComponent<Button>().onClick.AddListener(SkipWaitEndCombat);
+                    }
+                    else
+                    {
+                        WaitEndCombat = StartCoroutine(WaitThenEndCombatBlacksmith(1f));
+                    }
                     //}
                 }
                 
@@ -891,6 +905,15 @@ public class Character : MonoBehaviour
         SelectionManager._instance.RandomSelectionFromEquipment(this);
         LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
     }
+    public IEnumerator WaitThenEndCombatBlacksmith(float time = 1.5f)
+    {
+        yield return new WaitForSeconds(time);
+        UIController._instance.ToggleInventoryUI(1);
+        SelectionManager._instance.CreateChestReward(false, SelectionManager.ChestType.BlackSmith, SelectionManager.ChestType.BlackSmith);
+        UIController._instance.ToggleLootUI(1);
+        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
+    }
+    
 
     private Coroutine WaitEndCombat;
     public void SkipWaitEndCombat()

@@ -1253,6 +1253,7 @@ public class TheSpellBook : MonoBehaviour
         SmallSpellTravel,
         Dizzy,
         Cleanse,
+        Wave
     }
 
     public enum SpellClass
