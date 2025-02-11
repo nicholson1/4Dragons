@@ -211,6 +211,14 @@ public class Elite : MonoBehaviour
                 weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, SpellTypes.Shield1, rarity, stat1, stat2));
                 weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, SpellTypes.Shield2, rarity, stat1, stat2));
                 break;
+            case EliteType.BlackSmith:
+                stat1 = Stats.Swords;
+                stat2 = Stats.Hammers;
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Shield3));
+                spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Hammer2));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, SpellTypes.Sword3, rarity, stat1, Stats.Shields));
+                weapons.Add(EquipmentCreator._instance.CreateRandomWeaponWithSpell(level, SpellTypes.Hammer3, rarity, Stats.Shields, stat2));
+                break;
         }
         List<Equipment> generatedEquipment = new List<Equipment>();
 

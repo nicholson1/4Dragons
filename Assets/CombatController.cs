@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Map;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -106,6 +107,9 @@ public class CombatController : MonoBehaviour
     public int ArmorBlessing = 0;
     public int MRBlessing = 0;
     public int startDamaged = 0;
+
+    public List<CombatEntity.BuffTypes> PreCombatBuffs = new List<CombatEntity.BuffTypes>();
+    public List<CombatEntity.DeBuffTypes> PreCombatDeBuffs = new List<CombatEntity.DeBuffTypes>();
 
     public Elite Blacksmith;
     public GameObject BlacksmithDeco;
@@ -385,6 +389,7 @@ public class CombatController : MonoBehaviour
         if (isOn)
         {
             BlacksmithDeco.gameObject.SetActive(true);
+            Blacksmith.gameObject.SetActive(true);
             Blacksmith.InitializeElite(EliteType.BlackSmith);
             // turn on blacksmith object
             // make the blacksmith wave}
@@ -395,7 +400,6 @@ public class CombatController : MonoBehaviour
             Blacksmith.gameObject.SetActive(false);
             BlacksmithDeco.gameObject.SetActive(false);
         }
-
     }
 
     private void TreasureNodeClicked(bool forceRelic)
@@ -624,7 +628,34 @@ public class CombatController : MonoBehaviour
         if (startDamaged != 0)
         {
             Player._combatEntity.LoseHPDirect(Player._combatEntity,Mathf.RoundToInt(Player._maxHealth * (startDamaged/100f)));
+            startDamaged = 0;
         }
+
+        // if we have any buffs
+        foreach (var buff in PreCombatBuffs)
+        {
+            switch (buff)
+            {
+                case CombatEntity.BuffTypes.Prepared:
+                    entitiesInCombat[0].Buff(Player._combatEntity, CombatEntity.BuffTypes.Prepared, 1,1);
+                    ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, SpellTypes.Nature5);
+                    break;
+            }
+        }
+        PreCombatBuffs.Clear();
+        
+        // if we have any debuffs
+        foreach (var debuff in PreCombatDeBuffs)
+        {
+            switch (debuff)
+            {
+                case CombatEntity.DeBuffTypes.Weakened:
+                    entitiesInCombat[0].DeBuff(Player._combatEntity, CombatEntity.DeBuffTypes.Weakened, 1,30);
+                    ParticleManager._instance.SpawnParticle(Player._combatEntity, Player._combatEntity, SpellTypes.Shadow2);
+                    break;
+            }
+        }
+        PreCombatDeBuffs.Clear();
 
         UpdateUiButtons();
     }
@@ -898,6 +929,26 @@ public class CombatController : MonoBehaviour
         previousDragonSchool = nextDragonSchool;
             
 
+        StartCoroutine(waitTheStartCombat(Player, enemy));
+    }
+
+    public void StartCombatBlacksmith()
+    {
+        if(Blacksmith.isActiveAndEnabled == false)
+            return;
+        for (int i = 1; i < entitiesInCombat.Count; i++)
+        {
+            GameObject.Destroy(entitiesInCombat[i].gameObject);
+            entitiesInCombat.RemoveAt(i);
+            //Debug.Log("DESTRIYING GAME OBJECT");
+        }
+        UIController._instance.ToggleInventoryUI(0);
+
+        NextCombatButton.gameObject.SetActive(false);
+
+        Character enemy = Blacksmith.GetComponent<Character>();
+        enemy.transform.LookAt(Player.transform.position);
+        
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
 

@@ -1076,15 +1076,15 @@ public class CombatEntity : MonoBehaviour
 
     public enum BuffTypes
     {
-        Block,
-        Rejuvenate,
-        Thorns,
-        Invulnerable,
-        Empowered,
-        Shatter,
-        Immortal,
-        Prepared,
-        None,
+        Block = 0,
+        Rejuvenate = 1,
+        Thorns = 2,
+        Invulnerable = 3,
+        Empowered = 4,
+        Shatter = 5,
+        Immortal = 6,
+        Prepared = 7,
+        None = 8,
         
     }
     public enum BlessingTypes
@@ -1114,13 +1114,13 @@ public class CombatEntity : MonoBehaviour
     
     public enum DeBuffTypes
     {
-        Lacerate, // dot physical
-        Burn, // dot spell
-        Wounded, // anti healing
-        Weakened, // anti power
-        Chilled, // reduce energy
-        Exposed, // increase damage taken
-        None,
+        Lacerate = 0, // dot physical
+        Burn = 1, // dot spell
+        Wounded = 2, // anti healing
+        Weakened = 3, // anti power
+        Chilled = 4, // reduce energy
+        Exposed = 5, // increase damage taken
+        None = 6,
         
 
 

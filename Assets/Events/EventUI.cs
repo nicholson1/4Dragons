@@ -211,7 +211,6 @@ public class EventUI : MonoBehaviour
         // Continue the game flow
         //Debug.LogError("Neil, make the game keep moving here");
         CombatController._instance.SetMapCanBeClicked(true);
-        UIController._instance.ToggleMapUI(1);
     }
 
     private void ActivateOutcome(OutcomeInfo outcomeInfo)
@@ -219,54 +218,119 @@ public class EventUI : MonoBehaviour
         float value = outcomeInfo.value;
         EOutcome outcome = outcomeInfo.outcome;
 
+        Debug.Log(outcome);
         switch (outcome)
         {
             case EOutcome.None: /* nothing happens*/ 
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.ReviveGet: /* increase revives*/
                 CombatController._instance.retryAvailable += Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.ReviveLose: /* decrease revives*/
                 CombatController._instance.retryAvailable -= Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.GoldGet:
                 CombatController._instance.Player.GetGold(Mathf.RoundToInt(value));
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.GoldLose:
                 CombatController._instance.Player.GetGold(Mathf.RoundToInt(value));
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.GetGoldPercent:
                 int gainGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value/100);
                 CombatController._instance.Player.GetGold(gainGold);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.LoseGoldPercent:
                 int lossGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value/100);
                 CombatController._instance.Player.GetGold(-lossGold);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.StrengthUp:
                 CombatController._instance.StrengthBlessing += Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.StrengthDown:
                 CombatController._instance.StrengthBlessing -= Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.SpellPowerUp:
                 CombatController._instance.SpellPowerBlessing += Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.SpellPowerDown:
                 CombatController._instance.SpellPowerBlessing -= Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.ArmorDown:
                 CombatController._instance.ArmorBlessing -= Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.ArmorUp:
                 CombatController._instance.ArmorBlessing += Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.MagicResistUp:
                 CombatController._instance.MRBlessing += Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.MagicResistDown:
                 CombatController._instance.MRBlessing -= Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
                 break;
+            case EOutcome.StartDamaged:
+                CombatController._instance.startDamaged += Mathf.RoundToInt(value);
+                UIController._instance.ToggleMapUI(1);
+                break;
+            case EOutcome.RandomRarityUp:
+                for (int i = 0; i < value; i++)
+                {
+                    EquipmentManager._instance.EnhanceRandom();
+                }
+                UIController._instance.ToggleMapUI(1);
+                break;
+            case EOutcome.RandomLevelUp:
+                for (int i = 0; i < value; i++)
+                {
+                    EquipmentManager._instance.UpgradeRandom();
+                }
+                UIController._instance.ToggleMapUI(1);
+                break;
+            case EOutcome.BreakWeapon:
+                for (int i = 0; i < value; i++)
+                {
+                    EquipmentManager._instance.BreakWeapon();
+                }
+                UIController._instance.ToggleMapUI(1);
+                break;
+            case EOutcome.Buff:
+                CombatController._instance.PreCombatBuffs.Add((CombatEntity.BuffTypes)value);
+                UIController._instance.ToggleMapUI(1);
+                break;
+            case EOutcome.Debuff:
+                CombatController._instance.PreCombatDeBuffs.Add((CombatEntity.DeBuffTypes)value);
+                UIController._instance.ToggleMapUI(1);
+                break;
+            case EOutcome.RelicGet:
+                SelectionManager._instance.CreateChestReward(false, SelectionManager.ChestType.Relic, SelectionManager.ChestType.None);
+                UIController._instance.ToggleLootUI(1);
+                break;
+            case EOutcome.EquipmentGet:
+                UIController._instance.ToggleInventoryUI(1);
+                SelectionManager._instance.CreateChestReward(false, SelectionManager.ChestType.Equipment, SelectionManager.ChestType.None);
+                UIController._instance.ToggleLootUI(1);
+                break;
+            
+            /*
+             * 
+                BreakWeapon = 63,
+                RelicGet = 3,
+                Buff
+             */
             
 
             default:Debug.LogError("Neil, please write code for the " + outcome.ToString() + " outcome."); break;

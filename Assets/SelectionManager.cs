@@ -265,7 +265,7 @@ public class SelectionManager : MonoBehaviour
         TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);
     }
 
-    public void CreateChestReward(bool forceRelic = false)
+    public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random,  ChestType type2 = ChestType.Random)
     {
         List<List<Equipment>> relics = new List<List<Equipment>>();
         List<List<Equipment>> equipments = new List<List<Equipment>>();
@@ -274,11 +274,21 @@ public class SelectionManager : MonoBehaviour
         
         (ChestType, ChestType) selectionType = SelectChestType();
 
+        if (type1 != ChestType.Random)
+        {
+            selectionType.Item1 = type1;
+        }
+        if (type2 != ChestType.Random)
+        {
+            selectionType.Item2 = type2;
+        }
+
         if (forceRelic)
         {
             selectionType.Item1 = ChestType.Relic;
             selectionType.Item2 = ChestType.None;
         }
+        
 
         int level = CombatController._instance.Player._level;
 
@@ -329,6 +339,23 @@ public class SelectionManager : MonoBehaviour
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 equipments.Add(selection);
                 break;
+            case ChestType.BlackSmith:
+                selection = new List<Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
+                selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
+                selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
+                selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
+                equipments.Add(selection);
+                selection = new List<Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                equipments.Add(selection);
+                selection = new List<Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+                equipments.Add(selection);
+                break;
             
         }
         switch (selectionType.Item2)
@@ -373,13 +400,19 @@ public class SelectionManager : MonoBehaviour
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 equipments.Add(selection);
                 break;
+            case ChestType.BlackSmith:
+                break;
         }
-        int gold1 = Random.Range(-5, 10) + 50 * CombatController._instance.TrialCounter;
-        if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
-            gold1 *= 2;
-        if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
-            gold1 = Mathf.RoundToInt(gold1 * .5f);
-        golds.Add(gold1);
+        
+        if(type1 != ChestType.Random  )
+        {
+            int gold1 = Random.Range(-5, 10) + 50 * CombatController._instance.TrialCounter;
+            if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
+                gold1 *= 2;
+            if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
+                gold1 = Mathf.RoundToInt(gold1 * .5f);
+            golds.Add(gold1);
+        }
 
 
         if (relics.Count == 0)
@@ -768,7 +801,7 @@ public class SelectionManager : MonoBehaviour
 
     }
 
-    enum ChestType
+    public enum ChestType
     {
         Relic,
         Gold,
@@ -776,6 +809,9 @@ public class SelectionManager : MonoBehaviour
         Weapon, 
         Equipment,
         Potion,
+        BlackSmith,
         None,
+        Random,
+        
     }
 }

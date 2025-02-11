@@ -22,5 +22,18 @@ public class BlacksmithController : MonoBehaviour
     }
     public void ClickDuel()
     {
+        CombatController._instance.StartCombatBlacksmith();
+        UIController._instance.ToggleBlackSmithUI(0);
+
+    }
+    public void ClickLeave()
+    {
+        UIController._instance.ToggleBlackSmithUI(0);
+        UIController._instance.ToggleInventoryUI(0);
+        UIController._instance.ToggleMapUI(1);
+        CombatController._instance.SetMapCanBeClicked(true);
+
+
+
     }
 }

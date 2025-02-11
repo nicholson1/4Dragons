@@ -6,7 +6,9 @@ using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class EquipmentManager : MonoBehaviour
 {
@@ -753,7 +755,83 @@ public class EquipmentManager : MonoBehaviour
         return item;
     }
 
+    public void EnhanceRandom(Equipment.Slot slot = Equipment.Slot.All)
+    {
+        List<DragItem> possibleUpgrades = new List<DragItem>();
 
-    
-    
+        foreach (var inventorySlot in InventorySlots)
+        {
+            if(inventorySlot.Slot == Equipment.Slot.All || inventorySlot.Item == null)
+                continue;
+            Equipment e = inventorySlot.Item.e;
+            if (slot == Equipment.Slot.All || e.slot == slot)
+            {
+                // cant enhance epic items
+                if(e.stats[Stats.Rarity] < 3)
+                    possibleUpgrades.Add(inventorySlot.Item);
+            }
+        }
+
+        DragItem i = possibleUpgrades[Random.Range(0, possibleUpgrades.Count)];
+        i.e.Enhance();
+        i._toolTip.e = i.e;
+        i.InitializeDragItem(i.e, i.currentLocation);
+        UIController._instance.PlayEnhanceSound();
+    }
+    public void UpgradeRandom(Equipment.Slot slot = Equipment.Slot.All)
+    {
+        List<DragItem> possibleUpgrades = new List<DragItem>();
+
+        foreach (var inventorySlot in InventorySlots)
+        {
+            if(inventorySlot.Slot == Equipment.Slot.All || inventorySlot.Item == null)
+                continue;
+            Equipment e = inventorySlot.Item.e;
+            if (slot == Equipment.Slot.All || e.slot == slot)
+            {
+                // cant enhance epic items
+                possibleUpgrades.Add(inventorySlot.Item);
+            }
+        }
+
+        DragItem i = possibleUpgrades[Random.Range(0, possibleUpgrades.Count)];
+        i.e.Upgrade();
+        i._toolTip.e = i.e;
+        i.InitializeDragItem(i.e, i.currentLocation);
+        UIController._instance.PlayUpgradeSound();
+    }
+
+    public void BreakWeapon()
+    {
+        List<DragItem> possibleWeapons = new List<DragItem>();
+
+        foreach (var inventorySlot in InventorySlots)
+        {
+            if (inventorySlot.Slot == Equipment.Slot.OneHander && inventorySlot.Item != null)
+            {
+                possibleWeapons.Add(inventorySlot.Item);
+            }
+        }
+
+        if (possibleWeapons.Count == 0)
+        {
+            foreach (var inventorySlot in InventorySlots)
+            {
+                if (inventorySlot.Slot == Equipment.Slot.All && inventorySlot.Item != null &&inventorySlot.Item.e.slot == Equipment.Slot.OneHander)
+                {
+                    possibleWeapons.Add(inventorySlot.Item);
+                }
+            }
+        }
+        
+        DragItem i = possibleWeapons[Random.Range(0, possibleWeapons.Count)];
+        
+        PoolItem(i);
+        
+        //todo PLAY BREAKING SOUND EFFECT
+    }
+
+
+
+
 }

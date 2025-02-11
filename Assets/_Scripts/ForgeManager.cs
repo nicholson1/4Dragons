@@ -176,6 +176,8 @@ public class ForgeManager : MonoBehaviour
         UIController._instance.ToggleForgeUI(0);
         UIController._instance.ToggleInventoryUI(0);
         UIController._instance.ToggleMapUI(1);
+        CombatController._instance.SetMapCanBeClicked(true);
+
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {
             if(slot.Item != null)
