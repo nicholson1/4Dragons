@@ -106,6 +106,9 @@ public class CombatController : MonoBehaviour
     public int ArmorBlessing = 0;
     public int MRBlessing = 0;
     public int startDamaged = 0;
+
+    public Elite Blacksmith;
+    public GameObject BlacksmithDeco;
    
 
     [SerializeField] private AudioClip _beginAdventure;
@@ -247,6 +250,8 @@ public class CombatController : MonoBehaviour
         LastNodeClicked = node;
         currentSeed = node.nodeSeed;
         Random.InitState(currentSeed);
+        
+        BlacksmithToggle(false);
         //Debug.Log("Current Node Seed: " + currentSeed);
         if(!retry)
             RotateAroundMap._instance.StopRandomRotate();
@@ -379,13 +384,16 @@ public class CombatController : MonoBehaviour
     {
         if (isOn)
         {
+            BlacksmithDeco.gameObject.SetActive(true);
+            Blacksmith.InitializeElite(EliteType.BlackSmith);
             // turn on blacksmith object
             // make the blacksmith wave}
         }
         else
         {
             // turn off blacksmith object
-            
+            Blacksmith.gameObject.SetActive(false);
+            BlacksmithDeco.gameObject.SetActive(false);
         }
 
     }

@@ -272,4 +272,8 @@ public enum EliteType
     Assassin,
     Shaman,
     Paladin,
+    
+    
+    // special
+    BlackSmith
 }
