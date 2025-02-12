@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e246289ab731a41a210e157011ae28, type: 3}
   m_Name: Database
   m_EditorClassIdentifier: 
-  saveToggle: 0
+  saveToggle: 1
   speadsheetID: 1bPXe5Cy6gScdkFsFt2Mn0jbz0pZ0SgGnRjvqNUjot08
   credentials: AIzaSyA8s5Fik3T4s9of4awsu_WmQs8tSE4-N8w
   eventsTab:
@@ -48,7 +48,7 @@ MonoBehaviour:
       - column: TrialMin
         value: 0
       - column: Chance
-        value: 1
+        value: 0
       - column: Text
         value: You Encounter a traveling blacksmith. He beakons you over and in a
           deep joyful voice says "You look like your on quite the adventure, maybe
@@ -785,7 +785,7 @@ MonoBehaviour:
       - column: DisplayName
         value: Search
       - column: ShowOutcomes
-        value: TRUE
+        value: FALSE
       - column: Outcome0
         value: RelicGet
       - column: Value0
@@ -985,7 +985,7 @@ MonoBehaviour:
       - column: DisplayName
         value: Loot
       - column: ShowOutcomes
-        value: TRUE
+        value: FALSE
       - column: Outcome0
         value: GoldGet
       - column: Value0
@@ -1021,7 +1021,7 @@ MonoBehaviour:
       - column: DisplayName
         value: Take
       - column: ShowOutcomes
-        value: TRUE
+        value: FALSE
       - column: Outcome0
         value: GoldGet
       - column: Value0
@@ -2179,11 +2179,11 @@ MonoBehaviour:
       - column: DisplayName
         value: Recharge
       - column: ShowOutcomes
-        value: TRUE
+        value: FALSE
       - column: Outcome0
         value: ReviveGet
       - column: Value0
-        value: 0
+        value: 1
       - column: Chance0
         value: 1.00
       - column: Text0
@@ -2213,7 +2213,7 @@ MonoBehaviour:
       - column: DisplayName
         value: Place your hand on the stone
       - column: ShowOutcomes
-        value: TRUE
+        value: FALSE
       - column: Outcome0
         value: RandomRarityUp
       - column: Value0
@@ -2479,7 +2479,7 @@ MonoBehaviour:
       - column: Outcome0
         value: Buff
       - column: Value0
-        value: 1
+        value: 7
       - column: Chance0
         value: 1.00
       - column: Text0
