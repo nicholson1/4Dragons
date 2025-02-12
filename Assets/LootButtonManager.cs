@@ -42,6 +42,8 @@ public class LootButtonManager : MonoBehaviour
             return true;
         if (GoldList.Count > 0)
             return true;
+        if (RelicLists.Count > 0)
+            return true;
         return false;
     }
 

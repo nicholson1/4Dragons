@@ -35,7 +35,10 @@ public class TreasureChest : MonoBehaviour
         if(!force)
         {
             if (EventSystem.current.IsPointerOverGameObject())
+            {
                 return;
+            }
+                
         }
         
         if(!testRun)
@@ -52,8 +55,11 @@ public class TreasureChest : MonoBehaviour
             }
 
             //Debug.Log(!LootButtonManager._instance.HasItems());
+            
             if (!LootButtonManager._instance.HasItems())
+            {
                 return;
+            }
             
             UIController._instance.ToggleLootUI(1);
             UIController._instance.ToggleInventoryUI(1);
@@ -101,6 +107,7 @@ public class TreasureChest : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                Debug.Log("hello?");
                 ClickOnTreaure(true);
             }
         }

@@ -285,6 +285,7 @@ public class SelectionManager : MonoBehaviour
 
         if (forceRelic)
         {
+            Debug.Log("force relic");
             selectionType.Item1 = ChestType.Relic;
             selectionType.Item2 = ChestType.None;
         }
@@ -298,6 +299,7 @@ public class SelectionManager : MonoBehaviour
         {
             case ChestType.Relic:
                 relics.Add(new List<Equipment> {RelicManager._instance.GetCommonRelic()});
+                Debug.Log("adding relic");
                 break;
             case ChestType.Gold:
                 int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;
@@ -404,7 +406,7 @@ public class SelectionManager : MonoBehaviour
                 break;
         }
         
-        if(type1 != ChestType.Random  )
+        if(type1 == ChestType.Random  )
         {
             int gold1 = Random.Range(-5, 10) + 50 * CombatController._instance.TrialCounter;
             if (Modifiers._instance.CurrentMods.Contains(Mods.DoubleGold))
@@ -414,6 +416,7 @@ public class SelectionManager : MonoBehaviour
             golds.Add(gold1);
         }
 
+        
 
         if (relics.Count == 0)
             relics = null;
@@ -797,6 +800,7 @@ public class SelectionManager : MonoBehaviour
             return (ChestType.Relic, ChestType.None);
         }
         int roll2 = Random.Range(1, 6);
+        
         return ((ChestType)roll1, (ChestType)roll2);
 
     }

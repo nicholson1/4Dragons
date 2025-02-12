@@ -195,6 +195,8 @@ public class EventUI : MonoBehaviour
 
         // set state
         _hasSelectedOption = true;
+        
+        UIController._instance.PlayUIClick();
     }
 
     private void AcceptConsequences()
@@ -211,6 +213,8 @@ public class EventUI : MonoBehaviour
         // Continue the game flow
         //Debug.LogError("Neil, make the game keep moving here");
         CombatController._instance.SetMapCanBeClicked(true);
+        UIController._instance.PlayUIClick();
+
     }
 
     private void ActivateOutcome(OutcomeInfo outcomeInfo)
