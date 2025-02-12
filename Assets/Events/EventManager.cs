@@ -17,6 +17,8 @@ public class EventManager : MonoBehaviour
     public static EventManager Instance => GetInstance();
     static EventManager _instance;
 
+    private bool onLoop = false;
+
     private static EventManager GetInstance()
     {
         if(_instance == null)
@@ -85,6 +87,13 @@ public class EventManager : MonoBehaviour
 
         if (_eventChances.Count <= 0)
         {
+            if(!onLoop)
+            {
+                _pastEvents.Clear();
+                onLoop = true;
+                return GetRandomEvent(trialCount);
+            }
+            
             EventInfo defaultEvent = new()
             {
                 eEvent = EEvent.Blacksmith,
@@ -213,4 +222,5 @@ public struct OutcomeInfo
     public string displayName;
     public float value;
     public string text;
+    public bool success;
 }
