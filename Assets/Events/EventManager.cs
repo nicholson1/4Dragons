@@ -108,6 +108,7 @@ public class EventManager : MonoBehaviour
         EventInfo selectedEvent = _eventChances.GetRandomOutcome();
         //Debug.Log("Selected Event: " + selectedEvent.eEvent);
         _pastEvents.Add(selectedEvent.eEvent);
+        onLoop = false;
         return selectedEvent;
     }
 

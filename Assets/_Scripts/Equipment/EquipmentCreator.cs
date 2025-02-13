@@ -946,7 +946,7 @@ public class EquipmentCreator : MonoBehaviour
             }
             else
             {
-                equipmentStats.Add(Stats.Armor, (roll - 1) / 2);
+                equipmentStats.Add(Stats.Armor, Mathf.Max(1, (roll - 1) / 2) );
 
                 if (((roll - 1) / 2) <= 0)
                 {
@@ -955,7 +955,7 @@ public class EquipmentCreator : MonoBehaviour
                 }
                 else
                 {
-                    equipmentStats.Add(Stats.MagicResist, (roll - 1) / 2);
+                    equipmentStats.Add(Stats.MagicResist, Mathf.Max(1, (roll - 1) / 2) );
 
                 }
             }

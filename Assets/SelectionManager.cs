@@ -285,7 +285,6 @@ public class SelectionManager : MonoBehaviour
 
         if (forceRelic)
         {
-            Debug.Log("force relic");
             selectionType.Item1 = ChestType.Relic;
             selectionType.Item2 = ChestType.None;
         }
@@ -299,7 +298,6 @@ public class SelectionManager : MonoBehaviour
         {
             case ChestType.Relic:
                 relics.Add(new List<Equipment> {RelicManager._instance.GetCommonRelic()});
-                Debug.Log("adding relic");
                 break;
             case ChestType.Gold:
                 int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;

@@ -335,6 +335,13 @@ public class EquipmentModelManager : MonoBehaviour
     
     public void HairButton(int direction)
     {
+        if(headIndex <= 10 )
+        {
+            HeadModels[headIndex].SetActive(false);
+            headIndex = 0;
+            PlayerPrefsManager.SetHelmet(headIndex);
+        }
+        
         Hair[hairIndex].SetActive(false);
         hairIndex += direction;
         if (hairIndex > Hair.Length - 1 )

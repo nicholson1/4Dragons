@@ -1051,6 +1051,7 @@ public class Character : MonoBehaviour
     {
         int hp = 0;
         int difficulty = CombatController._instance.Difficulty;
+        int trial = CombatController._instance.TrialCounter;
         if (isDragon)
         {
             if(difficulty >= 9)
@@ -1099,10 +1100,18 @@ public class Character : MonoBehaviour
                 hp = 70 * _level;
         }
 
+        if (!isPlayerCharacter)
+        {
+            hp += Mathf.RoundToInt(hp * (.05f * (trial -1)));
+        }
+
         int hpFromStats = 0;
         _stats.TryGetValue(Stats.Health, out hpFromStats);
 
         hp += hpFromStats;
+        
+        
+        
         _maxHealth = hp; // Set Max Health here
         _stats[Stats.Health] = hp;
 

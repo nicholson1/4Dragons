@@ -823,10 +823,16 @@ public class EquipmentManager : MonoBehaviour
                 }
             }
         }
+
+        if (possibleWeapons.Count > 0)
+        {
+            DragItem i = possibleWeapons[Random.Range(0, possibleWeapons.Count)];
         
-        DragItem i = possibleWeapons[Random.Range(0, possibleWeapons.Count)];
+            i.currentLocation.Item = null;
+            i.currentLocation.LabelCheck();
+            _instance.PoolItem(i);
+        }
         
-        PoolItem(i);
         
         //todo PLAY BREAKING SOUND EFFECT
     }

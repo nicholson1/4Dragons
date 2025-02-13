@@ -334,15 +334,15 @@ public class CombatController : MonoBehaviour
         }
 
         //TODO SET THIS BACK TO 5 WHEN YOU ARE DONE TESTING
-        else if (roll >= 0) // >5 when we have events
+        else if (roll >= 4) // >4 when we have events
         {
             //event
-            //3 in 10 chance of happening 
+            //4 in 10 chance of happening 
             nt = NodeType.Mystery;
         }
         else
         {
-            //5 in 10 chance of happening
+            //3 in 10 chance of happening
             //else just a random enemy
             nt = NodeType.MinorEnemy;
         }
@@ -415,6 +415,7 @@ public class CombatController : MonoBehaviour
         {
             rewardChest.transform.position += (Vector3.up * 10);
             rewardChest.SetActive(true);
+            rewardChest.GetComponent<TreasureChest>().forceRelic = forceRelic;
             rewardChest.GetComponent<TreasureChest>().Reset();
         }
     }
