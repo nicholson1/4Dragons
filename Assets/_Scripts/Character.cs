@@ -693,7 +693,7 @@ public class Character : MonoBehaviour
 
     public void GetGold(int amount)
     {
-        if (RelicManager._instance.CheckRelic(RelicType.DragonRelic11))
+        if (amount > 0 && RelicManager._instance.CheckRelic(RelicType.DragonRelic11))
         {
             return;
         }

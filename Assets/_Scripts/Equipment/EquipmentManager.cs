@@ -650,7 +650,7 @@ public class EquipmentManager : MonoBehaviour
         }
         
         float priceMod = ForgeManager._instance.priceMod;
-        int upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod);
+        int upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod) * 3;
         //it is not free
         if ( priceMod > 0)
         {
@@ -714,7 +714,7 @@ public class EquipmentManager : MonoBehaviour
         }
 
         float priceMod = ForgeManager._instance.priceMod;
-        int enhance = Mathf.RoundToInt((e.stats[Stats.ItemLevel] + 5)* (e.stats[Stats.Rarity] + 1) * priceMod);
+        int enhance = Mathf.RoundToInt((e.stats[Stats.ItemLevel] + 5)* (e.stats[Stats.Rarity] + 1) * priceMod) * 3;
         //it is not free
         if ( priceMod > 0)
         {
