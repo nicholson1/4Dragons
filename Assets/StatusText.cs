@@ -22,14 +22,17 @@ public class StatusText : MonoBehaviour
     public Sprite spellAttackIcon;
 
     bool _isCrit = false;
+    bool _isBuff = false;
 
     const int _shakeCount = 20;
     const float _shakeWidth = 20f;
     const float _critSizeMultiplier = 1.5f;
     
-    const float _divisor = 3000f;
+    const float _attackDivisor = 3000f;
+    const float _buffDivisor = 50000f;
     const float _maxNumerator = 5000f;
-    const float _bigRatio = 1.5f;
+    const float _bigRatioAttack = 1.5f;
+    const float _bigRatioBuff = 1f;
     const float _smallRatio = 0.1f;
     const float _bigTime = 0.2f;
     const float _initialWait = 1f;
@@ -39,6 +42,7 @@ public class StatusText : MonoBehaviour
     {
         _healthBar = hb;
         _isCrit = isCrit;
+        _isBuff = false;
         Icon.sprite = null;
         Icon.color = Color.white;
 
@@ -78,7 +82,7 @@ public class StatusText : MonoBehaviour
                 break;
         }
         //Debug.Log(abilityTypes + ": " + Mathf.Abs(amount));
-        SetSize(amount, _divisor);
+        SetSize(amount, _attackDivisor);
         StartMovement();
     }
 
@@ -86,6 +90,7 @@ public class StatusText : MonoBehaviour
     {
         _healthBar = hb;
         _isCrit = false;
+        _isBuff = true;
 
         Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
         
@@ -102,7 +107,7 @@ public class StatusText : MonoBehaviour
             ReductionText.color = TheSpellBook._instance.abilityColors[2];
         }
         //Debug.Log(buffTypes + ": " + Mathf.Abs(amount));
-        SetSize(amount, _divisor);
+        SetSize(amount, _buffDivisor);
         StartMovement();
     }
 
@@ -110,6 +115,7 @@ public class StatusText : MonoBehaviour
     {
         _healthBar = hb;
         _isCrit = false;
+        _isBuff = true;
 
         Icon.sprite = TheSpellBook._instance.GetSprite(debuffTypes);
         AmountText.text = debuffTypes.ToString();
@@ -118,7 +124,7 @@ public class StatusText : MonoBehaviour
         
         ReductionText.color = TheSpellBook._instance.abilityColors[3];
         //Debug.Log(debuffTypes + ": " + Mathf.Abs(amount));
-        SetSize(Mathf.Abs(amount), _divisor);
+        SetSize(Mathf.Abs(amount), _buffDivisor);
         StartMovement();
     }
 
@@ -147,9 +153,12 @@ public class StatusText : MonoBehaviour
         StartCoroutine(Fade(_initialWait, _fadeDuration, AmountText));
         StartCoroutine(Fade(_initialWait, _fadeDuration, ReductionText));
         StartCoroutine(Fade(_initialWait, _fadeDuration, Icon));
-        StartCoroutine(AnimateScale(_initialWait + _fadeDuration));
-        StartCoroutine(AnimateScale(_initialWait + _fadeDuration));
-        StartCoroutine(AnimateScale(_initialWait + _fadeDuration));
+
+        float bigRatio = _isBuff ? _bigRatioBuff : _bigRatioAttack;
+
+        StartCoroutine(AnimateScale(_initialWait + _fadeDuration, bigRatio));
+        StartCoroutine(AnimateScale(_initialWait + _fadeDuration, bigRatio));
+        StartCoroutine(AnimateScale(_initialWait + _fadeDuration, bigRatio));
     }
     
     IEnumerator LerpPos(Vector3 start, Vector3 end, float timeToMove)
@@ -216,7 +225,7 @@ public class StatusText : MonoBehaviour
         MoveFinished();
     }
 
-    private IEnumerator AnimateScale(float fadeDuration)
+    private IEnumerator AnimateScale(float fadeDuration, float bigRatio)
     {
         Vector3 startingScale = transform.localScale; 
         float elapsedTime = 0f;
@@ -224,7 +233,7 @@ public class StatusText : MonoBehaviour
         float totalTime;        
         float smallTime;        
         float passedPercentage; 
-        float differenceRatio;  
+        float differenceRatio;
 
         while (elapsedTime < fadeDuration)
         {
@@ -232,7 +241,7 @@ public class StatusText : MonoBehaviour
 
             if (elapsedTime < _bigTime)
             {
-                scaleRatio = 1f + (elapsedTime / _bigTime) * _bigRatio;
+                scaleRatio = 1f + (elapsedTime / _bigTime) * bigRatio;
                 //Debug.Log("Up: " + scaleRatio);
             }
             else
@@ -240,7 +249,7 @@ public class StatusText : MonoBehaviour
                 totalTime = fadeDuration - _bigTime;
                 smallTime = elapsedTime - _bigTime;
                 passedPercentage = smallTime / totalTime;
-                differenceRatio = 1f + _bigRatio - _smallRatio;
+                differenceRatio = 1f + bigRatio - _smallRatio;
                 scaleRatio = _smallRatio + differenceRatio * (1f - passedPercentage);
                 //Debug.Log("Down: " + scaleRatio+"\n"+
                 //    _smallRatio+" + "+differenceRatio+" * (1f - "+passedPercentage+")");
