@@ -613,7 +613,7 @@ public class HealthBar : MonoBehaviour
 
     //private Coroutine MovingBar;
 
-    private void GetHealed(Character c, int heal)
+    private void GetHealed(Character c, int heal, bool isCrit)
     {
         //Debug.Log("we are doing the healing with the bar no?");
         // if(MovingBar != null)

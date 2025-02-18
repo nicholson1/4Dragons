@@ -21,7 +21,7 @@ public class CombatEntity : MonoBehaviour
     
     // who got hit, type of hit, amount, reduction?
     public static event Action<Character, AbilityTypes, (int, int), bool> GetHitWithAttack;
-    public static event Action<Character, int> GetHealed;
+    public static event Action<Character, int, bool> GetHealed;
     public static event Action<Character, BuffTypes, int, float> GetHitWithBuff;
     public static event Action<Character, DeBuffTypes, int, float> GetHitWithDeBuff;
     public static event Action<Character, BlessingTypes, int, float> GetHitWithBlessing;
@@ -901,7 +901,8 @@ public class CombatEntity : MonoBehaviour
         //todo adjust crit mod via buff or title
         
         //figure if it is a crit
-        if (CriticalHit(crit))
+        bool isCrit = CriticalHit(crit);
+        if (isCrit)
         {
             heal = Mathf.RoundToInt(heal * critModifier);
             Debug.Log("CRITICAL HEAL");
@@ -915,7 +916,7 @@ public class CombatEntity : MonoBehaviour
         }
         
         target.attacker = this;
-        GetHealed(target.myCharacter, heal);
+        GetHealed(target.myCharacter, heal, isCrit);
     }
 
     public void AttackBasic(CombatEntity target,  AbilityTypes attackType, int damage, float crit, float TimeToHit)

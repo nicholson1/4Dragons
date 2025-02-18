@@ -679,7 +679,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void GetHealed(Character c, int healAmount)
+    private void GetHealed(Character c, int healAmount, bool isCrit)
     { 
         if(c != this)
             return;
