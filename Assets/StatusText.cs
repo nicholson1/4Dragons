@@ -31,8 +31,8 @@ public class StatusText : MonoBehaviour
     const float _attackDivisor = 3000f;
     const float _buffDivisor = 50000f;
     const float _maxNumerator = 5000f;
-    const float _bigRatioAttack = 1.5f;
-    const float _bigRatioBuff = 1f;
+    const float _bigRatioAttack = 1f;
+    const float _bigRatioBuff = .25f;
     const float _smallRatio = 0.1f;
     const float _bigTime = 0.2f;
     const float _initialWait = 1f;
