@@ -650,14 +650,14 @@ public class HealthBar : MonoBehaviour
         text.text = displayCurrent + "/" + displayMax;
     }
 
-    private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
+    private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, (int,int) amountAndReduction, bool isCrit = false)
     {
 
         // if(MovingBar != null)
         //     StopCoroutine(MovingBar);
         if (c != displayCharacter)
             return;
-        bar.value -= amount;
+        bar.value -= amountAndReduction.Item1;
 
         tempBar.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = DamageColor;
 
@@ -670,7 +670,7 @@ public class HealthBar : MonoBehaviour
         //Debug.Log("Active? "+gameObject.activeInHierarchy);
         //MovingBar = StartCoroutine(LerpValueDamage(tempBar.value, (float)bar.value, 2));
         if(TempBarStart == 0)
-            TempBarStart = (c._currentHealth + amount);
+            TempBarStart = (c._currentHealth + amountAndReduction.Item1);
         TempBarTarget = c._currentHealth;
         //Debug.Log("start: "+TempBarStart + " target: " + TempBarTarget +" "+ bar.value);
         waitTimer = 1.5f;
@@ -685,7 +685,7 @@ public class HealthBar : MonoBehaviour
 
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
-        st.InitializeStatusText(amount, abilityTypes, this,reduction);
+        st.InitializeStatusText(amountAndReduction.Item1, abilityTypes, this,amountAndReduction.Item2);
     }
 
     IEnumerator LerpValueDamage(float start, float end, float timeToMove)

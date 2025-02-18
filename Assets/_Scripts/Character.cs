@@ -713,20 +713,20 @@ public class Character : MonoBehaviour
 
     }
 
-    private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, int amount, int reduction = 0)
+    private void GetHitWithAttack(Character c, CombatEntity.AbilityTypes abilityTypes, (int,int) amountAndReduction, bool isCrit = false)
     {
         if(c != this)
             return;
         
         // take damage
         // possibly die
-        if (amount > 0)
+        if (amountAndReduction.Item1 > 0)
         {
             _am.SetTrigger(TheSpellBook.AnimationTriggerNames.SmallHit.ToString());
             
         }
 
-        _currentHealth -= amount;
+        _currentHealth -= amountAndReduction.Item1;
 
         if(_currentHealth < _maxHealth / 2f && isPlayerCharacter)
         {

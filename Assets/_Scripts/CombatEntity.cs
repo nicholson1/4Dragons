@@ -20,7 +20,7 @@ public class CombatEntity : MonoBehaviour
     public static event Action<CombatEntity, AbilityTypes, int, float> AttackEvent;
     
     // who got hit, type of hit, amount, reduction?
-    public static event Action<Character, AbilityTypes, int, int> GetHitWithAttack;
+    public static event Action<Character, AbilityTypes, (int, int), bool> GetHitWithAttack;
     public static event Action<Character, int> GetHealed;
     public static event Action<Character, BuffTypes, int, float> GetHitWithBuff;
     public static event Action<Character, DeBuffTypes, int, float> GetHitWithDeBuff;
@@ -401,7 +401,8 @@ public class CombatEntity : MonoBehaviour
         
         
         //figure if it is a crit
-        if (CriticalHit(crit))
+        bool isCrit = CriticalHit(crit);
+        if (isCrit)
         {
             if (!myCharacter.isPlayerCharacter)
             {
@@ -583,7 +584,7 @@ public class CombatEntity : MonoBehaviour
         }
 
 
-        GetHitWithAttack(myCharacter, dt, attackDamage, reductionAmount);
+        GetHitWithAttack(myCharacter, dt, (attackDamage, reductionAmount), isCrit);
         
         //return 1;
         //Debug.Log(spell);
@@ -978,7 +979,7 @@ public class CombatEntity : MonoBehaviour
         {
             amount = Mathf.RoundToInt(1.5f * amount);
         }
-        GetHitWithAttack(target.myCharacter, AbilityTypes.SpellAttack, amount, 0);
+        GetHitWithAttack(target.myCharacter, AbilityTypes.SpellAttack, (amount, 0), false);
         
     }
 
@@ -1055,7 +1056,7 @@ public class CombatEntity : MonoBehaviour
 
     public void DirectTakeDamage(int amount)
     {
-        GetHitWithAttack(myCharacter, AbilityTypes.PhysicalAttack, amount, 0);
+        GetHitWithAttack(myCharacter, AbilityTypes.PhysicalAttack, (amount, 0), false);
     }
     public void GetHitWithBlessingDirect(BlessingTypes blessing, int turns, float amount)
     {

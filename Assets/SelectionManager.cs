@@ -170,7 +170,7 @@ public class SelectionManager : MonoBehaviour
         
         if (RelicManager._instance.CheckRelic(RelicType.Relic25))
         {
-            GoldSelections.Add(Mathf.RoundToInt(CombatController._instance.Player._gold * .05f));
+            GoldSelections.Add(Mathf.Max(1,Mathf.RoundToInt(CombatController._instance.Player._gold * .05f)));
         }
 
         LootButtonManager._instance.SetLootButtons(EquipmentSelection, GoldSelections, RelicSelections);

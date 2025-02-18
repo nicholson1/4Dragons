@@ -101,7 +101,7 @@ public class Relic : Equipment
         "Prevent the first spell damage taken each combat",
         "Prevent the first physical damage taken each combat",
         "If you have no block Gain block at the end of your turn",
-        "Start each combat prepared",
+        "Prevent the first Debuff each combat",
         "The first time you die resurrect with 50% hp and become invulnerable",
         "Your first Buff spell each combat costs no energy",
         "? nodes wont have combats",
