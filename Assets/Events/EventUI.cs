@@ -16,10 +16,13 @@ public class EventUI : MonoBehaviour
     [SerializeField] private Image eventImage;
     [SerializeField] private Sprite[] eventSprites;
     [SerializeField] private bool loadEventSprites;
+    [SerializeField] private float sfxVolume = 0.5f;
 
     EventInfo _currentEventInfo;
     List<OptionInfo> _currentOptionInfos;
     OutcomeInfo _currentOutcomeInfo;
+
+    Dictionary<string, AudioClip> _outcomeSFXs = new();
 
     bool _hasSelectedOption = false;
 
@@ -52,6 +55,18 @@ public class EventUI : MonoBehaviour
         }
     }
 
+    private void LoadOutcomeSFXs()
+    {
+        _outcomeSFXs.Clear();
+        AudioClip[] clips = Resources.LoadAll<AudioClip>("OutcomeSFX");
+
+        foreach (AudioClip clip in clips)
+        {
+            _outcomeSFXs[clip.name] = clip;
+            Debug.Log("Loaded " + clip.name);
+        }
+    }
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -60,6 +75,7 @@ public class EventUI : MonoBehaviour
             instance = this;
 
         EventManager.Instance.Initialize();
+        LoadOutcomeSFXs();
     }
 
     public void RandomEvent()
@@ -189,6 +205,13 @@ public class EventUI : MonoBehaviour
         // display outcome
         eventText.text = _currentOutcomeInfo.text;
         optionTexts[buttonIndex].text = _currentOutcomeInfo.displayName;
+        AudioClip outcomeClip = null;
+
+        if (_outcomeSFXs.ContainsKey(_currentOutcomeInfo.sfx))
+            outcomeClip = _outcomeSFXs[_currentOutcomeInfo.sfx];
+
+        if (outcomeClip != null)
+            SoundManager.Instance.Play2DSFX(outcomeClip, sfxVolume);
 
         for (int i = 0; i < optionButtons.Length; i++)
             optionButtons[i].gameObject.SetActive(i == buttonIndex);

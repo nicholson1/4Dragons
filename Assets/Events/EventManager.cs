@@ -174,6 +174,7 @@ public class EventManager : MonoBehaviour
                     outcome = outcome,
                     displayName = Database.outcomesTab.GetString((int)outcome, "DisplayName"),
                     value = Database.optionsTab.GetFloat(optionRow, "Value" + i),
+                    sfx = Database.optionsTab.GetString(optionRow, "SFX" + i),
                     text = Database.optionsTab.GetString(optionRow, "Text" + i)
                 };
 
@@ -191,6 +192,7 @@ public class EventManager : MonoBehaviour
                 outcome = EOutcome.None,
                 displayName = "Non-Event",
                 value = 0,
+                sfx = "None",
                 text = "Nothing Happens."
             };
 
@@ -222,6 +224,7 @@ public struct OutcomeInfo
     public EOutcome outcome;
     public string displayName;
     public float value;
+    public string sfx;
     public string text;
     public bool success;
 }
