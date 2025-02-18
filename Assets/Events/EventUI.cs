@@ -16,7 +16,7 @@ public class EventUI : MonoBehaviour
     [SerializeField] private Image eventImage;
     [SerializeField] private Sprite[] eventSprites;
     [SerializeField] private bool loadEventSprites;
-    [SerializeField] private float sfxVolume = 0.5f;
+    [SerializeField] private float sfxVolume = 1f;
 
     EventInfo _currentEventInfo;
     List<OptionInfo> _currentOptionInfos;
@@ -113,6 +113,14 @@ public class EventUI : MonoBehaviour
         // toggle ui show
         UIController._instance.ToggleEventUI(1);
 
+        AudioClip openEventClip = null;
+
+        if (_outcomeSFXs.ContainsKey("StartEvent"))
+            openEventClip = _outcomeSFXs["StartEvent"];
+
+        if (openEventClip != null)
+            SoundManager.Instance.Play2DSFX(openEventClip, sfxVolume);
+
         // set state
         _hasSelectedOption = false;
     }
@@ -205,6 +213,7 @@ public class EventUI : MonoBehaviour
         // display outcome
         eventText.text = _currentOutcomeInfo.text;
         optionTexts[buttonIndex].text = _currentOutcomeInfo.displayName;
+
         AudioClip outcomeClip = null;
 
         if (_outcomeSFXs.ContainsKey(_currentOutcomeInfo.sfx))
