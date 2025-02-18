@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static CombatEntity;
 
 public class StatusText : MonoBehaviour
 {
@@ -15,13 +16,14 @@ public class StatusText : MonoBehaviour
     
     //have colors for each abilitytypes
     
-
     public Sprite blockIcon;
     public Sprite physicalAttackIcon;
     public Sprite healIcon;
     public Sprite spellAttackIcon;
-    
 
+    const float _divisor = 3000f;
+    const float _maxNumerator = 5000f;
+    
     public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, HealthBar hb, int reduction = 0)
     {
         _healthBar = hb;
@@ -39,7 +41,9 @@ public class StatusText : MonoBehaviour
                     ReductionText.text = "";
                 ReductionText.color = Color.gray;
                 Icon.sprite = physicalAttackIcon;
+
                 break;
+
             case CombatEntity.AbilityTypes.SpellAttack:
                 AmountText.text = amount.ToString();
                 AmountText.color = TheSpellBook._instance.abilityColors[(int)abilityTypes];
@@ -50,6 +54,7 @@ public class StatusText : MonoBehaviour
                 else
                     ReductionText.text = "";
                 ReductionText.color = Color.gray;
+
                 break;
                 
             case CombatEntity.AbilityTypes.Heal:
@@ -60,9 +65,11 @@ public class StatusText : MonoBehaviour
                 
                 break;
         }
+        //Debug.Log(abilityTypes + ": " + Mathf.Abs(amount));
+        SetSize(amount, _divisor);
         StartMovement();
     }
-    
+
     public void InitializeStatusText(int turns, int amount, CombatEntity.BuffTypes buffTypes, HealthBar hb)
     {
         _healthBar = hb;
@@ -81,9 +88,11 @@ public class StatusText : MonoBehaviour
             ReductionText.text = "(" + turns +")";
             ReductionText.color = TheSpellBook._instance.abilityColors[2];
         }
+        //Debug.Log(buffTypes + ": " + Mathf.Abs(amount));
+        SetSize(amount, _divisor);
         StartMovement();
-
     }
+
     public void InitializeStatusText(int turns, int amount, CombatEntity.DeBuffTypes debuffTypes, HealthBar hb)
     {
         _healthBar = hb;
@@ -94,8 +103,17 @@ public class StatusText : MonoBehaviour
         ReductionText.text = "(" + turns +")";
         
         ReductionText.color = TheSpellBook._instance.abilityColors[3];
-
+        //Debug.Log(debuffTypes + ": " + Mathf.Abs(amount));
+        SetSize(Mathf.Abs(amount), _divisor);
         StartMovement();
+    }
+
+    private void SetSize(float numerator, float divisor)
+    {
+        divisor = Mathf.Max(divisor, 1);
+        numerator = Mathf.Min(Mathf.Abs(numerator), _maxNumerator);
+        Vector3 size = Vector3.one * (1f + numerator / divisor);
+        transform.localScale = size;
     }
 
     private void StartMovement()
@@ -127,6 +145,7 @@ public class StatusText : MonoBehaviour
         transform.position = end;
         
     }
+
     private IEnumerator Fade(float initialWait, float fadeDuration, TextMeshProUGUI text)
     {
         yield return new WaitForSeconds(initialWait);
@@ -142,6 +161,7 @@ public class StatusText : MonoBehaviour
             yield return null;
         }
     }
+
     private IEnumerator Fade(float initialWait, float fadeDuration, Image icon)
     {
         yield return new WaitForSeconds(initialWait);
@@ -157,8 +177,7 @@ public class StatusText : MonoBehaviour
             yield return null;
         }
         MoveFinished();
-    }
-    
+    }    
 
     private void MoveFinished()
     {
