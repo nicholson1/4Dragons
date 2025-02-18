@@ -5,8 +5,9 @@ using UnityEngine;
 public class CreditsRoller : MonoBehaviour
 {
     public RectTransform creditsText; // The RectTransform of the credits text
-    public float scrollSpeed = 50f;   // Speed at which the credits roll
+    public float scrollSpeed = 200f;   // Speed at which the credits roll
     public float resetDelay = 5f;     // Time before credits loop or stop
+    public float resetHeight = 3000f;
     [SerializeField] private CanvasGroup _canvasGroup; 
 
     private Vector3 startPosition;
@@ -33,7 +34,7 @@ public class CreditsRoller : MonoBehaviour
         creditsText.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
 
         // Check if the credits have scrolled off the top
-        if (creditsText.localPosition.y > Screen.height + creditsText.rect.height)
+        if (creditsText.localPosition.y > Screen.height + creditsText.rect.height + resetHeight)
         {
             // Delay and reset the position
             Invoke(nameof(ResetPosition), resetDelay);
