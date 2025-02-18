@@ -21,12 +21,24 @@ public class StatusText : MonoBehaviour
     public Sprite healIcon;
     public Sprite spellAttackIcon;
 
+    bool _isCrit = false;
+
+    const int _shakeCount = 20;
+    const float _shakeWidth = 20f;
+    const float _critSizeMultiplier = 1.5f;
+    
     const float _divisor = 3000f;
     const float _maxNumerator = 5000f;
-    
-    public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, HealthBar hb, int reduction = 0)
+    const float _bigRatio = 1.5f;
+    const float _smallRatio = 0.1f;
+    const float _bigTime = 0.2f;
+    const float _initialWait = 1f;
+    const float _fadeDuration = 1f;
+
+    public void InitializeStatusText(int amount, CombatEntity.AbilityTypes abilityTypes, HealthBar hb, bool isCrit, int reduction = 0)
     {
         _healthBar = hb;
+        _isCrit = isCrit;
         Icon.sprite = null;
         Icon.color = Color.white;
 
@@ -73,6 +85,7 @@ public class StatusText : MonoBehaviour
     public void InitializeStatusText(int turns, int amount, CombatEntity.BuffTypes buffTypes, HealthBar hb)
     {
         _healthBar = hb;
+        _isCrit = false;
 
         Icon.sprite = TheSpellBook._instance.GetSprite(buffTypes);
         
@@ -96,6 +109,7 @@ public class StatusText : MonoBehaviour
     public void InitializeStatusText(int turns, int amount, CombatEntity.DeBuffTypes debuffTypes, HealthBar hb)
     {
         _healthBar = hb;
+        _isCrit = false;
 
         Icon.sprite = TheSpellBook._instance.GetSprite(debuffTypes);
         AmountText.text = debuffTypes.ToString();
@@ -113,6 +127,10 @@ public class StatusText : MonoBehaviour
         divisor = Mathf.Max(divisor, 1);
         numerator = Mathf.Min(Mathf.Abs(numerator), _maxNumerator);
         Vector3 size = Vector3.one * (1f + numerator / divisor);
+
+        if (_isCrit)
+            size *= _critSizeMultiplier;
+
         transform.localScale = size;
     }
 
@@ -121,29 +139,46 @@ public class StatusText : MonoBehaviour
         // if i have siblings increase my starting pos by 30
         transform.position += new Vector3(0, (transform.parent.childCount - 1) * -70, 0);
         Icon.color = Color.white;
+
         if (!this.isActiveAndEnabled)
-        {
             return;
-        }
+
         StartCoroutine(LerpPos(transform.position, transform.position + new Vector3(0, 200, 0), 4f));
-        StartCoroutine(Fade(1f, 1f, AmountText));
-        StartCoroutine(Fade(1f, 1f, ReductionText));
-        StartCoroutine(Fade(1f, 1f, Icon));
-
-
+        StartCoroutine(Fade(_initialWait, _fadeDuration, AmountText));
+        StartCoroutine(Fade(_initialWait, _fadeDuration, ReductionText));
+        StartCoroutine(Fade(_initialWait, _fadeDuration, Icon));
+        StartCoroutine(AnimateScale(_initialWait + _fadeDuration));
+        StartCoroutine(AnimateScale(_initialWait + _fadeDuration));
+        StartCoroutine(AnimateScale(_initialWait + _fadeDuration));
     }
     
     IEnumerator LerpPos(Vector3 start, Vector3 end, float timeToMove)
     {
         float t = 0;
+        float originalStartX = start.x;
+        float originalEndX = end.x;
+
         while(t < 1)
         {
+            if (_isCrit)
+            {
+                float shake = GetShake(t);
+                Debug.Log(shake);
+                start.x = originalStartX + shake;
+                end.x = originalEndX + shake;
+            }
+
             transform.position = Vector3.Lerp(start,end,t);
             t = t + Time.deltaTime / timeToMove;
             yield return new WaitForEndOfFrame();
         }
-        transform.position = end;
-        
+
+        transform.position = end;        
+    }
+
+    private float GetShake(float t)
+    {
+        return Mathf.Sin(t * Mathf.PI * 2 * _shakeCount) * _shakeWidth;
     }
 
     private IEnumerator Fade(float initialWait, float fadeDuration, TextMeshProUGUI text)
@@ -153,6 +188,7 @@ public class StatusText : MonoBehaviour
         Color targetColor = new Color(initialColor.r, initialColor.g, initialColor.b, 0f);
 
         float elapsedTime = 0f;
+        Vector3 startingScale = transform.localScale;
 
         while (elapsedTime < fadeDuration)
         {
@@ -176,14 +212,51 @@ public class StatusText : MonoBehaviour
             icon.color = Color.Lerp(initialColor, targetColor, elapsedTime / fadeDuration);
             yield return null;
         }
+
         MoveFinished();
-    }    
+    }
+
+    private IEnumerator AnimateScale(float fadeDuration)
+    {
+        Vector3 startingScale = transform.localScale; 
+        float elapsedTime = 0f;
+        float scaleRatio;
+        float totalTime;        
+        float smallTime;        
+        float passedPercentage; 
+        float differenceRatio;  
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime < _bigTime)
+            {
+                scaleRatio = 1f + (elapsedTime / _bigTime) * _bigRatio;
+                //Debug.Log("Up: " + scaleRatio);
+            }
+            else
+            {
+                totalTime = fadeDuration - _bigTime;
+                smallTime = elapsedTime - _bigTime;
+                passedPercentage = smallTime / totalTime;
+                differenceRatio = 1f + _bigRatio - _smallRatio;
+                scaleRatio = _smallRatio + differenceRatio * (1f - passedPercentage);
+                //Debug.Log("Down: " + scaleRatio+"\n"+
+                //    _smallRatio+" + "+differenceRatio+" * (1f - "+passedPercentage+")");
+            }
+
+            transform.localScale = scaleRatio * startingScale;
+
+            yield return null;
+        }
+    }
 
     private void MoveFinished()
     {
         UIPooler._instance.StatusTextsPool.Add(this.gameObject);
         this.transform.SetParent(UIPooler._instance.transform);
         this.gameObject.SetActive(false);
-
+        _isCrit = false;
     }
 }

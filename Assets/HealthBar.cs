@@ -638,7 +638,7 @@ public class HealthBar : MonoBehaviour
 
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
-        st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this);
+        st.InitializeStatusText(heal, CombatEntity.AbilityTypes.Heal, this, isCrit);
     }
 
     private void SetBarAndText(int current, int max)
@@ -685,7 +685,7 @@ public class HealthBar : MonoBehaviour
 
         StatusText st = GetStatus();
         st.transform.localPosition += new Vector3(0, YValueStatusText, 0);
-        st.InitializeStatusText(amountAndReduction.Item1, abilityTypes, this,amountAndReduction.Item2);
+        st.InitializeStatusText(amountAndReduction.Item1, abilityTypes, this, isCrit, amountAndReduction.Item2);
     }
 
     IEnumerator LerpValueDamage(float start, float end, float timeToMove)
