@@ -214,6 +214,13 @@ public class EventUI : MonoBehaviour
         eventText.text = _currentOutcomeInfo.text;
         optionTexts[buttonIndex].text = _currentOutcomeInfo.displayName;
 
+        if (_currentOutcomeInfo.outcome == EOutcome.StartDamaged ||
+            _currentOutcomeInfo.outcome == EOutcome.GetGoldPercent ||
+            _currentOutcomeInfo.outcome == EOutcome.LoseGoldPercent)
+            optionTexts[buttonIndex].text += " x" + _currentOutcomeInfo.value.ToString("##0%");
+        else if (_currentOutcomeInfo.value != 1f)
+            optionTexts[buttonIndex].text += " x" + _currentOutcomeInfo.value.ToString("#,##0.##");
+
         AudioClip outcomeClip = null;
 
         if (_outcomeSFXs.ContainsKey(_currentOutcomeInfo.sfx))
@@ -254,7 +261,7 @@ public class EventUI : MonoBehaviour
         float value = outcomeInfo.value;
         EOutcome outcome = outcomeInfo.outcome;
 
-        Debug.Log(outcome);
+        //Debug.Log(outcome);
         switch (outcome)
         {
             case EOutcome.None: /* nothing happens*/ 
@@ -277,12 +284,12 @@ public class EventUI : MonoBehaviour
                 UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.GetGoldPercent:
-                int gainGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value/100);
+                int gainGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value);
                 CombatController._instance.Player.GetGold(gainGold);
                 UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.LoseGoldPercent:
-                int lossGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value/100);
+                int lossGold = Mathf.RoundToInt(CombatController._instance.Player._gold * value);
                 CombatController._instance.Player.GetGold(-lossGold);
                 UIController._instance.ToggleMapUI(1);
                 break;
@@ -319,7 +326,7 @@ public class EventUI : MonoBehaviour
                 UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.StartDamaged:
-                CombatController._instance.startDamaged += Mathf.RoundToInt(value);
+                CombatController._instance.startDamaged += Mathf.RoundToInt(value*100f);
                 UIController._instance.ToggleMapUI(1);
                 break;
             case EOutcome.RandomRarityUp:

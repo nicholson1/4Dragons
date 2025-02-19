@@ -172,7 +172,7 @@ public class StatusText : MonoBehaviour
             if (_isCrit)
             {
                 float shake = GetShake(t);
-                Debug.Log(shake);
+                //Debug.Log(shake);
                 start.x = originalStartX + shake;
                 end.x = originalEndX + shake;
             }
