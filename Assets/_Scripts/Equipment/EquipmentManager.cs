@@ -772,10 +772,13 @@ public class EquipmentManager : MonoBehaviour
             }
         }
 
-        DragItem i = possibleUpgrades[Random.Range(0, possibleUpgrades.Count)];
-        i.e.Enhance();
-        i._toolTip.e = i.e;
-        i.InitializeDragItem(i.e, i.currentLocation);
+        if (possibleUpgrades.Count > 0)
+        {
+            DragItem i = possibleUpgrades[Random.Range(0, possibleUpgrades.Count)];
+            i.e.Enhance();
+            i._toolTip.e = i.e;
+            i.InitializeDragItem(i.e, i.currentLocation);
+        }
         UIController._instance.PlayEnhanceSound();
     }
     public void UpgradeRandom(Equipment.Slot slot = Equipment.Slot.All)
@@ -794,10 +797,14 @@ public class EquipmentManager : MonoBehaviour
             }
         }
 
-        DragItem i = possibleUpgrades[Random.Range(0, possibleUpgrades.Count)];
-        i.e.Upgrade();
-        i._toolTip.e = i.e;
-        i.InitializeDragItem(i.e, i.currentLocation);
+        if (possibleUpgrades.Count > 0)
+        {
+            DragItem i = possibleUpgrades[Random.Range(0, possibleUpgrades.Count)];
+            i.e.Upgrade();
+            i._toolTip.e = i.e;
+            i.InitializeDragItem(i.e, i.currentLocation);
+        }
+
         UIController._instance.PlayUpgradeSound();
     }
 
