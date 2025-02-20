@@ -63,7 +63,7 @@ public class EventUI : MonoBehaviour
         foreach (AudioClip clip in clips)
         {
             _outcomeSFXs[clip.name] = clip;
-            Debug.Log("Loaded " + clip.name);
+            //Debug.Log("Loaded " + clip.name);
         }
     }
 
@@ -218,6 +218,14 @@ public class EventUI : MonoBehaviour
             _currentOutcomeInfo.outcome == EOutcome.GetGoldPercent ||
             _currentOutcomeInfo.outcome == EOutcome.LoseGoldPercent)
             optionTexts[buttonIndex].text += " x" + _currentOutcomeInfo.value.ToString("##0%");
+        else if(_currentOutcomeInfo.outcome == EOutcome.Buff)
+        {
+            optionTexts[buttonIndex].text = "Start Next Combat "  + ((CombatEntity.BuffTypes)_currentOutcomeInfo.value).ToString();
+        }
+        else if(_currentOutcomeInfo.outcome == EOutcome.Debuff)
+        {
+            optionTexts[buttonIndex].text = "Start Next Combat "  + ((CombatEntity.DeBuffTypes)_currentOutcomeInfo.value).ToString();
+        }
         else if (_currentOutcomeInfo.value != 1f)
             optionTexts[buttonIndex].text += " x" + _currentOutcomeInfo.value.ToString("#,##0.##");
 

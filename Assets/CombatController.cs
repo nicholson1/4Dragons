@@ -390,7 +390,9 @@ public class CombatController : MonoBehaviour
         {
             BlacksmithDeco.gameObject.SetActive(true);
             Blacksmith.gameObject.SetActive(true);
+            Blacksmith.GetComponent<Character>()._level = Player._level;
             Blacksmith.InitializeElite(EliteType.BlackSmith);
+            Blacksmith.GetComponent<Character>().UpdateStats();
             // turn on blacksmith object
             // make the blacksmith wave}
         }
@@ -911,6 +913,8 @@ public class CombatController : MonoBehaviour
         // }
         
         enemy.transform.LookAt(Player.transform.position);
+        Player.transform.LookAt(enemy.transform.position);
+
         enemy._level = Player._level;
 
         if (enemy.isDragon)
@@ -949,7 +953,8 @@ public class CombatController : MonoBehaviour
 
         Character enemy = Blacksmith.GetComponent<Character>();
         enemy.transform.LookAt(Player.transform.position);
-        
+        Player.transform.LookAt(enemy.transform.position);
+
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
 
@@ -982,7 +987,8 @@ public class CombatController : MonoBehaviour
         TransitionToCombat(DirVect);
         //StartCoroutine(RotatePlayer(Player.transform, 1, DirVect));
         Vector3 lookDirection = player.transform.position + DirVect;
-        Player.transform.LookAt(new Vector3(lookDirection.x, Player.transform.position.y, lookDirection.z));
+        //Player.transform.LookAt(new Vector3(lookDirection.x, Player.transform.position.y, lookDirection.z));
+
 
 
     }
