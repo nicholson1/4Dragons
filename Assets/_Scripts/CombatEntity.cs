@@ -345,7 +345,10 @@ public class CombatEntity : MonoBehaviour
     {
         //check if im being attack, if not leave
         if (thingGettingAttacked != this)
+        {
+            //Debug.Log("this should happen because i am the player = " + this.myCharacter.isPlayerCharacter);
             return;
+        }
         
         //Debug.Log("Get attacked");
         
