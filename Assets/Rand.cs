@@ -52,6 +52,7 @@ public class Rand : MonoBehaviour
         }
         Debug.Log($"Seed: {_seed}");
 
+        SeedDisplay._instance.UpdateSeed(_seed);
         Random = new System.Random(_seed);
     }
 

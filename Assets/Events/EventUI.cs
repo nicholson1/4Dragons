@@ -156,16 +156,27 @@ public class EventUI : MonoBehaviour
                 else
                     optionDetails += "<color=red>";
 
-                optionDetails += database.outcomesTab.GetString((int)outcomes[i], "DisplayName");
-
-                if (values[i] != 0f && values[i] != 1f)
+                if (outcomes[i] != EOutcome.Buff && outcomes[i] != EOutcome.Debuff)
                 {
-                    optionDetails += " x";
+                    optionDetails += database.outcomesTab.GetString((int)outcomes[i], "DisplayName");
 
-                    if (values[i] > 0f && values[i] < 1f)
-                        optionDetails += values[i].ToString("0.00");
-                    else
-                        optionDetails += values[i].ToString("##0.##");
+                    if (values[i] != 0f && values[i] != 1f)
+                    {
+                        optionDetails += " x";
+
+                        if (values[i] > 0f && values[i] < 1f)
+                            optionDetails += values[i].ToString("0.00");
+                        else
+                            optionDetails += values[i].ToString("##0.##");
+                    }
+                }
+                else if (outcomes[i] == EOutcome.Buff)
+                {
+                    optionDetails += "Start Next Combat " + (CombatEntity.BuffTypes)values[i];
+                }
+                else
+                {
+                    optionDetails += "Start Next Combat " +(CombatEntity.DeBuffTypes)values[i];
                 }
 
                 if (chances[i] > 0f && chances[i] < 1f)
