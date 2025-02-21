@@ -651,7 +651,7 @@ public class Character : MonoBehaviour
                 //check if we already have it
                 if (i != -1)
                 {
-                    float reduct = DeBuffs[i].Item3 + 10;
+                    float reduct = DeBuffs[i].Item3 + amount;
                     if (reduct > 50)
                     {
                         reduct = 50;
@@ -661,7 +661,7 @@ public class Character : MonoBehaviour
                 }
                 else
                 {
-                    DeBuffs.Add((deBuff,turns,10));
+                    DeBuffs.Add((deBuff,turns,amount));
                 }
                 break;
             case CombatEntity.DeBuffTypes.Wounded:

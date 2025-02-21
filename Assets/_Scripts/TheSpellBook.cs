@@ -468,7 +468,13 @@ public class TheSpellBook : MonoBehaviour
 
         if (spell == SpellTypes.Dagger3)
         {
-            caster.DeBuff(target, Debuff,1, Mathf.RoundToInt(power[1]));
+            int turns = 1;
+            if (RelicManager._instance.CheckRelic(RelicType.Relic27))
+            {
+                turns += 1;
+            }
+            
+            caster.DeBuff(target, Debuff,turns, Mathf.RoundToInt(power[1]));
             return;
 
         }
@@ -493,7 +499,12 @@ public class TheSpellBook : MonoBehaviour
         
         if (spell == SpellTypes.Hammer3)
         {
-            caster.Buff(target, buff,2, Mathf.RoundToInt(power[1]));
+            int turns = 2;
+            if (RelicManager._instance.CheckRelic(RelicType.Relic27))
+            {
+                turns += 1;
+            }
+            caster.Buff(target, buff,turns, Mathf.RoundToInt(power[1]));
             return;
         }
         
@@ -816,6 +827,7 @@ public class TheSpellBook : MonoBehaviour
                 casterStats.TryGetValue(Stats.Hammers, out p);
                 useSP = false;
                 animTrigger = AnimationTriggerNames.Hammer;
+                //hammer 3 turns are used for buff power check turns elsewhere 
                 break;
             case SpellTypes.Nature1:
                 casterStats.TryGetValue(Stats.NaturePower, out p);

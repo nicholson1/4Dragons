@@ -332,7 +332,7 @@ public class CombatEntity : MonoBehaviour
             // if the turns == 2 as in we just applied chill with relic, then reset intentions
             if (myCharacter.DeBuffs[chill].Item2 == 2)
             {
-                if (!myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic18))
+                if (!myCharacter.isPlayerCharacter && RelicManager._instance.CheckRelic(RelicType.Relic27))
                 {
                     SetMyIntentions();
                 }

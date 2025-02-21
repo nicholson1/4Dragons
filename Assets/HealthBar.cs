@@ -416,7 +416,7 @@ public class HealthBar : MonoBehaviour
                     }
                     if (debuff == CombatEntity.DeBuffTypes.Exposed)
                     {
-                        b._amount += 10;
+                        b._amount += amount;
                         if (b._amount > 50)
                         {
                             b._amount = 50;
