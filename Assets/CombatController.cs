@@ -919,7 +919,7 @@ public class CombatController : MonoBehaviour
 
         if (enemy.isDragon)
         {
-            enemy.GetComponent<Dragon>().InitializeDragon( false);
+            enemy.GetComponent<Dragon>().InitializeDragon( false, node.dragonShape);
         }
         if (enemy.isElite)
         {

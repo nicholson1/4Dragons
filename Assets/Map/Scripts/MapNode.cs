@@ -91,6 +91,7 @@ namespace Map
             if (Node.nodeType == NodeType.Boss)
             {
                 Node.specialNodeType = (int)EliteManager._instance.GetDragonType();
+                Node.dragonShape = EliteManager._instance.GetDragonShape();
                 CombatController._instance.nextDragonSchool = (SpellSchool)Node.specialNodeType;
                 
             }

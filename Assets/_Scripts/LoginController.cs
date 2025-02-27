@@ -198,6 +198,7 @@ public class LoginController : MonoBehaviour
         {
             LoginSuccess();
         }
+        ToolTipManager._instance.HideToolTipAll();
         
     }
     public static bool IsValidEmail(string email)

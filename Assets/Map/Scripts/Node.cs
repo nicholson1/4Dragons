@@ -17,6 +17,8 @@ namespace Map
         public Vector2 position;
         public NodeStates State;
         public int specialNodeType = -1;
+        public int dragonShape = -1;
+
         public int nodeSeed = -1;
 
 

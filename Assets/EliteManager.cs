@@ -9,13 +9,23 @@ public class EliteManager : MonoBehaviour
 {
     public static EliteManager _instance;
     public GameObject[] elites;
+    
+    /* OLD
     private List<int> PossibleElites1 = new List<int>() { 0, 1, 2, 3, 4};
     private List<int> PossibleElites2 = new List<int>() { 5, 6, 7, 8, 9};
     private List<int> PossibleElites3 = new List<int>() { 10, 11, 12, 13, 14};
     private List<int> PossibleElites4 = new List<int>() { 15, 16, 17, 18, 19};
-
+    */
+    /* new
+     */
+    private List<int> PossibleElites1 = new List<int>() { 0, 1, 2, 3, 4, 5};
+    private List<int> PossibleElites2 = new List<int>() { 6, 7, 8, 9,10, 11, 12, 13, 14};
+    private List<int> PossibleElites3 = new List<int>() { 15, 16, 17, 18, 19 };
+    private List<int> PossibleElites4 = new List<int>() {  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    
 
     private List<int> PossibleDragons = new List<int>(){ 0, 1, 2, 3, 4};
+    private List<int> PossibleDragonShape = new List<int>(){ 0, 1, 2, 3};
 
 
     private void Awake()
@@ -79,6 +89,22 @@ public class EliteManager : MonoBehaviour
         PossibleDragons.Remove(typeIndex);
         return (DragonType)typeIndex;
     }
+    public int GetDragonShape()
+    {
+        // this is misleading, but this is actually to select the spell school
+        int typeIndex = -1;
+
+        if (PossibleDragonShape.Count == 0)
+        {
+            PossibleDragonShape = new List<int>(){ 0, 1, 2, 3};
+        }
+        
+        //ApplyDragonModifiers();
+
+        typeIndex = PossibleDragonShape[Random.Range(0, PossibleDragonShape.Count)];
+        PossibleDragonShape.Remove(typeIndex);
+        return (int)typeIndex;
+    }
     
     public EliteType GetEliteType(int level)
     {
@@ -88,7 +114,7 @@ public class EliteManager : MonoBehaviour
         if (level < 10)
         {
             if (PossibleElites1.Count == 0)
-                PossibleElites1 = new List<int>() { 0, 1, 2, 3, 4};
+                PossibleElites1 = new List<int>() { 0, 1, 2, 3, 4, 5};
             
             typeIndex = PossibleElites1[Random.Range(0, PossibleElites1.Count)];
             PossibleElites1.Remove(typeIndex);
@@ -96,7 +122,7 @@ public class EliteManager : MonoBehaviour
         else if (level < 20)
         {
             if (PossibleElites2.Count == 0)
-                PossibleElites2 = new List<int>() { 5, 6, 7, 8, 9};
+                PossibleElites2 = new List<int>() { 6, 7, 8, 9,10, 11, 12, 13, 14};
             
             typeIndex = PossibleElites2[Random.Range(0, PossibleElites2.Count)];
             PossibleElites2.Remove(typeIndex);
@@ -104,7 +130,7 @@ public class EliteManager : MonoBehaviour
         else if (level < 30)
         {
             if (PossibleElites3.Count == 0)
-                PossibleElites3 = new List<int>() { 10, 11, 12, 13, 14};
+                PossibleElites3 = new List<int>() { 15, 16, 17, 18, 19 };
             
             typeIndex = PossibleElites3[Random.Range(0, PossibleElites3.Count)];
             PossibleElites3.Remove(typeIndex);
@@ -112,7 +138,7 @@ public class EliteManager : MonoBehaviour
         else if (level < 40)
         {
             if (PossibleElites4.Count == 0)
-                PossibleElites4 = new List<int>() { 15, 16, 17, 18, 19};
+                PossibleElites4 = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
             
             typeIndex = PossibleElites4[Random.Range(0, PossibleElites4.Count)];
             PossibleElites4.Remove(typeIndex);

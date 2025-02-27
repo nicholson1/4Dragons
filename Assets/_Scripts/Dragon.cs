@@ -23,7 +23,7 @@ public class Dragon : MonoBehaviour
    [SerializeField] private GameObject[] Models;
    [SerializeField] private Material[] Materials;
 
-   public void InitializeDragon( bool randomizeSchool = false)
+   public void InitializeDragon( bool randomizeSchool = false, int randomizeType = -1)
    {
       Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
 
@@ -64,6 +64,11 @@ public class Dragon : MonoBehaviour
       {
          dragonType = (DragonType)Random.Range(0, 5);
          //dragonType = DragonType.Usurper;
+      }
+
+      if (randomizeType != -1)
+      {
+         dragonType = (DragonType)randomizeType;
       }
 
       c._equipment = CreateAllDragonEquipment(c._level, rarity);
