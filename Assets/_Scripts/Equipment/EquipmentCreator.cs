@@ -654,7 +654,9 @@ public class EquipmentCreator : MonoBehaviour
         equipmentStats.Add(Stats.ItemLevel, level);
         equipmentStats.Add(Stats.Rarity, rarity);
         
-        Sprite icon = AddSlotName(Equipment.Slot.Scroll);
+        Sprite icon = AddSlotName(Equipment.Slot.Scroll, spellType);
+        
+        
         name += SpellNameAddition(spellType, false);
         name = name.Substring(1);
         
@@ -1476,8 +1478,6 @@ public class EquipmentCreator : MonoBehaviour
                     }
                     icon = magicSupportSprites[Random.Range(0, magicSupportSprites.Length)];
                     break;
-                
-                
             }
         }
         else
@@ -1558,9 +1558,119 @@ public class EquipmentCreator : MonoBehaviour
 
     }
 
+    private Sprite GetScollIconAndName(SpellTypes spell)
+    {
+        Sprite icon = null;
+        switch (spell)
+        {
+            case SpellTypes.Nature1:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Nature2:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Nature3:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Nature4:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Nature5:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Fire1:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Fire2:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Fire3:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Fire4:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Fire5:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Ice1:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Ice2:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Ice3:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Ice4:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Ice5:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Blood1:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Blood2:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Blood3:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Blood4:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Blood5:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Shadow1:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Shadow2:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+            case SpellTypes.Shadow3:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Shadow4:
+                icon = scrollAttackSprites[Random.Range(0, scrollAttackSprites.Length)];
+                name += " " +ScrollAttackSlot[Random.Range(0, ScrollAttackSlot.Count)];
+                break;
+            case SpellTypes.Shadow5:
+                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
+                break;
+        }
+
+        return icon;
+    }
 
 
-    private Sprite AddSlotName(Equipment.Slot slot)
+
+    private Sprite AddSlotName(Equipment.Slot slot, SpellTypes spell = SpellTypes.None)
     {
         Sprite icon = null;
         switch (slot)
@@ -1596,8 +1706,7 @@ public class EquipmentCreator : MonoBehaviour
                 icon = bootSprites[Random.Range(0, bootSprites.Length)];
                 break;
             case Equipment.Slot.Scroll:
-                name += " " +ScrollSlot[Random.Range(0, ScrollSlot.Count)];
-                icon = scrollSprites[Random.Range(0, scrollSprites.Length)];
+                icon = GetScollIconAndName(spell);
                 break;
         }
         //Debug.Log(name + "-----------");
@@ -1863,6 +1972,13 @@ public class EquipmentCreator : MonoBehaviour
         "Swiftblade",
         "Katana",
         "Scimitar",
+        "Greatsword",
+        "Longsword",
+        "Reaver",
+        "Warblade",
+        "BroadSword",
+        "Longblade",
+        "Doomblade",
     };
     private List<string> Sword2Slot = new List<string>()
     {
@@ -1881,6 +1997,11 @@ public class EquipmentCreator : MonoBehaviour
         "Hatchet",
         "Chopper",
         "War Axe",
+        "Great Axe",
+        "Broad Axe",
+        "Ravenger",
+        "Cleaver",
+        "Battleaxe",
     };
     private List<string> Axe2Slot = new List<string>()
     {
@@ -1900,7 +2021,15 @@ public class EquipmentCreator : MonoBehaviour
         "Mace",
         "Warmace",
         "Battlemace",
-        "Bludgeon"
+        "Bludgeon",
+        "Great Hammer",
+        "Smasher",
+        "Maul",
+        "Warmaul",
+        "Battlemaul",
+        "Splitting Maul",
+        "Pummeler",
+        "Crusher"
     };
     private List<string> Hammer2Slot = new List<string>()
     {
@@ -1948,6 +2077,13 @@ public class EquipmentCreator : MonoBehaviour
         "Parchment",
         "Leaflet",
         "Script",
+        "Page",
+        "Vellum",
+        "Missive"
+        
+    };
+    private List<string> ScrollAttackSlot = new List<string>()
+    {
         "Book",
         "Tome",
         "Spellbook",
@@ -1955,8 +2091,8 @@ public class EquipmentCreator : MonoBehaviour
         "Grimoire",
         "Codex",
         "Manual",
-        
-        
+        "Journal",
+        "Catalogue"
     };
 
     private List<string> HeadSlot = new List<string>()
@@ -2075,6 +2211,7 @@ public class EquipmentCreator : MonoBehaviour
     [SerializeField] private Sprite[] legSprites;
     [SerializeField] private Sprite[] bootSprites;
     [SerializeField] private Sprite[] scrollSprites;
+    [SerializeField] private Sprite[] scrollAttackSprites;
     [SerializeField] private Sprite[] daggerSprites;
     [SerializeField] private Sprite[] shieldSprites;
     [SerializeField] private Sprite[] swordSprites;
