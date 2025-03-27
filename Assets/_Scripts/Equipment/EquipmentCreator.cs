@@ -2046,10 +2046,9 @@ public class EquipmentCreator : MonoBehaviour
     private List<string> MagicAttackSlot = new List<string>()
     {
         "Scepter",
-        "Wand",
-        "Maul",
+        "Staff",
+        "Shaft",
         "Shortstaff",
-        "Branch",
         "Rod",
         "Torch",
         "Baton",
@@ -2060,14 +2059,13 @@ public class EquipmentCreator : MonoBehaviour
     {
         "Orb",
         "Gem",
-        "Trinket",
+        "Branch",
         "Relic",
         "Idol",
-        "Sphere",
-        "Jewel",
+        "Twig",
+        "Wand",
         "Talisman",
-        "Stone"
-        
+
     };
     private List<string> ScrollSlot = new List<string>()
     {
