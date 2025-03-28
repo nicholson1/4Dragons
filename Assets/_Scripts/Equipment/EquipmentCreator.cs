@@ -2052,19 +2052,25 @@ public class EquipmentCreator : MonoBehaviour
         "Rod",
         "Torch",
         "Baton",
-        "Beacon"
-        
+        "Beacon",
+        "Wand",
+        "Branch",
+
     };
     private List<string> MagicSupportSlot = new List<string>()
     {
         "Orb",
         "Gem",
-        "Branch",
+        "Stone",
         "Relic",
         "Idol",
-        "Twig",
-        "Wand",
-        "Talisman",
+        "Rune",
+        "Gemstone",
+        "Spellstone",
+        "Shard",
+        "Core",
+        "Sigil",
+        
 
     };
     private List<string> ScrollSlot = new List<string>()
