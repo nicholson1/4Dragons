@@ -170,7 +170,51 @@ public class PlayFabManager : MonoBehaviour
             return false;
         }
     }
+    
+    
+    public async Task<Tuple<string, bool>> LoginWithSteamAsync(string steamAuthTicket)
+    {
+        if (string.IsNullOrEmpty(steamAuthTicket))
+        {
+            Debug.LogError("PlayFabManager: Steam authentication ticket is null or empty.");
+            return new Tuple<string, bool>("Steam ticket is missing.", false);
+        }
 
+        var request = new LoginWithSteamRequest
+        {
+            SteamTicket = steamAuthTicket,
+            CreateAccount = true, // Crucial: creates/links PlayFab account to this Steam ID.
+            InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
+            {
+                GetUserAccountInfo = true,
+                GetPlayerProfile = true,
+             //  GetPlayerStatistics = true,
+             //  GetUserInventory = true,
+             //  GetUserVirtualCurrency = true,
+             //  GetUserData = true,
+            }
+        };
+
+        var tcs = new TaskCompletionSource<Tuple<string, bool>>();
+        Debug.Log("PlayFabManager: Attempting LoginWithSteam...");
+
+        PlayFabClientAPI.LoginWithSteam(request,
+            loginResult => 
+            {
+                OnLoginSuccess(loginResult);
+                Debug.Log("PlayFabManager: Successfully logged in with Steam (TaskCompletionSource).");
+                tcs.TrySetResult(new Tuple<string, bool>("Logged in successfully with Steam!", true));
+            },
+            error => 
+            {
+                OnError(error); // Assuming OnError is your general PlayFab error handler
+                Debug.LogError($"PlayFabManager: Steam login failed (TaskCompletionSource): {error.GenerateErrorReport()}");
+                tcs.TrySetResult(new Tuple<string, bool>($"Steam login failed: {error.GenerateErrorReport()}", false));
+            });
+
+        return await tcs.Task;
+    }
+    
     public async Task<string> GetSessionTicketAsync()
     {
         DateTime startTime = DateTime.UtcNow;

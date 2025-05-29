@@ -11,8 +11,9 @@
 
 using UnityEngine;
 #if !DISABLESTEAMWORKS
-using System.Collections;
+
 using Steamworks;
+using System.Threading.Tasks;
 #endif
 
 //
@@ -25,7 +26,7 @@ public class SteamManager : MonoBehaviour {
 	protected static bool s_EverInitialized = false;
 
 	protected static SteamManager s_instance;
-	protected static SteamManager Instance {
+	public static SteamManager Instance {
 		get {
 			if (s_instance == null) {
 				return new GameObject("SteamManager").AddComponent<SteamManager>();
@@ -44,6 +45,10 @@ public class SteamManager : MonoBehaviour {
 	}
 
 	protected SteamAPIWarningMessageHook_t m_SteamAPIWarningMessageHook;
+	
+	protected Callback<GetAuthSessionTicketResponse_t> m_GetAuthSessionTicketResponse;
+	private TaskCompletionSource<string> _steamTicketTcs;
+	
 
 	[AOT.MonoPInvokeCallback(typeof(SteamAPIWarningMessageHook_t))]
 	protected static void SteamAPIDebugTextHook(int nSeverity, System.Text.StringBuilder pchDebugText) {
@@ -62,7 +67,7 @@ public class SteamManager : MonoBehaviour {
 
 	protected virtual void Awake() {
 		// Only one instance of SteamManager at a time!
-		if (s_instance != null) {
+		if (s_instance != null && s_instance != this) {
 			Destroy(gameObject);
 			return;
 		}
@@ -123,6 +128,8 @@ public class SteamManager : MonoBehaviour {
 		}
 
 		s_EverInitialized = true;
+		
+		m_GetAuthSessionTicketResponse = Callback<GetAuthSessionTicketResponse_t>.Create(OnGetAuthSessionTicketResponse);   // MUST BE ASSIGNED TO AVOID GARBAGE COLLECTION
 	}
 
 	// This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.
@@ -142,6 +149,57 @@ public class SteamManager : MonoBehaviour {
 			SteamClient.SetWarningMessageHook(m_SteamAPIWarningMessageHook);
 		}
 	}
+	
+	public Task<string> GetSteamAuthSessionTicketAsync() {
+		if (!m_bInitialized || !SteamUser.BLoggedOn()) {
+			Debug.LogError("SteamManager: Steam not initialized or user not logged on. Cannot get auth ticket.");
+			return Task.FromResult<string>(null);
+		}
+
+		_steamTicketTcs = new TaskCompletionSource<string>();
+		byte[] ticket = new byte[1024];
+		SteamNetworkingIdentity steamNetworkingIdentity = new SteamNetworkingIdentity();
+		// steamNetworkingIdentity.Clear(); // Optional
+
+		Debug.Log("SteamManager: Requesting Steam Auth Session Ticket...");
+		SteamUser.GetAuthSessionTicket(ticket, ticket.Length, out uint _, ref steamNetworkingIdentity);
+
+		return _steamTicketTcs.Task;
+	}
+	private void OnGetAuthSessionTicketResponse(GetAuthSessionTicketResponse_t pCallback) {
+		if (_steamTicketTcs == null || _steamTicketTcs.Task.IsCompleted)
+			return;
+
+		if (pCallback.m_eResult == EResult.k_EResultOK) {
+			byte[] ticketBuffer = new byte[1024];
+			SteamNetworkingIdentity steamNetworkingIdentity = new SteamNetworkingIdentity();
+			// steamNetworkingIdentity.Clear(); // Optional
+
+			HAuthTicket newHandle = SteamUser.GetAuthSessionTicket(ticketBuffer, ticketBuffer.Length, out uint ticketSize, ref steamNetworkingIdentity);
+
+			if (newHandle != HAuthTicket.Invalid && ticketSize > 0) {
+				byte[] actualTicket = new byte[ticketSize];
+				System.Array.Copy(ticketBuffer, actualTicket, ticketSize);
+
+				System.Text.StringBuilder sb = new System.Text.StringBuilder();
+				foreach (byte b in actualTicket) {
+					sb.AppendFormat("{0:x2}", b);
+				}
+				Debug.Log("SteamManager: Steam Auth Session Ticket obtained (via callback).");
+				_steamTicketTcs.TrySetResult(sb.ToString());
+				// Consider calling SteamUser.CancelAuthTicket(newHandle); after PlayFab confirms its use.
+			}
+			else {
+				Debug.LogError("SteamManager: GetAuthSessionTicketResponse was OK, but failed to retrieve ticket data subsequently.");
+				_steamTicketTcs.TrySetResult(null);
+			}
+		}
+		else {
+			Debug.LogError($"SteamManager: GetAuthSessionTicketResponse failed. Result: {pCallback.m_eResult}");
+			_steamTicketTcs.TrySetResult(null);
+		}
+	}
+	
 
 	// OnApplicationQuit gets called too early to shutdown the SteamAPI.
 	// Because the SteamManager should be persistent and never disabled or destroyed we can shutdown the SteamAPI here.
