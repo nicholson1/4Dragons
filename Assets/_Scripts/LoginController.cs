@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-//using Steamworks;
+#if !DISABLESTEAMWORKS
+using Steamworks;
+#endif
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,13 +48,12 @@ public class LoginController : MonoBehaviour
         
         bool loggedInSuccessfully = false;
         
-#if UNITY_EDITOR || UNITY_STANDALONE
+#if !DISABLESTEAMWORKS
         Debug.Log("LoginController: Editor or Standalone platform. Checking for Steam login.");
         if (SteamManager.Initialized)
         {
             Debug.Log("LoginController: SteamManager is initialized. Attempting to get Steam auth ticket...");
             string steamTicket = await SteamManager.Instance.GetSteamAuthSessionTicketAsync();
-            
 
             if (!string.IsNullOrEmpty(steamTicket))
             {

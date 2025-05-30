@@ -5,16 +5,17 @@
 //
 // Version: 1.0.12
 
-#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX)
+#if !(UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX || STEAMWORKS_WIN || STEAMWORKS_LIN_OSX || UNITY_EDITOR)
 #define DISABLESTEAMWORKS
 #endif
 
 using UnityEngine;
-#if !DISABLESTEAMWORKS
 
+#if !DISABLESTEAMWORKS
 using Steamworks;
-using System.Threading.Tasks;
 #endif
+
+using System.Threading.Tasks;
 
 //
 // The SteamManager provides a base implementation of Steamworks.NET on which you can build upon.
