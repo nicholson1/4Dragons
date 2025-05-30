@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Steamworks;
+//using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -51,7 +51,8 @@ public class LoginController : MonoBehaviour
         if (SteamManager.Initialized)
         {
             Debug.Log("LoginController: SteamManager is initialized. Attempting to get Steam auth ticket...");
-            string steamTicket = await SteamManager.Instance.GetSteamAuthSessionTicketAsync();
+            string steamTicket = null;//await SteamManager.Instance.GetSteamAuthSessionTicketAsync(); //todo fix this
+            
 
             if (!string.IsNullOrEmpty(steamTicket))
             {
