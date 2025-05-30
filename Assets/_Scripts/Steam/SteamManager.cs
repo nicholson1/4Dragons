@@ -21,7 +21,8 @@ using System.Threading.Tasks;
 // It handles the basics of starting up and shutting down the SteamAPI for use.
 //
 [DisallowMultipleComponent]
-public class SteamManager : MonoBehaviour {
+public class SteamManager : MonoBehaviour
+{
 #if !DISABLESTEAMWORKS
 	protected static bool s_EverInitialized = false;
 
@@ -129,7 +130,8 @@ public class SteamManager : MonoBehaviour {
 
 		s_EverInitialized = true;
 		
-		m_GetAuthSessionTicketResponse = Callback<GetAuthSessionTicketResponse_t>.Create(OnGetAuthSessionTicketResponse);   // MUST BE ASSIGNED TO AVOID GARBAGE COLLECTION
+		m_GetAuthSessionTicketResponse =
+ Callback<GetAuthSessionTicketResponse_t>.Create(OnGetAuthSessionTicketResponse);   // MUST BE ASSIGNED TO AVOID GARBAGE COLLECTION
 	}
 
 	// This should only ever get called on first load and after an Assembly reload, You should never Disable the Steamworks Manager yourself.
@@ -175,7 +177,8 @@ public class SteamManager : MonoBehaviour {
 			SteamNetworkingIdentity steamNetworkingIdentity = new SteamNetworkingIdentity();
 			// steamNetworkingIdentity.Clear(); // Optional
 
-			HAuthTicket newHandle = SteamUser.GetAuthSessionTicket(ticketBuffer, ticketBuffer.Length, out uint ticketSize, ref steamNetworkingIdentity);
+			HAuthTicket newHandle =
+ SteamUser.GetAuthSessionTicket(ticketBuffer, ticketBuffer.Length, out uint ticketSize, ref steamNetworkingIdentity);
 
 			if (newHandle != HAuthTicket.Invalid && ticketSize > 0) {
 				byte[] actualTicket = new byte[ticketSize];
@@ -227,10 +230,25 @@ public class SteamManager : MonoBehaviour {
 		SteamAPI.RunCallbacks();
 	}
 #else
-	public static bool Initialized {
-		get {
-			return false;
-		}
+	public static bool Initialized
+	{
+		get { return false; }
 	}
+	
+// #if DISABLESTEAMWORKS
+// 	public static SteamManager GetInstance()
+// 	{
+// 		return null;
+// 	}
+// #else
+// 	public static SteamManager GetInstance()
+// 	{
+// 		return s_instance;
+// 	}
+// #endif
+
+	
 #endif // !DISABLESTEAMWORKS
+	
+	
 }

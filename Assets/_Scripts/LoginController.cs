@@ -51,7 +51,7 @@ public class LoginController : MonoBehaviour
         if (SteamManager.Initialized)
         {
             Debug.Log("LoginController: SteamManager is initialized. Attempting to get Steam auth ticket...");
-            string steamTicket = null;//await SteamManager.Instance.GetSteamAuthSessionTicketAsync(); //todo fix this
+            string steamTicket = await SteamManager.Instance.GetSteamAuthSessionTicketAsync();
             
 
             if (!string.IsNullOrEmpty(steamTicket))
