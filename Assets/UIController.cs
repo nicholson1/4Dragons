@@ -18,6 +18,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject ForgeUI;
     [SerializeField] private GameObject EventUI;
     [SerializeField] private GameObject BlackSmithUI;
+    [SerializeField] private GameObject GemStoreUI;
     
     [SerializeField] private GameObject SettingUI;
     [SerializeField] private GameObject VictoryUI;
@@ -181,6 +182,17 @@ public class UIController : MonoBehaviour
     public void ActivateCustomizeUI()
     {
         StartCoroutine(TransitionToUiCamera(1, 1));
+    }
+    
+    public void ActivateGemStoreUI()
+    {
+        GemStoreUI.gameObject.SetActive(true);
+        TitleScreen.SetActive(false);
+    }
+    public void CloseGemStoreUI()
+    {
+        GemStoreUI.gameObject.SetActive(false);
+        TitleScreen.SetActive(true);
     }
     
     public void DeactivateVictoryScreen()
