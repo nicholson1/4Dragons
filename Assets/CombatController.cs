@@ -989,6 +989,9 @@ public class CombatController : MonoBehaviour
         Vector3 lookDirection = player.transform.position + DirVect;
         //Player.transform.LookAt(new Vector3(lookDirection.x, Player.transform.position.y, lookDirection.z));
 
+        
+        enemy.transform.LookAt(Player.transform.position);
+        Player.transform.LookAt(enemy.transform.position);
 
 
     }
