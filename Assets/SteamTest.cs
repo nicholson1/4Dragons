@@ -1,18 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-#if !DISABLESTEAMWORKS
-using Steamworks;
-#endif
+//using Steamworks;
 using UnityEngine;
 
 public class SteamTest : MonoBehaviour
 {
-#if !DISABLESTEAMWORKS
-    void Start() {
-        if(SteamManager.Initialized) {
-            string name = SteamFriends.GetPersonaName();
-            Debug.Log(name);
-        }
-    }
-#endif
+    
+    // void Start() {
+    //     if(SteamManager.Initialized) {
+    //         string name = SteamFriends.GetPersonaName();
+    //         Debug.Log(name);
+    //     }
+    // }
+    
 }

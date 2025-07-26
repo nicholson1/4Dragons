@@ -2,9 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-#if !DISABLESTEAMWORKS
-using Steamworks;
-#endif
+//using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,60 +44,19 @@ public class LoginController : MonoBehaviour
             StartCoroutine(FadeIn(_canvasGroup , 1));
         }
         
-        bool loggedInSuccessfully = false;
-        
-#if !DISABLESTEAMWORKS
-        Debug.Log("LoginController: Editor or Standalone platform. Checking for Steam login.");
-        if (SteamManager.Initialized)
+        PlayFabManager.AutoResult loginResult = await _playFabManager.AutoLogin();
+        switch (loginResult)
         {
-            Debug.Log("LoginController: SteamManager is initialized. Attempting to get Steam auth ticket...");
-            string steamTicket = await SteamManager.Instance.GetSteamAuthSessionTicketAsync();
-
-            if (!string.IsNullOrEmpty(steamTicket))
-            {
-                Debug.Log("LoginController: Steam ticket obtained. Attempting PlayFab login with Steam.");
-                // Call the Tuple-returning LoginWithSteamAsync
-                Tuple<string, bool> steamLoginResultTuple = await _playFabManager.LoginWithSteamAsync(steamTicket);
-                loggedInSuccessfully = steamLoginResultTuple.Item2; // Item2 is the bool for success
-
-                if (loggedInSuccessfully)
-                {
-                    Debug.Log($"LoginController: Successfully logged in via Steam. Message: {steamLoginResultTuple.Item1}");
-                    LoginSuccess();
-                    return;
-                }
-                else
-                {
-                    Debug.LogError($"LoginController: PlayFab login with Steam ticket failed. Message: {steamLoginResultTuple.Item1}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("LoginController: Failed to get Steam ticket (or user not logged on to Steam). Will try email/password auto-login.");
-            }
+            case PlayFabManager.AutoResult.NODATA:
+                return;
+            case PlayFabManager.AutoResult.ERROR:
+                ErrorLogin();
+                return;
+            case PlayFabManager.AutoResult.SUCCESS:
+                LoginSuccess();
+                return;
         }
-        else
-        {
-            Debug.LogWarning("LoginController: SteamManager not initialized. Skipping Steam login attempt.");
-        }
-#endif
 
-        if (!loggedInSuccessfully)
-        {
-
-            PlayFabManager.AutoResult loginResult = await _playFabManager.AutoLogin();
-            switch (loginResult)
-            {
-                case PlayFabManager.AutoResult.NODATA:
-                    return;
-                case PlayFabManager.AutoResult.ERROR:
-                    ErrorLogin();
-                    return;
-                case PlayFabManager.AutoResult.SUCCESS:
-                    LoginSuccess();
-                    return;
-            }
-        }
     }
     
     public IEnumerator FadeIn(CanvasGroup targetCanvasGroup, float duration)
