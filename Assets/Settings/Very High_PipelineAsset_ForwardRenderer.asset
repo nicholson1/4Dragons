@@ -12,10 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15bcfca56f3947c4c9852bfbcc23d67c, type: 3}
   m_Name: PixelizeFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 550
-    screenHeight: 144
+    screenHeight: 200
+--- !u!114 &-1628057559675544501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab2635af2d9e254b9eea1106e8696ae, type: 3}
+  m_Name: ToonShadingRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    toonMaterial: {fileID: 2100000, guid: 64acd03f38bfa2e468a1d61b67dcd871, type: 2}
+    renderPassEvent: 550
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32,8 +48,9 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
+  - {fileID: -1628057559675544501}
   - {fileID: -3907667768902464689}
-  m_RendererFeatureMap: 4f4b532ede2cc5c9
+  m_RendererFeatureMap: 4b5ca67946fa67e94f4b532ede2cc5c9
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
