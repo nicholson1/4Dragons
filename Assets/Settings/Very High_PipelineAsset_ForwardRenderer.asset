@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5832903563058660844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28d4d2d9007cf9d40be1d06bb61ce19d, type: 3}
+  m_Name: ToonShadingRenderFeatureRamp
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    toonMaterial: {fileID: 2100000, guid: 96d0119152ec0bb43b219b4c29a7710c, type: 2}
+    renderPassEvent: 300
 --- !u!114 &-3907667768902464689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,10 +28,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15bcfca56f3947c4c9852bfbcc23d67c, type: 3}
   m_Name: PixelizeFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 600
-    screenHeight: 300
+    screenHeight: 200
+--- !u!114 &-1885341728391711451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23343d563fc2a4546bd1d2ec4b1de9f0, type: 3}
+  m_Name: PosterizeRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    renderPassEvent: 450
+    colorSteps: 4
+    mode: 2
+    useCustomPalette: 0
+    customPaletteTexture: {fileID: 2800000, guid: 1b404155e64a2db41a71923578a45fe3, type: 3}
+    paletteColors: 4
+    useGradientMap: 0
+    gradientTexture: {fileID: 0}
+    preserveHue: 0
+    saturation: 1
+    edgeSmoothing: 2
+    addOutlines: 1
+    outlineThickness: 1
+    edgeSensitivity: 0.31
+    outlineColor: {r: 0, g: 0, b: 0, a: 1}
+    depthFade: 0
+    depthStart: 6.53
+    depthEnd: 0.01
+    addDither: 0
+    ditherStrength: 0
+    blend: 0.6
+    performanceMode: 0
+    skipOverlayCameras: 0
+    affectedLayers:
+      serializedVersion: 2
+      m_Bits: 4294967295
 --- !u!114 &-1628057559675544501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28,7 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eab2635af2d9e254b9eea1106e8696ae, type: 3}
   m_Name: ToonShadingRenderFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     toonMaterial: {fileID: 2100000, guid: 64acd03f38bfa2e468a1d61b67dcd871, type: 2}
     renderPassEvent: 550
@@ -50,7 +106,10 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -1628057559675544501}
   - {fileID: -3907667768902464689}
-  m_RendererFeatureMap: 4b5ca67946fa67e94f4b532ede2cc5c9
+  - {fileID: -5832903563058660844}
+  - {fileID: 2806585201621791752}
+  - {fileID: -1885341728391711451}
+  m_RendererFeatureMap: 4b5ca67946fa67e94f4b532ede2cc5c9143ac70a1d5d0daf08f488f65efef22625b5fddeafebd5e5
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -89,3 +148,20 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &2806585201621791752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9be0c2b4b9ceaf4c86263bacae58c69, type: 3}
+  m_Name: ColorQuantizeFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    renderPassEvent: 500
+    palette: {fileID: 11400000, guid: 0a5673e0ca7aabe4f924001284751f16, type: 2}
+    maxColors: 1
