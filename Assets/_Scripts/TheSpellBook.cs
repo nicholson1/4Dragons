@@ -1284,6 +1284,33 @@ public class TheSpellBook : MonoBehaviour
             return true;
         return false;
     }
+
+    public string GetScrollDescription(SpellTypes spell)
+    {
+        string s = "";
+        if (IsSpellType(SpellClass.SpellAttack, spell))
+        {
+            s += "Attack \n & \n";
+        }
+        if (IsSpellType(SpellClass.Defensive, spell))
+        {
+            s += "Defensive \n & \n";
+        }
+        if (IsSpellType(SpellClass.Heal, spell))
+        {
+            s += "Heal \n & \n";
+        }
+        if (IsSpellType(SpellClass.Buff, spell))
+        {
+            s += "Buff \n & \n";
+        }
+        if (IsSpellType(SpellClass.Debuff, spell))
+        {
+            s += "Debuff \n&\n";
+        }
+
+        return s.Remove(s.Length - 3, 3);
+    }
     public bool IsSpellNotPhysical(SpellTypes spell)
     {
         if ((int)spell > 14) //14 is based on the 15 physical abilities

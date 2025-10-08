@@ -16,6 +16,8 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI rarity;
     [SerializeField] private TextMeshProUGUI slot;
     [SerializeField] private TextMeshProUGUI RelicDescription;
+    [SerializeField] private TextMeshProUGUI ScrollDescription;
+    [SerializeField] private TextMeshProUGUI ScrollEnergyDescription;
 
     [SerializeField] private TextMeshProUGUI level;
     [SerializeField] private StatDisplay[] stats;
@@ -46,6 +48,7 @@ public class SelectionItem : MonoBehaviour
     public void InitializeSelectionItem(Equipment e)
     {
         RelicDescription.gameObject.SetActive(false);
+        ScrollDescription.gameObject.SetActive(false);
         selectRelic.gameObject.SetActive(false);
         equip.gameObject.SetActive(true);
         inventory.gameObject.SetActive(true);
@@ -133,6 +136,15 @@ public class SelectionItem : MonoBehaviour
 
                 //count += 1;
             }
+            if (e.slot == Equipment.Slot.Scroll)
+            {
+                List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
+                string Cost = DataTable[(int)x.spellType1][2].ToString();
+                ScrollEnergyDescription.text = "Energy: " + Cost;
+
+                ScrollDescription.text = TheSpellBook._instance.GetScrollDescription(x.spellType1);
+                ScrollDescription.gameObject.SetActive(true);
+            }
         }
         else
         {
@@ -172,6 +184,7 @@ public class SelectionItem : MonoBehaviour
             RelicDescription.text = ((Consumable)e).description;
             RelicDescription.gameObject.SetActive(true);
         }
+        
 
         if(e.stats[Stats.Rarity] != 0)
             CardFront.color = title.color;
