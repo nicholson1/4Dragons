@@ -206,6 +206,16 @@ public class DataReader : MonoBehaviour
                 
             }
             temp.Add(mods);
+            
+            //add the data
+            string[] decriptorData = dataTable[i][4].ToString().Split(",");
+            List<int> decriptor = new List<int>();
+            foreach (var num in decriptorData)
+            {
+                decriptor.Add(int.Parse(num));
+                
+            }
+            temp.Add(decriptor);
 
             dailyChallenges.Add(temp);
             

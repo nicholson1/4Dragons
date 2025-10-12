@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEditor;
-
+#if UNITY_EDITOR
 public class RampTextureGenerator
 {
+
+    
     [MenuItem("Assets/Create/Toon Ramp Texture")]
     public static void GenerateRampTexture()
     {
@@ -38,3 +40,4 @@ public class RampTextureGenerator
         AssetDatabase.Refresh();
     }
 }
+#endif

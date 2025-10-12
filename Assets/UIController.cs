@@ -150,6 +150,7 @@ public class UIController : MonoBehaviour
         int challengeID = currentDateTime.Day % 9;
         //challengeID = 8;
         List<int> mods = (List<int>)dailyChallenges[challengeID][3];
+        List<int> descriptors = (List<int>)dailyChallenges[challengeID][4];
 
         foreach (Transform child in ModScroll.transform)
         {
@@ -159,10 +160,13 @@ public class UIController : MonoBehaviour
         foreach (int i in mods)
         {
             Modifiers._instance.AdjustMod((Mods)i, true);
+        }
+
+        foreach (int i in descriptors)
+        {
             TextMeshProUGUI mod = Instantiate(ModDisplay, ModScroll.transform);
             mod.gameObject.SetActive(true);
-
-            mod.text = CamelCaseToSpaced(((Mods)i).ToString());
+            mod.text = CamelCaseToSpaced(((Descriptors)i).ToString());
         }
         // load name
         DailyChallengeTitle.text = (string)dailyChallenges[challengeID][1];
