@@ -294,6 +294,7 @@ GameObject:
   - component: {fileID: 82243991}
   - component: {fileID: 82243990}
   - component: {fileID: 82243992}
+  - component: {fileID: 82243993}
   m_Layer: 0
   m_Name: SteamManager
   m_TagString: Untagged
@@ -340,6 +341,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 900b9ec051fd1a645906d7b8b6abd780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &82243993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82243989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d614f4f259249e4fa7b9219f14c8e57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knownAchievementIds: []
+  showDebugUI: 0
+  testMode: 0
+  debugToggleKey: 96
+  replayIntervalSeconds: 1.5
 --- !u!1 &84748278
 GameObject:
   m_ObjectHideFlags: 0
@@ -8640,7 +8658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8132241831679574226, guid: 435e825f365d6a240a5aa48cf25a5b32, type: 3}
       propertyPath: m_text
-      value: 10.12.2025
+      value: 10.31.2025
       objectReference: {fileID: 0}
     - target: {fileID: 8136348985875533727, guid: 435e825f365d6a240a5aa48cf25a5b32, type: 3}
       propertyPath: m_AnchorMax.y
