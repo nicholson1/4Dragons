@@ -19,7 +19,7 @@ public class EliteManager : MonoBehaviour
     /* new
      */
     private List<int> PossibleElites1 = new List<int>() { 0, 1, 2, 3, 4, 5};
-    private List<int> PossibleElites2 = new List<int>() { 6, 7, 8, 9,10, 11, 12, 13, 14};
+    private List<int> PossibleElites2 = new List<int>() { 6, 7, 8, 9, 10, 11, 12, 13, 14};
     private List<int> PossibleElites3 = new List<int>() { 15, 16, 17, 18, 19 };
     private List<int> PossibleElites4 = new List<int>() {  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
     
@@ -150,6 +150,7 @@ public class EliteManager : MonoBehaviour
             typeIndex = 0;
         }
         
+        //Debug.Log((EliteType)typeIndex + " " + typeIndex);
             
         return (EliteType)typeIndex;
     }

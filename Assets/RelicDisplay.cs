@@ -21,7 +21,6 @@ public class RelicDisplay : MonoBehaviour
     private void OnDestroy()
     {
         RelicManager.UseRelic -= UseRelic;
-
     }
 
     public void SetRelicUI(Relic relic)
@@ -45,7 +44,18 @@ public class RelicDisplay : MonoBehaviour
     {
         if (Relic.relicType == r)
         {
-            UIHoverEffect.FlashScale();
+            if(UIHoverEffect != null)
+                UIHoverEffect.FlashScale();
+            else
+            {
+                // UIHoverEffect = GetComponentInChildren<UIHoverEffect>();
+                // if(UIHoverEffect != null)
+                //     UIHoverEffect.FlashScale();
+                // else
+                // {
+                //     Debug.LogError("UIHoverEffect == null, no uihover effect in children");
+                // }
+            }
         }
     }
 
