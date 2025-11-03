@@ -826,7 +826,31 @@ public class Character : MonoBehaviour
                         MapManager._instance.GenerateNewMap();
 
                         SteamAchievementManager.Unlock("defeat_dragon");
+                        if (CombatController._instance.turnCounter < 1)
+                        {
+                            SteamAchievementManager.Unlock("defeat_dragon_1");
+                        }
+                    }
 
+                    else if (isElite)
+                    {
+                        SteamAchievementManager.Unlock("defeat_elite");
+                        if (CombatController._instance.turnCounter < 1)
+                        {
+                            SteamAchievementManager.Unlock("defeat_elite_1");
+                        }
+
+                        if (CombatController._instance.Player._level < 5)
+                        {
+                            SteamAchievementManager.Unlock("defeat_elite_5");
+                        }
+                    }
+                    else
+                    {
+                        if (CombatController._instance.turnCounter < 1)
+                        {
+                            SteamAchievementManager.Unlock("defeat_enemy_1");
+                        }
                     }
                     
 
@@ -853,6 +877,7 @@ public class Character : MonoBehaviour
                     }else
                     {
                         // todo make unique animation?
+                        SteamAchievementManager.Unlock("defeat_blacksmith");
                         //_am.SetTrigger(TheSpellBook.AnimationTriggerNames.Wave.ToString());
                     }
                     CombatController._instance.EndCombat();
@@ -873,6 +898,11 @@ public class Character : MonoBehaviour
             }
             else
             {
+                if (CombatController._instance.entitiesInCombat[1].myCharacter.isBlacksmith)
+                {
+                    SteamAchievementManager.Unlock("lose_blacksmith");
+                }
+                
                 PlayFabManager._instance.SubmitRunData(false);
                 //GameOver
                 UIController._instance.PlayDeathSound();

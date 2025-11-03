@@ -200,7 +200,20 @@ public class EventManager : MonoBehaviour
         }
 
         OutcomeInfo randomOutcomeInfo = _outcomeChances.GetRandomOutcome();
-        //Debug.Log("Selected outcome: "+ randomOutcomeInfo.outcome);
+        
+        
+        //achivment
+        if (option == EOption.PetBlackCat)
+        {
+            SteamAchievementManager.Unlock("Black_cat");
+
+        }
+        if (option == EOption.RubBellyOrangeCat)
+        {
+            SteamAchievementManager.Unlock("Orange_cat");
+
+        }
+
         return randomOutcomeInfo;
     }
 }
