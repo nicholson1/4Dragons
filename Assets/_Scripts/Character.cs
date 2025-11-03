@@ -792,7 +792,7 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
-                    if (CombatController._instance.Player._level == 10)
+                    if (CombatController._instance.Player._level == 30)
                     {
                         //todo This is where we start a new combat with the final boss?
                         // victory
@@ -824,6 +824,8 @@ public class Character : MonoBehaviour
                     {
                         CombatController._instance.IncreaseTrialCounter();
                         MapManager._instance.GenerateNewMap();
+
+                        SteamAchievementManager.Unlock("defeat_dragon");
 
                     }
                     
