@@ -792,7 +792,7 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
-                    if (CombatController._instance.Player._level == 20)
+                    if (CombatController._instance.Player._level == 10)
                     {
                         //todo This is where we start a new combat with the final boss?
                         // victory

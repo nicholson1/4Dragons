@@ -151,16 +151,56 @@ public class Dragon : MonoBehaviour
       
       for (int i = 0; i < magicSpellCount; i++)
       {
+
          roll = MagicSpellIndexes[Random.Range(0, MagicSpellIndexes.Count)];
          Spells.Add(EquipmentCreator._instance.CreateSpellScroll(level, rarity, (SpellTypes)roll,canBeLooted:true));
          MagicSpellIndexes.Remove(roll);
          //magicSpellCount -= 1;
          
       }
+      
+      //check to see if we have attacks
+      if (!DragonHasAttack(Spells))
+      {
+         Debug.Log("No attacks added for dragon");
+         switch (spellSchool)
+         {
+            case SpellSchool.Nature:
+               Spells[-1] = EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Nature4, canBeLooted: false);
+               break;
+            case SpellSchool.Fire:
+               Spells[-1] = EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Fire3, canBeLooted: false);
+               break;
+            case SpellSchool.Ice:
+               Spells[-1] = EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Ice3, canBeLooted: false);
+               break;
+            case SpellSchool.Blood:
+               Spells[-1] = EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Blood1, canBeLooted: false);
+               break;
+            case SpellSchool.Shadow:
+               Spells[-1] = EquipmentCreator._instance.CreateSpellScroll(level, rarity, SpellTypes.Shadow4, canBeLooted: false);
+               break;
+         }
+         Debug.Log("added: " + Spells[-1].spellType1);
+      }
+      
 
       SetModelAndMaterial(modelIndex, materialIndex);
 
       return Spells;
+   }
+
+   private bool DragonHasAttack(List<Weapon> Spells)
+   {
+      foreach (var spell in Spells)
+      {
+         if(TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.PhysicalAttack, spell.spellType1) || TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.SpellAttack, spell.spellType1))
+         {
+            return true;
+         }
+      }
+
+      return false;
    }
 
    private void SetModelAndMaterial(int modelIndex, int materialIndex)
