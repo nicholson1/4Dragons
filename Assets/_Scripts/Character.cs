@@ -27,6 +27,9 @@ public class Character : MonoBehaviour
     public bool isPlayerCharacter;
     public bool isDragon;
     public bool isElite;
+    public bool isBossPhase1 = false;
+    public bool isBossPhase2 = false;
+
     [SerializeField] private bool isBlacksmith;
 
     public int inventorySize = 6;
@@ -792,9 +795,24 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
-                    if (CombatController._instance.Player._level == 30)
+                    if (isBossPhase1)
+                    {
+                        Debug.Log("PHASE 2 START");
+                        //todo animation
+                        // spawn phase 2
+                    }
+                    else if (isBossPhase2)
+                    {
+                        //finish the game, roll credits
+                        UIController._instance.ActivateVictoryScreen();
+                        UIController._instance.ToggleInventoryUI(0); 
+                        PlayFabManager._instance.SubmitRunData(true);
+                    }
+                    else if (CombatController._instance.Player._level == 30)
                     {
                         //todo This is where we start a new combat with the final boss?
+                        
+                        //todo spawn boss p1
                         // victory
                         UIController._instance.ActivateVictoryScreen();
                         UIController._instance.ToggleInventoryUI(0); 

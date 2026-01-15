@@ -330,7 +330,7 @@ namespace Map
         {
             //{NodeType.Mystery, NodeType.Store, NodeType.MinorEnemy, NodeType.EliteEnemy, NodeType.Treasure};
 
-            int[] nodeTypeWeights = new[] { 2, 1, 5, 2, 0};
+            int[] nodeTypeWeights = new[] { 3, 1, 4, 2, 0};
             int totalWeight = 0;
             foreach (var item in nodeTypeWeights)
             {
