@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4708270551554855203}
   - component: {fileID: 528895327453824697}
   - component: {fileID: 5729043217241916576}
-  - component: {fileID: 4763464387347532661}
   m_Layer: 0
   m_Name: InputHandler
   m_TagString: Untagged
@@ -67,16 +66,16 @@ MonoBehaviour:
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
-  m_PointAction: {fileID: 5016999396822523211, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
-  m_MoveAction: {fileID: 6572894437161335206, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
-  m_SubmitAction: {fileID: 6153172658701287299, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
-  m_CancelAction: {fileID: -3017042435392499614, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
-  m_LeftClickAction: {fileID: -2867746499672933474, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
-  m_MiddleClickAction: {fileID: 0}
-  m_RightClickAction: {fileID: 0}
-  m_ScrollWheelAction: {fileID: 0}
-  m_TrackedDevicePositionAction: {fileID: 0}
-  m_TrackedDeviceOrientationAction: {fileID: 0}
+  m_PointAction: {fileID: -7982856857473502883, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_MoveAction: {fileID: -2980118155806729675, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_SubmitAction: {fileID: -7456140980322303030, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_CancelAction: {fileID: 3640389493111794482, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_LeftClickAction: {fileID: 5258898592325327990, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_MiddleClickAction: {fileID: 3068052277639609844, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_RightClickAction: {fileID: 2863518742436731391, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_ScrollWheelAction: {fileID: -8610442833084171488, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6122699785364069928, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 4459260274638182907, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
@@ -93,16 +92,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093ec444dbe32d04fbe059c3c66484e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4763464387347532661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4461120050751479772}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c340e27cae78c14aafa6383d31bccd3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pairedDevices: 
+  OnAttackButtonPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInspectTogglePressed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEndTurnPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnYes:
+    m_PersistentCalls:
+      m_Calls: []
+  OnNo:
+    m_PersistentCalls:
+      m_Calls: []
+  inputActions: {fileID: -944628639613478452, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  move: {fileID: 0}
+  pause: {fileID: -7674196749928263281, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  inspectToggleOn: {fileID: 961399564053262579, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  action0: {fileID: 6161364479183039330, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  action1: {fileID: -3929102520414309282, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  action2: {fileID: 7127923237238592718, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  action3: {fileID: 3044307760990374314, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  endTurn: {fileID: -5504482740416841791, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  navigate: {fileID: 0}
+  inspectToggleOff: {fileID: -592567868472552763, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  leftClick: {fileID: 0}
+  point: {fileID: 0}
+  yes: {fileID: 6153172658701287299, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  no: {fileID: -3017042435392499614, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  defaultActionMap: 0
+  debugTargetActionMap: 1

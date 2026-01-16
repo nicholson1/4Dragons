@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TreasureChest : MonoBehaviour
 {
@@ -17,6 +17,9 @@ public class TreasureChest : MonoBehaviour
     public bool startingChest;
     public int force;
     public bool forceRelic = false;
+
+    [SerializeField] private Button button;
+    [SerializeField] private InputHandler inputHandler;
     
     [SerializeField] private AudioClip openChest;
     [SerializeField] private float openChestVol;
@@ -76,6 +79,15 @@ public class TreasureChest : MonoBehaviour
         //StartCoroutine(WaitThenDisable());
     }
     
+    private void HandleClickThroughInput()
+    {
+        //if (!isActiveAndEnabled)
+        //    return;
+
+        Debug.Log($"Click through input");
+        ClickOnTreaure(true);
+    }
+
     void Start()
     {
         initialRotation = Lid.transform.localRotation;
@@ -83,6 +95,12 @@ public class TreasureChest : MonoBehaviour
         
         ambience = SoundManager.Instance.PlayAmbience(chestAmbiance, true);
         //add focre down to rigdid body
+
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        inputHandler.OnYes.AddListener(HandleClickThroughInput);
+
+        button = GetComponentInChildren<Button>();
+        button.onClick.AddListener(HandleClickThroughInput);
     }
 
     private AudioSource ambience;
@@ -103,18 +121,19 @@ public class TreasureChest : MonoBehaviour
                 isRotating = false;
         }
 
-        if (isActiveAndEnabled)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Log("hello?");
-                ClickOnTreaure(true);
-            }
-        }
+        //if (isActiveAndEnabled)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Space))
+        //    {
+        //        Debug.Log("hello?");
+        //        ClickOnTreaure(true);
+        //    }
+        //}
     }
 
     public void Reset()
     {
+        inputHandler.OnYes.RemoveListener(HandleClickThroughInput);
         Lid.transform.SetLocalPositionAndRotation(Lid.transform.localPosition , initialRotation);
         isOpen = false;
         isRotating = false;

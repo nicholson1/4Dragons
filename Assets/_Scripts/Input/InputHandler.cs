@@ -8,72 +8,105 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.InputSystem.Users;
 
+/// <summary>
+/// Accessible through EventSystem.current.GetComponent<InputHandler>()
+/// Handling anything non EventSystem input.
+/// To disable any EventSystem related input, call it from EventSystem.current
+/// </summary>
 public class InputHandler : MonoBehaviour
 {
-    
+    public event Action<InputControlScheme> OnControlSchemeChange;
+
     public UnityEvent<int> OnAttackButtonPressed;
     public UnityEvent<bool> OnInspectTogglePressed;
     public UnityEvent OnEndTurnPressed;
-    public UnityEvent OnSubmit;
-    public UnityEvent OnCancel;
+    public UnityEvent OnYes;
+    public UnityEvent OnNo;
 
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
 
     [SerializeField] private InputActionAsset inputActions;
 
-    private InputAction move, pause, inspectToggleOn, action0, action1, action2, action3, endTurn;
-    private InputAction navigate, inspectToggleOff, leftClick, point, yes, no;
+    [SerializeField] private InputActionReference move, pause, inspectToggleOn, action0, action1, action2, action3, endTurn;
+    [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no;
 
-    private List<InputAction> combatInputActions = new List<InputAction>();
-    private List<InputAction> menuInputActions = new List<InputAction>();
-
-    [SerializeField] private ActionMaps currentActionMap = ActionMaps.Menu;
+    [SerializeField] private ActionMaps defaultActionMap = ActionMaps.Menu;
+    private ActionMaps currentActionMap = ActionMaps.Menu;
 
     private InputSourceHandler inputSourceHandler = null;
-    private SOWInputActions input; 
+
+    //Debug fields
+    [SerializeField] ActionMaps debugTargetActionMap = ActionMaps.Combat;
 
 
     #region Button Events
-    private void Weapon1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(0);
+    private void Weapon1Pressed(InputAction.CallbackContext context)
+    {
+        OnAttackButtonPressed.Invoke(0);
+        Debug.Log($"Weapon1 pressed!");
+    } 
     private void Weapon2Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(1);
     private void Scroll1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(2);
     private void Scroll2Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(3);
     private void EndTurnPressed(InputAction.CallbackContext context) => OnEndTurnPressed.Invoke();
     private void InspectToggleOnPressed(InputAction.CallbackContext context) => OnInspectTogglePressed.Invoke(true);
     private void InspectToggleOffPressed(InputAction.CallbackContext context) => OnInspectTogglePressed.Invoke(false);
+    private void YesPressed(InputAction.CallbackContext context)
+    {
+        OnYes.Invoke(); 
+        Debug.Log($"Yes pressed!");
+    }
 
+    private void NoPressed(InputAction.CallbackContext context) => OnNo.Invoke();
     #endregion
 
-    #region Toggles
-        /*
-    //private void EnableCombatInput()
-    //{
-    //    weapon1.action.Enable();
-    //    weapon2.action.Enable();
-    //    scroll1.action.Enable();
-    //    scroll2.action.Enable();
+    #region Toggles             
 
-    //    weapon1.action.performed += Weapon1Pressed;
-    //    weapon2.action.performed += Weapon2Pressed;
-    //    scroll1.action.performed += Scroll1Pressed;
-    //    scroll2.action.performed += Scroll2Pressed;
-    //}
+    public void SwitchActionMap(ActionMaps targetMap)
+    {        
+        switch(targetMap)
+        {
+            case ActionMaps.Menu:                
+                SetMapEnabled(false, "Combat");
+                SetMapEnabled(true, "Menu");                
+                break;
 
-    //private void DisableCombatInput()
-    //{
-    //    weapon1.action.Disable();
-    //    weapon2.action.Disable();
-    //    scroll1.action.Disable();
-    //    scroll2.action.Disable();
+            case ActionMaps.Combat:
+                SetMapEnabled(false, "Menu");
+                SetMapEnabled(true, "Combat");
+                break;
 
-    //    weapon1.action.performed -= Weapon1Pressed;
-    //    weapon2.action.performed -= Weapon2Pressed;
-    //    scroll1.action.performed -= Scroll1Pressed;
-    //    scroll2.action.performed -= Scroll2Pressed;
-    //}
-        */
+            case ActionMaps.Disabled:
+                SetMapEnabled(false, "Combat");
+                SetMapEnabled(false, "Menu");
+                break;
 
+            case ActionMaps.AllEnabled:
+                SetMapEnabled(true, "Combat");
+                SetMapEnabled(true, "Menu");
+
+                break;
+            default:
+                Debug.LogError($"ERROR: target ActionMap not available!");
+                break;
+        }
+
+        currentActionMap = targetMap;
+    }
+
+    private void SetMapEnabled(bool toEnable, string actionMapName)
+    {
+        var actionMap = inputActions.FindActionMap(actionMapName, true);
+
+        if (toEnable)
+            actionMap.Enable();
+        else
+            actionMap.Disable();
+    }
+    #endregion
+
+    #region Debug & Testing
     public void MoveCallback()
     {
         Debug.Log($"Input received for MOVE");
@@ -84,145 +117,77 @@ public class InputHandler : MonoBehaviour
         Debug.Log($"Input received for NAVIGATION");
     }
 
-    [ContextMenu("LogScheme")]
-    public void DebugLogScheme()
-    {
-
-    }
-
-    [ContextMenu("ToCombat!")]
-    public void SwitchMapToCombat()
-    {
-        //SwitchActionMap("Combat");
-    }
-
-    [ContextMenu("ToMenu!")]
+    [ContextMenu("Log all actions status")]
     public void SwitchMapToMenu()
     {
-        ///SwitchActionMap("Menu");
-    }
-
-    private void SwitchActionMap(ActionMaps targetMap)
-    {
-        switch(targetMap)
+        foreach (var i in inputActions)
         {
-            case ActionMaps.Menu:
-                input.Combat.Disable();
-                input.Menu.Enable();
-                break;
-            case ActionMaps.Combat:
-                input.Menu.Disable();
-                input.Combat.Enable();
-                break;
-            default:
-                Debug.LogError($"ERROR: target ActionMap not available!");
-                break;
-
+            Debug.Log($"input enabled status FOR {i.name} FROM {i.actionMap} IS {i.enabled}");
         }
-    }
-    #endregion
-
-    #region Initialization
-
-    private void InputCallback(InputAction.CallbackContext context)
-    {
-        string name = context.action.name;
-        Debug.Log($"Input received for {name}");
-    }
-
-    private void InitializeInputActionsManualBinding()
-    {       
-        input = new SOWInputActions();
-        inspectToggleOn = input.Combat.InspectToggleOn;
-        action0 = input.Combat.Action0;
-        action1 = input.Combat.Action1;
-        action2 = input.Combat.Action2;
-        action3 = input.Combat.Action3;
-        endTurn = input.Combat.EndTurn;
-
-        inspectToggleOff = input.Menu.InspectToggleOff;
-        navigate = input.Menu.Navigate;
-        yes = input.Menu.Yes;
-        no = input.Menu.No;
-
-        //inspectToggleOn.started += InspectToggleOnPressed;
-        //inspectToggleOff.started += InspectToggleOffPressed;
-        //action0.started += Weapon1Pressed;
-        //action1.started += Weapon2Pressed;
-        //action2.started += Scroll1Pressed;
-        //action3.started += Scroll2Pressed;
-        //endTurn.started += EndTurnPressed;
-
-        InitializeInputDebugBinding();
-
-    }
-
-    private void KeyPressDebug(InputAction.CallbackContext context)
-    {
-        Debug.Log($"Received Input for {context.action.name}");
     }
 
     [ContextMenu("ForceSwitchMap")]
     public void DebugForceSwitchActionMap()
     {
-        SwitchActionMap(currentActionMap);
+        SwitchActionMap(debugTargetActionMap);
+    }
+    #endregion
+
+    #region Initialization
+    private void BindInputEvents()
+    {
+        action0.action.started += Weapon1Pressed;
+        action1.action.started += Weapon2Pressed;
+        action2.action.started += Scroll1Pressed;
+        action3.action.started += Scroll2Pressed;
+        endTurn.action.started += EndTurnPressed;
+        inspectToggleOn.action.started += InspectToggleOnPressed;
+        inspectToggleOff.action.started += InspectToggleOffPressed;
+        yes.action.started += YesPressed;
+        no.action.started += NoPressed;
     }
 
-    private void InitializeInputDebugBinding()
+    private void UnbindInputEvents()
     {
-        foreach (var input in inputActions)
-            input.performed += KeyPressDebug;
-        //foreach (var map in inputActions.actionMaps)
-        //{
-        //    if (map.name == "Combat")
-        //    {
-        //        foreach (var action in map.actions)
-        //        {
-        //            combatInputActions.Add(action);
-        //        }
-        //    }
-        //    if (map.name == "Menu")
-        //    {
-        //        foreach (var action in map.actions)
-        //        {
-        //            menuInputActions.Add(action);
-        //        }
-        //    }
-        //}
+        action0.action.started -= Weapon1Pressed;
+        action1.action.started -= Weapon2Pressed;
+        action2.action.started -= Scroll1Pressed;
+        action3.action.started -= Scroll2Pressed;
+        endTurn.action.started -= EndTurnPressed;
+        inspectToggleOn.action.started -= InspectToggleOnPressed;
+        inspectToggleOff.action.started -= InspectToggleOffPressed;
+        yes.action.started -= YesPressed;
+        no.action.started -= NoPressed;
+    }
 
-        //foreach (var action in combatInputActions)
-        //{
-        //    action.started += KeyPressDebug;
-        //}
-        //foreach (var action in menuInputActions)
-        //{
-        //    action.started += KeyPressDebug;
-        //}
+    private void EnableAllInputActions()
+    {
+        foreach (var map in inputActions.actionMaps)
+        {
+            foreach (var action in map.actions)
+            {
+                action.Enable();
+            }
+        }
+
+        
+        
     }
 
     private void Awake()
     {
-        InitializeInputActionsManualBinding();       
+        EnableAllInputActions();
+        BindInputEvents();
 
-
-        SwitchActionMap(ActionMaps.Combat);   
+        SwitchActionMap(defaultActionMap);
 
         inputSourceHandler ??= GetComponent<InputSourceHandler>();
-
-
-        
-        //EnableCombatInput();
-    }
-    
-    private void Start()
-    {
-
     }
 
     private void OnDestroy()
     {
-        //DisableCombatInput();
-    }
+        UnbindInputEvents();
+    }    
     #endregion
 
 }
@@ -231,6 +196,8 @@ public enum ActionMaps
 {
     Menu,
     Combat,
+    Disabled,
+    AllEnabled,
     Undefined    
 }
 
