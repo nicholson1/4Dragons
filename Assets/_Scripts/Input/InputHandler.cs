@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.InputSystem.Users;
 
 /// <summary>
 /// Accessible through EventSystem.current.GetComponent<InputHandler>()
@@ -22,6 +19,8 @@ public class InputHandler : MonoBehaviour
     public UnityEvent OnEndTurnPressed;
     public UnityEvent OnYes;
     public UnityEvent OnNo;
+    public UnityEvent OnMenuExtra1;
+    public UnityEvent OnMenuExtra2;
 
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
@@ -29,7 +28,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private InputActionAsset inputActions;
 
     [SerializeField] private InputActionReference move, pause, inspectToggleOn, action0, action1, action2, action3, endTurn;
-    [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no;
+    [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no, menuExtra1, menuExtra2;
 
     [SerializeField] private ActionMaps defaultActionMap = ActionMaps.Menu;
     private ActionMaps currentActionMap = ActionMaps.Menu;
@@ -52,13 +51,10 @@ public class InputHandler : MonoBehaviour
     private void EndTurnPressed(InputAction.CallbackContext context) => OnEndTurnPressed.Invoke();
     private void InspectToggleOnPressed(InputAction.CallbackContext context) => OnInspectTogglePressed.Invoke(true);
     private void InspectToggleOffPressed(InputAction.CallbackContext context) => OnInspectTogglePressed.Invoke(false);
-    private void YesPressed(InputAction.CallbackContext context)
-    {
-        OnYes.Invoke(); 
-        Debug.Log($"Yes pressed!");
-    }
-
+    private void YesPressed(InputAction.CallbackContext context) => OnYes.Invoke();
     private void NoPressed(InputAction.CallbackContext context) => OnNo.Invoke();
+    private void MenuExtra1Pressed(InputAction.CallbackContext context) => OnMenuExtra1.Invoke();
+    private void MenuExtra2Pressed(InputAction.CallbackContext context) => OnMenuExtra2.Invoke();
     #endregion
 
     #region Toggles             
@@ -145,6 +141,8 @@ public class InputHandler : MonoBehaviour
         inspectToggleOff.action.started += InspectToggleOffPressed;
         yes.action.started += YesPressed;
         no.action.started += NoPressed;
+        menuExtra1.action.started += MenuExtra1Pressed;
+        menuExtra2.action.started += MenuExtra2Pressed;
     }
 
     private void UnbindInputEvents()
@@ -158,6 +156,8 @@ public class InputHandler : MonoBehaviour
         inspectToggleOff.action.started -= InspectToggleOffPressed;
         yes.action.started -= YesPressed;
         no.action.started -= NoPressed;
+        menuExtra1.action.started += MenuExtra1Pressed;
+        menuExtra2.action.started += MenuExtra2Pressed;
     }
 
     private void EnableAllInputActions()
@@ -199,6 +199,13 @@ public enum ActionMaps
     Disabled,
     AllEnabled,
     Undefined    
+}
+
+public enum ExtraButton
+{
+    Extra1,
+    Extra2,
+    None
 }
 
 

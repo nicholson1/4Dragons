@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +10,9 @@ using UnityEngine.Serialization;
 
 public class UIController : MonoBehaviour
 {
+    public UIStateMonitor StateMonitor => stateMonitor;
+    private UIStateMonitor stateMonitor = null;
+
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
@@ -58,9 +59,8 @@ public class UIController : MonoBehaviour
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
 
-
     private bool InventoryOn = false;
-    public static UIController _instance;
+    public static UIController _instance;    
     
     //========= Sound Fx ===========
     public AudioClip _hoverSFX;
@@ -103,6 +103,11 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private AudioClip UpgradeSound;
     [SerializeField] private float UpgradeSoundVol;
+
+    public void ActivateTitleScreen()
+    {
+        TitleScreen.GetComponent<UIScreen>().Activate();
+    }
 
     public void ToggleSettings()
     {
@@ -353,7 +358,11 @@ public class UIController : MonoBehaviour
         {
             _instance = this;
         }
+
+        stateMonitor = GetComponent<UIStateMonitor>();
+
     }
+
     public void ToggleInventoryUI(int force = -1)
     {
         EquipmentManager._instance.c.UpdateStats();
@@ -741,6 +750,7 @@ public class UIController : MonoBehaviour
             retryCombatButton.SetActive(false);
         }
     }
+
 
     private void Start()
     {

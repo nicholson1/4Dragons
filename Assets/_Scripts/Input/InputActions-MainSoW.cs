@@ -526,6 +526,24 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Extra1"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6e54f33-8bcf-4735-b96e-c9c837655dd6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Extra2"",
+                    ""type"": ""Button"",
+                    ""id"": ""c7658d1c-fade-4079-91f7-a27ae6ef784a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -735,6 +753,28 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard And Mouse;Gamepad"",
                     ""action"": ""No"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9639e25e-a629-4f10-a037-1c7fae4b02b4"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard And Mouse;Gamepad"",
+                    ""action"": ""Extra1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9576b9c6-c6b1-48b7-a6ee-b6621fb06379"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard And Mouse;Gamepad"",
+                    ""action"": ""Extra2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1125,10 +1165,10 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b2f200cc-b932-4de2-b028-2416bb492135"",
-                    ""path"": ""*/{Submit}"",
+                    ""path"": ""<Mouse>/{Submit}"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Gamepad"",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1136,10 +1176,10 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f4442781-5942-46b1-b9f6-885a557968fd"",
-                    ""path"": ""*/{Cancel}"",
+                    ""path"": ""<Mouse>/{Cancel}"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": ""Keyboard&Mouse;KeyboardMouse"",
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1308,6 +1348,8 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
         m_Menu_InspectToggleOff = m_Menu.FindAction("InspectToggleOff", throwIfNotFound: true);
         m_Menu_Yes = m_Menu.FindAction("Yes", throwIfNotFound: true);
         m_Menu_No = m_Menu.FindAction("No", throwIfNotFound: true);
+        m_Menu_Extra1 = m_Menu.FindAction("Extra1", throwIfNotFound: true);
+        m_Menu_Extra2 = m_Menu.FindAction("Extra2", throwIfNotFound: true);
         // EventSystem
         m_EventSystem = asset.FindActionMap("EventSystem", throwIfNotFound: true);
         m_EventSystem_Navigate = m_EventSystem.FindAction("Navigate", throwIfNotFound: true);
@@ -1579,6 +1621,8 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Menu_InspectToggleOff;
     private readonly InputAction m_Menu_Yes;
     private readonly InputAction m_Menu_No;
+    private readonly InputAction m_Menu_Extra1;
+    private readonly InputAction m_Menu_Extra2;
     /// <summary>
     /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
@@ -1606,6 +1650,14 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Menu/No".
         /// </summary>
         public InputAction @No => m_Wrapper.m_Menu_No;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/Extra1".
+        /// </summary>
+        public InputAction @Extra1 => m_Wrapper.m_Menu_Extra1;
+        /// <summary>
+        /// Provides access to the underlying input action "Menu/Extra2".
+        /// </summary>
+        public InputAction @Extra2 => m_Wrapper.m_Menu_Extra2;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1644,6 +1696,12 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
             @No.started += instance.OnNo;
             @No.performed += instance.OnNo;
             @No.canceled += instance.OnNo;
+            @Extra1.started += instance.OnExtra1;
+            @Extra1.performed += instance.OnExtra1;
+            @Extra1.canceled += instance.OnExtra1;
+            @Extra2.started += instance.OnExtra2;
+            @Extra2.performed += instance.OnExtra2;
+            @Extra2.canceled += instance.OnExtra2;
         }
 
         /// <summary>
@@ -1667,6 +1725,12 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
             @No.started -= instance.OnNo;
             @No.performed -= instance.OnNo;
             @No.canceled -= instance.OnNo;
+            @Extra1.started -= instance.OnExtra1;
+            @Extra1.performed -= instance.OnExtra1;
+            @Extra1.canceled -= instance.OnExtra1;
+            @Extra2.started -= instance.OnExtra2;
+            @Extra2.performed -= instance.OnExtra2;
+            @Extra2.canceled -= instance.OnExtra2;
         }
 
         /// <summary>
@@ -2020,6 +2084,20 @@ public partial class @SOWInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNo(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Extra1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnExtra1(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Extra2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnExtra2(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "EventSystem" which allows adding and removing callbacks.

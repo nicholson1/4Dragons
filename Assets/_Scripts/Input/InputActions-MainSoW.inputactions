@@ -440,6 +440,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Extra1",
+                    "type": "Button",
+                    "id": "d6e54f33-8bcf-4735-b96e-c9c837655dd6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Extra2",
+                    "type": "Button",
+                    "id": "c7658d1c-fade-4079-91f7-a27ae6ef784a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -649,6 +667,28 @@
                     "processors": "",
                     "groups": "Keyboard And Mouse;Gamepad",
                     "action": "No",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9639e25e-a629-4f10-a037-1c7fae4b02b4",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard And Mouse;Gamepad",
+                    "action": "Extra1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9576b9c6-c6b1-48b7-a6ee-b6621fb06379",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard And Mouse;Gamepad",
+                    "action": "Extra2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1039,10 +1079,10 @@
                 {
                     "name": "",
                     "id": "b2f200cc-b932-4de2-b028-2416bb492135",
-                    "path": "*/{Submit}",
+                    "path": "<Mouse>/{Submit}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "KeyboardMouse",
                     "action": "Submit",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1050,10 +1090,10 @@
                 {
                     "name": "",
                     "id": "f4442781-5942-46b1-b9f6-885a557968fd",
-                    "path": "*/{Cancel}",
+                    "path": "<Mouse>/{Cancel}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;KeyboardMouse",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false

@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,29 +8,37 @@ using UnityEngine.UI;
 
 public class UIScreen : MonoBehaviour
 {
-    public Selectable CurrentSelectable => currentSelectable;
-    public Selectable SelectableToSelect => selectableToSelect;
+    public event Action<UIScreen> OnScreenSetToNavigatable;
+    public event Action<UIScreen> OnScreenSetToUnnavigatable;
 
-    public bool NavigatableByDefault = true;
+    public Selectable CurrentSelectable => currentSelectable;
+    public Selectable SelectableToSelectOnActivated => selectableToSelectOnActivated;
+    public bool Navigatable => navigatable;
+
+    [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
     [SerializeField] Selectable defaultSelectable = null;
     private Selectable currentSelectable = null;
-    private Selectable selectableToSelect = null;
-
-    private List<Selectable> selectables = new List<Selectable>();
+    private Selectable selectableToSelectOnActivated = null;
+    [SerializeField] private List<Selectable> selectables = new List<Selectable>();
 
     private bool navigatable = true;
+    private bool isScreenActive = false;
 
     /// <summary>
     /// Call Activate() when opening any screen or interactable popup
     /// It will select the necessary selectable for EventSystem navigation.
     /// </summary>
-    public void Activate()
+    public void Activate(bool navigatableOnActivated = true)
     {
-        currentSelectable = selectableToSelect == null ? defaultSelectable : selectableToSelect;
+        navigatable = navigatableOnActivated;
+        currentSelectable = selectableToSelectOnActivated == null ? defaultSelectable : selectableToSelectOnActivated;
 
-        if(navigatable) 
+        if (navigatable)
+        {
+            OnScreenSetToNavigatable?.Invoke(this);
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
+        }
     }
 
     /// <summary>
@@ -38,16 +46,31 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public void Deactivate()
     {
-        selectableToSelect = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        if(navigatable && EventSystem.current.currentSelectedGameObject != null)
+            selectableToSelectOnActivated = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+
+        OnScreenSetToUnnavigatable?.Invoke(this);
+        navigatable = false;
 
     }
 
+    /// <summary>
+    /// Manual navigatable toggle for panel that's not navigatable by default, like CombatUI
+    /// </summary>
+    /// <param name="value"></param>
     public void SetNavigatable(bool value)
     {
         navigatable = value;
-
+            
         if (navigatable)
+        {
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
+            OnScreenSetToNavigatable?.Invoke(this);
+        }
+        else
+        {
+            OnScreenSetToUnnavigatable?.Invoke(this);
+        }
     }
 
     private void SetNavigatableByDevice(InputDevice inputDevice, InputDeviceChange deviceChange)
@@ -67,22 +90,25 @@ public class UIScreen : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        InputSystem.onDeviceChange += SetNavigatableByDevice;
+        UIController._instance.StateMonitor. RegisterScreen(this);
+        navigatable = NavigatableByDefault;
+        selectables = GetComponentsInChildren<Selectable>().ToList();
+        foreach(var selectable in selectables)
+        {
+            if(selectable.TryGetComponent(out UIHoverEffect hoverEffect))
+            {
+                hoverEffect.SetUIScreen(this);
+            }
+        }
+
+        if (defaultSelectable == null && selectables.Count > 0)
+            defaultSelectable = selectables[0];
     }
 
     private void OnDisable()
     {
-        InputSystem.onDeviceChange -= SetNavigatableByDevice;
-    }
-
-
-    private void Start()
-    {        
-        navigatable = NavigatableByDefault;
-        selectables = GetComponentsInChildren<Selectable>().ToList();
-        if (defaultSelectable == null)
-            defaultSelectable = selectables[0];
+        Deactivate();
     }
 }

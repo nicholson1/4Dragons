@@ -9,6 +9,8 @@ public class WorkInProgress : MonoBehaviour
     [SerializeField] private CanvasGroup _canvasGroup;
 
     public bool hasDisplayed = false;
+
+    private UIScreen uiScreen = null;
     
     private void Awake()
     {
@@ -31,6 +33,8 @@ public class WorkInProgress : MonoBehaviour
             //_canvasGroup.gameObject.SetActive(false);
             return;
         }
+
+        uiScreen ??= _canvasGroup.GetComponent<UIScreen>();
 
         _canvasGroup.blocksRaycasts = true;
         StartCoroutine(FadeCanvasGroup(_canvasGroup, 1, 1));
@@ -59,8 +63,7 @@ public class WorkInProgress : MonoBehaviour
         float startAlpha = canvasGroup.alpha;
 
         // Track the time elapsed
-        float elapsedTime = 0f;
-        
+        float elapsedTime = 0f;        
 
         // Gradually change the alpha value
         while (elapsedTime < duration)
@@ -72,9 +75,22 @@ public class WorkInProgress : MonoBehaviour
 
         // Set the final alpha value to ensure it reaches the target
         canvasGroup.alpha = targetAlpha;
-        if(targetAlpha == 0)
-            canvasGroup.gameObject.SetActive(false);
-        
 
+        FinalizeCanvasFade(canvasGroup, targetAlpha != 0);   
+
+    }
+
+    private void FinalizeCanvasFade(CanvasGroup canvasGroup, bool toOpen)
+    {
+        if(toOpen)
+        {
+            uiScreen.Activate();
+        }
+        else
+        {
+            uiScreen.Deactivate();
+            canvasGroup.gameObject.SetActive(false);
+            UIController._instance.ActivateTitleScreen();
+        }
     }
 }
