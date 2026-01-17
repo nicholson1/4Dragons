@@ -53,6 +53,16 @@ public class CombatButtonController : MonoBehaviour
         Character.UpdateEnergy -= UpdateEnergy;
     }
 
+    private void OnEnable()
+    {
+
+    }
+
+    private void OnDisable()
+    {
+
+    }
+
     private void Update()
     {
         

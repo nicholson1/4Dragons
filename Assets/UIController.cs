@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
@@ -112,6 +113,14 @@ public class UIController : MonoBehaviour
     public void ToggleSettings()
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
+        if (SettingUI.activeSelf)
+        {
+            SettingUI.GetComponent<UIScreen>().Activate();
+        }
+        else
+        {
+            StateMonitor.PreviousActiveScreen.Activate();
+        }
     }
     public void RestartGame(bool victory = false)
     {

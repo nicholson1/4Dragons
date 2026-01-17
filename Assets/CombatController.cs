@@ -5,6 +5,7 @@ using System.Linq;
 using Map;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -244,6 +245,8 @@ public class CombatController : MonoBehaviour
         Player._am.SetBool("Walk", false);
         
         SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, 1, .5f);
+
+        EventSystem.current.GetComponent<InputHandler>().SwitchActionMap(ActionMaps.Combat);
         
         TutorialManager.Instance.QueueTip(TutorialNames.Start);
     }

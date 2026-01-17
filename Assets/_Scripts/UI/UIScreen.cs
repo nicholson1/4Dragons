@@ -8,20 +8,23 @@ using UnityEngine.UI;
 
 public class UIScreen : MonoBehaviour
 {
-    public event Action<UIScreen> OnScreenSetToNavigatable;
-    public event Action<UIScreen> OnScreenSetToUnnavigatable;
+    public event Action<UIScreen, bool> OnNewScreenActive;
+    public event Action<UIScreen> OnScreenDeactivated;
 
     public Selectable CurrentSelectable => currentSelectable;
     public Selectable SelectableToSelectOnActivated => selectableToSelectOnActivated;
     public bool Navigatable => navigatable;
-
+    public bool CanAccessSettingsButton => canAccessSettingsButton;
+   
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
     [SerializeField] Selectable defaultSelectable = null;
     private Selectable currentSelectable = null;
     private Selectable selectableToSelectOnActivated = null;
-    [SerializeField] private List<Selectable> selectables = new List<Selectable>();
+    private List<Selectable> selectables = new List<Selectable>();
 
+    [SerializeField] private bool canAccessSettingsButton = true;
+    [SerializeField] private ActionMaps defaultInputActionMap = ActionMaps.Menu;
     private bool navigatable = true;
     private bool isScreenActive = false;
 
@@ -34,9 +37,10 @@ public class UIScreen : MonoBehaviour
         navigatable = navigatableOnActivated;
         currentSelectable = selectableToSelectOnActivated == null ? defaultSelectable : selectableToSelectOnActivated;
 
+        OnNewScreenActive?.Invoke(this, navigatable);
+
         if (navigatable)
-        {
-            OnScreenSetToNavigatable?.Invoke(this);
+        {            
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
         }
     }
@@ -46,10 +50,11 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public void Deactivate()
     {
-        if(navigatable && EventSystem.current.currentSelectedGameObject != null)
-            selectableToSelectOnActivated = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+        if(navigatable && EventSystem.current.currentSelectedGameObject != null &&
+            EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
+            selectableToSelectOnActivated = selectable;
 
-        OnScreenSetToUnnavigatable?.Invoke(this);
+        OnScreenDeactivated?.Invoke(this);
         navigatable = false;
 
     }
@@ -65,11 +70,17 @@ public class UIScreen : MonoBehaviour
         if (navigatable)
         {
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
-            OnScreenSetToNavigatable?.Invoke(this);
+            OnNewScreenActive?.Invoke(this, true);
         }
         else
         {
-            OnScreenSetToUnnavigatable?.Invoke(this);
+            if (EventSystem.current.currentSelectedGameObject == null)
+                return;
+
+            if(EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable) && selectables.Contains(selectable))
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
         }
     }
 
@@ -107,8 +118,5 @@ public class UIScreen : MonoBehaviour
             defaultSelectable = selectables[0];
     }
 
-    private void OnDisable()
-    {
-        Deactivate();
-    }
+
 }

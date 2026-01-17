@@ -1,13 +1,22 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIStateMonitor : MonoBehaviour
-{            
+{
+    public event Action<UIScreen> OnScreenChanged;
+
+    public UIScreen CurrentNavigatableScreen => currentNavigatableScreen;
+    public UIScreen CurrentActiveScreen => currentActiveScreen;
+    public UIScreen PreviousActiveScreen => previousActiveScreen;
+
+
     private Stack<UIScreen> UIScreenStack = new Stack<UIScreen>();
     private HashSet<UIScreen> uiScreens = new HashSet<UIScreen>();
 
-    public UIScreen DebugCurrentNavigatableScreen = null;
+    private UIScreen currentNavigatableScreen = null;
+    private UIScreen currentActiveScreen = null;
+    private UIScreen previousActiveScreen = null;
 
     public void AddToStack(UIScreen screen)
     {
@@ -29,11 +38,14 @@ public class UIStateMonitor : MonoBehaviour
     public void RegisterScreen(UIScreen screen)
     {
         uiScreens.Add(screen);
-        screen.OnScreenSetToNavigatable += HandleScreenNavigatableChange;
+        screen.OnNewScreenActive += HandleScreenNavigatableChange;
+        
     }
 
-    private void HandleScreenNavigatableChange(UIScreen eventOwner)
+    private void HandleScreenNavigatableChange(UIScreen eventOwner, bool navigatable)
     {
+        previousActiveScreen = currentActiveScreen;
+
         foreach (var screen in uiScreens)
         {
             if (screen != eventOwner)
@@ -42,9 +54,12 @@ public class UIStateMonitor : MonoBehaviour
             }
             else 
             {
-                DebugCurrentNavigatableScreen = screen;
+                if(screen.Navigatable)
+                    currentNavigatableScreen = screen;                
             }
-        }    
-        
+        }
+
+        currentActiveScreen = eventOwner;
+        OnScreenChanged?.Invoke(currentActiveScreen);
     }
 }

@@ -3,11 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using PlayFab.MultiplayerModels;
-using Unity.VisualScripting;
-using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -25,6 +20,8 @@ public class TutorialManager : MonoBehaviour
     public bool showingTip = false;
 
     [SerializeField] private MoveAndSpin guide;
+
+    private InputHandler inputHandler;
     
 
     private void Awake()
@@ -33,6 +30,8 @@ public class TutorialManager : MonoBehaviour
         else Destroy(gameObject);
 
         //DontDestroyOnLoad(this);
+
+        //inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
         // Initialize the tip dictionary
         tipDictionary = new Dictionary<TutorialNames, TutorialTip>();
@@ -153,13 +152,19 @@ public class TutorialManager : MonoBehaviour
         tip.IsShown = true;
         tipDictionary[tipID] = tip;
 
-        if (TriggerTutorial != null) TriggerTutorial(tipID);
+        if (TriggerTutorial != null)
+        {
+            TriggerTutorial(tipID);            
+        }
     }
     
     
     public void CloseTip(TutorialNames tipID)
     {
-        if (CloseTutorial != null) CloseTutorial(tipID);
+        if (CloseTutorial != null)
+        {
+            CloseTutorial(tipID);            
+        }
     }
 
     public string GetText(TutorialNames id)

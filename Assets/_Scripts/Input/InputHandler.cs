@@ -21,6 +21,8 @@ public class InputHandler : MonoBehaviour
     public UnityEvent OnNo;
     public UnityEvent OnMenuExtra1;
     public UnityEvent OnMenuExtra2;
+    public UnityEvent OnStart;
+    public UnityEvent OnSelect;
 
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
@@ -28,7 +30,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private InputActionAsset inputActions;
 
     [SerializeField] private InputActionReference move, pause, inspectToggleOn, action0, action1, action2, action3, endTurn;
-    [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no, menuExtra1, menuExtra2;
+    [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no, menuExtra1, menuExtra2, start, select;
 
     [SerializeField] private ActionMaps defaultActionMap = ActionMaps.Menu;
     private ActionMaps currentActionMap = ActionMaps.Menu;
@@ -55,6 +57,9 @@ public class InputHandler : MonoBehaviour
     private void NoPressed(InputAction.CallbackContext context) => OnNo.Invoke();
     private void MenuExtra1Pressed(InputAction.CallbackContext context) => OnMenuExtra1.Invoke();
     private void MenuExtra2Pressed(InputAction.CallbackContext context) => OnMenuExtra2.Invoke();
+    private void StartPressed(InputAction.CallbackContext context) => OnStart.Invoke();
+    private void SelectPressed(InputAction.CallbackContext context) => OnSelect.Invoke();
+
     #endregion
 
     #region Toggles             
@@ -143,6 +148,8 @@ public class InputHandler : MonoBehaviour
         no.action.started += NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
         menuExtra2.action.started += MenuExtra2Pressed;
+        start.action.started += StartPressed;
+        select.action.started += SelectPressed;
     }
 
     private void UnbindInputEvents()
@@ -158,6 +165,8 @@ public class InputHandler : MonoBehaviour
         no.action.started -= NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
         menuExtra2.action.started += MenuExtra2Pressed;
+        start.action.started -= StartPressed;
+        select.action.started -= SelectPressed;
     }
 
     private void EnableAllInputActions()
@@ -205,7 +214,11 @@ public enum ExtraButton
 {
     Extra1,
     Extra2,
-    None
+    None,
+    Cancel,    
+    Start,
+    Select
+    
 }
 
 

@@ -42,7 +42,7 @@ public class TreasureChest : MonoBehaviour
                 return;
             }
                 
-        }
+        }        
         
         if(!testRun)
         {
@@ -79,12 +79,19 @@ public class TreasureChest : MonoBehaviour
         //StartCoroutine(WaitThenDisable());
     }
     
-    private void HandleClickThroughInput()
+    private void HandleClickThroughInput(int actionButtonIndex)
     {
         //if (!isActiveAndEnabled)
         //    return;
+        if(actionButtonIndex == 3)
 
         Debug.Log($"Click through input");
+        ClickOnTreaure(true);
+    }
+
+    private void HandleClickThroughClick()
+    {
+        Debug.Log($"Click through event system");
         ClickOnTreaure(true);
     }
 
@@ -97,10 +104,10 @@ public class TreasureChest : MonoBehaviour
         //add focre down to rigdid body
 
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
-        inputHandler.OnYes.AddListener(HandleClickThroughInput);
+        inputHandler.OnAttackButtonPressed.AddListener(HandleClickThroughInput);
 
         button = GetComponentInChildren<Button>();
-        button.onClick.AddListener(HandleClickThroughInput);
+        button.onClick.AddListener(HandleClickThroughClick);
     }
 
     private AudioSource ambience;
@@ -133,7 +140,7 @@ public class TreasureChest : MonoBehaviour
 
     public void Reset()
     {
-        inputHandler.OnYes.RemoveListener(HandleClickThroughInput);
+        inputHandler.OnAttackButtonPressed.RemoveListener(HandleClickThroughInput);
         Lid.transform.SetLocalPositionAndRotation(Lid.transform.localPosition , initialRotation);
         isOpen = false;
         isRotating = false;
