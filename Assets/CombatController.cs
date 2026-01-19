@@ -999,6 +999,7 @@ public class CombatController : MonoBehaviour
         Player.transform.LookAt(enemy.transform.position);
 
         UIController._instance.ActivateCombatScreen();
+        //
         
     }
 
