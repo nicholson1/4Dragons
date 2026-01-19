@@ -18,20 +18,20 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen currentActiveScreen = null;
     private UIScreen previousActiveScreen = null;
 
-    public void AddToStack(UIScreen screen)
-    {
-        UIScreenStack.Push(screen);
-    }
+    //public void AddToStack(UIScreen screen)
+    //{
+    //    UIScreenStack.Push(screen);
+    //}
 
-    public void RemoveFromStack(UIScreen screen)
-    {
-        if(UIScreenStack.Peek() == screen)
-        {
-            UIScreenStack.Pop();
-        }
+    //public void RemoveFromStack(UIScreen screen)
+    //{
+    //    if(UIScreenStack.Peek() == screen)
+    //    {
+    //        UIScreenStack.Pop();
+    //    }
 
-        UIScreenStack.Peek().Activate();
-    }
+    //    UIScreenStack.Peek().Activate();
+    //}
 
     public UIScreen GetCurrentTopMostScreen => UIScreenStack.Count > 0 ? UIScreenStack.Peek() : null;
 

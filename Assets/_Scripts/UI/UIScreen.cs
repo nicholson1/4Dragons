@@ -18,21 +18,21 @@ public class UIScreen : MonoBehaviour
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
-    [SerializeField] Selectable defaultSelectable = null;
-    private Selectable currentSelectable = null;
-    private Selectable selectableToSelectOnActivated = null;
-    private List<Selectable> selectables = new List<Selectable>();
+    [SerializeField] protected Selectable defaultSelectable = null;
+    protected Selectable currentSelectable = null;
+    protected Selectable selectableToSelectOnActivated = null;
+    protected List<Selectable> selectables = new List<Selectable>();
 
-    [SerializeField] private bool canAccessSettingsButton = true;
-    [SerializeField] private ActionMaps defaultInputActionMap = ActionMaps.Menu;
-    private bool navigatable = true;
-    private bool isScreenActive = false;
+    [SerializeField] protected bool canAccessSettingsButton = true;
+    [SerializeField] protected ActionMaps defaultInputActionMap = ActionMaps.Menu;
+    protected bool navigatable = true;
+    protected bool isScreenActive = false;
 
     /// <summary>
     /// Call Activate() when opening any screen or interactable popup
     /// It will select the necessary selectable for EventSystem navigation.
     /// </summary>
-    public void Activate(bool navigatableOnActivated = true)
+    public virtual void Activate(bool navigatableOnActivated = true)
     {
         navigatable = navigatableOnActivated;
         currentSelectable = selectableToSelectOnActivated == null ? defaultSelectable : selectableToSelectOnActivated;
@@ -43,12 +43,17 @@ public class UIScreen : MonoBehaviour
         {            
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
         }
+        else
+        {
+            //Ensure nothing is selected if the screen is not navigatable
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     /// <summary>
     /// Call this right before closing the current active screen or interactable popup
     /// </summary>
-    public void Deactivate()
+    public virtual void Deactivate()
     {
         if(navigatable && EventSystem.current.currentSelectedGameObject != null &&
             EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
@@ -63,7 +68,7 @@ public class UIScreen : MonoBehaviour
     /// Manual navigatable toggle for panel that's not navigatable by default, like CombatUI
     /// </summary>
     /// <param name="value"></param>
-    public void SetNavigatable(bool value)
+    public virtual void SetNavigatable(bool value)
     {
         navigatable = value;
             
@@ -103,7 +108,7 @@ public class UIScreen : MonoBehaviour
 
     private void Start()
     {
-        UIController._instance.StateMonitor. RegisterScreen(this);
+        UIController._instance.StateMonitor.RegisterScreen(this);
         navigatable = NavigatableByDefault;
         selectables = GetComponentsInChildren<Selectable>().ToList();
         foreach(var selectable in selectables)

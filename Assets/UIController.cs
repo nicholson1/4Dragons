@@ -110,6 +110,11 @@ public class UIController : MonoBehaviour
         TitleScreen.GetComponent<UIScreen>().Activate();
     }
 
+    public void ActivateCombatScreen()
+    {
+        CombatUI.GetComponent<UIScreen>().Activate(false);
+    }
+
     public void ToggleSettings()
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);

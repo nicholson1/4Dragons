@@ -117,6 +117,9 @@ public class CombatController : MonoBehaviour
    
 
     [SerializeField] private AudioClip _beginAdventure;
+
+    private UIScreenCombat combatScreen = null;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -246,7 +249,6 @@ public class CombatController : MonoBehaviour
         
         SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, 1, .5f);
 
-        EventSystem.current.GetComponent<InputHandler>().SwitchActionMap(ActionMaps.Combat);
         
         TutorialManager.Instance.QueueTip(TutorialNames.Start);
     }
@@ -996,7 +998,8 @@ public class CombatController : MonoBehaviour
         enemy.transform.LookAt(Player.transform.position);
         Player.transform.LookAt(enemy.transform.position);
 
-
+        UIController._instance.ActivateCombatScreen();
+        
     }
 
     public void RestartCombat()
@@ -1066,6 +1069,7 @@ public class CombatController : MonoBehaviour
         
         Player._am.SetBool("Walk", true);
 
+        combatScreen = CombatUI.GetComponent<UIScreenCombat>();
 
     }
     private void OnDestroy()
