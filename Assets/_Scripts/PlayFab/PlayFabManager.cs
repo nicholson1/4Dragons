@@ -5,6 +5,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System.Threading.Tasks;
 using _Scripts.PlayFab;
+using Steamworks;
 using UnityEngine;
 using LoginResult = PlayFab.ClientModels.LoginResult;
 using PlayFabError = PlayFab.PlayFabError;
@@ -28,6 +29,10 @@ public class PlayFabManager : MonoBehaviour
     public bool IsInitialized => !string.IsNullOrEmpty(_sessionTicket);
     public bool IsLoggedIn => IsInitialized && !IsSessionTicketExpired();
     public string LoggedInEmail => (IsLoggedIn) ? LoadCredential(EmailKey) : "";
+    public string SavedEmail => LoadCredential(EmailKey);
+    public string SavedPassword => LoadCredential(PasswordKey);
+    public string LoggedInPassword => (IsLoggedIn) ? LoadCredential(PasswordKey) : "";
+
 
     public static PlayFabManager _instance;
     private void Awake()
@@ -258,6 +263,28 @@ public class PlayFabManager : MonoBehaviour
         
         string email = LoadCredential(EmailKey);
         string password = LoadCredential(PasswordKey);
+        
+        
+        PlayFabManager.RegistrationResult
+            Steamloginresult = await LoginController._instance.SteamRegister();
+        switch (Steamloginresult)
+        {
+            case RegistrationResult.SUCCESS:
+                Debug.Log("success");
+                string name = SteamFriends.GetPersonaName();
+                email = $"{name}@Steam.Steam";
+                password = EncryptionUtility.Encrypt("SteamSteam");
+                break;
+            case RegistrationResult.ERROR:
+                Debug.Log("error");
+                break;
+            case RegistrationResult.EMAIL_EXISTS:
+                Debug.Log("email exists");
+                break;
+        }
+        Debug.Log(email);
+        Debug.Log(password);
+
 
         if (password == null || email == null)
             return AutoResult.NODATA;
