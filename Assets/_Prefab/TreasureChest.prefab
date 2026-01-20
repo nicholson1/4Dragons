@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1405756217857295196}
   - component: {fileID: 1671345912417172481}
   - component: {fileID: 1211841470281224784}
+  - component: {fileID: 5743137811560045574}
   m_Layer: 5
   m_Name: WorldUICanvas
   m_TagString: Untagged
@@ -116,6 +117,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3ba6691f457a4c409062d89b91c0575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5743137811560045574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 432447364000586302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c593cbfa5e022a54aa743b8a0e17970f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <NavigatableByDefault>k__BackingField: 0
+  defaultSelectable: {fileID: 2287008526163468038}
+  canAccessSettingsButton: 0
+  defaultInputActionMap: 0
 --- !u!1 &870257470366499059
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +350,8 @@ MonoBehaviour:
   startingChest: 1
   force: 1000
   forceRelic: 0
+  button: {fileID: 0}
+  inputHandler: {fileID: 0}
   openChest: {fileID: 8300000, guid: 5dedb1c3de446a94db8a0d605ca4bf1a, type: 3}
   openChestVol: 0.25
   chestAmbiance: {fileID: 8300000, guid: 26de16a217249d742a978ab3012ebef5, type: 3}

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TutorialDisplay : MonoBehaviour
 {
@@ -11,17 +13,27 @@ public class TutorialDisplay : MonoBehaviour
     public GameObject textBox;
     public TextMeshProUGUI Text;
     [SerializeField] private TutorialNames _tutorialID;
-    public static event Action<TutorialNames> CloseAll;
+    public event Action<TutorialNames> CloseAll;
 
     [SerializeField] private CanvasGroup _canvasGroup;
 
     [SerializeField] private RectTransform _rectTransform;
+
+    [SerializeField] private Button button = null;
+    private InputHandler inputHandler = null;
     
-    void Awake()
+    void Start()
     {
-        TutorialManager.TriggerTutorial += ShowTutorial;
-        TutorialDisplay.CloseAll += CloseAllTutorial;
-        TutorialManager.CloseTutorial += CloseOverride;
+        _canvasGroup = GetComponent<CanvasGroup>();
+
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+
+        TutorialManager.Instance.TriggerTutorial += ShowTutorial;
+        TutorialManager.Instance.CloseTutorial += CloseOverride;
+        CloseAll += CloseAllTutorial;
+
+        inputHandler.OnNo.AddListener(CloseButtonClickThroughInput);
+       
     }
 
     private void LateUpdate()
@@ -32,13 +44,22 @@ public class TutorialDisplay : MonoBehaviour
         }
     }
 
+    private void CloseButtonClickThroughInput()
+    {
+        if (_canvasGroup.alpha >= 1)
+        {
+            button.onClick.Invoke();
+        }
+    }
+
     public void CloseTip()
     {
         BackgroundGlow.SetActive(false);
         textBox.SetActive(false);
         TutorialManager.Instance.showingTip = false;
-        TutorialManager.Instance.ShowTip();
-        
+
+        Debug.Log($"TutorialDisplay of {gameObject.name} calling CloseTip()");
+        TutorialManager.Instance.ShowTip();       
 
 
         if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity || _tutorialID == TutorialNames.Stats)
@@ -96,21 +117,20 @@ public class TutorialDisplay : MonoBehaviour
 
     }
 
-    public void CloseOverride(TutorialNames id)
+    private void CloseOverride(TutorialNames id)
     {
         if(id != _tutorialID)
             return;
+
         CloseTip();
     }
 
     private void OnDestroy()
     {
-        TutorialManager.TriggerTutorial -= ShowTutorial;
-        TutorialManager.CloseTutorial -= CloseOverride;
+        TutorialManager.Instance.TriggerTutorial -= ShowTutorial;
+        TutorialManager.Instance.CloseTutorial -= CloseOverride;
 
-        TutorialDisplay.CloseAll -= CloseAllTutorial;
-
-
+        CloseAll -= CloseAllTutorial;
     }
     
     public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration)
@@ -129,9 +149,7 @@ public class TutorialDisplay : MonoBehaviour
         float startAlpha = canvasGroup.alpha;
 
         // Track the time elapsed
-        float elapsedTime = 0f;
-        
-        
+        float elapsedTime = 0f;      
 
         // Gradually change the alpha value
         while (elapsedTime < duration)
@@ -144,16 +162,20 @@ public class TutorialDisplay : MonoBehaviour
         // Set the final alpha value to ensure it reaches the target
         canvasGroup.alpha = targetAlpha;
         if(targetAlpha == 0)
+        {
             canvasGroup.gameObject.SetActive(false);
+        }
 
         if (targetAlpha >= 1)
         {
-            //yield return new WaitForSeconds(.25f);
-            TutorialManager.Instance.DequeueTipOnSuccess(_tutorialID);
-
+            TutorialManager.Instance.DequeueTipOnSuccess(_tutorialID);            
         }
 
     }
+
+    
+
+
     public AudioClip _buttonClickSFX;
     [SerializeField] private float clickVol = .25f;
     public void PlayUIClick()

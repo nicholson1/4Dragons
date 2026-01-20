@@ -28,7 +28,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
 
-    
+    public Button slotButton = null;
+
 
     public void LabelCheck()
     {

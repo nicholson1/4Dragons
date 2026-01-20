@@ -16,8 +16,6 @@ public class UIScreenCombat : UIScreen
         switch(mode)
         {
             case CombatUINavigationMode.Combat:
-
-
                 inputHandler.SwitchActionMap(ActionMaps.Combat);
                 currentCombatNavigation = CombatUINavigationMode.Combat;
                 break;

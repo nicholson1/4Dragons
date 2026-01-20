@@ -7,15 +7,16 @@ using UnityEngine;
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;  // Singleton instance
+
+    public event Action<TutorialNames> TriggerTutorial;
+    public event Action<TutorialNames> CloseTutorial;
+    
     public List<TutorialTip> TutorialTips;   // List of all tutorial tips
     public bool TutorialsEnabled = true;    // Toggle for tutorials
 
     private Dictionary<TutorialNames, TutorialTip> tipDictionary;
 
     private Queue<TutorialNames> _tutorialNamesQueue = new Queue<TutorialNames>();
-    public static event Action<TutorialNames> TriggerTutorial;
-    public static event Action<TutorialNames> CloseTutorial;
-
 
     public bool showingTip = false;
 
@@ -144,18 +145,19 @@ public class TutorialManager : MonoBehaviour
         if(_tutorialNamesQueue.Count == 0)
         {
             showingTip = false;
+            Debug.Log($"No more tutorial to trigger, this should trigger CloseTutorial?");
             return;
         }
+
         TutorialNames tipID  =_tutorialNamesQueue.Peek();
         var tip = tipDictionary[tipID];
         //Debug.Log($"Tutorial Tip: {tip.Message}");
         tip.IsShown = true;
         tipDictionary[tipID] = tip;
 
-        if (TriggerTutorial != null)
-        {
-            TriggerTutorial(tipID);            
-        }
+        TriggerTutorial?.Invoke(tipID);
+
+        Debug.Log($"Trigger opening tutorial {tip.ID}");
     }
     
     
@@ -163,7 +165,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (CloseTutorial != null)
         {
-            CloseTutorial(tipID);            
+            CloseTutorial?.Invoke(tipID);            
         }
     }
 

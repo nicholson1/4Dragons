@@ -79,11 +79,10 @@ public class TreasureChest : MonoBehaviour
         //StartCoroutine(WaitThenDisable());
     }
     
-    private void HandleClickThroughInput(int actionButtonIndex)
+    private void HandleClickThroughInput()
     {
-        //if (!isActiveAndEnabled)
-        //    return;
-        if(actionButtonIndex == 3)
+        if (!isActiveAndEnabled)
+            return;
 
         Debug.Log($"Click through input");
         ClickOnTreaure(true);
@@ -104,7 +103,7 @@ public class TreasureChest : MonoBehaviour
         //add focre down to rigdid body
 
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
-        inputHandler.OnAttackButtonPressed.AddListener(HandleClickThroughInput);
+        inputHandler.OnYes.AddListener(HandleClickThroughInput);
 
         button = GetComponentInChildren<Button>();
         button.onClick.AddListener(HandleClickThroughClick);
@@ -140,7 +139,7 @@ public class TreasureChest : MonoBehaviour
 
     public void Reset()
     {
-        inputHandler.OnAttackButtonPressed.RemoveListener(HandleClickThroughInput);
+        inputHandler.OnYes.RemoveListener(HandleClickThroughInput);
         Lid.transform.SetLocalPositionAndRotation(Lid.transform.localPosition , initialRotation);
         isOpen = false;
         isRotating = false;

@@ -25,6 +25,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     protected InputHandler inputHandler = null;
     [SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
     [SerializeField] protected bool clickableWithYes = true;
+    [SerializeField] protected bool clickableWithNo = false;
 
 
     public void ResetScale()
@@ -170,6 +171,11 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             button.onClick.Invoke();
     }
 
+    protected void HandleClickThroughNo()
+    {
+        ClickThroughInput();
+    }
+
     protected void ClickThroughInput()
     {
         var button = selectable as Button;
@@ -191,6 +197,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if(clickableWithYes)
             inputHandler.OnYes.AddListener(HandleClickThroughYes);
 
+        if (clickableWithNo)
+            inputHandler.OnNo.AddListener(ClickThroughInput);
 
         switch(extraButtonToUse)
         {
@@ -206,9 +214,6 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case ExtraButton.Select:
                 inputHandler.OnSelect.AddListener(ClickThroughInput);
                 break;
-            case ExtraButton.Cancel:
-                inputHandler.OnNo.AddListener(ClickThroughInput);
-                break;
 
         }
     }
@@ -221,6 +226,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if(clickableWithYes)
             inputHandler.OnYes.RemoveListener(HandleClickThroughYes);
 
+        if (clickableWithNo)
+            inputHandler.OnNo.RemoveListener(ClickThroughInput);
 
 
         switch (extraButtonToUse)
@@ -237,9 +244,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case ExtraButton.Select:
                 inputHandler.OnSelect.RemoveListener(ClickThroughInput);
                 break;
-            case ExtraButton.Cancel:
-                inputHandler.OnNo.RemoveListener(ClickThroughInput);
-                break;
+
 
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UIStateMonitor : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class UIStateMonitor : MonoBehaviour
     public UIScreen CurrentActiveScreen => currentActiveScreen;
     public UIScreen PreviousActiveScreen => previousActiveScreen;
 
-
     private Stack<UIScreen> UIScreenStack = new Stack<UIScreen>();
     private HashSet<UIScreen> uiScreens = new HashSet<UIScreen>();
 
@@ -18,22 +18,11 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen currentActiveScreen = null;
     private UIScreen previousActiveScreen = null;
 
-    //public void AddToStack(UIScreen screen)
-    //{
-    //    UIScreenStack.Push(screen);
-    //}
-
-    //public void RemoveFromStack(UIScreen screen)
-    //{
-    //    if(UIScreenStack.Peek() == screen)
-    //    {
-    //        UIScreenStack.Pop();
-    //    }
-
-    //    UIScreenStack.Peek().Activate();
-    //}
+    private TutorialManager tutorialManager = null;
 
     public UIScreen GetCurrentTopMostScreen => UIScreenStack.Count > 0 ? UIScreenStack.Peek() : null;
+
+    private InputHandler inputHandler = null;
 
     public void RegisterScreen(UIScreen screen)
     {
@@ -61,5 +50,39 @@ public class UIStateMonitor : MonoBehaviour
 
         currentActiveScreen = eventOwner;
         OnScreenChanged?.Invoke(currentActiveScreen);
+    }
+
+    private void TutorialOpenCallback(TutorialNames tutorial)
+    {
+        Debug.Log($"Tutorial {tutorial} is open");
+        currentActiveScreen.SetNavigatable(false);
+        if (inputHandler.CurrentActionMap != ActionMaps.Menu)
+            inputHandler.SwitchActionMap(ActionMaps.Menu);
+    }
+
+    private void TutorialCloseCallback(TutorialNames tutorial)
+    {
+        Debug.Log($"Tutorial {tutorial} is closed");
+        //make exception for CombatUI
+
+        currentActiveScreen.SetNavigatable(true);
+
+        inputHandler.RevertActionMap();
+    }
+
+    private void Start()
+    {
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+
+        tutorialManager = TutorialManager.Instance;
+
+        tutorialManager.TriggerTutorial += TutorialOpenCallback;
+        tutorialManager.CloseTutorial += TutorialCloseCallback;
+    }
+
+    private void OnDestroy()
+    {
+        tutorialManager.TriggerTutorial -= TutorialOpenCallback;
+        tutorialManager.CloseTutorial -= TutorialCloseCallback;
     }
 }

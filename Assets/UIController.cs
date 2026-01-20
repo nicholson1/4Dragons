@@ -115,6 +115,18 @@ public class UIController : MonoBehaviour
         CombatUI.GetComponent<UIScreen>().Activate(false);
     }
 
+    //For handling closing settings menu through UI [X] close button
+    public void CloseSettings()
+    {
+        var settingsScreen = SettingUI.GetComponent<UIScreen>();
+
+        if (StateMonitor.CurrentActiveScreen == settingsScreen)
+        {
+            SettingUI.gameObject.SetActive(false);
+            StateMonitor.PreviousActiveScreen.Activate();
+        }
+    }
+
     public void ToggleSettings()
     {
         SettingUI.gameObject.SetActive(!SettingUI.activeSelf);

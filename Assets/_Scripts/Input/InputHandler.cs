@@ -34,6 +34,7 @@ public class InputHandler : MonoBehaviour
 
     [SerializeField] private ActionMaps defaultActionMap = ActionMaps.Menu;
     private ActionMaps currentActionMap = ActionMaps.Menu;
+    private ActionMaps cachedPreviousActionMap = ActionMaps.Undefined;
 
     private InputSourceHandler inputSourceHandler = null;
 
@@ -64,8 +65,16 @@ public class InputHandler : MonoBehaviour
 
     #region Toggles             
 
+    public void RevertActionMap()
+    {
+        SwitchActionMap(cachedPreviousActionMap);
+    }
+
     public void SwitchActionMap(ActionMaps targetMap)
-    {        
+    {
+        if (cachedPreviousActionMap == ActionMaps.Undefined)
+            cachedPreviousActionMap = targetMap;
+
         switch(targetMap)
         {
             case ActionMaps.Menu:                
@@ -93,6 +102,7 @@ public class InputHandler : MonoBehaviour
                 break;
         }
 
+        cachedPreviousActionMap = currentActionMap;
         currentActionMap = targetMap;
     }
 
@@ -215,7 +225,7 @@ public enum ExtraButton
     Extra1,
     Extra2,
     None,
-    Cancel,    
+    Unused,    
     Start,
     Select
     

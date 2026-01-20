@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class LootButtonManager : MonoBehaviour
 {
     public GameObject[] EquipmentButtons;
@@ -14,7 +15,7 @@ public class LootButtonManager : MonoBehaviour
     [SerializeField] private Sprite[] EquipmentSprites;
     [SerializeField] private Transform layoutgroup;
 
-    public List<GameObject> CurrentButtons = new List<GameObject>();
+    public List<Button> CurrentActiveButtons => currentActiveButtons;
 
     public List<List<Equipment>> EquipmentLists = new List<List<Equipment>>();
     public List<List<Equipment>> RelicLists = new List<List<Equipment>>();
@@ -24,6 +25,66 @@ public class LootButtonManager : MonoBehaviour
     [SerializeField] public GameObject SkipButton;
 
     public static LootButtonManager _instance;
+
+    private List<Button> currentActiveButtons = new List<Button>();
+
+    private Selectable leftSelectableAtInventoryUI = null;
+
+    
+    private void SetLootPanelButtonsLeftNavigation(Selectable selectable)
+    {
+        
+    }
+
+    private void SetupLootPanelNavigation()
+    {
+        for (int i = 0; i < currentActiveButtons.Count; i++)
+        {
+            var button = currentActiveButtons[i];
+            var navi = button.navigation;
+            navi.mode = Navigation.Mode.Explicit;
+
+            if (i % 2 == 0)
+            {
+                navi.selectOnRight = i + 1 >= currentActiveButtons.Count ? null : currentActiveButtons[i + 1];
+                navi.selectOnLeft = leftSelectableAtInventoryUI;
+            }
+            else
+            {
+                navi.selectOnRight = null;
+                navi.selectOnLeft = i - 1 < 0 ? null : currentActiveButtons[i - 1];
+            }
+
+            navi.selectOnDown = i + 2 >= currentActiveButtons.Count ? null : currentActiveButtons[i + 2];
+            navi.selectOnUp = i - 2 < 0 ? null : currentActiveButtons[i - 2];
+
+            button.navigation = navi;
+        }
+       
+    }
+
+    private void PopulateCurrentActiveButtons(List<GameObject> buttonGOs)
+    {
+        if (buttonGOs.Count < 1)
+        {
+            Debug.LogError($"Error: No active loot button GameObject available!");
+            return;
+        }
+
+        foreach (var buttonGO in buttonGOs)
+        {
+            if (buttonGO.TryGetComponent(out Button button))
+                currentActiveButtons.Add(button);
+        }
+
+        if (currentActiveButtons.Count < 1)
+        {
+            Debug.LogError($"Error: No active loot button component available!");
+        }
+
+        SetupLootPanelNavigation();
+    }
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -53,12 +114,15 @@ public class LootButtonManager : MonoBehaviour
         EquipmentLists = equipments;
         GoldList = Golds;
         RelicLists = relics;
+        List<GameObject> cachedButtonGameObjects = new List<GameObject>();
+
         if(equipments != null)
         {
             for (int i = 0; i < equipments.Count; i++)
             {
                 EquipmentButtons[i].SetActive(true);
                 AdjustTextAndIcon( EquipmentButtons[i], equipments[i]);
+                cachedButtonGameObjects.Add(EquipmentButtons[i]);
             }
         }
         if(relics != null)
@@ -66,6 +130,7 @@ public class LootButtonManager : MonoBehaviour
             for (int i = 0; i < relics.Count; i++)
             {
                 RelicButtons[i].SetActive(true);
+                cachedButtonGameObjects.Add(RelicButtons[i]);
             }
         }
         if(Golds != null)
@@ -74,8 +139,11 @@ public class LootButtonManager : MonoBehaviour
             {
                 GoldButtons[i].SetActive(true);
                 GoldButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Golds[i] + " Gold";
+                cachedButtonGameObjects.Add(GoldButtons[i]);
             }
         }
+
+        PopulateCurrentActiveButtons(cachedButtonGameObjects);
     }
 
     private void AdjustTextAndIcon(GameObject Button, List<Equipment> equipments)
@@ -129,6 +197,8 @@ public class LootButtonManager : MonoBehaviour
 
     public void ClearAll()
     {
+        currentActiveButtons.Clear();
+
         foreach (var button in EquipmentButtons)
         {
             button.SetActive(false);

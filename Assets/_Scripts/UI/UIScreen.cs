@@ -18,6 +18,8 @@ public class UIScreen : MonoBehaviour
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
+    protected TutorialManager tutorialManager = null;
+
     [SerializeField] protected Selectable defaultSelectable = null;
     protected Selectable currentSelectable = null;
     protected Selectable selectableToSelectOnActivated = null;
@@ -122,6 +124,6 @@ public class UIScreen : MonoBehaviour
         if (defaultSelectable == null && selectables.Count > 0)
             defaultSelectable = selectables[0];
     }
-
+    
 
 }
