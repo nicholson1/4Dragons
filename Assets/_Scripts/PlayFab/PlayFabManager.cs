@@ -159,7 +159,7 @@ public class PlayFabManager : MonoBehaviour
             Email = email,
             Password = password
         };
-
+        
         SaveCredentials(email, password);
 
         var result = await PlayFabClientAPIAsync.LoginWithEmailAddressAsync(loginRequest);
@@ -282,9 +282,6 @@ public class PlayFabManager : MonoBehaviour
                 Debug.Log("email exists");
                 break;
         }
-        Debug.Log(email);
-        Debug.Log(password);
-
 
         if (password == null || email == null)
             return AutoResult.NODATA;

@@ -132,7 +132,6 @@ public class LoginController : MonoBehaviour
             Debug.LogWarning("Steam is not initialized.");
             
             // if steam is busted and its the not the first time logging in
-            Debug.Log(_playFabManager.SavedEmail);
             if(_playFabManager.SavedEmail != null)
             {
                 EmailReg.text = _playFabManager.SavedEmail;
