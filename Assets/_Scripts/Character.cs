@@ -808,7 +808,11 @@ public class Character : MonoBehaviour
                         UIController._instance.ToggleInventoryUI(0); 
                         PlayFabManager._instance.SubmitRunData(true);
                     }
-                    else if (CombatController._instance.Player._level == 30)
+                    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                    //todo DEMO ENDS AT LVL 10
+                    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+                    else if (CombatController._instance.Player._level == 10)
                     {
                         //todo This is where we start a new combat with the final boss?
                         

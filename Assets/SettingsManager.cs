@@ -14,6 +14,7 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private Toggle ScreenShake;
     [SerializeField] private Toggle Tutorials;
     [SerializeField] private Toggle Keybinds;
+    [SerializeField] private GameObject lockedForDemoText;
 
     [SerializeField] private TextMeshProUGUI difficultyTextHUD;
 
@@ -51,7 +52,18 @@ public class SettingsManager : MonoBehaviour
 
     public void OnValueChangeSlider()
     {
-        int diff =  Mathf.RoundToInt(difficultySlider.value);
+        //todo for demo limit
+        if (difficultySlider.value >= 3)
+        {
+            difficultySlider.value = 3;
+            lockedForDemoText.SetActive(true);
+        }
+        else
+        {
+            lockedForDemoText.SetActive(false);
+        }
+
+            int diff =  Mathf.RoundToInt(difficultySlider.value);
         CombatController._instance.Difficulty = diff;
 
         string Stars = $"{diff} <sprite=\"status_icon_star\" index=0> ";
