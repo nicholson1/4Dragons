@@ -44,12 +44,12 @@ public class StatDisplay : MonoBehaviour
         if (LossOrGain == 1)
         {
             //text.text = info.Item1 + ": +" + v;
-            text.text ="+" + v;
+            text.text = $"+ {v}";
 
         }
         else
         {
-            text.text = info.Item1 + ": " + v;
+            text.text = v.ToString();
         }
         text.color = info.Item3;
         
@@ -62,7 +62,7 @@ public class StatDisplay : MonoBehaviour
             float crit = TheSpellBook._instance.FigureOutHowMuchCrit(
                 player);
             v = Mathf.RoundToInt(crit * 100);
-            text.text = info.Item1 + ": " + v + "%";
+            text.text = $"{v}%";            
             //Debug.Log("update crit: " + text.text + " :" +v);
         }
         //Debug.Log(toolTip);

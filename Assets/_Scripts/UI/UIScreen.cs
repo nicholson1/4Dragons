@@ -14,7 +14,7 @@ public class UIScreen : MonoBehaviour
     public Selectable CurrentSelectable => currentSelectable;
     public Selectable SelectableToSelectOnActivated => selectableToSelectOnActivated;
     public bool Navigatable => navigatable;
-    public bool CanAccessSettingsButton => canAccessSettingsButton;
+    public List<GlobalButton> AccessibleGlobalButtons => accessibleGlobalButtons;
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
@@ -26,6 +26,8 @@ public class UIScreen : MonoBehaviour
     protected List<Selectable> selectables = new List<Selectable>();
 
     [SerializeField] protected bool canAccessSettingsButton = true;
+    [SerializeField] protected List<GlobalButton> accessibleGlobalButtons= new List<GlobalButton>();
+
     [SerializeField] protected ActionMaps defaultInputActionMap = ActionMaps.Menu;
     protected bool navigatable = true;
     protected bool isScreenActive = false;
@@ -123,7 +125,13 @@ public class UIScreen : MonoBehaviour
 
         if (defaultSelectable == null && selectables.Count > 0)
             defaultSelectable = selectables[0];
-    }
-    
+    }   
 
+}
+
+public enum GlobalButton
+{
+    Settings,
+    Inventory,
+    Map
 }

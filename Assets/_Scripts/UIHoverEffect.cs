@@ -27,6 +27,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] protected bool clickableWithYes = true;
     [SerializeField] protected bool clickableWithNo = false;
 
+    [SerializeField] protected bool isMouseClickableButton = true;
+
 
     public void ResetScale()
     {
@@ -189,6 +191,11 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         button.onClick.Invoke();
     }
 
+    protected virtual void ToggleButtonInteractability(UIScreen screen)
+    {
+
+    }
+
     protected void BindGamepadToButton()
     {
         if (selectable == null)
@@ -273,7 +280,9 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Awake()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
-        selectable ??= GetComponentInChildren<Selectable>();                
+        
+        if(isMouseClickableButton)
+            selectable ??= GetComponentInChildren<Selectable>();                
     }
 
     private void OnDestroy()

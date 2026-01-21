@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SettingsButtonHoverEffect : UIHoverEffect
+public class GlobalButtonHoverEffect : UIHoverEffect
 {
-    private UIStateMonitor stateMonitor = null; 
+    private UIStateMonitor stateMonitor = null;
+    [SerializeField] private GlobalButton globalButton = GlobalButton.Settings;
 
-    private void ToggleButtonInteractability(UIScreen screen)
-    {
-        
-        if(screen.CanAccessSettingsButton)
+    protected override void ToggleButtonInteractability(UIScreen screen)
+    {        
+        if(screen.AccessibleGlobalButtons.Contains(globalButton))
         {
             selectable.interactable = true;
             BindGamepadToButton();

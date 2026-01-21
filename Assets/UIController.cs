@@ -429,7 +429,6 @@ public class UIController : MonoBehaviour
         if (CombatController._instance.entitiesInCombat.Count > 1)
         {
             CombatController._instance.UpdateUiButtons();
-
         }
         PlayOpenInventory();
         //ToggleShopUI();

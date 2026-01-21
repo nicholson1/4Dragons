@@ -61,7 +61,7 @@ public class SettingsManager : MonoBehaviour
         // }
         
         
-        difficultyText.text = $"Difficulty: {Stars}\n {DifficultyTexts[diff]}";
+        difficultyText.text = $"Difficulty: {Stars}\n{DifficultyTexts[diff]}";
         
         PlayerPrefsManager.SetDifficulty(diff);
         difficultyTextHUD.text = diff.ToString();

@@ -227,7 +227,11 @@ public enum ExtraButton
     None,
     Unused,    
     Start,
-    Select
+    Select,
+    L1,
+    R1,
+    L2,
+    R2
     
 }
 
