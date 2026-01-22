@@ -38,6 +38,7 @@ public class ToolTipManager : MonoBehaviour
    private RectTransform _rt;
 
 
+
    //public HorizontalLayoutGroup LayoutGroup;
    private void Awake()
    {
@@ -72,29 +73,53 @@ public class ToolTipManager : MonoBehaviour
       //Debug.Log((Screen.height - Input.mousePosition.y) + " Y");
       //Debug.Log((Screen.width - Input.mousePosition.x) + " X");
 
-      _rt.pivot = new Vector2(.5f, .5f);
-      if (Screen.height - Input.mousePosition.y < Screen.height/3.5f)
-      {
-         _rt.pivot += new Vector2(0, 3);
-      }
-      if (Screen.width - Input.mousePosition.x < Screen.width/5f)
-      {
-         _rt.pivot += new Vector2(5, 0);
-         //LayoutGroup.reverseArrangement = true;
-      }
+      //////_rt.pivot = new Vector2(.5f, .5f);
+      //////if (Screen.height - Input.mousePosition.y < Screen.height/3.5f)
+      //////{
+      //////   _rt.pivot += new Vector2(0, 3);
+      //////}
+      //////if (Screen.width - Input.mousePosition.x < Screen.width/5f)
+      //////{
+      //////   _rt.pivot += new Vector2(5, 0);
+      //////   //LayoutGroup.reverseArrangement = true;
+      //////}
       //LayoutGroup.reverseArrangement = false;
 
 
       
-      transform.position = Input.mousePosition;
-      
+      //transform.position = Input.mousePosition;     
 
    }
 
-   public void SetAndShowToolTip(string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
-   {
-      transform.position = Input.mousePosition;
+    private Vector2 GetPivot(RectTransform referenceRT)
+    {
+        Vector2 pivot = _rt.pivot;
 
+        if (Screen.height - referenceRT.anchoredPosition.y < Screen.height / 3.5f)
+        {
+            pivot += new Vector2(0, 3);
+        }
+        if (Screen.width - referenceRT.anchoredPosition.x < Screen.width / 5f)
+        {
+            pivot += new Vector2(5, 0);
+            //LayoutGroup.reverseArrangement = true;
+        }
+
+        return pivot;
+    }
+
+    private Vector2 GetOffset(Vector2 referenceRT)
+    {
+        return Vector2.zero;
+    }
+
+   public void SetAndShowToolTip(RectTransform toolTipRT, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
+   {
+        //transform.position = Input.mousePosition;
+        //transform.position = toolTipRT.position;
+        transform.position = toolTipRT.transform.position;
+
+        _rt.pivot = GetPivot(toolTipRT);
 
       if (activated)
       {

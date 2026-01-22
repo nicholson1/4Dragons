@@ -27,7 +27,9 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] protected bool clickableWithYes = true;
     [SerializeField] protected bool clickableWithNo = false;
 
-    [SerializeField] protected bool isMouseClickableButton = true;
+    [SerializeField] protected bool shouldHaveClickableButton = true;
+
+    private GameObject lastSelectedObject = null;
 
 
     public void ResetScale()
@@ -56,8 +58,12 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         //LeanTween.rotateZ(gameObject, shakeAmount, shakeSpeed).setLoopPingPong().setEaseInOutQuad();        
         
         UIController._instance.PlayUIHover();
-        if (selectable)
-            selectable.Select();
+
+        //if (selectable)
+        //{
+        //    lastSelectedObject = EventSystem.current.currentSelectedGameObject;
+        //    selectable.Select();
+        //}
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -77,11 +83,11 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnSelect(BaseEventData eventData)
     {
-        if(isPointerEvent)
-        {
-            isPointerEvent = false;
-            return;
-        }
+        //if(isPointerEvent)
+        //{
+        //    isPointerEvent = false;
+        //    return;
+        //}
 
         if (!setOnce)
         {
@@ -187,6 +193,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 $"Probably you need to override ClickThroughInput()");
             return;
         }
+        
+        if (!button.interactable) return;
 
         button.onClick.Invoke();
     }
@@ -281,7 +289,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
         
-        if(isMouseClickableButton)
+        if(shouldHaveClickableButton)
             selectable ??= GetComponentInChildren<Selectable>();                
     }
 

@@ -14,6 +14,8 @@ public class UIController : MonoBehaviour
     public UIStateMonitor StateMonitor => stateMonitor;
     private UIStateMonitor stateMonitor = null;
 
+    [SerializeField] private UIScreenInventory inventoryScreen;
+
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
@@ -53,16 +55,18 @@ public class UIController : MonoBehaviour
 
     [SerializeField] public GameObject[] KeybindVisuals;
     private bool showKeybinds = true;
-
-    
+        
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
     [SerializeField] private GameObject retryCombatButton;
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
+    [SerializeField] private float panelMoveDuration = 0.5f;
+    [SerializeField] private AnimationCurve panelMoveCurve;
 
     private bool InventoryOn = false;
-    public static UIController _instance;    
-    
+    public static UIController _instance;
+
+    #region Audio Variables
     //========= Sound Fx ===========
     public AudioClip _hoverSFX;
     [SerializeField] private float hoverVol;
@@ -104,6 +108,7 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private AudioClip UpgradeSound;
     [SerializeField] private float UpgradeSoundVol;
+    #endregion
 
     public void ActivateTitleScreen()
     {
@@ -113,6 +118,69 @@ public class UIController : MonoBehaviour
     public void ActivateCombatScreen()
     {
         CombatUI.GetComponent<UIScreen>().Activate(false);
+    }
+
+    //make an overload for toggling InventoryUI+Loot and other similar behaviour
+    public void ToggleInventoryUINew(bool toOpen)
+    {
+        EquipmentManager._instance.c.UpdateStats();
+
+        if (!haveInitializedEquipmentItems)
+        {
+            EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+            haveInitializedEquipmentItems = true;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+        }
+
+        PlayOpenInventory();
+
+        stateMonitor.HandleToggleTransition(true);
+        
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
+    }
+
+    public void ToggleInventoryUINew(bool toOpen, InventoryState inventoryState)
+    {
+        EquipmentManager._instance.c.UpdateStats();
+
+        if (!haveInitializedEquipmentItems)
+        {
+            EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+            haveInitializedEquipmentItems = true;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+        }
+
+        PlayOpenInventory();
+
+        stateMonitor.HandleToggleTransition(true);
+
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen));
+        StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
+    }
+
+    private void InventoryScreenMoveFinishedCallback(bool toOpen)
+    {
+        if (toOpen)
+        {
+            inventoryScreen.Activate();
+        }
+        else
+        {
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            inventoryScreen.Deactivate();
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
+            Debug.Log($"closed inventory UI and reactivate {screenToReturnTo.gameObject.name}");
+        }
+
+        stateMonitor.HandleToggleTransition(false);
     }
 
     //For handling closing settings menu through UI [X] close button
@@ -283,8 +351,7 @@ public class UIController : MonoBehaviour
     private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
-
-        
+              
 
         //deactivate main camera
         MainCamera.gameObject.SetActive(false);
@@ -374,20 +441,7 @@ public class UIController : MonoBehaviour
     }
 
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
 
-        stateMonitor = GetComponent<UIStateMonitor>();
-
-    }
 
     public void ToggleInventoryUI(int force = -1)
     {
@@ -412,7 +466,7 @@ public class UIController : MonoBehaviour
         if (!moving)
         {
             InventoryOn = !InventoryOn;
-            StartCoroutine(MoveObject(inventoryUI));
+            StartCoroutine(MoveInventoryUI(inventoryUI));
             //Debug.Log("starting coroutine " + InventoryOn);
 
         }
@@ -604,7 +658,46 @@ public class UIController : MonoBehaviour
 
     }
 
-    IEnumerator MoveObject(GameObject moveObj)
+    private Vector2 GetPanelTargetPosition(PanelMoveDirection direction, Vector2 startPos)
+    {
+        switch (direction)
+        {
+            case PanelMoveDirection.Horizontal:
+                return new Vector2(-startPos.x , startPos.y);
+
+            case PanelMoveDirection.Vertical:
+                return new Vector2(startPos.x, -startPos.y);
+            default:
+                Debug.LogError($"Error: PanelMoveDirection for panel you want to move is not set!");
+                return startPos;
+
+        }
+    }
+
+    private IEnumerator MovePanel(GameObject targetPanel, PanelMoveDirection moveDirection, bool toOpen, Action<bool> OnFinished = null)
+    {
+        //Disable input before move        
+        RectTransform rt = targetPanel.GetComponent<RectTransform>();
+
+        Vector2 startPos = rt.anchoredPosition;
+        Vector2 endPos = GetPanelTargetPosition(moveDirection, startPos);
+
+        float t = 0;
+        while (t < 1)
+        {
+            t = t + Time.deltaTime / panelMoveDuration;
+            float curvedT = panelMoveCurve.Evaluate(t);
+            rt.anchoredPosition = Vector2.Lerp(startPos, endPos, curvedT);
+            yield return null;
+        }
+
+        rt.anchoredPosition = endPos;
+        OnFinished?.Invoke(toOpen);
+
+        //Enable input after move
+    }
+
+    IEnumerator MoveInventoryUI(GameObject moveObj)
     { 
         moving = true;
         
@@ -624,6 +717,7 @@ public class UIController : MonoBehaviour
 
         moving = false;
     }
+
     IEnumerator MoveMapObject(GameObject moveObj)
     { 
         mapMoving = true;
@@ -645,6 +739,7 @@ public class UIController : MonoBehaviour
 
         mapMoving = false;
     }
+
     IEnumerator MoveShopObject(GameObject moveObj)
     {
         
@@ -776,15 +871,6 @@ public class UIController : MonoBehaviour
         }
     }
 
-
-    private void Start()
-    {
-        if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
-        {
-            ToggleKeyBindVisual();
-        }
-    }
-
     public void ToggleKeyBindVisual()
     {
         showKeybinds = !showKeybinds;
@@ -792,13 +878,34 @@ public class UIController : MonoBehaviour
         {
             keybind.SetActive(showKeybinds);
         }
-        
-        if(showKeybinds)
+
+        if (showKeybinds)
             PlayerPrefsManager.SetKeyBindEnabled(1);
         else
             PlayerPrefsManager.SetKeyBindEnabled(0);
     }
 
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+
+        stateMonitor = GetComponent<UIStateMonitor>();
+
+    }
+    private void Start()
+    {
+        if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
+        {
+            ToggleKeyBindVisual();
+        }
+    }
 
     private void FixedUpdate()
     {
@@ -907,4 +1014,11 @@ public class UIController : MonoBehaviour
     {
         Application.OpenURL("https://store.steampowered.com/app/3327710/For_Dragons/");
     }
+}
+
+public enum PanelMoveDirection
+{
+    Horizontal,
+    Vertical,
+    None
 }

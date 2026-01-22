@@ -13,13 +13,13 @@ public class GlobalButtonHoverEffect : UIHoverEffect
         {
             selectable.interactable = true;
             BindGamepadToButton();
-            Debug.Log($"Toggle interactability for screen {screen.gameObject.name} to {selectable.interactable}");
+            Debug.Log($"Toggle {gameObject.name} interactability for screen {screen.gameObject.name} to {selectable.interactable}");
         }
         else
         {
             selectable.interactable = false;
             UnbindGamepadFromButton();
-            Debug.Log($"Toggle interactability for screen {screen.gameObject.name} to {selectable.interactable}");
+            Debug.Log($"Toggle {gameObject.name} interactability for screen {screen.gameObject.name} to {selectable.interactable}");
         }
     }
 

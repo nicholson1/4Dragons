@@ -64,8 +64,8 @@ public class TreasureChest : MonoBehaviour
                 return;
             }
             
-            UIController._instance.ToggleLootUI(1);
-            UIController._instance.ToggleInventoryUI(1);
+            //UIController._instance.ToggleLootUI(1);
+            UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
         }
         
         if (!isOpen)

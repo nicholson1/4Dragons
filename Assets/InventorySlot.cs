@@ -5,6 +5,7 @@ using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IDropHandler
@@ -28,8 +29,9 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
 
-    public Button slotButton = null;
+    [SerializeField, FormerlySerializedAs("slotButton")] private Button gamepadSlotButton = null;
 
+   
 
     public void LabelCheck()
     {
@@ -262,6 +264,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         //Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         LabelCheck();
         //CombatController.EndCombatEvent += EndCombat;
+        
     }
     private void OnDestroy()
     {

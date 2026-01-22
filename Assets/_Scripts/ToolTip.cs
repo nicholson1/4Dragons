@@ -22,7 +22,9 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 
     public Equipment e = null;
-    
+
+    private RectTransform rectTransform;
+
     private bool count;
     private bool count1;
 
@@ -74,6 +76,29 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    public void ShowTipFromGamepadNavi()
+    {     
+        if (is_item)
+        {
+            if (ForgeManager._instance.Upgrading)
+            {
+                ForgeManager._instance.ShowPrice(e);
+            }
+
+            if (ForgeManager._instance.Enhancing)
+            {
+                if (e.stats[Stats.Rarity] < 3)
+                {
+                    ForgeManager._instance.ShowPrice(e);
+                }
+            }
+
+        }
+
+        ToolTipManager._instance.SetAndShowToolTip(rectTransform, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
+
+    }
+
     public void CloseTip()
     {
         if (count1 == true)
@@ -111,22 +136,28 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         
     }
 
-    private void LateUpdate()
+    private void Awake()
     {
-        if (count)
-        {
-            timer -= Time.deltaTime;
-            if (timer <= 0)
-            {
-                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
-            }
-        }
+        rectTransform = GetComponent<RectTransform>();
+
+    }
+
+    private void LateUpdate()
+    {        
+        //if (count)
+        //{
+        //    timer -= Time.deltaTime;
+        //    if (timer <= 0)
+        //    {
+        //        ToolTipManager._instance.SetAndShowToolTip(rectTransform, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
+        //    }
+        //}
         if (count1)
         {
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                ToolTipManager._instance.SetAndShowToolTip(Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
+                ToolTipManager._instance.SetAndShowToolTip(rectTransform, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
             }
         }
     }

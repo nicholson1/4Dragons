@@ -24,6 +24,21 @@ public class UIStateMonitor : MonoBehaviour
 
     private InputHandler inputHandler = null;
 
+
+    public void HandleToggleTransition(bool isTransitioning)
+    {
+        if(isTransitioning)
+        {
+            currentNavigatableScreen.SetNavigatable(false);
+            inputHandler.SwitchActionMap(ActionMaps.Disabled);
+        }
+        else
+        {
+            inputHandler.RevertActionMap();
+        }
+            
+    }
+
     public void RegisterScreen(UIScreen screen)
     {
         uiScreens.Add(screen);

@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatDisplay : MonoBehaviour
+public class StatDisplay : MonoBehaviour, IGamepadButtonListener
 {
     [SerializeField]private Image icon;
     [SerializeField] private TextMeshProUGUI text;
@@ -19,8 +19,26 @@ public class StatDisplay : MonoBehaviour
     [SerializeField] private ToolTip toolTip;
     public bool charStats = false;
 
+    public void HandleGamepadButtonSelected()
+    {
+        Debug.Log($"Should show tip on {stat}");
+        toolTip.ShowTipFromGamepadNavi();
+    }
+
+    public void HandleGamepadButtonDeselected()
+    {
+        Debug.Log($"Deselected stat display for {stat}");
+        toolTip.CloseTip();
+    }
+
+    public void HandleGamepadButtonPressed()
+    {
+        throw new NotImplementedException();
+    }
+
     private void Awake()
     {
+
         icon = GetComponentInChildren<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();
         toolTip = GetComponent<ToolTip>();
@@ -41,6 +59,8 @@ public class StatDisplay : MonoBehaviour
 
         icon.sprite = info.Item2;
         icon.color = info.Item3;
+        value = v;
+
         if (LossOrGain == 1)
         {
             //text.text = info.Item1 + ": +" + v;
@@ -122,4 +142,6 @@ public class StatDisplay : MonoBehaviour
         // Add spaces before each uppercase letter and capitalize the first letter
         return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
     }
+
+
 }

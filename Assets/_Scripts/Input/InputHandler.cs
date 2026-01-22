@@ -12,7 +12,7 @@ using UnityEngine.InputSystem.UI;
 /// </summary>
 public class InputHandler : MonoBehaviour
 {
-    public event Action<InputControlScheme> OnControlSchemeChange;
+    public event Action<InputScheme> OnInputSchemeChanged;
 
     public UnityEvent<int> OnAttackButtonPressed;
     public UnityEvent<bool> OnInspectTogglePressed;
@@ -26,6 +26,7 @@ public class InputHandler : MonoBehaviour
 
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
+    public InputScheme CurrentInputDevice => currentInputDevice;
 
     [SerializeField] private InputActionAsset inputActions;
 
@@ -37,6 +38,8 @@ public class InputHandler : MonoBehaviour
     private ActionMaps cachedPreviousActionMap = ActionMaps.Undefined;
 
     private InputSourceHandler inputSourceHandler = null;
+
+    private InputScheme currentInputDevice = InputScheme.All;
 
     //Debug fields
     [SerializeField] ActionMaps debugTargetActionMap = ActionMaps.Combat;
@@ -79,23 +82,30 @@ public class InputHandler : MonoBehaviour
         {
             case ActionMaps.Menu:                
                 SetMapEnabled(false, "Combat");
-                SetMapEnabled(true, "Menu");                
+                SetMapEnabled(true, "Menu");
+                SetMapEnabled(true, "Global");
+                EventSystem.current.sendNavigationEvents = true;
                 break;
 
             case ActionMaps.Combat:
                 SetMapEnabled(false, "Menu");
                 SetMapEnabled(true, "Combat");
+                SetMapEnabled(true, "Global");
+                EventSystem.current.sendNavigationEvents = true;
                 break;
 
             case ActionMaps.Disabled:
                 SetMapEnabled(false, "Combat");
                 SetMapEnabled(false, "Menu");
+                SetMapEnabled(false, "Global");
+                EventSystem.current.sendNavigationEvents = false;
                 break;
 
             case ActionMaps.AllEnabled:
                 SetMapEnabled(true, "Combat");
                 SetMapEnabled(true, "Menu");
-
+                SetMapEnabled(true, "Global");
+                EventSystem.current.sendNavigationEvents = true;
                 break;
             default:
                 Debug.LogError($"ERROR: target ActionMap not available!");
@@ -209,6 +219,13 @@ public class InputHandler : MonoBehaviour
     }    
     #endregion
 
+}
+
+public enum InputScheme
+{
+    Mouse,
+    Gamepad,
+    All
 }
 
 public enum ActionMaps

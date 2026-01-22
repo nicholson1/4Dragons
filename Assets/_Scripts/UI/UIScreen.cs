@@ -32,6 +32,16 @@ public class UIScreen : MonoBehaviour
     protected bool navigatable = true;
     protected bool isScreenActive = false;
 
+    public virtual void OpenScreen()
+    {
+
+    }
+
+    public virtual void CloseScreen()
+    {
+
+    }
+
     /// <summary>
     /// Call Activate() when opening any screen or interactable popup
     /// It will select the necessary selectable for EventSystem navigation.
@@ -43,6 +53,7 @@ public class UIScreen : MonoBehaviour
 
         OnNewScreenActive?.Invoke(this, navigatable);
 
+        Debug.Log($"Screen {gameObject.name} is activated with navigatable = {navigatable}");
         if (navigatable)
         {            
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
@@ -88,12 +99,13 @@ public class UIScreen : MonoBehaviour
 
             if(EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable) && selectables.Contains(selectable))
             {
+                selectableToSelectOnActivated = selectable;
                 EventSystem.current.SetSelectedGameObject(null);
             }
         }
     }
 
-    private void SetNavigatableByDevice(InputDevice inputDevice, InputDeviceChange deviceChange)
+    private void SetNavigatableByDevice(InputScheme inputDevice, InputDeviceChange deviceChange)
     {
         switch (deviceChange)
         {
@@ -110,7 +122,7 @@ public class UIScreen : MonoBehaviour
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         UIController._instance.StateMonitor.RegisterScreen(this);
         navigatable = NavigatableByDefault;
@@ -135,3 +147,4 @@ public enum GlobalButton
     Inventory,
     Map
 }
+
