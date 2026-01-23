@@ -3,7 +3,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
+using InputIcons;
+using System.Collections;
 
 /// <summary>
 /// Accessible through EventSystem.current.GetComponent<InputHandler>()
@@ -12,7 +15,7 @@ using UnityEngine.InputSystem.UI;
 /// </summary>
 public class InputHandler : MonoBehaviour
 {
-    public event Action<InputScheme> OnInputSchemeChanged;
+    public event Action<InputType> OnInputTypeChange;
 
     public UnityEvent<int> OnAttackButtonPressed;
     public UnityEvent<bool> OnInspectTogglePressed;
@@ -26,7 +29,7 @@ public class InputHandler : MonoBehaviour
 
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
-    public InputScheme CurrentInputDevice => currentInputDevice;
+    public InputType CurrentInputType => currentInputType;
 
     [SerializeField] private InputActionAsset inputActions;
 
@@ -39,7 +42,7 @@ public class InputHandler : MonoBehaviour
 
     private InputSourceHandler inputSourceHandler = null;
 
-    private InputScheme currentInputDevice = InputScheme.All;
+    private InputType currentInputType = InputType.Gamepad;
 
     //Debug fields
     [SerializeField] ActionMaps debugTargetActionMap = ActionMaps.Combat;
@@ -197,10 +200,57 @@ public class InputHandler : MonoBehaviour
             {
                 action.Enable();
             }
+        }          
+    }
+
+    private InputType GetInputType(InputDevice device)
+    {
+        if (device is Gamepad)
+        {
+            return InputType.Gamepad;
         }
 
-        
-        
+        else if (device is Keyboard or Mouse)
+            return InputType.MouseKeyboard;
+
+        else
+            return InputType.Undefined;
+    } 
+
+    private void HandleCursorVisibility()
+    {
+        bool showCursor = currentInputType == InputType.MouseKeyboard;
+
+        Cursor.visible = showCursor;
+        Cursor.lockState = showCursor ? CursorLockMode.None : CursorLockMode.Locked;
+    }
+
+    private void HandleInputChange(InputDevice device)
+    {
+        var deviceType = GetInputType(device);
+        if (deviceType == currentInputType) return;
+
+        currentInputType = deviceType;
+
+        HandleCursorVisibility();
+
+        OnInputTypeChange?.Invoke(currentInputType);
+    }
+
+    private IEnumerator InputChangeHandlerSetupRoutine()
+    {
+        while (InputIconsManagerSO.Instance == null || !InputIconsManagerSO.Instance.isActualManager)
+            yield return null;
+
+        while (InputIconsManagerSO.GetCurrentInputDevice() == null)
+        {
+            Debug.Log($"await legal input...");
+            yield return null;
+        }
+
+        HandleInputChange(InputIconsManagerSO.GetCurrentInputDevice());
+
+        InputIconsManagerSO.onControlsChanged += HandleInputChange;        
     }
 
     private void Awake()
@@ -210,22 +260,25 @@ public class InputHandler : MonoBehaviour
 
         SwitchActionMap(defaultActionMap);
 
+        StartCoroutine(InputChangeHandlerSetupRoutine());
+
         inputSourceHandler ??= GetComponent<InputSourceHandler>();
     }
 
     private void OnDestroy()
     {
         UnbindInputEvents();
-    }    
+
+        InputIconsManagerSO.onControlsChanged -= HandleInputChange;
+
+    }
     #endregion
 
 }
 
-public enum InputScheme
+public enum InputType
 {
-    Mouse,
-    Gamepad,
-    All
+    Gamepad, MouseKeyboard, Undefined
 }
 
 public enum ActionMaps

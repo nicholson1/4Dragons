@@ -77,7 +77,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     public void ShowTipFromGamepadNavi()
-    {     
+    {
+        ToolTipManager._instance.HideToolTipAll();
         if (is_item)
         {
             if (ForgeManager._instance.Upgrading)
@@ -94,6 +95,14 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
 
         }
+
+        //ToolTipManager._instance.SetAndShowToolTip(rectTransform, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
+        StartCoroutine(ShowTooltipRoutine());
+    }
+
+    private IEnumerator ShowTooltipRoutine()
+    {
+        yield return new WaitForEndOfFrame();
 
         ToolTipManager._instance.SetAndShowToolTip(rectTransform, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
 

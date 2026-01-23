@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
@@ -30,10 +31,32 @@ public class LootButtonManager : MonoBehaviour
 
     private Selectable leftSelectableAtInventoryUI = null;
 
+    private bool stillSettingUpButtons = false;
+
     
-    private void SetLootPanelButtonsLeftNavigation(Selectable selectable)
+    public void SetLootPanelButtonsLeftNavigation(Selectable selectable)
     {
-        
+        StartCoroutine(SetPanelLeftNavigationRoutine(selectable));   
+    }
+
+    private IEnumerator SetPanelLeftNavigationRoutine(Selectable selectable)
+    {
+        while (stillSettingUpButtons)
+            yield return null;
+
+        for (int i = 0; i < currentActiveButtons.Count; i++)
+        {
+            if (i % 2 == 0)
+            {
+                var button = currentActiveButtons[i];
+                var navi = button.navigation;
+                if (navi.mode != Navigation.Mode.Explicit)
+                    navi.mode = Navigation.Mode.Explicit;
+
+                navi.selectOnLeft = selectable;
+                button.navigation = navi;
+            }
+        }
     }
 
     private void SetupLootPanelNavigation()
@@ -60,7 +83,9 @@ public class LootButtonManager : MonoBehaviour
 
             button.navigation = navi;
         }
-       
+
+        stillSettingUpButtons = false;
+
     }
 
     private void PopulateCurrentActiveButtons(List<GameObject> buttonGOs)
@@ -110,6 +135,7 @@ public class LootButtonManager : MonoBehaviour
 
     public void SetLootButtons(List<List<Equipment>> equipments = null, List<int> Golds = null, List<List<Equipment>> relics = null)
     {
+        stillSettingUpButtons = true;
         ClearAll();
         EquipmentLists = equipments;
         GoldList = Golds;

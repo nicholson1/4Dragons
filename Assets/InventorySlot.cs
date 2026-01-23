@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour, IDropHandler
+public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 {
     public Equipment.Slot Slot;
     public DragItem Item = null;
@@ -31,7 +31,21 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     [SerializeField, FormerlySerializedAs("slotButton")] private Button gamepadSlotButton = null;
 
-   
+
+    public void HandleGamepadButtonSelected()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleGamepadButtonDeselected()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleGamepadButtonPressed()
+    {
+        throw new NotImplementedException();
+    }
 
     public void LabelCheck()
     {
@@ -354,6 +368,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
 
     }
+
+
+
+
     // private void StartCombat()
     // {
     //     canBeDragged = false;

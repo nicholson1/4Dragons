@@ -139,11 +139,12 @@ public class UIController : MonoBehaviour
         PlayOpenInventory();
 
         stateMonitor.HandleToggleTransition(true);
-        
+        inventoryScreen.ChangeInventoryState(InventoryState.Base);
+
         StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
     }
 
-    public void ToggleInventoryUINew(bool toOpen, InventoryState inventoryState)
+    public void ToggleInventoryUINew(bool toOpen, InventoryState targetInventoryState)
     {
         EquipmentManager._instance.c.UpdateStats();
 
@@ -163,7 +164,18 @@ public class UIController : MonoBehaviour
         stateMonitor.HandleToggleTransition(true);
 
         StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen));
-        StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
+
+        switch(targetInventoryState)
+        {
+            case InventoryState.Loot:
+                StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
+                inventoryScreen.ChangeInventoryState(InventoryState.Loot);
+                break;
+            case InventoryState.Shop:
+                break;
+            case InventoryState.Upgrade:
+                break;
+        }
     }
 
     private void InventoryScreenMoveFinishedCallback(bool toOpen)

@@ -174,8 +174,8 @@ public class SelectionManager : MonoBehaviour
         }
 
         LootButtonManager._instance.SetLootButtons(EquipmentSelection, GoldSelections, RelicSelections);
-        UIController._instance.ToggleLootUI(1);
-        UIController._instance.ToggleInventoryUI(1);
+        //UIController._instance.ToggleLootUI(1);
+        //UIController._instance.ToggleInventoryUI(1);
         
         // foreach (var i in equipments)
         // {

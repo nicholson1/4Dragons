@@ -32,12 +32,19 @@ public class UIScreen : MonoBehaviour
     protected bool navigatable = true;
     protected bool isScreenActive = false;
 
+    protected InputHandler inputHandler = null;
+
     public virtual void OpenScreen()
     {
 
     }
 
     public virtual void CloseScreen()
+    {
+
+    }
+
+    protected virtual void HandleInputTypeChange(InputType inputType)
     {
 
     }
@@ -75,7 +82,7 @@ public class UIScreen : MonoBehaviour
             selectableToSelectOnActivated = selectable;
 
         OnScreenDeactivated?.Invoke(this);
-        navigatable = false;
+        SetNavigatable(false);
 
     }
 
@@ -104,29 +111,17 @@ public class UIScreen : MonoBehaviour
             }
         }
     }
-
-    private void SetNavigatableByDevice(InputScheme inputDevice, InputDeviceChange deviceChange)
-    {
-        switch (deviceChange)
-        {
-            case InputDeviceChange.Added:
-                Debug.Log($"Device {inputDevice} was added");
-                break;
-            case InputDeviceChange.Removed:
-                Debug.Log($"Device {inputDevice} was removed");
-                break;
-            case InputDeviceChange.Enabled:
-                Debug.Log($"Device {inputDevice} was removed");
-                break;
-
-        }
-    }
+      
 
     protected virtual void Start()
     {
-        UIController._instance.StateMonitor.RegisterScreen(this);
         navigatable = NavigatableByDefault;
         selectables = GetComponentsInChildren<Selectable>().ToList();
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+
+        inputHandler.OnInputTypeChange += HandleInputTypeChange;
+
+        UIController._instance.StateMonitor.RegisterScreen(this);
         foreach(var selectable in selectables)
         {
             if(selectable.TryGetComponent(out UIHoverEffect hoverEffect))
@@ -139,6 +134,10 @@ public class UIScreen : MonoBehaviour
             defaultSelectable = selectables[0];
     }   
 
+    protected virtual void OnDestroy()
+    {
+        inputHandler.OnInputTypeChange -= HandleInputTypeChange;
+    }
 }
 
 public enum GlobalButton

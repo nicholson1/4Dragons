@@ -32,7 +32,6 @@ public class UIScreenInventory : UIScreen
 
     private bool closableWithToggleOrButtonBackButton = true;
 
-    private InputHandler inputHandler = null;
 
     //Handle when device change mouse >< gamepad
     //to mouse =>
@@ -47,9 +46,8 @@ public class UIScreenInventory : UIScreen
     public override void Activate(bool navigatableOnActivated = true)
     {
         base.Activate(navigatableOnActivated);
-        ChangeInventoryState(InventoryState.Base);
+        SetupRuntimeNavigation(currentInventoryState);
     }
-
 
     public void ChangeInventoryState(InventoryState state)
     {        
@@ -74,6 +72,48 @@ public class UIScreenInventory : UIScreen
 
         cachedLastInventoryState = currentInventoryState;
         currentInventoryState = state;        
+    }
+
+    private void SetupRuntimeNavigation(InventoryState state)
+    {
+        foreach(var selectable in RightmostInventoryButtons)
+        {
+            var navi = selectable.navigation;
+            if (navi.mode != Navigation.Mode.Explicit)
+                navi.mode = Navigation.Mode.Explicit;
+
+            switch(state)
+            {
+                case InventoryState.Shop:
+                    navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0];
+                    break;
+                default:
+                    navi.selectOnRight = null;
+                    break;
+
+            }
+            selectable.navigation = navi;
+        }
+
+        SetAttachedPanelLeftmostButtonNavigation(state);       
+        
+    }
+
+    private void SetAttachedPanelLeftmostButtonNavigation(InventoryState state)
+    {
+        switch (state)
+        {
+            case InventoryState.Loot:
+                lootButtonManager.SetLootPanelButtonsLeftNavigation(leftSelectableForLootPanel);
+                break;
+            case InventoryState.Shop:
+                break;
+            case InventoryState.Upgrade:
+                break;
+            default:
+                break;
+        }
+        
     }
 
     private void RevertInventoryState()
@@ -113,13 +153,11 @@ public class UIScreenInventory : UIScreen
     protected override void Start()
     {
         base.Start();
-
-        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+                
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
     }
 }
 
-[System.Serializable]
 public enum InventoryState
 {
     Base,

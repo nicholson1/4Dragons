@@ -21,7 +21,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private bool isPointerEvent = false; //a guard to prevent pointer event triggering on gamepad select
     protected UIScreen buttonOwnerUIScreen = null;
 
-    protected Selectable selectable = null;
+    protected Button button = null;
     protected InputHandler inputHandler = null;
     [SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
     [SerializeField] protected bool clickableWithYes = true;
@@ -39,8 +39,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     public void OnPointerEnter(PointerEventData eventData)
-    {
-        
+    {        
         isPointerEvent = true;
 
         if(!setOnce)
@@ -167,7 +166,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     protected void HandleClickThroughYes()
     {
-        var button = selectable as Button;
+        var button = this.button as Button;
         if(button == null)
         {
             Debug.LogError($"Error: Cannot cast selectable as button! /l" +
@@ -186,7 +185,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     protected void ClickThroughInput()
     {
-        var button = selectable as Button;
+        var button = this.button as Button;
         if (button == null)
         {
             Debug.LogError($"Error: Cannot cast selectable as button! /l" +
@@ -196,8 +195,9 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         
         if (!button.interactable) return;
 
-        button.onClick.Invoke();
+        button.onClick.Invoke();        
     }
+
 
     protected virtual void ToggleButtonInteractability(UIScreen screen)
     {
@@ -206,7 +206,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     protected void BindGamepadToButton()
     {
-        if (selectable == null)
+        if (button == null)
             return;
 
         if(clickableWithYes)
@@ -235,7 +235,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     protected void UnbindGamepadFromButton()
     {
-        if (selectable == null)
+        if (button == null)
             return;
 
         if(clickableWithYes)
@@ -288,9 +288,10 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Awake()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
-        
+                
         if(shouldHaveClickableButton)
-            selectable ??= GetComponentInChildren<Selectable>();                
+            button ??= GetComponentInChildren<Button>(); 
+        
     }
 
     private void OnDestroy()
