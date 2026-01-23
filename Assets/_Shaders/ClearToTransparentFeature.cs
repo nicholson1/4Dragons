@@ -7,10 +7,10 @@ public class WhiteOnTransparentComposeFeature : ScriptableRendererFeature
     [System.Serializable]
     public class Settings
     {
-        public RenderPassEvent passEvent = RenderPassEvent.AfterRendering; // as late as possible before final blit
+        public RenderPassEvent passEvent = RenderPassEvent.AfterRendering;
         public Shader composeShader;
         [Range(0, 0.2f)] public float threshold = 0.001f;
-        [Range(0, 1f)] public float keepOriginalColor = 0f; // 0 = pure white, 1 = keep original RGB
+        [Range(0, 1f)] public float keepOriginalColor = 0f;
         public bool onlyWhenTargetTexture = true;
     }
 
@@ -18,17 +18,17 @@ public class WhiteOnTransparentComposeFeature : ScriptableRendererFeature
     {
         readonly Settings settings;
         Material mat;
-        RenderTargetIdentifier source;
-        int tmpTexId = Shader.PropertyToID("_WOT_Temp");
+
+        RTHandle source;
+        RTHandle tmp;
 
         public ComposePass(Settings s)
         {
             settings = s;
         }
 
-        public bool Setup(RenderTargetIdentifier src)
+        public bool Setup()
         {
-            source = src;
             if (mat == null)
             {
                 var sh = settings.composeShader != null
@@ -37,9 +37,29 @@ public class WhiteOnTransparentComposeFeature : ScriptableRendererFeature
                 if (sh == null) return false;
                 mat = CoreUtils.CreateEngineMaterial(sh);
             }
+
             mat.SetFloat("_Threshold", settings.threshold);
             mat.SetFloat("_KeepColor", settings.keepOriginalColor);
             return true;
+        }
+
+        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
+        {
+            // Safe place to fetch it in URP 14
+            source = renderingData.cameraData.renderer.cameraColorTargetHandle;
+
+            // Allocate temp matching camera descriptor
+            var desc = renderingData.cameraData.cameraTargetDescriptor;
+            desc.msaaSamples = 1;
+            desc.depthBufferBits = 0;
+
+            RenderingUtils.ReAllocateIfNeeded(
+                ref tmp,
+                desc,
+                FilterMode.Bilinear,
+                TextureWrapMode.Clamp,
+                name: "_WOT_Temp"
+            );
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -47,27 +67,27 @@ public class WhiteOnTransparentComposeFeature : ScriptableRendererFeature
             if (settings.onlyWhenTargetTexture && renderingData.cameraData.targetTexture == null)
                 return;
 
-            if (mat == null) return;
+            if (mat == null || source == null || tmp == null)
+                return;
 
             var cmd = CommandBufferPool.Get("WhiteOnTransparentCompose");
 
-            // Allocate temp with same desc as camera target
-            var desc = renderingData.cameraData.cameraTargetDescriptor;
-            desc.msaaSamples = 1;
-            cmd.GetTemporaryRT(tmpTexId, desc);
+            // source -> tmp
+            Blitter.BlitCameraTexture(cmd, source, tmp);
 
-            // Blit source -> temp
-            Blit(cmd, source, new RenderTargetIdentifier(tmpTexId));
+            // tmp -> source with compose material
+            Blitter.BlitCameraTexture(cmd, tmp, source, mat, 0);
 
-            // Blit temp -> source with compose material
-            Blit(cmd, new RenderTargetIdentifier(tmpTexId), source, mat);
-
-            cmd.ReleaseTemporaryRT(tmpTexId);
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
 
-        public override void FrameCleanup(CommandBuffer cmd) { }
+        public override void OnCameraCleanup(CommandBuffer cmd)
+        {
+            // Keep allocated across frames; URP will release RTHandles on renderer dispose.
+            // If you want to release manually, you can:
+            // tmp?.Release(); tmp = null;
+        }
     }
 
     public Settings settings = new Settings();
@@ -81,11 +101,8 @@ public class WhiteOnTransparentComposeFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        // Bind the current camera color target
-        var src = renderer.cameraColorTarget;
-        if (pass.Setup(src))
-        {
+        // Do NOT touch renderer.cameraColorTarget here.
+        if (pass.Setup())
             renderer.EnqueuePass(pass);
-        }
     }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Steamworks;
 //using Steamworks;
 using TMPro;
 using UnityEngine;
@@ -28,6 +30,20 @@ public class LoginController : MonoBehaviour
 
     private CanvasGroup _canvasGroup;
 
+    public static LoginController _instance;
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     public async void Start()
     {
         // attempt to login automatically if player prefs exist
@@ -48,6 +64,7 @@ public class LoginController : MonoBehaviour
         switch (loginResult)
         {
             case PlayFabManager.AutoResult.NODATA:
+                SteamRegister();
                 return;
             case PlayFabManager.AutoResult.ERROR:
                 ErrorLogin();
@@ -107,6 +124,49 @@ public class LoginController : MonoBehaviour
         canvasGroup.gameObject.SetActive(false);
     }
 
+    public async Task<PlayFabManager.RegistrationResult> SteamRegister()
+    {
+#if !DISABLESTEAMWORKS
+        if (!SteamManager.Initialized)
+        {
+            Debug.LogWarning("Steam is not initialized.");
+            
+            // if steam is busted and its the not the first time logging in
+            if(_playFabManager.SavedEmail != null)
+            {
+                EmailReg.text = _playFabManager.SavedEmail;
+                PasswordReg.text = _playFabManager.SavedPassword;
+                PasswordConfirmReg.text = _playFabManager.SavedPassword;
+                Register();
+                return PlayFabManager.RegistrationResult.EMAIL_EXISTS;
+
+            }
+            else
+            {
+                Debug.Log("No local saved login");
+                SkipRegister();
+                return PlayFabManager.RegistrationResult.ERROR ;
+
+            }
+        }
+
+        string name = SteamFriends.GetPersonaName();
+        Debug.Log("Steam username: " + name);
+        EmailLog.text = $"{name}@Steam.Steam";
+        PasswordLog.text = "SteamSteam";
+#else
+        Debug.LogWarning("STEAMWORKS not defined. Username unavailable.");
+        EmailLog.text = "Guest@Guest.Guest";
+        PasswordLog.text = "GuestGuest";
+#endif
+        EmailReg.text = EmailLog.text;
+        PasswordReg.text = PasswordLog.text;
+        PasswordConfirmReg.text = PasswordLog.text;
+        Register();
+        Login();
+        return PlayFabManager.RegistrationResult.SUCCESS;
+
+    }
     public async void SkipRegister()
     {
         EmailLog.text = "Guest@Guest.Guest";

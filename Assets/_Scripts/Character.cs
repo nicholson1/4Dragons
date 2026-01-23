@@ -27,6 +27,9 @@ public class Character : MonoBehaviour
     public bool isPlayerCharacter;
     public bool isDragon;
     public bool isElite;
+    public bool isBossPhase1 = false;
+    public bool isBossPhase2 = false;
+
     [SerializeField] private bool isBlacksmith;
 
     public int inventorySize = 6;
@@ -792,9 +795,24 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
-                    if (CombatController._instance.Player._level == 10)
+                    if (isBossPhase1)
+                    {
+                        Debug.Log("PHASE 2 START");
+                        //todo animation
+                        // spawn phase 2
+                    }
+                    else if (isBossPhase2)
+                    {
+                        //finish the game, roll credits
+                        UIController._instance.ActivateVictoryScreen();
+                        UIController._instance.ToggleInventoryUI(0); 
+                        PlayFabManager._instance.SubmitRunData(true);
+                    }
+                    else if (CombatController._instance.Player._level == 30)
                     {
                         //todo This is where we start a new combat with the final boss?
+                        
+                        //todo spawn boss p1
                         // victory
                         UIController._instance.ActivateVictoryScreen();
                         UIController._instance.ToggleInventoryUI(0); 
@@ -825,6 +843,32 @@ public class Character : MonoBehaviour
                         CombatController._instance.IncreaseTrialCounter();
                         MapManager._instance.GenerateNewMap();
 
+                        SteamAchievementManager.Unlock("defeat_dragon");
+                        if (CombatController._instance.turnCounter < 1)
+                        {
+                            SteamAchievementManager.Unlock("defeat_dragon_1");
+                        }
+                    }
+
+                    else if (isElite)
+                    {
+                        SteamAchievementManager.Unlock("defeat_elite");
+                        if (CombatController._instance.turnCounter < 1)
+                        {
+                            SteamAchievementManager.Unlock("defeat_elite_1");
+                        }
+
+                        if (CombatController._instance.Player._level < 5)
+                        {
+                            SteamAchievementManager.Unlock("defeat_elite_5");
+                        }
+                    }
+                    else
+                    {
+                        if (CombatController._instance.turnCounter < 1)
+                        {
+                            SteamAchievementManager.Unlock("defeat_enemy_1");
+                        }
                     }
                     
 
@@ -851,6 +895,7 @@ public class Character : MonoBehaviour
                     }else
                     {
                         // todo make unique animation?
+                        SteamAchievementManager.Unlock("defeat_blacksmith");
                         //_am.SetTrigger(TheSpellBook.AnimationTriggerNames.Wave.ToString());
                     }
                     CombatController._instance.EndCombat();
@@ -871,6 +916,11 @@ public class Character : MonoBehaviour
             }
             else
             {
+                if (CombatController._instance.entitiesInCombat[1].myCharacter.isBlacksmith)
+                {
+                    SteamAchievementManager.Unlock("lose_blacksmith");
+                }
+                
                 PlayFabManager._instance.SubmitRunData(false);
                 //GameOver
                 UIController._instance.PlayDeathSound();
