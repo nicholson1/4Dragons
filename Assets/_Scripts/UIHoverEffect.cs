@@ -19,17 +19,19 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private bool setOnce = false;
 
     private bool isPointerEvent = false; //a guard to prevent pointer event triggering on gamepad select
-    protected UIScreen buttonOwnerUIScreen = null;
-
-    protected Button button = null;
     protected InputHandler inputHandler = null;
-    [SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
-    [SerializeField] protected bool clickableWithYes = true;
-    [SerializeField] protected bool clickableWithNo = false;
 
-    [SerializeField] protected bool shouldHaveClickableButton = true;
+    //protected UIScreen buttonOwnerUIScreen = null;
 
-    private GameObject lastSelectedObject = null;
+    //protected Button button = null;
+
+    //[SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
+    //[SerializeField] protected bool clickableWithYes = true;
+    //[SerializeField] protected bool clickableWithNo = false;
+
+    //[SerializeField] protected bool shouldHaveClickableButton = true;
+
+    //private GameObject lastSelectedObject = null;
 
 
     public void ResetScale()
@@ -58,11 +60,6 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         
         UIController._instance.PlayUIHover();
 
-        //if (selectable)
-        //{
-        //    lastSelectedObject = EventSystem.current.currentSelectedGameObject;
-        //    selectable.Select();
-        //}
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -82,12 +79,6 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnSelect(BaseEventData eventData)
     {
-        //if(isPointerEvent)
-        //{
-        //    isPointerEvent = false;
-        //    return;
-        //}
-
         if (!setOnce)
         {
             initialScale = transform.localScale;
@@ -164,144 +155,152 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     }
 
-    protected void HandleClickThroughYes()
-    {
-        var button = this.button as Button;
-        if(button == null)
-        {
-            Debug.LogError($"Error: Cannot cast selectable as button! /l" +
-                $"Probably you need to override HandleYesThroughInput()");
-            return;
-        }
+    //protected void HandleClickThroughYes()
+    //{
+    //    var button = this.button as Button;
+    //    if(button == null)
+    //    {
+    //        Debug.LogError($"Error: Cannot cast selectable as button! /l" +
+    //            $"Probably you need to override HandleYesThroughInput()");
+    //        return;
+    //    }
 
-        if (EventSystem.current.currentSelectedGameObject == this.gameObject)
-            button.onClick.Invoke();
-    }
+    //    if (EventSystem.current.currentSelectedGameObject == this.gameObject)
+    //        button.onClick.Invoke();
+    //}
 
-    protected void HandleClickThroughNo()
-    {
-        ClickThroughInput();
-    }
+    //protected void HandleClickThroughNo()
+    //{
+    //    ClickThroughInput();
+    //}
 
-    protected void ClickThroughInput()
-    {
-        var button = this.button as Button;
-        if (button == null)
-        {
-            Debug.LogError($"Error: Cannot cast selectable as button! /l" +
-                $"Probably you need to override ClickThroughInput()");
-            return;
-        }
+    //protected void ClickThroughInput()
+    //{
+    //    var button = this.button;
+    //    if (button == null)
+    //    {
+    //        Debug.LogError($"Error: Cannot cast selectable as button! /l" +
+    //            $"Probably you need to override ClickThroughInput()");
+    //        return;
+    //    }
         
-        if (!button.interactable) return;
+    //    if (!button.interactable) return;
 
-        button.onClick.Invoke();        
-    }
+    //    button.onClick.Invoke();        
+    //}
 
 
-    protected virtual void ToggleButtonInteractability(UIScreen screen)
+    //protected virtual void ToggleButtonInteractability(UIScreen screen)
+    //{
+
+    //}
+
+
+    //protected void BindGamepadToButton()
+    //{
+    //    if (button == null)
+    //        return;
+
+    //    if(clickableWithYes)
+    //        inputHandler.OnYes.AddListener(HandleClickThroughYes);
+
+    //    if (clickableWithNo)
+    //        inputHandler.OnNo.AddListener(ClickThroughInput);
+
+    //    switch(extraButtonToUse)
+    //    {
+    //        case ExtraButton.Extra1:
+    //            inputHandler.OnMenuExtra1.AddListener(ClickThroughInput);
+    //            break;
+    //        case ExtraButton.Extra2:
+    //            inputHandler.OnMenuExtra2.AddListener(ClickThroughInput);
+    //            break;
+    //        case ExtraButton.Start:
+    //            inputHandler.OnStart.AddListener(ClickThroughInput);
+    //            break;
+    //        case ExtraButton.Select:
+    //            inputHandler.OnSelect.AddListener(ClickThroughInput);
+    //            break;
+
+    //    }
+    //}
+
+    //protected void UnbindGamepadFromButton()
+    //{
+    //    if (button == null)
+    //        return;
+
+    //    if(clickableWithYes)
+    //        inputHandler.OnYes.RemoveListener(HandleClickThroughYes);
+
+    //    if (clickableWithNo)
+    //        inputHandler.OnNo.RemoveListener(ClickThroughInput);
+
+
+    //    switch (extraButtonToUse)
+    //    {
+    //        case ExtraButton.Extra1:
+    //            inputHandler.OnMenuExtra1.RemoveListener(ClickThroughInput);
+    //            break;
+    //        case ExtraButton.Extra2:
+    //            inputHandler.OnMenuExtra2.RemoveListener(ClickThroughInput);
+    //            break;
+    //        case ExtraButton.Start:
+    //            inputHandler.OnStart.RemoveListener(ClickThroughInput);
+    //            break;
+    //        case ExtraButton.Select:
+    //            inputHandler.OnSelect.RemoveListener(ClickThroughInput);
+    //            break;
+
+
+    //    }
+    //}
+
+    //private void BindInput(UIScreen screen, bool navigatable)
+    //{
+    //    UnbindGamepadFromButton();
+
+    //    if(navigatable)
+    //        BindGamepadToButton();            
+    //}
+
+    //private void UnbindInput(UIScreen _)
+    //{
+    //    UnbindGamepadFromButton();
+    //    ManualDeselect();
+    //}
+
+    //public virtual void SetUIScreen(UIScreen screen)
+    //{
+    //    buttonOwnerUIScreen = screen;
+    //    buttonOwnerUIScreen.OnNewScreenActive += BindInput;
+    //    buttonOwnerUIScreen.OnScreenDeactivated += UnbindInput;
+    //}
+
+    private void HandleInputChange(InputType inputType)
     {
 
-    }
-
-    protected void BindGamepadToButton()
-    {
-        if (button == null)
-            return;
-
-        if(clickableWithYes)
-            inputHandler.OnYes.AddListener(HandleClickThroughYes);
-
-        if (clickableWithNo)
-            inputHandler.OnNo.AddListener(ClickThroughInput);
-
-        switch(extraButtonToUse)
-        {
-            case ExtraButton.Extra1:
-                inputHandler.OnMenuExtra1.AddListener(ClickThroughInput);
-                break;
-            case ExtraButton.Extra2:
-                inputHandler.OnMenuExtra2.AddListener(ClickThroughInput);
-                break;
-            case ExtraButton.Start:
-                inputHandler.OnStart.AddListener(ClickThroughInput);
-                break;
-            case ExtraButton.Select:
-                inputHandler.OnSelect.AddListener(ClickThroughInput);
-                break;
-
-        }
-    }
-
-    protected void UnbindGamepadFromButton()
-    {
-        if (button == null)
-            return;
-
-        if(clickableWithYes)
-            inputHandler.OnYes.RemoveListener(HandleClickThroughYes);
-
-        if (clickableWithNo)
-            inputHandler.OnNo.RemoveListener(ClickThroughInput);
-
-
-        switch (extraButtonToUse)
-        {
-            case ExtraButton.Extra1:
-                inputHandler.OnMenuExtra1.RemoveListener(ClickThroughInput);
-                break;
-            case ExtraButton.Extra2:
-                inputHandler.OnMenuExtra2.RemoveListener(ClickThroughInput);
-                break;
-            case ExtraButton.Start:
-                inputHandler.OnStart.RemoveListener(ClickThroughInput);
-                break;
-            case ExtraButton.Select:
-                inputHandler.OnSelect.RemoveListener(ClickThroughInput);
-                break;
-
-
-        }
-    }
-
-    private void BindInput(UIScreen screen, bool navigatable)
-    {
-        UnbindGamepadFromButton();
-
-        if(navigatable)
-            BindGamepadToButton();            
-    }
-
-    private void UnbindInput(UIScreen _)
-    {
-        UnbindGamepadFromButton();
-        ManualDeselect();
-    }
-
-    public void SetUIScreen(UIScreen screen)
-    {
-        buttonOwnerUIScreen = screen;
-        buttonOwnerUIScreen.OnNewScreenActive += BindInput;
-        buttonOwnerUIScreen.OnScreenDeactivated += UnbindInput;
     }
 
     private void Awake()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
                 
-        if(shouldHaveClickableButton)
-            button ??= GetComponentInChildren<Button>(); 
-        
+        //if(shouldHaveClickableButton)
+        //    button ??= GetComponentInChildren<Button>();
+
+        inputHandler.OnInputTypeChange += HandleInputChange;
     }
 
     private void OnDestroy()
     {
-        if (buttonOwnerUIScreen != null)
-        {
-            buttonOwnerUIScreen.OnNewScreenActive -= BindInput;
-            buttonOwnerUIScreen.OnScreenDeactivated -= UnbindInput;
-        }
-        
+        //if (buttonOwnerUIScreen != null)
+        //{
+        //    buttonOwnerUIScreen.OnNewScreenActive -= BindInput;
+        //    buttonOwnerUIScreen.OnScreenDeactivated -= UnbindInput;
+        //}
+
+        inputHandler.OnInputTypeChange -= HandleInputChange;
     }
    
 }

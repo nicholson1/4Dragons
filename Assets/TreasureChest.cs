@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class TreasureChest : MonoBehaviour
 {
+    public Button TreasureButton => button;
+
     public Transform Lid;
     private bool isOpen = false;
     public float targetRotation = -140f;
@@ -26,6 +28,7 @@ public class TreasureChest : MonoBehaviour
     [SerializeField] private AudioClip chestAmbiance;
     [SerializeField] private float chestAmbianceVol;
 
+   
     public bool testRun = false;
 
     private void  OnMouseDown()
@@ -63,8 +66,9 @@ public class TreasureChest : MonoBehaviour
             {
                 return;
             }
-            
+
             //UIController._instance.ToggleLootUI(1);
+            
             UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
         }
         
@@ -94,25 +98,32 @@ public class TreasureChest : MonoBehaviour
         ClickOnTreaure(true);
     }
 
+    private void Awake()
+    {      
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();       
+
+        button = GetComponentInChildren<Button>();        
+    }
+
     void Start()
-    {
+    {        
+
         initialRotation = Lid.transform.localRotation;
         GetComponent<Rigidbody>().AddForce(Vector3.down * force,ForceMode.Impulse);
         
         ambience = SoundManager.Instance.PlayAmbience(chestAmbiance, true);
-        //add focre down to rigdid body
+        //add focre down to rigdid body      
 
-        inputHandler = EventSystem.current.GetComponent<InputHandler>();
         inputHandler.OnYes.AddListener(HandleClickThroughInput);
-
-        button = GetComponentInChildren<Button>();
         button.onClick.AddListener(HandleClickThroughClick);
     }
 
     private AudioSource ambience;
 
+
     private void OnDisable()
-    {
+    {       
+
         if(SoundManager.Instance != null)
             SoundManager.Instance.StopAmbience(ambience, 2);
     }

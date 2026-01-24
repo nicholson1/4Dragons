@@ -12,7 +12,7 @@ public class UIStateMonitor : MonoBehaviour
     public UIScreen PreviousActiveScreen => previousActiveScreen;
 
     private Stack<UIScreen> UIScreenStack = new Stack<UIScreen>();
-    private HashSet<UIScreen> uiScreens = new HashSet<UIScreen>();
+    private List<UIScreen> uiScreens = new List<UIScreen>();
 
     private UIScreen currentNavigatableScreen = null;
     private UIScreen currentActiveScreen = null;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalButtonHoverEffect : UIHoverEffect
+public class SettingsButtonBindingHandler : ButtonBindingHandler
 {
     private UIStateMonitor stateMonitor = null;
     [SerializeField] private GlobalButton globalButton = GlobalButton.Settings;
@@ -12,13 +12,13 @@ public class GlobalButtonHoverEffect : UIHoverEffect
         if(screen.AccessibleGlobalButtons.Contains(globalButton))
         {
             button.interactable = true;
-            BindGamepadToButton();
+            //BindGamepadToButton();
             Debug.Log($"Toggle {gameObject.name} interactability for screen {screen.gameObject.name} to {button.interactable}");
         }
         else
         {
             button.interactable = false;
-            UnbindGamepadFromButton();
+            //UnbindGamepadFromButton();
             Debug.Log($"Toggle {gameObject.name} interactability for screen {screen.gameObject.name} to {button.interactable}");
         }
     }
@@ -30,7 +30,7 @@ public class GlobalButtonHoverEffect : UIHoverEffect
         BindGamepadToButton();
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         UnbindGamepadFromButton();
         stateMonitor.OnScreenChanged -= ToggleButtonInteractability;

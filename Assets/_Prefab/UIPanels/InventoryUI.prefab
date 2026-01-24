@@ -1645,10 +1645,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 0
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &1414397189200325493
 GameObject:
   m_ObjectHideFlags: 0
@@ -2607,10 +2603,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &2967893824971529052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3363,8 +3355,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -46.9}
-  m_SizeDelta: {x: 1600, y: 300}
+  m_AnchoredPosition: {x: 0, y: 27.953}
+  m_SizeDelta: {x: 600, y: 144.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7196752908235405216
 CanvasRenderer:
@@ -3421,15 +3413,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 108.78
-  m_fontSizeBase: 108.78
+  m_fontSize: 100
+  m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -5051,7 +5043,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8707567701322068296
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5138,10 +5130,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 5
-  clickableWithYes: 0
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &5652483066700263895
 GameObject:
   m_ObjectHideFlags: 0
@@ -5705,9 +5693,10 @@ GameObject:
   - component: {fileID: 3909900592883296277}
   - component: {fileID: 337277142924225153}
   - component: {fileID: 1549551849911902301}
-  - component: {fileID: 5352954231150053143}
+  - component: {fileID: 2235190370399349740}
+  - component: {fileID: 6991235814694660176}
   m_Layer: 5
-  m_Name: InventorySlider
+  m_Name: InventoryToggleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5836,7 +5825,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5352954231150053143
+--- !u!114 &2235190370399349740
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5845,11 +5834,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5912435512783071545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1deabf1de7aac743a83f4c6c0296054, type: 3}
+  m_Script: {fileID: 11500000, guid: 96f50db497a7c2246bc94469defcf2a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
+--- !u!114 &6991235814694660176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5912435512783071545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f72e70ce507514da90584b5576c939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   extraButtonToUse: 5
   clickableWithYes: 0
   clickableWithNo: 0
@@ -6956,11 +6957,11 @@ MonoBehaviour:
   <NavigatableByDefault>k__BackingField: 1
   defaultSelectable: {fileID: 3899568595005659235}
   canAccessSettingsButton: 0
-  accessibleGlobalButtons: 
+  accessibleGlobalButtons: 01000000
   defaultInputActionMap: 0
   InventoryPanel: {fileID: 216094450715910406}
   LootPanel: {fileID: 6959927234733790357}
-  lootButtonManager: {fileID: 0}
+  lootButtonManager: {fileID: 8565369570850981644}
   leftSelectableForLootPanel: {fileID: 1582816749088514698}
   rightmostInventoryButtons:
   - {fileID: 1582816749088514698}
@@ -7241,10 +7242,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 0
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &6713711282250826623
 GameObject:
   m_ObjectHideFlags: 0
@@ -8238,7 +8235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -12602,15 +12599,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
@@ -12646,11 +12643,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ToggleLootUI
+      value: CloseInventoryScreenWithLootPanel
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ToggleMapUI
+      value: PlayUIClick
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -12686,11 +12683,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_IntArgument
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_BoolArgument
@@ -12900,10 +12901,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1001 &6424602106488834429
 PrefabInstance:
   m_ObjectHideFlags: 0

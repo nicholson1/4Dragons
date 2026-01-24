@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -14,7 +15,11 @@ public class UIController : MonoBehaviour
     public UIStateMonitor StateMonitor => stateMonitor;
     private UIStateMonitor stateMonitor = null;
 
+    [SerializeField] private UIScreen titleScreen;
     [SerializeField] private UIScreenInventory inventoryScreen;
+    [SerializeField] private UIScreen settingsScreen;
+    [SerializeField] private UIScreen startingTreasureScreen;
+    [SerializeField] private UIScreen mapScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -120,6 +125,11 @@ public class UIController : MonoBehaviour
         CombatUI.GetComponent<UIScreen>().Activate(false);
     }
 
+    public void ActivateTreasureScreen()
+    {
+        startingTreasureScreen.Activate();
+    }
+
     //make an overload for toggling InventoryUI+Loot and other similar behaviour
     public void ToggleInventoryUINew(bool toOpen)
     {
@@ -139,9 +149,9 @@ public class UIController : MonoBehaviour
         PlayOpenInventory();
 
         stateMonitor.HandleToggleTransition(true);
-        inventoryScreen.ChangeInventoryState(InventoryState.Base);
+        inventoryScreen.ChangeInventoryState(InventoryState.Base); //InventoryUI toggle specific only for Base
 
-        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
     }
 
     public void ToggleInventoryUINew(bool toOpen, InventoryState targetInventoryState)
@@ -161,24 +171,54 @@ public class UIController : MonoBehaviour
 
         PlayOpenInventory();
 
-        stateMonitor.HandleToggleTransition(true);
+        stateMonitor.HandleToggleTransition(true);        
 
-        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen));
-
-        switch(targetInventoryState)
+        switch (targetInventoryState)
         {
             case InventoryState.Loot:
-                StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenMoveFinishedCallback));
                 inventoryScreen.ChangeInventoryState(InventoryState.Loot);
+                StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
             case InventoryState.Shop:
                 break;
             case InventoryState.Upgrade:
                 break;
         }
+
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
     }
 
-    private void InventoryScreenMoveFinishedCallback(bool toOpen)
+    public void CloseInventoryScreenWithLootPanel()
+    {
+        EquipmentManager._instance.c.UpdateStats();
+
+        if (!haveInitializedEquipmentItems)
+        {
+            EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+            haveInitializedEquipmentItems = true;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+        }
+
+        PlayOpenInventory();
+
+        stateMonitor.HandleToggleTransition(true);
+
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, false));
+        StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false, CloseInventoryScreenWithLootPanelCallback));
+    }
+
+    private void CloseInventoryScreenWithLootPanelCallback(bool _)
+    {
+        inventoryScreen.Deactivate();
+        Debug.Log($"OPEN MAP SCREEN HERE");
+    }
+
+
+    private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
     {
         if (toOpen)
         {
@@ -229,12 +269,17 @@ public class UIController : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void LeaveMainMenu()
+    /// <summary>
+    /// On clicking Adventure Button
+    /// </summary>
+    public void StartAdventure()
     {
         TitleScreen.SetActive(false);
         InventoryButton.SetActive(true);
         MapButton.SetActive(true);
         DailyChallengeUI.gameObject.SetActive(false);
+
+
     }
 
     private bool uiOn = true;
@@ -527,9 +572,8 @@ public class UIController : MonoBehaviour
         }
         //ToggleShopUI();
         PlayOpenMap();
-
-
     }
+
     bool shopMoving = false;
     private bool shopOn = false;
     public void ToggleShopUI(int force = -1)
@@ -946,6 +990,7 @@ public class UIController : MonoBehaviour
 #endif
     }
 
+    #region Audio Related
     public void PlayUIHover()
     {
         SoundManager.Instance.Play2DSFX(_hoverSFX, hoverVol, .75f, .05f);
@@ -1026,6 +1071,7 @@ public class UIController : MonoBehaviour
     {
         Application.OpenURL("https://store.steampowered.com/app/3327710/For_Dragons/");
     }
+    #endregion
 }
 
 public enum PanelMoveDirection

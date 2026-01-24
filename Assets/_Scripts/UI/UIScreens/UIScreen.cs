@@ -14,6 +14,7 @@ public class UIScreen : MonoBehaviour
     public Selectable CurrentSelectable => currentSelectable;
     public Selectable SelectableToSelectOnActivated => selectableToSelectOnActivated;
     public bool Navigatable => navigatable;
+    public bool IsScreenActive => isScreenActive;
     public List<GlobalButton> AccessibleGlobalButtons => accessibleGlobalButtons;
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
@@ -55,6 +56,11 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public virtual void Activate(bool navigatableOnActivated = true)
     {
+        isScreenActive = true;
+
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
         navigatable = navigatableOnActivated;
         currentSelectable = selectableToSelectOnActivated == null ? defaultSelectable : selectableToSelectOnActivated;
 
@@ -77,6 +83,8 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public virtual void Deactivate()
     {
+        isScreenActive = false;
+
         if(navigatable && EventSystem.current.currentSelectedGameObject != null &&
             EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
             selectableToSelectOnActivated = selectable;
@@ -120,13 +128,13 @@ public class UIScreen : MonoBehaviour
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
         inputHandler.OnInputTypeChange += HandleInputTypeChange;
-
         UIController._instance.StateMonitor.RegisterScreen(this);
-        foreach(var selectable in selectables)
+
+        foreach (var selectable in selectables)
         {
-            if(selectable.TryGetComponent(out UIHoverEffect hoverEffect))
+            if(selectable.TryGetComponent(out ButtonBindingHandler bindHandler))
             {
-                hoverEffect.SetUIScreen(this);
+                bindHandler.SetUIScreen(this);
             }
         }
 

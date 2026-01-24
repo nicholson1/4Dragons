@@ -28,7 +28,7 @@ public class CombatController : MonoBehaviour
     [SerializeField] private TreasureChest TreausreChestPrefab;
 
 
-    [SerializeField] private GameObject StartChest;
+    [SerializeField] private TreasureChest StartChest;
     private GameObject rewardChest = null;
 
 
@@ -240,8 +240,11 @@ public class CombatController : MonoBehaviour
     {
         started = true;
         EquipmentCreator._instance.ApplyModifiers();
+
+        //should clean this up later
         StartChest.gameObject.SetActive(true);
-        
+        UIController._instance.ActivateTreasureScreen();
+                        
         MusicManager.Instance.PlayAdventureMusic();
 
         RotateAroundMap._instance.SlowRotate = false;
@@ -869,17 +872,22 @@ public class CombatController : MonoBehaviour
         return Vector3.zero;
     }
 
+
+
     public void StartRandomCombat(Node node)
     {
-        if(StartChest!= null)
-            StartChest.SetActive(false);
+        if(StartChest != null)
+            StartChest.gameObject.SetActive(false);
+
         for (int i = 1; i < entitiesInCombat.Count; i++)
         {
             GameObject.Destroy(entitiesInCombat[i].gameObject);
             entitiesInCombat.RemoveAt(i);
             //Debug.Log("DESTRIYING GAME OBJECT");
         }
-        UIController._instance.ToggleInventoryUI(0);
+
+
+        UIController._instance.ToggleInventoryUINew(false);
 
         NextCombatButton.gameObject.SetActive(false);
 

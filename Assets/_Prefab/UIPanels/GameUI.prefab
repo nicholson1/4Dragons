@@ -1210,7 +1210,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 2.4099998}
+  m_AnchoredPosition: {x: 0, y: 2.4100037}
   m_SizeDelta: {x: 0, y: -4.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4119457375754500247
@@ -2339,10 +2339,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.05
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &603474500778900469
 GameObject:
   m_ObjectHideFlags: 0
@@ -3478,10 +3474,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &879996180151425323
 GameObject:
   m_ObjectHideFlags: 0
@@ -6409,7 +6401,7 @@ MonoBehaviour:
 '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
-  m_sharedMaterial: {fileID: -7004525115007894535, guid: 1c23fbb8f8a758d4d933eddc9a3fefe3, type: 2}
+  m_sharedMaterial: {fileID: -7004525115007894535, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6735,10 +6727,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &1708748954766540118
 GameObject:
   m_ObjectHideFlags: 0
@@ -7382,10 +7370,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &1795910314620575819
 GameObject:
   m_ObjectHideFlags: 0
@@ -11172,10 +11156,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &2746608029443943273
 GameObject:
   m_ObjectHideFlags: 0
@@ -15150,10 +15130,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &3848687513384667801
 GameObject:
   m_ObjectHideFlags: 0
@@ -17935,6 +17911,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8864850653314257651}
   - {fileID: 7710237165579532270}
   - {fileID: 8317772616570663848}
   - {fileID: 4633159379893223594}
@@ -18076,7 +18053,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2debfc763bf2f6d4b983fb2b0ea2e032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  titleScreen: {fileID: 1906113536014755029}
   inventoryScreen: {fileID: 203438662007637875}
+  settingsScreen: {fileID: 8663998924610134567}
+  startingTreasureScreen: {fileID: 8871627092630283100}
+  mapScreen: {fileID: 0}
   inventoryUI: {fileID: 1173608884835628671}
   CombatUI: {fileID: 5902189167406579665}
   ShopUI: {fileID: 4193534354574846011}
@@ -22304,10 +22285,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &5325991791816828578
 GameObject:
   m_ObjectHideFlags: 0
@@ -24912,10 +24889,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &5902189167406579665
 GameObject:
   m_ObjectHideFlags: 0
@@ -27670,10 +27643,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &6707136924868219397
 GameObject:
   m_ObjectHideFlags: 0
@@ -28980,10 +28949,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.5
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &4300204559782004457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29142,10 +29107,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.4
   shakeUI: 0
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &7233519895078057635
 GameObject:
   m_ObjectHideFlags: 0
@@ -29466,10 +29427,69 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
+--- !u!1 &7243949576599607070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8864850653314257651}
+  - component: {fileID: 6350030090215103939}
+  - component: {fileID: 8871627092630283100}
+  m_Layer: 5
+  m_Name: StartingTreasureScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8864850653314257651
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7243949576599607070}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 426867802494669029}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6350030090215103939
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7243949576599607070}
+  m_CullTransparentMesh: 1
+--- !u!114 &8871627092630283100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7243949576599607070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 213bbb8f63f20ce4a9fbd842b5cdf8c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <NavigatableByDefault>k__BackingField: 1
+  defaultSelectable: {fileID: 0}
+  canAccessSettingsButton: 0
+  accessibleGlobalButtons: 
+  defaultInputActionMap: 0
+  treasureChest: {fileID: 0}
 --- !u!1 &7263288802008335083
 GameObject:
   m_ObjectHideFlags: 0
@@ -30503,10 +30523,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &7459569464574412226
 GameObject:
   m_ObjectHideFlags: 0
@@ -30726,10 +30742,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &7474360019027955339
 GameObject:
   m_ObjectHideFlags: 0
@@ -31756,10 +31768,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &7700105608290254426
 GameObject:
   m_ObjectHideFlags: 0
@@ -31984,10 +31992,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &7786869391848081953
 GameObject:
   m_ObjectHideFlags: 0
@@ -35848,7 +35852,7 @@ GameObject:
   - component: {fileID: 8527562838529527908}
   - component: {fileID: 9197614618302414274}
   m_Layer: 5
-  m_Name: AnimatedLogo
+  m_Name: SplashScreenController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36035,10 +36039,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1 &8958788562624045112
 GameObject:
   m_ObjectHideFlags: 0
@@ -36987,10 +36987,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.5
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &5344057079229099559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37859,10 +37855,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1001 &336084392742833291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38255,6 +38247,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2828822733802722992, guid: 2070c08f345c35b4b9777755f8a2a0f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3692711998622913877}
+    - targetCorrespondingSourceObject: {fileID: 2828822733802722992, guid: 2070c08f345c35b4b9777755f8a2a0f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4459781142160339068}
   m_SourcePrefab: {fileID: 100100000, guid: 2070c08f345c35b4b9777755f8a2a0f0, type: 3}
 --- !u!1 &2488864528998062665 stripped
 GameObject:
@@ -38274,6 +38269,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlighter: {fileID: 3181172795460635472}
+--- !u!114 &4459781142160339068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488864528998062665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!114 &2899150283432368092 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3310180365805951781, guid: 2070c08f345c35b4b9777755f8a2a0f0, type: 3}
@@ -38898,6 +38909,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8974233434635624679, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7338818180752684819}
+    - targetCorrespondingSourceObject: {fileID: 8974233434635624679, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6259581559196786760}
   m_SourcePrefab: {fileID: 100100000, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
 --- !u!224 &8925949280254253392 stripped
 RectTransform:
@@ -38923,10 +38937,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &7338818180752684819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38940,6 +38950,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlighter: {fileID: 3972263501234722372}
+--- !u!114 &6259581559196786760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8925949280254253393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!114 &8925949280254253395 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
@@ -39994,6 +40020,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7715009859563133551}
+    - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1827637119478194433}
   m_SourcePrefab: {fileID: 100100000, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
 --- !u!1 &883633552188922612 stripped
 GameObject:
@@ -40014,10 +40043,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &7715009859563133551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40031,6 +40056,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlighter: {fileID: 6089971268364987108}
+--- !u!114 &1827637119478194433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883633552188922612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!114 &883633552188922614 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -40612,10 +40653,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 0
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &1894419740633478274 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -42237,10 +42274,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!225 &3495133801130994427
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -42794,10 +42827,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 5
-  clickableWithYes: 0
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1001 &2891397578648988381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45269,10 +45298,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!224 &3522999559156946711 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274350897321453315, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -45582,10 +45607,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &5242598649483164831 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8974233434635624677, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
@@ -46270,10 +46291,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!224 &4229189736684771314 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274350897321453315, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -46633,10 +46650,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.5
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &4139303512522473754 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 274350899228823733, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -47185,10 +47198,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!224 &4337784612251578567 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274350897321453315, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -48385,10 +48394,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.5
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &5303521107314688664 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 274350899228823733, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -48749,6 +48754,10 @@ PrefabInstance:
     - target: {fileID: 4249560428855517680, guid: 4ae6f3b0eff258f4d9de30156def44e5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 7.6693115
+      objectReference: {fileID: 0}
+    - target: {fileID: 5356287119576643191, guid: 4ae6f3b0eff258f4d9de30156def44e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6493691531024940734, guid: 4ae6f3b0eff258f4d9de30156def44e5, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -49762,10 +49771,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!224 &3455835784618597909 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8974233434635624678, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
@@ -50556,10 +50561,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1001 &6319979238929984655
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51226,6 +51227,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afb304d4abaf76b408a85895d98e8927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8663998924610134567 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1810583642169761452, guid: cc6ba4301d82bd640a0e13b6d2df9f8d, type: 3}
+  m_PrefabInstance: {fileID: 6997689081516375179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107454632983079124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c593cbfa5e022a54aa743b8a0e17970f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7024562967043407456
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -51591,7 +51603,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LeaveMainMenu
+      value: StartAdventure
       objectReference: {fileID: 0}
     - target: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -51862,6 +51874,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2530157664693295928}
+    - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5712733870218852123}
   m_SourcePrefab: {fileID: 100100000, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
 --- !u!1 &7010216328150181408 stripped
 GameObject:
@@ -51882,10 +51897,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &2530157664693295928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51899,6 +51910,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlighter: {fileID: 4624918145917588024}
+--- !u!114 &5712733870218852123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7010216328150181408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!114 &7010216328150181410 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 274350897321453314, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -52366,10 +52393,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!224 &1779140863640327487 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8974233434635624678, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
@@ -52929,6 +52952,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7978916088420715374}
+    - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5989735563265665402}
   m_SourcePrefab: {fileID: 100100000, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
 --- !u!114 &7253751328528535264 stripped
 MonoBehaviour:
@@ -52965,10 +52991,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &7978916088420715374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52982,6 +53004,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlighter: {fileID: 3311886140081799932}
+--- !u!114 &5989735563265665402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7253751328528535266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!1001 &7537211546276159519
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53276,10 +53314,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!1001 &7708508431722935725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53589,6 +53623,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2439518517061265778}
+    - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1606701629085277987}
   m_SourcePrefab: {fileID: 100100000, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
 --- !u!1 &7580876640957584045 stripped
 GameObject:
@@ -53609,10 +53646,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &2439518517061265778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53626,6 +53659,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlighter: {fileID: 4732568498871776598}
+--- !u!114 &1606701629085277987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7580876640957584045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!224 &7580876640957584046 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274350897321453315, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -54438,8 +54487,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1deabf1de7aac743a83f4c6c0296054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverScale: 1.1
-  shakeUI: 0
   extraButtonToUse: 7
   clickableWithYes: 0
   clickableWithNo: 0
@@ -55230,10 +55277,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!114 &8627555733290835676 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 274350897321453327, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
@@ -55658,7 +55701,10 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 3276752862594146647, guid: 61e31c5a86a38744e945a07a5320baf4, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3276752862300515740, guid: 61e31c5a86a38744e945a07a5320baf4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1080619176999203407}
   m_SourcePrefab: {fileID: 100100000, guid: 61e31c5a86a38744e945a07a5320baf4, type: 3}
 --- !u!114 &4548953568022546942 stripped
 MonoBehaviour:
@@ -55676,6 +55722,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3276752862300515740, guid: 61e31c5a86a38744e945a07a5320baf4, type: 3}
   m_PrefabInstance: {fileID: 8454709626833996876}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1080619176999203407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6353581552306135504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f50db497a7c2246bc94469defcf2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  shakeUI: 1
 --- !u!224 &6353581552306135505 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3276752862300515741, guid: 61e31c5a86a38744e945a07a5320baf4, type: 3}
@@ -56329,10 +56389,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
-  extraButtonToUse: 2
-  clickableWithYes: 1
-  clickableWithNo: 0
-  shouldHaveClickableButton: 1
 --- !u!224 &504993903672348769 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8974233434635624678, guid: ce66926fbee764449a9784a32e1d5033, type: 3}

@@ -12,22 +12,26 @@ public class ButtonHighligher : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-
+        if (selectable.interactable)
+            StartCoroutine(FadeColor(false));
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-
+        if (selectable.interactable)
+            StartCoroutine(FadeColor(true));
     }
 
     public void OnSelect(BaseEventData eventData)
     {
-        StartCoroutine(FadeColor(false));
+        if (selectable.interactable)
+            StartCoroutine(FadeColor(false));
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
-        StartCoroutine(FadeColor(true));
+        if (selectable.interactable)
+            StartCoroutine(FadeColor(true));
     }
 
     private IEnumerator FadeColor(bool toInvisible)
@@ -46,9 +50,10 @@ public class ButtonHighligher : MonoBehaviour, ISelectHandler, IDeselectHandler,
         highlighter.color = endColor;
     }
 
-    private void Start()
+    private void Awake()
     {
         selectable = GetComponentInParent<Selectable>();
+                
         highlighter.color = Color.clear;        
     }
 

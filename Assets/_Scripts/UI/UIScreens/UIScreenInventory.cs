@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -9,8 +9,10 @@ using UnityEngine.UI;
 
 public class UIScreenInventory : UIScreen
 {
+    public event Action<InventoryState> OnInventoryStateChanged;
     public List<Button> RightmostInventoryButtons => rightmostInventoryButtons;
     public bool ClosableWithToggleOrButton => closableWithToggleOrButtonBackButton;
+    public InventoryState CurrentInventoryState => currentInventoryState;
 
     [SerializeField] public GameObject InventoryPanel = null;
     [SerializeField] public GameObject LootPanel = null;
@@ -49,12 +51,19 @@ public class UIScreenInventory : UIScreen
         SetupRuntimeNavigation(currentInventoryState);
     }
 
+    public override void Deactivate()
+    {
+        base.Deactivate();
+        ChangeInventoryState(InventoryState.Base);
+    }
+
     public void ChangeInventoryState(InventoryState state)
     {        
         switch(state)
         {
             case InventoryState.Base:
                 //Set slot gamepadButton navigation
+                
                 closableWithToggleOrButtonBackButton = true;     
                 
                 break;
@@ -71,7 +80,8 @@ public class UIScreenInventory : UIScreen
         BackButtonSetup(closableWithToggleOrButtonBackButton);
 
         cachedLastInventoryState = currentInventoryState;
-        currentInventoryState = state;        
+        currentInventoryState = state;
+        OnInventoryStateChanged?.Invoke(state);
     }
 
     private void SetupRuntimeNavigation(InventoryState state)

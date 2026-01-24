@@ -205,10 +205,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1deabf1de7aac743a83f4c6c0296054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverScale: 1.1
-  shakeUI: 0
   extraButtonToUse: 4
   clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
+  globalButton: 0
 --- !u!1 &3276752862594146647
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,7 +434,7 @@ PrefabInstance:
     - target: {fileID: 635342296188085729, guid: cb569c99d72524e4abb9c9b0965aff1a, type: 3}
       propertyPath: spritePromptDatas.Array.data[0].actionReference
       value: 
-      objectReference: {fileID: -6912293580901155192, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 5665225389991600811, guid: cb569c99d72524e4abb9c9b0965aff1a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

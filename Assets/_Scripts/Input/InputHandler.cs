@@ -1,12 +1,13 @@
+using InputIcons;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
-using InputIcons;
-using System.Collections;
 
 /// <summary>
 /// Accessible through EventSystem.current.GetComponent<InputHandler>()
@@ -43,6 +44,8 @@ public class InputHandler : MonoBehaviour
     private InputSourceHandler inputSourceHandler = null;
 
     private InputType currentInputType = InputType.Gamepad;
+
+    [SerializeField] private Texture2D mouseCursor = null;
 
     //Debug fields
     [SerializeField] ActionMaps debugTargetActionMap = ActionMaps.Combat;
@@ -253,8 +256,28 @@ public class InputHandler : MonoBehaviour
         InputIconsManagerSO.onControlsChanged += HandleInputChange;        
     }
 
+    private void SetupMouseCursor()
+    {
+        Cursor.SetCursor(mouseCursor, Vector2.zero, CursorMode.ForceSoftware);
+    }
+
+    //private void Update()
+    //{
+    //    var results = new List<RaycastResult>();
+    //    var data = new PointerEventData(EventSystem.current)
+    //    {
+    //        position = Input.mousePosition
+    //    };
+
+    //    EventSystem.current.RaycastAll(data, results);
+
+    //    foreach (var r in results)
+    //        Debug.Log($"UI HIT: {r.gameObject.name}", r.gameObject);
+    //}
+
     private void Awake()
     {
+        SetupMouseCursor();
         EnableAllInputActions();
         BindInputEvents();
 
