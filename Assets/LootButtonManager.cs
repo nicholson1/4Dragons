@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 public class LootButtonManager : MonoBehaviour
 {
-    public GameObject[] EquipmentButtons;
-    public GameObject[] GoldButtons;
-    public GameObject[] RelicButtons;
+    public EquipmentButton[] EquipmentButtons;
+    public EquipmentButton[] GoldButtons;
+    public EquipmentButton[] RelicButtons;
 
     [SerializeField] private Sprite[] EquipmentSprites;
     [SerializeField] private Transform layoutgroup;
 
-    public List<Button> CurrentActiveButtons => currentActiveButtons;
+    public List<EquipmentButton> CurrentActiveButtons => currentActiveButtons;
 
     public List<List<Equipment>> EquipmentLists = new List<List<Equipment>>();
     public List<List<Equipment>> RelicLists = new List<List<Equipment>>();
@@ -24,10 +24,11 @@ public class LootButtonManager : MonoBehaviour
     public List<int> GoldList = new List<int>();
 
     [SerializeField] public GameObject SkipButton;
+    [SerializeField] private Button leaveButton;
 
     public static LootButtonManager _instance;
 
-    private List<Button> currentActiveButtons = new List<Button>();
+    private List<EquipmentButton> currentActiveButtons = new List<EquipmentButton>();
 
     private Selectable leftSelectableAtInventoryUI = null;
 
@@ -48,7 +49,7 @@ public class LootButtonManager : MonoBehaviour
         {
             if (i % 2 == 0)
             {
-                var button = currentActiveButtons[i];
+                var button = currentActiveButtons[i].Button;
                 var navi = button.navigation;
                 if (navi.mode != Navigation.Mode.Explicit)
                     navi.mode = Navigation.Mode.Explicit;
@@ -63,23 +64,23 @@ public class LootButtonManager : MonoBehaviour
     {
         for (int i = 0; i < currentActiveButtons.Count; i++)
         {
-            var button = currentActiveButtons[i];
+            var button = currentActiveButtons[i].Button;
             var navi = button.navigation;
             navi.mode = Navigation.Mode.Explicit;
 
             if (i % 2 == 0)
             {
-                navi.selectOnRight = i + 1 >= currentActiveButtons.Count ? null : currentActiveButtons[i + 1];
+                navi.selectOnRight = i + 1 >= currentActiveButtons.Count ? null : currentActiveButtons[i + 1].Button;
                 navi.selectOnLeft = leftSelectableAtInventoryUI;
             }
             else
             {
                 navi.selectOnRight = null;
-                navi.selectOnLeft = i - 1 < 0 ? null : currentActiveButtons[i - 1];
+                navi.selectOnLeft = i - 1 < 0 ? null : currentActiveButtons[i - 1].Button;
             }
 
-            navi.selectOnDown = i + 2 >= currentActiveButtons.Count ? null : currentActiveButtons[i + 2];
-            navi.selectOnUp = i - 2 < 0 ? null : currentActiveButtons[i - 2];
+            navi.selectOnDown = i + 2 >= currentActiveButtons.Count ? leaveButton : currentActiveButtons[i + 2].Button;
+            navi.selectOnUp = i - 2 < 0 ? null : currentActiveButtons[i - 2].Button;
 
             button.navigation = navi;
         }
@@ -88,17 +89,17 @@ public class LootButtonManager : MonoBehaviour
 
     }
 
-    private void PopulateCurrentActiveButtons(List<GameObject> buttonGOs)
+    private void PopulateCurrentActiveButtons(List<EquipmentButton> eqButtons)
     {
-        if (buttonGOs.Count < 1)
+        if (eqButtons.Count < 1)
         {
             Debug.LogError($"Error: No active loot button GameObject available!");
             return;
         }
 
-        foreach (var buttonGO in buttonGOs)
+        foreach (EquipmentButton button in eqButtons)
         {
-            if (buttonGO.TryGetComponent(out Button button))
+            if (button.gameObject.activeSelf)
                 currentActiveButtons.Add(button);
         }
 
@@ -140,13 +141,13 @@ public class LootButtonManager : MonoBehaviour
         EquipmentLists = equipments;
         GoldList = Golds;
         RelicLists = relics;
-        List<GameObject> cachedButtonGameObjects = new List<GameObject>();
+        List<EquipmentButton> cachedButtonGameObjects = new List<EquipmentButton>();
 
         if(equipments != null)
         {
             for (int i = 0; i < equipments.Count; i++)
             {
-                EquipmentButtons[i].SetActive(true);
+                EquipmentButtons[i].gameObject.SetActive(true);
                 AdjustTextAndIcon( EquipmentButtons[i], equipments[i]);
                 cachedButtonGameObjects.Add(EquipmentButtons[i]);
             }
@@ -155,7 +156,8 @@ public class LootButtonManager : MonoBehaviour
         {
             for (int i = 0; i < relics.Count; i++)
             {
-                RelicButtons[i].SetActive(true);
+                RelicButtons[i].gameObject.SetActive(true);
+                RelicButtons[i].SetEquipmentButton(EquipmentSprites[5], "Relic");
                 cachedButtonGameObjects.Add(RelicButtons[i]);
             }
         }
@@ -163,8 +165,9 @@ public class LootButtonManager : MonoBehaviour
         {
             for (int i = 0; i < Golds.Count; i++)
             {
-                GoldButtons[i].SetActive(true);
-                GoldButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Golds[i] + " Gold";
+                GoldButtons[i].gameObject.SetActive(true);
+                GoldButtons[i].SetEquipmentButton(EquipmentSprites[4], Golds[i].ToString());
+                //GoldButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Golds[i] + " Gold";
                 cachedButtonGameObjects.Add(GoldButtons[i]);
             }
         }
@@ -172,14 +175,14 @@ public class LootButtonManager : MonoBehaviour
         PopulateCurrentActiveButtons(cachedButtonGameObjects);
     }
 
-    private void AdjustTextAndIcon(GameObject Button, List<Equipment> equipments)
+    private void AdjustTextAndIcon(EquipmentButton eqButton, List<Equipment> equipments)
     {
         bool allWeap = true;
         bool allPotion = true;
 
         bool allScoll = true;
         foreach (var e in equipments)
-        {
+        {            
             if (e.slot != Equipment.Slot.Scroll)
             {
                 allScoll = false;
@@ -196,56 +199,53 @@ public class LootButtonManager : MonoBehaviour
 
         if (allWeap)
         {
-            Button.GetComponentInChildren<TextMeshProUGUI>().text = "Weapon";
-            Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[2];
+            eqButton.SetEquipmentButton(EquipmentSprites[2], "Weapon");
             return;
         }
 
         if (allScoll)
         {
-            Button.GetComponentInChildren<TextMeshProUGUI>().text = "Scroll";
-            Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[1];
+            eqButton.SetEquipmentButton(EquipmentSprites[1], "Scroll");
             return;
         }
         if (allPotion)
         {
-            Button.GetComponentInChildren<TextMeshProUGUI>().text = "Potion";
-            Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[3];
+            eqButton.SetEquipmentButton(EquipmentSprites[3], "Potion");
             return;
         }
-        
-        Button.GetComponentInChildren<TextMeshProUGUI>().text = "Equipment";
-        Button.transform.GetChild(2).GetComponent<Image>().sprite = EquipmentSprites[0];
+
+        eqButton.SetEquipmentButton(EquipmentSprites[0], "Equipment");
         return;
 
         
     }
 
-    public void ClearAll()
+    private void ClearAll()
     {
         currentActiveButtons.Clear();
 
-        foreach (var button in EquipmentButtons)
+        foreach (EquipmentButton eButton in EquipmentButtons)
         {
-            button.SetActive(false);
-            button.GetComponent<Button>().interactable = true;
+            eButton.gameObject.SetActive(false);
+            eButton.Button.interactable = true;
         }
-        foreach (var button in GoldButtons)
+        foreach (EquipmentButton eButton in RelicButtons)
         {
-            button.SetActive(false);
-            button.GetComponent<Button>().interactable = true;
+            eButton.gameObject.SetActive(false);
+            eButton.Button.interactable = true;
         }
-        foreach (var button in RelicButtons)
+        foreach (EquipmentButton eButton in GoldButtons)
         {
-            button.SetActive(false);
-            button.GetComponent<Button>().interactable = true;
+            eButton.gameObject.SetActive(false);
+            eButton.Button.interactable = true;
         }
+
     }
 
     public void EquipmentSelect(int i)
     {
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
-        UIController._instance.ToggleInventoryUI(1);
+        //UIController._instance.ToggleInventoryUI(1);
         EquipmentButtons[i].GetComponent<Button>().interactable = false;
 
         if (EquipmentLists[i].Count == 1)

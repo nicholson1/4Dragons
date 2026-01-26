@@ -94,8 +94,11 @@ public class UIScreenInventory : UIScreen
 
             switch(state)
             {
+                case InventoryState.Loot:
+                    navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
+                    break;
                 case InventoryState.Shop:
-                    navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0];
+                    navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
                     break;
                 default:
                     navi.selectOnRight = null;
@@ -115,6 +118,7 @@ public class UIScreenInventory : UIScreen
         {
             case InventoryState.Loot:
                 lootButtonManager.SetLootPanelButtonsLeftNavigation(leftSelectableForLootPanel);
+                EventSystem.current.SetSelectedGameObject(lootButtonManager.CurrentActiveButtons[0].gameObject);
                 break;
             case InventoryState.Shop:
                 break;
@@ -162,9 +166,14 @@ public class UIScreenInventory : UIScreen
     
     protected override void Start()
     {
-        base.Start();
-                
+        base.Start();                
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
+    }
+
+    protected override void OnDestroy()
+    {
+        statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
+        base.OnDestroy();
     }
 }
 

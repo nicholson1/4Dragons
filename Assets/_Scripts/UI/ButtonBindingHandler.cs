@@ -99,7 +99,7 @@ public class ButtonBindingHandler : MonoBehaviour
             return;
 
         if (clickableWithYes)
-            inputHandler.OnYes.RemoveListener(ClickThroughInput);
+            inputHandler.OnYes.RemoveListener(HandleClickThroughYes);
 
         if (clickableWithNo)
             inputHandler.OnNo.RemoveListener(ClickThroughInput);
@@ -145,13 +145,26 @@ public class ButtonBindingHandler : MonoBehaviour
         buttonOwnerUIScreen.OnScreenDeactivated += UnbindInput;
     }
 
+    private void HandleButtonSound()
+    {
+        UIController._instance.PlayUIClick();
+    }
+
+    private void InitializeButton()
+    {
+        button ??= GetComponentInChildren<Button>();
+
+        if (button == null) return;
+
+        button.onClick.AddListener(HandleButtonSound);
+    }
+
     protected virtual void Awake()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
-
         if (shouldHaveClickableButton)
-            button ??= GetComponentInChildren<Button>();
+            InitializeButton();            
     }
 
     protected virtual void OnDestroy()

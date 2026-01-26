@@ -70,6 +70,7 @@ public class TreasureChest : MonoBehaviour
             //UIController._instance.ToggleLootUI(1);
             
             UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
+            button.interactable = false;
         }
         
         if (!isOpen)
@@ -85,8 +86,9 @@ public class TreasureChest : MonoBehaviour
     
     private void HandleClickThroughInput()
     {
-        if (!isActiveAndEnabled)
-            return;
+        if (!isActiveAndEnabled) return;
+
+        if (!button.interactable) return;
 
         Debug.Log($"Click through input");
         ClickOnTreaure(true);
@@ -113,7 +115,7 @@ public class TreasureChest : MonoBehaviour
         
         ambience = SoundManager.Instance.PlayAmbience(chestAmbiance, true);
         //add focre down to rigdid body      
-
+        button.interactable = true;
         inputHandler.OnYes.AddListener(HandleClickThroughInput);
         button.onClick.AddListener(HandleClickThroughClick);
     }
@@ -151,6 +153,7 @@ public class TreasureChest : MonoBehaviour
     public void Reset()
     {
         inputHandler.OnYes.RemoveListener(HandleClickThroughInput);
+        button.onClick.RemoveListener(HandleClickThroughClick);
         Lid.transform.SetLocalPositionAndRotation(Lid.transform.localPosition , initialRotation);
         isOpen = false;
         isRotating = false;

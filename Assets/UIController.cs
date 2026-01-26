@@ -190,6 +190,7 @@ public class UIController : MonoBehaviour
 
     public void CloseInventoryScreenWithLootPanel()
     {
+        Debug.Log($"CloseInventoryScreenWithLootPanel()");
         EquipmentManager._instance.c.UpdateStats();
 
         if (!haveInitializedEquipmentItems)
@@ -275,7 +276,7 @@ public class UIController : MonoBehaviour
     public void StartAdventure()
     {
         TitleScreen.SetActive(false);
-        InventoryButton.SetActive(true);
+        //InventoryButton.SetActive(true);
         MapButton.SetActive(true);
         DailyChallengeUI.gameObject.SetActive(false);
 

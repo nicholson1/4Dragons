@@ -35,15 +35,6 @@ public class UIScreen : MonoBehaviour
 
     protected InputHandler inputHandler = null;
 
-    public virtual void OpenScreen()
-    {
-
-    }
-
-    public virtual void CloseScreen()
-    {
-
-    }
 
     protected virtual void HandleInputTypeChange(InputType inputType)
     {

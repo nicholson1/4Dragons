@@ -10,8 +10,7 @@ using Random = UnityEngine.Random;
 public class SelectionManager : MonoBehaviour
 {
     [SerializeField] private SelectionItem selectionItemPrefab;
-
-    
+        
     public int selectionsLeft = 2;
     public static SelectionManager _instance;
     public Button SkipButton;
@@ -592,7 +591,7 @@ public class SelectionManager : MonoBehaviour
             UIController._instance.ToggleInventoryUI(1);
             selectionScreen.gameObject.SetActive(true);
             selectionText.text = "Selection (1/4)";
-            inventoryButton.gameObject.SetActive(true);
+            //inventoryButton.gameObject.SetActive(true);
             BeginAdventureButton.SetActive(false);
             // present 4 spells
             int spellCount = 1;

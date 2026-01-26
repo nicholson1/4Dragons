@@ -246,8 +246,7 @@ public class InputHandler : MonoBehaviour
             yield return null;
 
         while (InputIconsManagerSO.GetCurrentInputDevice() == null)
-        {
-            Debug.Log($"await legal input...");
+        {            
             yield return null;
         }
 
