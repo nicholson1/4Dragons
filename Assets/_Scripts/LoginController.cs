@@ -60,6 +60,7 @@ public class LoginController : MonoBehaviour
             StartCoroutine(FadeIn(_canvasGroup , 1));
         }
         
+
         PlayFabManager.AutoResult loginResult = await _playFabManager.AutoLogin();
         switch (loginResult)
         {
@@ -149,6 +150,7 @@ public class LoginController : MonoBehaviour
 
             }
         }
+        
 
         string name = SteamFriends.GetPersonaName();
         Debug.Log("Steam username: " + name);
