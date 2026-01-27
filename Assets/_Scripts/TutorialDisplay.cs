@@ -64,7 +64,7 @@ public class TutorialDisplay : MonoBehaviour
 
         if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity || _tutorialID == TutorialNames.Stats)
         {
-            CloseAll(_tutorialID);
+            CloseAll?.Invoke(_tutorialID);
         }
         //PlayUIClick();
 

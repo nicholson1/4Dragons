@@ -24,6 +24,8 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selectionText;
     [SerializeField] public Image Background;
 
+    private HorizontalLayoutGroup selectionParentLayoutGroup;
+
     private float potionChance = .5f;
     private int combatSincePotions = 0;
     private int forcePotionAfter = 3;
@@ -36,11 +38,14 @@ public class SelectionManager : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
+            return;
         }
         else
         {
             _instance = this;
         }
+
+        selectionParentLayoutGroup = GetComponentInChildren<HorizontalLayoutGroup>();
     }
     
     public void RandomSelectionFromEquipment(Character c)
@@ -190,7 +195,7 @@ public class SelectionManager : MonoBehaviour
         SkipButton.gameObject.SetActive(true);
         foreach (var i in equipments)
         {
-            SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
+            SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
             item.InitializeSelectionItem(i);
         }
         StartCoroutine(FadeImage(1,.75f));
@@ -257,7 +262,7 @@ public class SelectionManager : MonoBehaviour
 
 
         //UIController._instance.ToggleLootUI();
-        selectionScreen.SetActive(false);
+        //selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
         StartCoroutine(FadeImage(.5f,0f));
         
@@ -589,10 +594,10 @@ public class SelectionManager : MonoBehaviour
         {
             // present 4 weapons, 1 must be a blocking shield
             UIController._instance.ToggleInventoryUI(1);
-            selectionScreen.gameObject.SetActive(true);
+            //selectionScreen.gameObject.SetActive(true);
             selectionText.text = "Selection (1/4)";
             //inventoryButton.gameObject.SetActive(true);
-            BeginAdventureButton.SetActive(false);
+            //BeginAdventureButton.SetActive(false);
             // present 4 spells
             int spellCount = 1;
             
