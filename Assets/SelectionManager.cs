@@ -207,6 +207,11 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
+    public void SetupAndOpenSelectionScreen(List<Equipment> equipments)
+    {
+
+    }
+
     public void SelectionsFromList(List<Equipment> equipments)
     {
         SkipButton.gameObject.SetActive(true);
