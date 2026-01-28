@@ -27,13 +27,13 @@ public class EquipmentButton : MonoBehaviour
     public void DeactivateButton()
     {
         button.interactable = false;
-        hoverEffect.shakeUI = false;
+        hoverEffect.SetTweening(false);
     }
 
     public void ActivateButton()
     {
         button.interactable = true;
-        hoverEffect.shakeUI = true;
+        hoverEffect.SetTweening(true);
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
     }

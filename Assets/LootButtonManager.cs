@@ -274,13 +274,24 @@ public class LootButtonManager : MonoBehaviour
 
     }
 
+    private void SelectionFinishedCallback()
+    {
+        SelectionManager._instance.OnSelectionFinished -= SelectionFinishedCallback;
+
+        Debug.Log($"LootButtonManager should refresh button navigation here");
+        RefreshLootButtonNavigation();
+    }
+
     public void EquipmentSelect(int i)
     {
+        SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
+
+
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         //UIController._instance.ToggleInventoryUI(1);
         EquipmentButtons[i].DeactivateButton();
 
-        RefreshLootButtonNavigation();
+        //RefreshLootButtonNavigation();
 
         if (EquipmentLists[i].Count == 1)
         {

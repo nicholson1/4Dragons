@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace ImportantStuff
-{
+{    
     public class Equipment
     {
 

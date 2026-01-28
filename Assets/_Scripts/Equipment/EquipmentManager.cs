@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
@@ -79,220 +80,44 @@ public class EquipmentManager : MonoBehaviour
 
     }
 
-    public void EquipItemFromSelection(Equipment e, SelectionItem si)
+    private bool TryGetAppropriateInventorySlot(Equipment.Slot equipmentSlot, out InventorySlot emptySlot)
     {
-        
-        // loop through char inventory
-        bool equippedSlot = false;
+        emptySlot = InventorySlots.Where(s => s.Slot == equipmentSlot && s.Item == null).FirstOrDefault();
 
-        for (int invSloti = 0; invSloti < InventorySlots.Length; invSloti++)
+        return emptySlot != null;
+    }
+
+    private void EquipItem(Equipment equipment)
+    {
+        c._equipment.Add(equipment);
+        if (equipment.isWeapon)
         {
-            //find the slot that has the item
-            if (InventorySlots[invSloti].Slot == e.slot)
+            Weapon weapon = equipment as Weapon;
+            if (weapon.slot == Equipment.Slot.Scroll)
             {
-                if (InventorySlots[invSloti].Slot == Equipment.Slot.OneHander || InventorySlots[invSloti].Slot == Equipment.Slot.Scroll)
-                {
-                    if (InventorySlots[invSloti + 1].Slot == InventorySlots[invSloti].Slot && InventorySlots[invSloti + 1].Item == null)
-                    {
-                        invSloti += 1;
-                    }
-                }
-                if (InventorySlots[invSloti].Item == null )
-                {
-                    DragItem di = GetDragItem();
-                    di.InitializeDragItem(e, InventorySlots[invSloti]);
-                    //Debug.Log(c.GetStats()[Stats.CritChance]);
-                    c._equipment.Add(e);
-                    if (e.isWeapon)
-                    {
-                        Weapon x = (Weapon) e;
-                        if (x.slot == Equipment.Slot.Scroll)
-                        {
-                            c._spellScrolls.Add(x);
-                        }
-                        else
-                        {
-                            c._weapons.Add(x);
-                        }
+                c._spellScrolls.Add(weapon);
+            }
+            else
+            {
+                c._weapons.Add(weapon);
+            }
 
-                        if (c._weapons.Count > 1)
-                        {
-                            c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
-                        }
-                        else if (c._weapons.Count == 1)
-                        {
-                            c.EqMM.UpdateWeapon(c._weapons[0], null);
-                        }
-                        else
-                        {
-                            c.EqMM.UpdateWeapon(null, null);
+            if (c._weapons.Count > 1)
+            {
+                c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
+            }
+            else if (c._weapons.Count == 1)
+            {
+                c.EqMM.UpdateWeapon(c._weapons[0], null);
+            }
+            else
+            {
+                c.EqMM.UpdateWeapon(null, null);
 
-                        }
-
-                    }
-                    c.EqMM.UpdateSlot(e);
-                    c.UpdateStats();
-                    //Debug.Log(c.GetStats()[Stats.CritChance]);
-
-                    
-                    si.RemoveSelection();
-                    return;
-                }
-                
-                InventorySlot slot = null;
-                // check if we have an empty, if we do save that one
-                for (int i = 10; i < InventorySlots.Length; i++)
-                {
-                    if (InventorySlots[i].Item == null)
-                    {
-                        slot = InventorySlots[i];
-                        break;
-                    }
-                }
-
-                if (slot == null)
-                {
-                    InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
-                    return;
-                }
-                else
-                {
-                    //move current equiped item to inventory
-                    //if weapon check slot + 1
-
-                    if (e.isWeapon)
-                    {
-                        if (InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1].Item == null)
-                        {
-                            DragItem wep = GetDragItem();
-                            wep.InitializeDragItem(e, InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1]);
-                            c._equipment.Add(e);
-                            if (e.isWeapon)
-                            {
-                                Weapon x = (Weapon) e;
-                                if (x.slot == Equipment.Slot.Scroll)
-                                {
-                                    c._spellScrolls.Add(x);
-                                }
-                                else
-                                {
-                                    c._weapons.Add(x);
-                                }
-                                if (c._weapons.Count > 1)
-                                {
-                                    c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
-                                }
-                                else if (c._weapons.Count == 1)
-                                {
-                                    c.EqMM.UpdateWeapon(c._weapons[0], null);
-                                }
-                                else
-                                {
-                                    c.EqMM.UpdateWeapon(null, null);
-
-                                }
-
-                            }
-                            c.UpdateStats();
-                            c.EqMM.UpdateSlot(e);
-
-                    
-                            si.RemoveSelection();
-                            return;
-                        }
-                    }
-
-                    
-                    DragItem equiped = InventorySlots[invSloti].Item;
-                    equiped.currentLocation = slot;
-                    equiped._rectTransform.anchoredPosition = slot._rt.anchoredPosition;
-                    equiped.currentLocation.Item = equiped;
-                    slot.LabelCheck();
-                    UnEquipItem(InventorySlots[invSloti].Item.e);
-                    //c._equipment.Remove(equiped.e);
-                    
-                    
-                    
-                    DragItem di = GetDragItem();
-                    di.InitializeDragItem(e, InventorySlots[invSloti]);
-                    c._equipment.Add(e);
-                    if (e.isWeapon)
-                    {
-                        Weapon eq = (Weapon)equiped.e;
-                        Weapon x = (Weapon) e;
-                        if (x.slot == Equipment.Slot.Scroll)
-                        {
-                            c._spellScrolls.Add(x);
-                            c._spellScrolls.Remove(eq);
-                        }
-                        else
-                        {
-                            c._weapons.Add(x);
-                            c._weapons.Remove(eq);
-
-                        }
-                        if (c._weapons.Count > 1)
-                        {
-                            c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
-                        }
-                        else if (c._weapons.Count == 1)
-                        {
-                            c.EqMM.UpdateWeapon(c._weapons[0], null);
-                        }
-                        else
-                        {
-                            c.EqMM.UpdateWeapon(null, null);
-
-                        }
-
-                    }
-                    c.UpdateStats();
-                    c.EqMM.UpdateSlot(e);
-                    si.RemoveSelection();
-                    return;
-
-                }
-
-                
             }
         }
-
-        if (equippedSlot == false)
-        {
-            // no item in same slot
-            c._equipment.Add(e);
-            c._inventory.Remove(e);
-            if (e.isWeapon)
-            {
-                Weapon x = (Weapon) e;
-                if (x.slot == Equipment.Slot.Scroll)
-                {
-                    c._spellScrolls.Add(x);
-                }
-                else
-                {
-                    c._weapons.Add(x);
-                }
-                if (c._weapons.Count > 1)
-                {
-                    c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
-                }
-                else if (c._weapons.Count == 1)
-                {
-                    c.EqMM.UpdateWeapon(c._weapons[0], null);
-                }
-                else
-                {
-                    c.EqMM.UpdateWeapon(null, null);
-
-                }
-
-            }
-            c.EqMM.UpdateSlot(e);
-
-        }
+        c.EqMM.UpdateSlot(equipment);
         c.UpdateStats();
-
     }
 
     public void UnEquipItem(Equipment e)
@@ -305,7 +130,7 @@ public class EquipmentManager : MonoBehaviour
 
         if (e.isWeapon)
         {
-            Weapon x = (Weapon) e;
+            Weapon x = (Weapon)e;
             if (x.slot == Equipment.Slot.Scroll)
             {
                 c._spellScrolls.Remove(x);
@@ -333,6 +158,112 @@ public class EquipmentManager : MonoBehaviour
         c.UpdateStats();
 
     }
+
+    public bool TryEquipItemFromSelection(Equipment equipmentToEquip, SelectionItem si)
+    {
+        Debug.Log($"Start trying to equip item from selection");
+        for (int invSloti = 0; invSloti < InventorySlots.Length; invSloti++)
+        {
+            //find the slot that has the item
+            if (InventorySlots[invSloti].Slot == equipmentToEquip.slot)
+            {
+                if (InventorySlots[invSloti].Slot == Equipment.Slot.OneHander || InventorySlots[invSloti].Slot == Equipment.Slot.Scroll)
+                {                    
+                    if (InventorySlots[invSloti + 1].Slot == InventorySlots[invSloti].Slot && InventorySlots[invSloti + 1].Item == null)
+                    {
+                        invSloti += 1;
+                    }
+                }
+
+                //case equipment slot empty
+                if (InventorySlots[invSloti].Item == null )
+                {
+                    DragItem di = GetDragItem();
+                    
+                    di.InitializeDragItem(equipmentToEquip, InventorySlots[invSloti]);
+
+                    
+                    //Debug.Log(c.GetStats()[Stats.CritChance]);
+                    EquipItem(equipmentToEquip);
+
+                    //si.RemoveSelection(); we'll handle this through the return
+
+                    Debug.Log($"Return true case 1: drag item on case eq slot empty. item: {di.e.name}");
+                    return true;
+                }
+                
+                //case equipment slot not empty, try to find empty inventory slot
+                InventorySlot slot = null;
+                // check if we have an empty, if we do save that one
+                for (int i = 10; i < InventorySlots.Length; i++)
+                {
+                    if (InventorySlots[i].Item == null)
+                    {
+                        slot = InventorySlots[i];
+                        break;
+                    }
+                }
+
+                if (slot == null)
+                {
+                    InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
+
+                    Debug.Log($"Return False case 2");
+                    return false;
+                }
+                else
+                {            
+                    //check for weapon/scroll 2nd empty slot
+                    //if weapon check slot + 1
+                    if (equipmentToEquip.isWeapon)
+                    {
+                        if (InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1].Item == null)
+                        {
+                            DragItem wep = GetDragItem();
+                            
+                            wep.InitializeDragItem(equipmentToEquip, InventorySlots[Array.IndexOf(InventorySlots, InventorySlots[invSloti]) + 1]);
+
+                            EquipItem(equipmentToEquip);
+
+                            Debug.Log($"Return true case 3: drag item on case 2nd weapon/scroll slot empty: {wep.e.name}");
+                            return true;
+                        }
+                    }
+                    
+                    //move the currently equipped weapon in the target slot to empty inventory slot
+                    DragItem previouslyEquipped = InventorySlots[invSloti].Item;
+                    Debug.Log($"drag item on case previously equipped: {previouslyEquipped.e.name}");
+                    previouslyEquipped.currentLocation = slot;
+                    previouslyEquipped._rectTransform.anchoredPosition = slot._rt.anchoredPosition;
+                    previouslyEquipped.currentLocation.Item = previouslyEquipped;
+                    slot.LabelCheck();
+                    UnEquipItem(InventorySlots[invSloti].Item.e);
+                    //c._equipment.Remove(equiped.e);
+                                                           
+                    DragItem di = GetDragItem();
+                    
+                    di.InitializeDragItem(equipmentToEquip, InventorySlots[invSloti]);
+
+                    UnEquipItem(previouslyEquipped.e);
+                    EquipItem(equipmentToEquip);
+
+                    Debug.Log($"Return true case 4: drag item on... is this the new item to put into the newly cleaned slot? {previouslyEquipped.e.name}");
+                    //si.RemoveSelection();
+                    return true;
+                }                
+            }
+        }
+
+        //equipping to an empty slot from inventory
+        // no item in same slot
+        c._inventory.Remove(equipmentToEquip);
+        EquipItem(equipmentToEquip);
+
+        Debug.Log($"Return true case 5: from inventory to equip?");
+        return true;
+    }
+
+   
 
     public void EquipFromInventory(Equipment e)
     {
@@ -454,9 +385,10 @@ public class EquipmentManager : MonoBehaviour
         di.transform.position = slot.transform.position;
     }
 
-    public void AddItemToInventoryFromSelection(Equipment e, SelectionItem si)
+    public bool TryPutItemToInventoryFromSelection(Equipment e, SelectionItem si)
     {
         InventorySlot slot = null;
+
         // check if we have an empty, if we do save that one
         for (int i = 10; i < InventorySlots.Length; i++)
         {
@@ -470,7 +402,7 @@ public class EquipmentManager : MonoBehaviour
         if (slot == null)
         {
             InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
-            return;
+            return false;
         }
         else
         {
@@ -478,13 +410,14 @@ public class EquipmentManager : MonoBehaviour
             di.InitializeDragItem(e, slot);
             c._inventory.Add(e);
             
-            si.RemoveSelection();
+            //si.RemoveSelection();
 
             if (di.slotType == Equipment.Slot.Consumable)
             {
                 AddPotionToPotionBar((Consumable)e);
             }
 
+            return true;
         }
     }
 

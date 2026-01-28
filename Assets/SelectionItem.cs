@@ -9,6 +9,8 @@ using Random = UnityEngine.Random;
 
 public class SelectionItem : MonoBehaviour
 {
+    public event Action<SelectionItem> OnSelectionItemSelected;
+
     public Equipment item;
     [SerializeField] private CombatEntity myCharacter;
     
@@ -41,7 +43,7 @@ public class SelectionItem : MonoBehaviour
 
     [SerializeField] private GameObject abilityTutorial;
     [SerializeField] private GameObject rarityTutorial;
-    [SerializeField] private GameObject statsTutorial;
+    [SerializeField] private GameObject statsTutorial;    
 
     public bool available = true;
 
@@ -239,7 +241,7 @@ public class SelectionItem : MonoBehaviour
 
         
     }
-    IEnumerator RotateObjectBack()
+    IEnumerator RotateObjectBack(Action onFinish = null)
     {
         isFlipping = true;
         bool halfway = false;
@@ -266,13 +268,14 @@ public class SelectionItem : MonoBehaviour
         } while( angle < 180);
 
         isFlipping = false;
-        if (SelectionManager._instance.selectionsLeft <= 0)
-        {
-            SelectionManager._instance.ClearSelections();
-        }
 
+        //move the handling of this to SelectionManager
+        //if (SelectionManager._instance.selectionsLeft <= 0)
+        //{
+        //    SelectionManager._instance.ClearSelections();
+        //}
 
-
+        onFinish?.Invoke();
     }
     
     private void SetRarityText(int r, Equipment e)
@@ -361,33 +364,55 @@ public class SelectionItem : MonoBehaviour
         // add to character
         CombatController._instance.Player._Relics.Add(item);
         //remove relic from seen relic list
-        RelicManager._instance.SelectRelic(item);
-        
+        RelicManager._instance.SelectRelic(item);        
+    }
+
+    private void FinishedRotateBackCallback()
+    {
+        OnSelectionItemSelected?.Invoke(this);
+        DisableButtons();
     }
 
     public void AddToInventory()
     {
-        UIController._instance.PlayUIClick();
         UIController._instance.PlayPlaceItem();
-        EquipmentManager._instance.AddItemToInventoryFromSelection(item, this);
+
+        bool canAddToInventory = EquipmentManager._instance.TryPutItemToInventoryFromSelection(item, this);
+        if (canAddToInventory)
+        {
+            Debug.Log($"successfully add item to the inventory");
+            StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));
+        }
+        else
+        {
+            Debug.Log($"Should handle item can't go to inventory here");
+        }
     }
 
     public void EquipedFromSelection()
     {
-        UIController._instance.PlayUIClick();
         UIController._instance.PlayPlaceItem();
-        EquipmentManager._instance.EquipItemFromSelection(item, this);
+
+        bool canEquipItem = EquipmentManager._instance.TryEquipItemFromSelection(item, this);
+        if (canEquipItem)
+        {
+            Debug.Log($"successfully equip item from selection!");
+            StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));
+        }
+        else
+        {
+            Debug.Log($"Should handle cannot equip item here");
+        }
     }
 
-    public void RemoveSelection()
-    {
-        // disable interation on buttons
-        SelectionManager._instance.SelectionMade(this);
-
+    //public void RemoveSelection()
+    //{
+    //    // disable interation on buttons
+    //    SelectionManager._instance.SelectionMade(this);
         
-        StartCoroutine(RotateObjectBack());
-        //Destroy(gameObject);
-    }
+    //    StartCoroutine(RotateObjectBack());
+    //    //Destroy(gameObject);
+    //}
 
     public void DisableButtons()
     {
@@ -532,12 +557,4 @@ public class SelectionItem : MonoBehaviour
         return name;
 
     }
-
-
-
-
-
-
-
-
 }

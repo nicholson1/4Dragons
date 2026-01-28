@@ -58,7 +58,7 @@ public class TutorialDisplay : MonoBehaviour
         textBox.SetActive(false);
         TutorialManager.Instance.showingTip = false;
 
-        Debug.Log($"TutorialDisplay of {gameObject.name} calling CloseTip()");
+        //Debug.Log($"TutorialDisplay of {gameObject.name} calling CloseTip()");
         TutorialManager.Instance.ShowTip();       
 
 

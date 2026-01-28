@@ -10,6 +10,8 @@ using Random = UnityEngine.Random;
 
 public class SelectionManager : MonoBehaviour
 {
+    public event Action OnSelectionFinished;
+
     [SerializeField] private SelectionItem selectionItemPrefab;
         
     public int selectionsLeft = 2;
@@ -212,14 +214,21 @@ public class SelectionManager : MonoBehaviour
 
     }
 
+    private void FinalizeAndCloseSelectionPanel()
+    {
+        OnSelectionFinished?.Invoke();
+    }
+
     public void SelectionsFromList(List<Equipment> equipments)
     {
+        currentActiveSelectionItems.Clear();
         SkipButton.gameObject.SetActive(true);
         foreach (var i in equipments)
         {
             SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
             item.InitializeSelectionItem(i);
             currentActiveSelectionItems.Add(item);
+            item.OnSelectionItemSelected += SelectionItemSelectedCallback;
         }
 
         SetupGamepadNavigationForCurrentSelections();
@@ -232,18 +241,24 @@ public class SelectionManager : MonoBehaviour
     {
         //todo pool these
         Debug.Log($"SelectionMade! {si.name}");
-        si.DisableButtons();
+        //si.DisableButtons();
+    }
 
-        currentActiveSelectionItems.Remove(si);
-
+    private void SelectionItemSelectedCallback(SelectionItem selectedItem)
+    {
+        selectedItem.OnSelectionItemSelected += SelectionItemSelectedCallback;
+        
+        //currentActiveSelectionItems.Remove(selectedItem);
         selectionsLeft -= 1;
-        if (selectionsLeft <= 0)
+
+        if(selectionsLeft <= 0)
         {
-            SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
-            foreach (var i in selectionItems)
+            foreach(var selectionItem in currentActiveSelectionItems)
             {
-                i.DisableButtons();
+                selectionItem.DisableButtons();
             }
+
+            ClearSelections();
         }
     }
 
@@ -258,12 +273,13 @@ public class SelectionManager : MonoBehaviour
 
     }
 
+    //Closing selection screen
     public void ClearSelections()
     {
         SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
-        foreach (var si in selectionItems)
+        foreach (var si in currentActiveSelectionItems)
         {
-            if (si.isFlipping)
+            if (si.isFlipping) //we don't need this anymore, handled in coroutine callbacks
             {
                 return;
             }
@@ -274,11 +290,12 @@ public class SelectionManager : MonoBehaviour
             }
         }
         //selectionsLeft = 10;
-        for (int i = selectionItems.Length -1; i >= 0; i--)
+        for (int i = currentActiveSelectionItems.Count -1; i >= 0; i--)
         {
-            Destroy(selectionItems[i].gameObject);
+            Destroy(currentActiveSelectionItems[i].gameObject);
         }
 
+        //what's this?
         if (RelicManager._instance.CheckRelic(RelicType.DragonRelic8))
         {
             selectionsLeft = 1;
@@ -287,15 +304,16 @@ public class SelectionManager : MonoBehaviour
         {
             selectionsLeft = 2;
         }
+
         SkipButton.gameObject.SetActive(false);
 
 
         //UIController._instance.ToggleLootUI();
         //selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
-        StartCoroutine(FadeImage(.5f,0f));
+        StartCoroutine(FadeImage(.5f,0f, FinalizeAndCloseSelectionPanel));
         
-        TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);
+        TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);        
     }
 
     public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random,  ChestType type2 = ChestType.Random)
@@ -750,7 +768,7 @@ public class SelectionManager : MonoBehaviour
 
     }
     
-    IEnumerator FadeImage(float fadeDuration, float targetAlpha)
+    IEnumerator FadeImage(float fadeDuration, float targetAlpha, Action onFadeFinished = null)
     {
             
         Background.gameObject.SetActive(true);
@@ -785,6 +803,8 @@ public class SelectionManager : MonoBehaviour
         {
             Background.gameObject.SetActive(false);
         }
+
+        onFadeFinished?.Invoke();
     }
 
     bool HasDamageSpell(List<Equipment> equipments)

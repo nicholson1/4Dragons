@@ -145,7 +145,7 @@ public class TutorialManager : MonoBehaviour
         if(_tutorialNamesQueue.Count == 0)
         {
             showingTip = false;
-            Debug.Log($"No more tutorial to trigger, this should trigger CloseTutorial?");
+            //Debug.Log($"No more tutorial to trigger, this should trigger CloseTutorial?");
             return;
         }
 
