@@ -29,22 +29,24 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
 
-    [SerializeField, FormerlySerializedAs("slotButton")] private Button gamepadSlotButton = null;
-
-
     public void HandleGamepadButtonSelected()
     {
-        throw new NotImplementedException();
+        Debug.Log($"{gameObject.name} - {Slot} button SELECTED");
     }
 
     public void HandleGamepadButtonDeselected()
     {
-        throw new NotImplementedException();
+        
+
     }
 
     public void HandleGamepadButtonPressed()
     {
-        throw new NotImplementedException();
+        Debug.Log($"{gameObject.name} - {Slot} button PRESSED");
+
+        if (Item == null) return;
+
+        Debug.Log($"ButtonPress detected on slot {gameObject.name} - {Slot} with item {Item.e.name} ");
     }
 
     public void LabelCheck()

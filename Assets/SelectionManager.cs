@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
@@ -31,6 +32,8 @@ public class SelectionManager : MonoBehaviour
     private int forcePotionAfter = 3;
 
     [SerializeField] private TutorialDisplay skipSelectionTutorial;
+
+    public List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
 
 
     private void Awake()
@@ -190,6 +193,20 @@ public class SelectionManager : MonoBehaviour
         // StartCoroutine(FadeImage(.75f));
     }
 
+    private void SetupGamepadNavigationForCurrentSelections()
+    {
+        Debug.Log($"Attempt to setup navigation for current selections setup.");
+        foreach(var selection in currentActiveSelectionItems)
+        {
+            Debug.Log($"get all active selectable on {selection.name}");
+            var activeSelectables = selection.GetComponentsInChildren<Selectable>().Where(s => s.gameObject.activeSelf).ToList();
+            for(int i = 0; i<activeSelectables.Count; i++)
+            {
+                Debug.Log($"{i} - {activeSelectables[i].gameObject.name}");
+            }
+        }
+    }
+
     public void SelectionsFromList(List<Equipment> equipments)
     {
         SkipButton.gameObject.SetActive(true);
@@ -197,7 +214,11 @@ public class SelectionManager : MonoBehaviour
         {
             SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
             item.InitializeSelectionItem(i);
+            currentActiveSelectionItems.Add(item);
         }
+
+        SetupGamepadNavigationForCurrentSelections();
+
         StartCoroutine(FadeImage(1,.75f));
 
     }
@@ -205,8 +226,11 @@ public class SelectionManager : MonoBehaviour
     public void SelectionMade(SelectionItem si)
     {
         //todo pool these
-        
+        Debug.Log($"SelectionMade! {si.name}");
         si.DisableButtons();
+
+        currentActiveSelectionItems.Remove(si);
+
         selectionsLeft -= 1;
         if (selectionsLeft <= 0)
         {

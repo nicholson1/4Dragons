@@ -35,6 +35,8 @@ public class UIScreenInventory : UIScreen
     private bool closableWithToggleOrButtonBackButton = true;
 
 
+
+
     //Handle when device change mouse >< gamepad
     //to mouse =>
     //lastSelectedOnCachedInventoryState = EventSystem current selected GO

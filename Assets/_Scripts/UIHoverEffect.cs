@@ -23,7 +23,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //protected UIScreen buttonOwnerUIScreen = null;
 
-    //protected Button button = null;
+    private Selectable selectable = null;
 
     //[SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
     //[SerializeField] protected bool clickableWithYes = true;
@@ -33,6 +33,10 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //private GameObject lastSelectedObject = null;
 
+    public void SetShakeUI(bool shouldShake)
+    {
+        shakeUI = shouldShake;
+    }
 
     public void ResetScale()
     {
@@ -43,6 +47,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnPointerEnter(PointerEventData eventData)
     {        
         isPointerEvent = true;
+                
 
         if(!setOnce)
         {
@@ -79,6 +84,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnSelect(BaseEventData eventData)
     {
+        if (!selectable.interactable) return;
+
         if (!setOnce)
         {
             initialScale = transform.localScale;
@@ -284,6 +291,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void Awake()
     {
+        selectable = GetComponent<Selectable>();
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
                 
         //if(shouldHaveClickableButton)

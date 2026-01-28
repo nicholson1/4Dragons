@@ -49,8 +49,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //remove slot, remove stats
         _toolTip.ResetTooltip();
         _toolTip.is_item = true;
-        
-        canvas = location.transform.parent.parent.GetComponent<Canvas>();
+
+        canvas = UIController._instance.GetComponent<Canvas>();//location.transform.parent.parent.GetComponent<Canvas>();
+
         e = equip;
         currentLocation = location;
         currentLocation.Item = this;

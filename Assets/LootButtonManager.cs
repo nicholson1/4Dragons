@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using ImportantStuff;
 using TMPro;
@@ -37,7 +38,13 @@ public class LootButtonManager : MonoBehaviour
     
     public void SetLootPanelButtonsLeftNavigation(Selectable selectable)
     {
-        StartCoroutine(SetPanelLeftNavigationRoutine(selectable));   
+        leftSelectableAtInventoryUI = selectable;
+        StartCoroutine(SetPanelLeftNavigationRoutine(leftSelectableAtInventoryUI));   
+    }
+
+    public void RefreshLootButtonNavigation()
+    {
+        SetupLootPanelNavigation();
     }
 
     private IEnumerator SetPanelLeftNavigationRoutine(Selectable selectable)
@@ -60,6 +67,23 @@ public class LootButtonManager : MonoBehaviour
         }
     }
 
+    private Selectable GetVerticalSelectableTarget(int currentIndex, int direction)
+    {
+        int step = direction * 2;
+        int index = currentIndex + step;
+
+        while (index >= 0 && index < currentActiveButtons.Count)
+        {
+            var button = currentActiveButtons[index].Button;
+            if (button.interactable)
+                return button;
+
+            index += step; 
+        }
+
+        return direction > 0 ? leaveButton : null;
+    }
+
     private void SetupLootPanelNavigation()
     {
         for (int i = 0; i < currentActiveButtons.Count; i++)
@@ -67,26 +91,31 @@ public class LootButtonManager : MonoBehaviour
             var button = currentActiveButtons[i].Button;
             var navi = button.navigation;
             navi.mode = Navigation.Mode.Explicit;
-
-            if (i % 2 == 0)
+            bool isLeftColumn = (i % 2 == 0);
+            
+            if (isLeftColumn)
             {
-                navi.selectOnRight = i + 1 >= currentActiveButtons.Count ? null : currentActiveButtons[i + 1].Button;
+                int rightIndex = i + 1;
+                navi.selectOnRight = (rightIndex < currentActiveButtons.Count && currentActiveButtons[rightIndex].Button.interactable) ? 
+                                        currentActiveButtons[rightIndex].Button : null;
+
                 navi.selectOnLeft = leftSelectableAtInventoryUI;
             }
             else
             {
+                int leftIndex = i - 1;
                 navi.selectOnRight = null;
-                navi.selectOnLeft = i - 1 < 0 ? null : currentActiveButtons[i - 1].Button;
+                navi.selectOnLeft = (leftIndex >= 0 && currentActiveButtons[leftIndex].Button.interactable) ?
+                                        currentActiveButtons[leftIndex].Button : null;
             }
 
-            navi.selectOnDown = i + 2 >= currentActiveButtons.Count ? leaveButton : currentActiveButtons[i + 2].Button;
-            navi.selectOnUp = i - 2 < 0 ? null : currentActiveButtons[i - 2].Button;
+            navi.selectOnDown = GetVerticalSelectableTarget(i, 1);
+            navi.selectOnUp = GetVerticalSelectableTarget(i, -1);
 
             button.navigation = navi;
         }
 
         stillSettingUpButtons = false;
-
     }
 
     private void PopulateCurrentActiveButtons(List<EquipmentButton> eqButtons)
@@ -100,15 +129,18 @@ public class LootButtonManager : MonoBehaviour
         foreach (EquipmentButton button in eqButtons)
         {
             if (button.gameObject.activeSelf)
+            {
+                button.ActivateButton();
                 currentActiveButtons.Add(button);
+            }
         }
 
-        if (currentActiveButtons.Count < 1)
+        if (currentActiveButtons.Count > 0)
         {
-            Debug.LogError($"Error: No active loot button component available!");
+            SetupLootPanelNavigation();
         }
 
-        SetupLootPanelNavigation();
+        
     }
 
     private void Awake()
@@ -147,7 +179,7 @@ public class LootButtonManager : MonoBehaviour
         {
             for (int i = 0; i < equipments.Count; i++)
             {
-                EquipmentButtons[i].gameObject.SetActive(true);
+                EquipmentButtons[i].ActivateButton();
                 AdjustTextAndIcon( EquipmentButtons[i], equipments[i]);
                 cachedButtonGameObjects.Add(EquipmentButtons[i]);
             }
@@ -156,7 +188,7 @@ public class LootButtonManager : MonoBehaviour
         {
             for (int i = 0; i < relics.Count; i++)
             {
-                RelicButtons[i].gameObject.SetActive(true);
+                RelicButtons[i].ActivateButton();
                 RelicButtons[i].SetEquipmentButton(EquipmentSprites[5], "Relic");
                 cachedButtonGameObjects.Add(RelicButtons[i]);
             }
@@ -165,7 +197,7 @@ public class LootButtonManager : MonoBehaviour
         {
             for (int i = 0; i < Golds.Count; i++)
             {
-                GoldButtons[i].gameObject.SetActive(true);
+                GoldButtons[i].ActivateButton();
                 GoldButtons[i].SetEquipmentButton(EquipmentSprites[4], Golds[i].ToString());
                 //GoldButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = Golds[i] + " Gold";
                 cachedButtonGameObjects.Add(GoldButtons[i]);
@@ -246,24 +278,31 @@ public class LootButtonManager : MonoBehaviour
     {
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         //UIController._instance.ToggleInventoryUI(1);
-        EquipmentButtons[i].GetComponent<Button>().interactable = false;
+        EquipmentButtons[i].DeactivateButton();
+
+        RefreshLootButtonNavigation();
 
         if (EquipmentLists[i].Count == 1)
         {
             SelectionManager._instance.selectionsLeft = 1;
         }
     }
+
     public void RelicSelect(int i)
     {
         SelectionManager._instance.SelectionsFromList(RelicLists[i]);
-        UIController._instance.ToggleInventoryUI(1);
-        RelicButtons[i].GetComponent<Button>().interactable = false;
+        //UIController._instance.ToggleInventoryUI(1);
+        RelicButtons[i].DeactivateButton();
+
+        RefreshLootButtonNavigation();
     }
+
     public void GoldSelect(int i)
     {
         CombatController._instance.Player.GetGold(GoldList[i]);
-        GoldButtons[i].GetComponent<Button>().interactable = false;
+        GoldButtons[i].DeactivateButton();
 
+        RefreshLootButtonNavigation();
     }
 
    
