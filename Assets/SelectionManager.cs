@@ -56,20 +56,20 @@ public class SelectionManager : MonoBehaviour
     public void RandomSelectionFromEquipment(Character c)
     {
         Random.InitState(CombatController._instance.CurrentSeed);
-        
+
         //SkipButton.gameObject.SetActive(true);
         // get 4 random ints 0-c.equip.count
-        List<List<Equipment>> EquipmentSelection = new List<List<Equipment>>();
-        List<Equipment> equipments = new List<Equipment>();
+        List<List<ImportantStuff.Equipment>> EquipmentSelection = new List<List<ImportantStuff.Equipment>>();
+        List<ImportantStuff.Equipment> equipments = new List<ImportantStuff.Equipment>();
         // force a spell or weapon that has not been selected
-        Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
+        ImportantStuff.Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
 
         equipments.Add(forcedWep);
         
         // fill the rest with 3 random
         while (equipments.Count < 4)
         {
-            Equipment temp = c._equipment[Random.Range(0, c._equipment.Count)];
+            ImportantStuff.Equipment temp = c._equipment[Random.Range(0, c._equipment.Count)];
 
             if (temp.canBeLoot == false)
             {
@@ -86,7 +86,7 @@ public class SelectionManager : MonoBehaviour
         if (RelicManager._instance.CheckRelic(RelicType.DragonRelic6))
         {
 
-            List<Equipment> possible = new List<Equipment>();
+            List<ImportantStuff.Equipment> possible = new List<ImportantStuff.Equipment>();
             foreach (var e in c._equipment)
             {
                 if (!equipments.Contains(e) && e.canBeLoot)
@@ -106,10 +106,10 @@ public class SelectionManager : MonoBehaviour
             
         }
 
-        List<List<Equipment>> RelicSelections = new List<List<Equipment>>();
+        List<List<ImportantStuff.Equipment>> RelicSelections = new List<List<ImportantStuff.Equipment>>();
         if (c.isElite)
         {
-            List<Equipment> relics = new List<Equipment>();
+            List<ImportantStuff.Equipment> relics = new List<ImportantStuff.Equipment>();
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
@@ -117,7 +117,7 @@ public class SelectionManager : MonoBehaviour
 
             if (RelicManager._instance.CheckRelic(RelicType.DragonRelic5))
             {
-                relics = new List<Equipment>();
+                relics = new List<ImportantStuff.Equipment>();
                 relics.Add(RelicManager._instance.GetCommonRelic());
                 relics.Add(RelicManager._instance.GetCommonRelic());
                 relics.Add(RelicManager._instance.GetCommonRelic());
@@ -126,7 +126,7 @@ public class SelectionManager : MonoBehaviour
         }
         if (c.isDragon)
         {
-            List<Equipment> relics = new List<Equipment>();
+            List<ImportantStuff.Equipment> relics = new List<ImportantStuff.Equipment>();
             relics.Add(RelicManager._instance.GetDragonRelic());
             relics.Add(RelicManager._instance.GetDragonRelic());
             relics.Add(RelicManager._instance.GetDragonRelic());
@@ -147,7 +147,7 @@ public class SelectionManager : MonoBehaviour
         
         if (potionRoll || combatSincePotions >= forcePotionAfter)
         {
-            List<Equipment> potions = new List<Equipment>();
+            List<ImportantStuff.Equipment> potions = new List<ImportantStuff.Equipment>();
             potions.Add(EquipmentCreator._instance.CreateRandomPotion(c._level));
 
             combatSincePotions = 0;
@@ -197,10 +197,10 @@ public class SelectionManager : MonoBehaviour
 
     private void SetupGamepadNavigationForCurrentSelections()
     {
-        Debug.Log($"Attempt to setup navigation for current selections setup.");
+
         foreach(var selection in currentActiveSelectionItems)
         {
-            Debug.Log($"get all active selectable on {selection.name}");
+
             var activeSelectables = selection.GetComponentsInChildren<Selectable>().Where(s => s.gameObject.activeSelf).ToList();
             for(int i = 0; i<activeSelectables.Count; i++)
             {
@@ -209,7 +209,7 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
-    public void SetupAndOpenSelectionScreen(List<Equipment> equipments)
+    public void SetupAndOpenSelectionScreen(List<ImportantStuff.Equipment> equipments)
     {
 
     }
@@ -219,7 +219,7 @@ public class SelectionManager : MonoBehaviour
         OnSelectionFinished?.Invoke();
     }
 
-    public void SelectionsFromList(List<Equipment> equipments)
+    public void SelectionsFromList(List<ImportantStuff.Equipment> equipments)
     {
         currentActiveSelectionItems.Clear();
         SkipButton.gameObject.SetActive(true);
@@ -318,8 +318,8 @@ public class SelectionManager : MonoBehaviour
 
     public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random,  ChestType type2 = ChestType.Random)
     {
-        List<List<Equipment>> relics = new List<List<Equipment>>();
-        List<List<Equipment>> equipments = new List<List<Equipment>>();
+        List<List<ImportantStuff.Equipment>> relics = new List<List<ImportantStuff.Equipment>>();
+        List<List<ImportantStuff.Equipment>> equipments = new List<List<ImportantStuff.Equipment>>();
         List<int> golds = new List<int>();
 
         
@@ -343,12 +343,12 @@ public class SelectionManager : MonoBehaviour
 
         int level = CombatController._instance.Player._level;
 
-        List<Equipment> selection = new List<Equipment>();
+        List<ImportantStuff.Equipment> selection = new List<ImportantStuff.Equipment>();
 
         switch (selectionType.Item1)
         {
             case ChestType.Relic:
-                relics.Add(new List<Equipment> {RelicManager._instance.GetCommonRelic()});
+                relics.Add(new List<ImportantStuff.Equipment> { RelicManager._instance.GetCommonRelic()});
                 break;
             case ChestType.Gold:
                 int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;
@@ -359,15 +359,15 @@ public class SelectionManager : MonoBehaviour
                 golds.Add(gold);
                 break;
             case ChestType.Equipment:
-                selection = new List<Equipment>();
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection = new List<ImportantStuff.Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
                 equipments.Add(selection);
                 break;
             case ChestType.Weapon:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
@@ -375,7 +375,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Scroll:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
@@ -383,7 +383,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Potion:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
@@ -391,19 +391,19 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.BlackSmith:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 equipments.Add(selection);
-                selection = new List<Equipment>();
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection = new List<ImportantStuff.Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
                 equipments.Add(selection);
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 equipments.Add(selection);
                 break;
@@ -420,15 +420,15 @@ public class SelectionManager : MonoBehaviour
                 golds.Add(gold);
                 break;
             case ChestType.Equipment:
-                selection = new List<Equipment>();
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection = new List<ImportantStuff.Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
                 equipments.Add(selection);
                 break;
             case ChestType.Weapon:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
@@ -436,7 +436,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Scroll:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
@@ -444,7 +444,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Potion:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
@@ -480,14 +480,14 @@ public class SelectionManager : MonoBehaviour
         //     Rand._i.SetSeedForRun();
         // }
         Random.InitState(Rand._i.Random.Next());
-        
-        List<List<Equipment>> equipments = new List<List<Equipment>>();
 
-        List<Equipment> selection1 = new List<Equipment>();
-        List<Equipment> selection2 = new List<Equipment>();
+        List<List<ImportantStuff.Equipment>> equipments = new List<List<ImportantStuff.Equipment>>();
 
-        List<Equipment> selection3 = new List<Equipment>();
-        List<Equipment> selection4 = new List<Equipment>();
+        List<ImportantStuff.Equipment> selection1 = new List<ImportantStuff.Equipment>();
+        List<ImportantStuff.Equipment> selection2 = new List<ImportantStuff.Equipment>();
+
+        List<ImportantStuff.Equipment> selection3 = new List<ImportantStuff.Equipment>();
+        List<ImportantStuff.Equipment> selection4 = new List<ImportantStuff.Equipment>();
 
         int level = CombatController._instance.Player._level;
         
@@ -501,13 +501,13 @@ public class SelectionManager : MonoBehaviour
         int loopEnd = 10; // if we miss 10 times, just take that spell
         while (spellCount < 4)
         {
-            Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
+            ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
 
             if (spellCount == 3)
             {
                 if (!HasDamageSpell(selection1))
                 {
-                    eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,
+                    eq = EquipmentCreator._instance.CreateWeapon(level, 0, ImportantStuff.Equipment.Slot.OneHander,
                         (SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
 
                 }
@@ -549,7 +549,7 @@ public class SelectionManager : MonoBehaviour
             selectionText.text = "Selection (2/4)";
             while (spellCount < 4)
             {
-                Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
+            ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
 
                 if (spellCount == 3)
                 {
@@ -584,35 +584,35 @@ public class SelectionManager : MonoBehaviour
 
             equipments.Add(selection2);
             ///////////////////////////////////////////////////////////////////////////////////
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Head));
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Shoulders));
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Chest));
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Head));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Shoulders));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Chest));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection3);
             
             ///////////////////////////////////////////////////////////////////////////////////
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Gloves));
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Legs));
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Boots));
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Gloves));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Legs));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Boots));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection4);
-            
-            // List<Equipment> selection5 = new List<Equipment>();
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // equipments.Add(selection5);
-            
 
-            // foreach (var VARIABLE in equipments)
-            // {
-            //     foreach (var v in VARIABLE)
-            //     {
-            //         Debug.Log(v.name);
-            //     }
-            // }
-            List<Equipment> relics = new List<Equipment>();
+        // List<Equipment> selection5 = new List<Equipment>();
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // equipments.Add(selection5);
+
+
+        // foreach (var VARIABLE in equipments)
+        // {
+        //     foreach (var v in VARIABLE)
+        //     {
+        //         Debug.Log(v.name);
+        //     }
+        // }
+        List<ImportantStuff.Equipment> relics = new List<ImportantStuff.Equipment>();
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
@@ -623,7 +623,7 @@ public class SelectionManager : MonoBehaviour
             if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
                 gold = Mathf.RoundToInt(gold * .5f);
 
-            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){gold}, new List<List<Equipment>>(){relics});
+        LootButtonManager._instance.SetLootButtons(equipments, new List<int>() { gold }, new List<List<ImportantStuff.Equipment>>() { relics });
     }
 
     
@@ -635,7 +635,7 @@ public class SelectionManager : MonoBehaviour
         {
             return;
         }
-        List<Equipment> equipments = new List<Equipment>();
+        List<ImportantStuff.Equipment> equipments = new List<ImportantStuff.Equipment>();
 
         if (startingSelectionCount == 4)
         {
@@ -652,13 +652,13 @@ public class SelectionManager : MonoBehaviour
 
             while (spellCount < 4)
             {
-                Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
+                ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
 
                 if (spellCount == 3)
                 {
                     if (!HasDamageSpell(equipments))
                     {
-                        eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,(SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
+                        eq = EquipmentCreator._instance.CreateWeapon(level, 0, ImportantStuff.Equipment.Slot.OneHander,(SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
                     }
                 }
                 
@@ -692,7 +692,7 @@ public class SelectionManager : MonoBehaviour
             selectionText.text = "Selection (2/4)";
             while (spellCount < 4)
             {
-                Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
+                ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
 
                 if (spellCount == 3)
                 {
@@ -729,10 +729,10 @@ public class SelectionManager : MonoBehaviour
         {
             //head, shoulder, chest, random
             selectionText.text = "Selection (3/4)";
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Head));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Shoulders));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Chest));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0,6)));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Head));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Shoulders));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Chest));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0,6)));
 
 
         }
@@ -740,10 +740,10 @@ public class SelectionManager : MonoBehaviour
         {
             //gloves, legs, boots, random
             selectionText.text = "Selection (4/4)";
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Gloves));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Legs));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Boots));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0,6)));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Gloves));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Legs));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Boots));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0,6)));
         }
         
         //SkipButton.gameObject.SetActive(true);
@@ -807,7 +807,7 @@ public class SelectionManager : MonoBehaviour
         onFadeFinished?.Invoke();
     }
 
-    bool HasDamageSpell(List<Equipment> equipments)
+    bool HasDamageSpell(List<ImportantStuff.Equipment> equipments)
     {
         bool hasDamage = false;
         foreach (var eq in equipments)

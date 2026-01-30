@@ -47,13 +47,14 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public virtual void Activate(bool navigatableOnActivated = true)
     {
+        Debug.Log($"Activate on base {this.gameObject.name} called!");
         isScreenActive = true;
 
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
         navigatable = navigatableOnActivated;
-        currentSelectable = selectableToSelectOnActivated == null ? defaultSelectable : selectableToSelectOnActivated;
+        currentSelectable = GetSelectableToSelectOnActivated();
 
         OnNewScreenActive?.Invoke(this, navigatable);
 
@@ -69,6 +70,17 @@ public class UIScreen : MonoBehaviour
         }
     }
 
+    public virtual Selectable GetSelectableToSelectOnActivated()
+    {
+        selectableToSelectOnActivated ??= defaultSelectable;
+        return selectableToSelectOnActivated;
+    }
+
+    public virtual void SetSelectableToSelectOnActivated(Selectable selectable)
+    {
+        selectableToSelectOnActivated = selectable;
+    }
+
     /// <summary>
     /// Call this right before closing the current active screen or interactable popup
     /// </summary>
@@ -76,10 +88,10 @@ public class UIScreen : MonoBehaviour
     {
         isScreenActive = false;
 
-        if(navigatable && EventSystem.current.currentSelectedGameObject != null &&
+        if (navigatable && EventSystem.current.currentSelectedGameObject != null &&
             EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
-            selectableToSelectOnActivated = selectable;
-
+            SetSelectableToSelectOnActivated(selectable);
+            
         OnScreenDeactivated?.Invoke(this);
         SetNavigatable(false);
 
@@ -105,7 +117,7 @@ public class UIScreen : MonoBehaviour
 
             if(EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable) && selectables.Contains(selectable))
             {
-                selectableToSelectOnActivated = selectable;
+                SetSelectableToSelectOnActivated(selectable);
                 EventSystem.current.SetSelectedGameObject(null);
             }
         }

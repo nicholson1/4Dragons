@@ -47,155 +47,197 @@ public class SelectionItem : MonoBehaviour
 
     public bool available = true;
 
-    public void InitializeSelectionItem(Equipment e)
+    private void SetDescriptionActive(Equipment equipmentToSet)
     {
-        RelicDescription.gameObject.SetActive(false);
-        ScrollDescription.gameObject.SetActive(false);
-        selectRelic.gameObject.SetActive(false);
-        equip.gameObject.SetActive(true);
-        inventory.gameObject.SetActive(true);
+        RelicDescription.gameObject.SetActive(equipmentToSet is Relic);
+        ScrollDescription.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll);
+        ScrollEnergyDescription.transform.parent.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll);
+    }
 
-        equip.interactable = true;
-        inventory.interactable = true;
+    private void SetButtonActive(Equipment equipmentToSet)
+    {
+        selectRelic.gameObject.SetActive(equipmentToSet is Relic);
+        inventory.gameObject.SetActive(equipmentToSet is not Relic);
+        equip.gameObject.SetActive(equipmentToSet is not Relic and not Consumable);
+
+        selectRelic.interactable = equipmentToSet is Relic;
+        inventory.interactable = equipmentToSet is not Relic;
+        equip.interactable = equipmentToSet is not Relic and not Consumable;
+    }
+
+    private void SetCardBack()
+    {
         Cardback.SetActive(true);
-        transform.rotation = Quaternion.Euler( 0,180, 0);
+        transform.rotation = Quaternion.Euler(0, 180, 0);
+    }
 
-        _equipment = e;
-
+    private void SetThisItemProperties(Equipment equipmentToSet)
+    {
         myCharacter = CombatController._instance.Player.GetComponent<CombatEntity>();
+        _equipment = equipmentToSet;
+        item = equipmentToSet;
 
-        _toolTip.is_spell = false;
-        item = e;
-        title.text = e.name;
-        if (e.slot == Equipment.Slot.OneHander)
-        {
-            slot.text = "Weapon"; //+GetWeaponType(x.spellType1);
-            _toolTip.is_spell = true;
-        }
-        else if (e.slot == Equipment.Slot.Scroll )
-        {
-            slot.text = "Scroll"; //+GetWeaponType(x.spellType1);
-            _toolTip.is_spell = true;
-            //_toolTip.is_item = false;
-            statsTutorial.SetActive(false);
+        icon.sprite = equipmentToSet.icon;
+        title.color = rarity.color;        
+    }
 
-        }
+    private bool HasSpell(Equipment equipmentToSet)
+    {
+        return equipmentToSet.slot is Equipment.Slot.OneHander or ImportantStuff.Equipment.Slot.Scroll;
+    }
+
+    private void SetTexts(Equipment equipmentToSet)
+    {
+        title.text = equipmentToSet.name;
+        SetRarityText(equipmentToSet.stats[Stats.Rarity], equipmentToSet);
+
+        //Slot text
+        //Weapon and Scroll slot exception
+        if (equipmentToSet.slot == Equipment.Slot.OneHander)
+            slot.text = "Weapon"; 
+
+        else if (equipmentToSet.slot == Equipment.Slot.Scroll)
+            slot.text = "Scroll";            
+
         else
-        {
-            //Weapon x = (Weapon)e;
-            slot.text = e.slot.ToString();
-            abilityTutorial.SetActive(false);
+            slot.text = equipmentToSet.slot.ToString();
 
-        }
-        SetRarityText(e.stats[Stats.Rarity], e);
+        if (equipmentToSet is Relic or Consumable)
+            slot.color = title.color;
 
-        icon.sprite = e.icon;
-        title.color = rarity.color;
+    }
 
-        
-
+    private void PopulateStatsForDisplay(Equipment equipmentToSet)
+    {
         int count = 0;
-        foreach (var kvp in e.stats)
+        foreach (var kvp in equipmentToSet.stats)
         {
             if (kvp.Key != Stats.Rarity && kvp.Key != Stats.ItemLevel)
             {
                 stats[count].UpdateValues(kvp.Key, kvp.Value);
-                count += 1;
-                
+                count++;
             }
         }
         
-        for (int i = stats.Length -1; i > count-1 ; i--)
+        for (int i = stats.Length - 1; i > count - 1; i--)
         {
             stats[i].gameObject.SetActive(false);
+        }
+    }
 
+    private void SetSpellDisplay(Equipment equipmentToSet)
+    {
+        if(equipmentToSet is not Weapon)
+        {
+            _spellDisplay.gameObject.SetActive(false);
+            return;
         }
 
-        if (e.isWeapon)
+        if (equipmentToSet is Consumable)
         {
-            Weapon x = (Weapon) e;
-            if (x.spellType1 != SpellTypes.None)
-            {
-                _spellDisplay.gameObject.SetActive(true);
-                _spellDisplay.UpdateValues(x.spellType1, x, myCharacter);
-                //stats[count].text = x.scalingInfo1[0].ToString();
-                //stats[count].color = rarity.color;
-                
-                
-                //SpellToolTip(x.spellType1,x, count);
+            rarityTutorial.SetActive(false); //does this have to be called here?
+            return;
+        }
 
-                // activate tool tip on stats[count]
-                
-                //count += 1;
-            }
-            if (x.spellType2 != SpellTypes.None)
-            {
-                //stats[count].text = x.scalingInfo1[0].ToString();
-                //stats[count].color = rarity.color;
-                // activate tool tip on stats[count]
-                
-                //SpellToolTip(x.spellType1,x, count);
+        Weapon weaponToSet = equipmentToSet as Weapon;
 
-                //count += 1;
-            }
-            if (e.slot == Equipment.Slot.Scroll)
-            {
-                List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
-                string Cost = DataTable[(int)x.spellType1][2].ToString();
-                ScrollEnergyDescription.text = "Energy: " + Cost;
+        if (weaponToSet.spellType1 != SpellTypes.None)
+        {
+            _spellDisplay.gameObject.SetActive(true);
+            _spellDisplay.UpdateValues(weaponToSet.spellType1, weaponToSet, myCharacter);
+        }
+        if (weaponToSet.spellType2 != SpellTypes.None) //do we have spellType2? any extra handling?
+        {
+            //stats[count].text = x.scalingInfo1[0].ToString();
+            //stats[count].color = rarity.color;
+            // activate tool tip on stats[count]
 
-                ScrollDescription.text = TheSpellBook._instance.GetScrollDescription(x.spellType1);
-                ScrollDescription.gameObject.SetActive(true);
-            }
+            //SpellToolTip(x.spellType1,x, count);
+
+            //count += 1;
+        }
+        if (equipmentToSet.slot == Equipment.Slot.Scroll)
+        {
+            List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
+            string Cost = DataTable[(int)weaponToSet.spellType1][2].ToString();
+            ScrollEnergyDescription.text = Cost;
+            
+            ScrollDescription.text = TheSpellBook._instance.GetScrollDescription(weaponToSet.spellType1);
         }
         else
         {
             _spellDisplay.gameObject.SetActive(false);
-            if(e.isPotion)
+            if (equipmentToSet.isPotion)
                 rarityTutorial.SetActive(false);
         }
-        if(e.stats.ContainsKey(Stats.ItemLevel))
-            _toolTip.iLvl = e.stats[Stats.ItemLevel].ToString();
-        _toolTip.rarity = e.stats[Stats.Rarity];
+    }
+
+    private void SetTooltipValues(Equipment equipmentToSet)
+    {
+        _toolTip.is_item = equipmentToSet is not Relic or Consumable;
+        _toolTip.is_spell = HasSpell(equipmentToSet);
+        _toolTip.is_relic = equipmentToSet is Relic;
+
+        if (equipmentToSet.stats.ContainsKey(Stats.ItemLevel))
+            _toolTip.iLvl = equipmentToSet.stats[Stats.ItemLevel].ToString();
+
+        _toolTip.rarity = equipmentToSet.stats[Stats.Rarity];
         _toolTip.Cost = "";
-        _toolTip.Title = e.name;
-        _toolTip.e = e;
+        _toolTip.Title = equipmentToSet.name;
+        _toolTip.e = equipmentToSet;
+    }
 
-        if (e.isRelic)
+    private void SetExtraDescription(Equipment equipmentToSet)
+    {
+        string description = string.Empty;
+
+        if (equipmentToSet is Relic)
         {
-            _toolTip.is_item = false;
-            _toolTip.is_relic = true;
-            selectRelic.interactable = true;
-            inventory.gameObject.SetActive(false);
-            equip.gameObject.SetActive(false);
-            selectRelic.gameObject.SetActive(true);
-            slot.color = title.color;
-            Relic r = (Relic)e;
-            _toolTip.Message = r.relicDescription;
-            RelicDescription.text = r.relicDescription;
-            RelicDescription.gameObject.SetActive(true);
-            
-            statsTutorial.SetActive(false);
+            description = (equipmentToSet as Relic).relicDescription;
+        }
+        else if(equipmentToSet is Consumable)
+        {
+            description = (equipmentToSet as Consumable).description;
         }
 
-        if (e.slot == Equipment.Slot.Consumable)
-        {
-            _toolTip.is_item = false;
-            equip.gameObject.SetActive(false);
-            slot.color = title.color;
-            RelicDescription.text = ((Consumable)e).description;
-            RelicDescription.gameObject.SetActive(true);
-        }
+        _toolTip.Message = description;
+        RelicDescription.text = description;
         
+    }
 
-        if(e.stats[Stats.Rarity] != 0)
+    public void InitializeSelectionItem(Equipment equipmentToSet)
+    {
+        SetDescriptionActive(equipmentToSet);
+
+        SetButtonActive(equipmentToSet);
+
+        SetCardBack();
+
+        SetThisItemProperties(equipmentToSet);
+
+        SetTexts(equipmentToSet);
+
+        //statsTutorial.SetActive(false); identify tutorial related calls later
+        //at this point, statsTutorial and abilityTutorial was set to false
+
+        PopulateStatsForDisplay(equipmentToSet);
+
+        SetSpellDisplay(equipmentToSet); //there's a rarityTutorial.SetActive(false) here
+
+        SetTooltipValues(equipmentToSet);
+
+        if (equipmentToSet is Relic or Consumable)
+        {
+            SetExtraDescription(equipmentToSet as Relic);
+            statsTutorial.SetActive(false);
+        }                
+
+        if(equipmentToSet.stats[Stats.Rarity] != 0)
             CardFront.color = title.color;
         else
             rarityTutorial.SetActive(false);
-
-        
-        StartCoroutine(RotateObjectForward());
-        
+                
+        StartCoroutine(RotateObjectForward());        
     }
 
     IEnumerator RotateObjectForward()

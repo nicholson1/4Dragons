@@ -14,7 +14,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Vector3 initialScale = new Vector3(1,1,1); // Initial scale of the UI element
     private Quaternion initialRotation = Quaternion.identity; // Initial scale of the UI element
 
-    [SerializeField]public bool shakeUI = false;
+    public bool shakeUI = false;
     
     private bool setOnce = false;
 
@@ -26,6 +26,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Selectable selectable = null;
 
     private bool shouldTween = true;
+    private bool shouldShake = true;
 
     //[SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
     //[SerializeField] protected bool clickableWithYes = true;
@@ -38,6 +39,15 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void SetTweening(bool canTween)
     {
         shouldTween = canTween;
+    }
+
+    public void SetShake(bool canShake)
+    {
+        if (shouldShake != canShake)
+            shouldShake = canShake;
+
+        if(!shouldShake)
+            gameObject.transform.localRotation = initialRotation;
     }
 
     public void ResetScale()
@@ -65,7 +75,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             LeanTween.scale(gameObject, initialScale * hoverScale, 0.2f).setEaseInOutQuad();
         }
 
-        if(shakeUI)
+        if(shouldShake)
             ShakeUIElement();
         //LeanTween.rotateZ(gameObject, shakeAmount, shakeSpeed).setLoopPingPong().setEaseInOutQuad();        
         
@@ -308,6 +318,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         //    button ??= GetComponentInChildren<Button>();
 
         inputHandler.OnInputTypeChange += HandleInputChange;
+        shouldShake = shakeUI;
     }
 
     private void OnDestroy()

@@ -47,6 +47,19 @@ public class UIScreenInventory : UIScreen
 
     //Who handle this change?
 
+    public override Selectable GetSelectableToSelectOnActivated()
+    {
+        Debug.Log($"call GetSelectableToSelectOnActivated from UIScreenInventory");
+        switch(currentInventoryState)
+        {
+            case InventoryState.Loot:
+                return lootButtonManager.GetTopMostInteractableLootButton();
+
+            default:
+                return defaultSelectable;
+        }
+    }
+
     public override void Activate(bool navigatableOnActivated = true)
     {
         base.Activate(navigatableOnActivated);
@@ -120,7 +133,6 @@ public class UIScreenInventory : UIScreen
         {
             case InventoryState.Loot:
                 lootButtonManager.SetLootPanelButtonsLeftNavigation(leftSelectableForLootPanel);
-                EventSystem.current.SetSelectedGameObject(lootButtonManager.CurrentActiveButtons[0].gameObject);
                 break;
             case InventoryState.Shop:
                 break;
@@ -142,7 +154,7 @@ public class UIScreenInventory : UIScreen
         Debug.Log($"Setting gamepad navi to stat display");
 
         if (EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
-            selectableToSelectOnActivated = selectable;
+            SetSelectableToSelectOnActivated(selectable);
 
         cachedLastInventoryState = currentInventoryState;
         ChangeInventoryState(InventoryState.StatDisplay);

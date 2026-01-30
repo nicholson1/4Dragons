@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -47,11 +48,22 @@ public class LootButtonManager : MonoBehaviour
         SetupLootPanelNavigation();
     }
 
+    public Selectable GetTopMostInteractableLootButton()
+    {
+        var topMostLootButton = currentActiveButtons.Where(eb => eb.Button.interactable).FirstOrDefault();
+        return topMostLootButton.Button as Selectable;
+    }
+
     private IEnumerator SetPanelLeftNavigationRoutine(Selectable selectable)
     {
         while (stillSettingUpButtons)
             yield return null;
 
+        SetPanelLeftNavigation(selectable);
+    }
+
+    private void SetPanelLeftNavigation(Selectable selectable)
+    {
         for (int i = 0; i < currentActiveButtons.Count; i++)
         {
             if (i % 2 == 0)
@@ -84,6 +96,11 @@ public class LootButtonManager : MonoBehaviour
         return direction > 0 ? leaveButton : null;
     }
 
+    private bool NextActiveButtonAvailable(int nextIndex)
+    {
+        return nextIndex < currentActiveButtons.Count && currentActiveButtons[nextIndex].gameObject.activeSelf && currentActiveButtons[nextIndex].Button.interactable;
+    }
+
     private void SetupLootPanelNavigation()
     {
         for (int i = 0; i < currentActiveButtons.Count; i++)
@@ -92,21 +109,18 @@ public class LootButtonManager : MonoBehaviour
             var navi = button.navigation;
             navi.mode = Navigation.Mode.Explicit;
             bool isLeftColumn = (i % 2 == 0);
-            
+
             if (isLeftColumn)
             {
                 int rightIndex = i + 1;
-                navi.selectOnRight = (rightIndex < currentActiveButtons.Count && currentActiveButtons[rightIndex].Button.interactable) ? 
-                                        currentActiveButtons[rightIndex].Button : null;
-
+                navi.selectOnRight = NextActiveButtonAvailable(rightIndex) ? currentActiveButtons[rightIndex].Button : null;
                 navi.selectOnLeft = leftSelectableAtInventoryUI;
             }
             else
             {
                 int leftIndex = i - 1;
+                navi.selectOnLeft = NextActiveButtonAvailable(leftIndex) ? currentActiveButtons[leftIndex].Button : null;
                 navi.selectOnRight = null;
-                navi.selectOnLeft = (leftIndex >= 0 && currentActiveButtons[leftIndex].Button.interactable) ?
-                                        currentActiveButtons[leftIndex].Button : null;
             }
 
             navi.selectOnDown = GetVerticalSelectableTarget(i, 1);
@@ -285,7 +299,6 @@ public class LootButtonManager : MonoBehaviour
     public void EquipmentSelect(int i)
     {
         SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
-
 
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         //UIController._instance.ToggleInventoryUI(1);
