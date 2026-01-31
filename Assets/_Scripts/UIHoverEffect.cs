@@ -28,13 +28,6 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private bool shouldTween = true;
     private bool shouldShake = true;
 
-    //[SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
-    //[SerializeField] protected bool clickableWithYes = true;
-    //[SerializeField] protected bool clickableWithNo = false;
-
-    //[SerializeField] protected bool shouldHaveClickableButton = true;
-
-    //private GameObject lastSelectedObject = null;
 
     public void SetTweening(bool canTween)
     {
@@ -69,16 +62,15 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
 
         // Scale up and start shaking when mouse enters the UI element
-        if(shouldTween)
+        if (shouldTween)
         {
-            LeanTween.cancel(gameObject);
-            LeanTween.scale(gameObject, initialScale * hoverScale, 0.2f).setEaseInOutQuad();
+            ScaleUIElement(initialScale * hoverScale, 0.2f);
         }
 
-        if(shouldShake)
+        if (shakeUI)
             ShakeUIElement();
         //LeanTween.rotateZ(gameObject, shakeAmount, shakeSpeed).setLoopPingPong().setEaseInOutQuad();        
-        
+
         UIController._instance.PlayUIHover();
 
     }
@@ -87,14 +79,9 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         isPointerEvent = true;
 
-        // Scale down and stop shaking when mouse leaves the UI element
-        LeanTween.cancel(gameObject);
-        LeanTween.scale(gameObject, initialScale, 0.2f).setEaseInOutQuad();
-        
-        if(shakeUI)
-            gameObject.transform.localRotation = initialRotation;
-        //LeanTween.cancel(gameObject, "rotateZ");
-        //transform.localRotation = Quaternion.identity;
+        ScaleUIElement(initialScale, 0.2f);
+
+        gameObject.transform.localRotation = initialRotation;
     }
 
     public void OnSelect(BaseEventData eventData)
@@ -110,8 +97,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         // Scale up and start shaking when mouse enters the UI element
         if(shouldTween)
         {
-            LeanTween.cancel(gameObject);
-            LeanTween.scale(gameObject, initialScale * hoverScale, 0.2f).setEaseInOutQuad();
+            ScaleUIElement(initialScale * hoverScale, 0.2f);
         }
 
         if (shakeUI)
@@ -130,19 +116,15 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             return;
         }
 
-        LeanTween.cancel(gameObject);
-        LeanTween.scale(gameObject, initialScale, 0.2f).setEaseInOutQuad();
-
-        if (shakeUI)
-            gameObject.transform.localRotation = initialRotation;
+        ScaleUIElement(initialScale, 0.2f);
+        
+        gameObject.transform.localRotation = initialRotation;
     }
 
-    private void ManualDeselect()
+    private void ScaleUIElement(Vector3 targetScale, float duration)
     {
         LeanTween.cancel(gameObject);
-        LeanTween.scale(gameObject, initialScale, 0.2f).setEaseInOutQuad();
-        if (shakeUI)
-            gameObject.transform.localRotation = initialRotation;
+        LeanTween.scale(gameObject, targetScale, duration).setEaseInOutQuad();
     }
 
     void ShakeUIElement()

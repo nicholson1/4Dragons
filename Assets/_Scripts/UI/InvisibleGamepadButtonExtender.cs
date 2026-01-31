@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InvisibleGamepadButtonListener : MonoBehaviour, ISelectHandler, IDeselectHandler
+public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     private Button button;
     private IGamepadButtonListener buttonListener;

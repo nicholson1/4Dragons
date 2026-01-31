@@ -10,6 +10,9 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 {
+    public event Action OnGamepadButtonSelected;
+    public event Action OnGamepadButtonDeselected;
+
     public Equipment.Slot Slot;
     public DragItem Item = null;
     [SerializeField] public RectTransform _rt;
@@ -31,13 +34,17 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     public void HandleGamepadButtonSelected()
     {
+        OnGamepadButtonSelected?.Invoke();
         Debug.Log($"{gameObject.name} - {Slot} button SELECTED");
+
+        //this should open tooltip if it's available
     }
 
     public void HandleGamepadButtonDeselected()
     {
-        
+        OnGamepadButtonDeselected?.Invoke();
 
+        //this should close currently opened tooltip
     }
 
     public void HandleGamepadButtonPressed()
@@ -45,6 +52,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         Debug.Log($"{gameObject.name} - {Slot} button PRESSED");
 
         if (Item == null) return;
+
+        //this is for gamepad item drag/drop functionalities 
 
         Debug.Log($"ButtonPress detected on slot {gameObject.name} - {Slot} with item {Item.e.name} ");
     }

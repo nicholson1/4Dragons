@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
@@ -9,8 +10,13 @@ using Random = UnityEngine.Random;
 
 public class SelectionItem : MonoBehaviour
 {
-    public event Action<SelectionItem> OnSelectionItemSelected;
+    public event Action<SelectionItem> OnSelectionItemPanelClosed;
+    public event Action<SelectionItem> OnSelectionItemPanelSelected;
 
+    public Button MainButton => mainButton;
+    public List<Button> CurrentActiveGamepadButtons => currentActiveGamepadButtons;
+    public bool IsPanelSelected => isPanelSelected;
+    
     public Equipment item;
     [SerializeField] private CombatEntity myCharacter;
     
@@ -45,13 +51,71 @@ public class SelectionItem : MonoBehaviour
     [SerializeField] private GameObject rarityTutorial;
     [SerializeField] private GameObject statsTutorial;    
 
-    public bool available = true;
+    public bool isAvailable = true;
+
+    [SerializeField] private List<Button> currentActiveGamepadButtons = new List<Button>();
+    private Button mainButton = null;
+
+    private PanelHoverEffect panelHoverEffect = null;
+    private bool isPanelSelected = false;
+
+    #region Initialization
+    public void InitializeSelectionItem(Equipment equipmentToSet)
+    {
+        panelHoverEffect ??= GetComponent<PanelHoverEffect>();
+        SetDescriptionActive(equipmentToSet);
+
+        SetButtonActive(equipmentToSet);
+
+        SetCardBack();
+
+        SetPanelMainProperties(equipmentToSet);
+
+        SetTexts(equipmentToSet);
+
+        //statsTutorial.SetActive(false); identify tutorial related calls later
+        //at this point, statsTutorial and abilityTutorial was set to false
+
+        PopulateStatsForDisplay(equipmentToSet);
+
+        SetSpellDisplay(equipmentToSet); //there's a rarityTutorial.SetActive(false) here
+
+        SetTooltipValues(equipmentToSet);
+
+        if (equipmentToSet is Relic or Consumable)
+        {
+            SetExtraDescription(equipmentToSet as Relic);
+            statsTutorial.SetActive(false);
+        }
+        else
+            rarityTutorial.SetActive(false);
+
+        SetupVerticalNavigation();
+        SetupGamepadButtonListener();
+
+        isAvailable = true;
+
+        StartCoroutine(RotateObjectForward());
+    }
+
+    public void DeinitializeSelectionItem()
+    {
+        foreach (var button in currentActiveGamepadButtons)
+        {
+            var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
+            if (gamepadButtonListener != null)
+                gamepadButtonListener.OnGamepadButtonSelected -= CheckSelectedStatus;
+        }
+
+        Destroy(this.gameObject);
+    }
 
     private void SetDescriptionActive(Equipment equipmentToSet)
     {
         RelicDescription.gameObject.SetActive(equipmentToSet is Relic);
+        _spellDisplay.gameObject.SetActive(equipmentToSet is Weapon);
         ScrollDescription.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll);
-        ScrollEnergyDescription.transform.parent.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll);
+        ScrollEnergyDescription.transform.parent.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll || equipmentToSet is Weapon); //parent is the EnergyDisplay content holder
     }
 
     private void SetButtonActive(Equipment equipmentToSet)
@@ -63,6 +127,8 @@ public class SelectionItem : MonoBehaviour
         selectRelic.interactable = equipmentToSet is Relic;
         inventory.interactable = equipmentToSet is not Relic;
         equip.interactable = equipmentToSet is not Relic and not Consumable;
+
+        mainButton = equipmentToSet is Relic or Consumable ? selectRelic : equip;
     }
 
     private void SetCardBack()
@@ -71,14 +137,17 @@ public class SelectionItem : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 180, 0);
     }
 
-    private void SetThisItemProperties(Equipment equipmentToSet)
+    private void SetPanelMainProperties(Equipment equipmentToSet)
     {
         myCharacter = CombatController._instance.Player.GetComponent<CombatEntity>();
         _equipment = equipmentToSet;
         item = equipmentToSet;
 
         icon.sprite = equipmentToSet.icon;
-        title.color = rarity.color;        
+        title.color = rarity.color;
+
+        if (equipmentToSet.stats[Stats.Rarity] != 0)
+            CardFront.color = title.color;
     }
 
     private bool HasSpell(Equipment equipmentToSet)
@@ -125,6 +194,13 @@ public class SelectionItem : MonoBehaviour
         }
     }
 
+    private string GetEnergyCost(Weapon weaponToSet)
+    {
+        List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
+        string Cost = DataTable[(int)weaponToSet.spellType1][2].ToString();
+        return Cost;
+    }
+
     private void SetSpellDisplay(Equipment equipmentToSet)
     {
         if(equipmentToSet is not Weapon)
@@ -139,37 +215,13 @@ public class SelectionItem : MonoBehaviour
             return;
         }
 
-        Weapon weaponToSet = equipmentToSet as Weapon;
+        Weapon weaponToSet = equipmentToSet as Weapon;                
 
-        if (weaponToSet.spellType1 != SpellTypes.None)
-        {
-            _spellDisplay.gameObject.SetActive(true);
-            _spellDisplay.UpdateValues(weaponToSet.spellType1, weaponToSet, myCharacter);
-        }
-        if (weaponToSet.spellType2 != SpellTypes.None) //do we have spellType2? any extra handling?
-        {
-            //stats[count].text = x.scalingInfo1[0].ToString();
-            //stats[count].color = rarity.color;
-            // activate tool tip on stats[count]
+        ScrollEnergyDescription.text = GetEnergyCost(weaponToSet);
+        _spellDisplay.UpdateValues(weaponToSet.spellType1, weaponToSet, myCharacter);
 
-            //SpellToolTip(x.spellType1,x, count);
-
-            //count += 1;
-        }
-        if (equipmentToSet.slot == Equipment.Slot.Scroll)
-        {
-            List<List<object>> DataTable = DataReader._instance.GetWeaponScalingTable();
-            string Cost = DataTable[(int)weaponToSet.spellType1][2].ToString();
-            ScrollEnergyDescription.text = Cost;
-            
+        if (equipmentToSet.slot == Equipment.Slot.Scroll)       
             ScrollDescription.text = TheSpellBook._instance.GetScrollDescription(weaponToSet.spellType1);
-        }
-        else
-        {
-            _spellDisplay.gameObject.SetActive(false);
-            if (equipmentToSet.isPotion)
-                rarityTutorial.SetActive(false);
-        }
     }
 
     private void SetTooltipValues(Equipment equipmentToSet)
@@ -201,44 +253,48 @@ public class SelectionItem : MonoBehaviour
         }
 
         _toolTip.Message = description;
-        RelicDescription.text = description;
-        
+        RelicDescription.text = description;        
     }
 
-    public void InitializeSelectionItem(Equipment equipmentToSet)
+    private void SetupVerticalNavigation()
     {
-        SetDescriptionActive(equipmentToSet);
-
-        SetButtonActive(equipmentToSet);
-
-        SetCardBack();
-
-        SetThisItemProperties(equipmentToSet);
-
-        SetTexts(equipmentToSet);
-
-        //statsTutorial.SetActive(false); identify tutorial related calls later
-        //at this point, statsTutorial and abilityTutorial was set to false
-
-        PopulateStatsForDisplay(equipmentToSet);
-
-        SetSpellDisplay(equipmentToSet); //there's a rarityTutorial.SetActive(false) here
-
-        SetTooltipValues(equipmentToSet);
-
-        if (equipmentToSet is Relic or Consumable)
+        currentActiveGamepadButtons = GetComponentsInChildren<Button>().Where(b => b.gameObject.activeSelf).ToList();
+        for (int i=0; i < currentActiveGamepadButtons.Count; i++)
         {
-            SetExtraDescription(equipmentToSet as Relic);
-            statsTutorial.SetActive(false);
-        }                
+            Selectable selectable = currentActiveGamepadButtons[i];
+            Navigation navi = selectable.navigation;
+            navi.mode = Navigation.Mode.Explicit;
 
-        if(equipmentToSet.stats[Stats.Rarity] != 0)
-            CardFront.color = title.color;
-        else
-            rarityTutorial.SetActive(false);
-                
-        StartCoroutine(RotateObjectForward());        
+            navi.selectOnUp = i - 1 < 0 ? null : currentActiveGamepadButtons[i - 1];
+            navi.selectOnDown = i + 1 >= currentActiveGamepadButtons.Count ? null : currentActiveGamepadButtons[i + 1];
+            
+            selectable.navigation = navi;
+        }
     }
+
+    private void CheckSelectedStatus()
+    {
+        if (isPanelSelected) return;
+
+        OnSelectionItemPanelSelected?.Invoke(this);
+    }
+
+    private void SetupGamepadButtonListener()
+    {
+        foreach (var button in currentActiveGamepadButtons)
+        {
+            var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
+
+            if(gamepadButtonListener == null)
+            {
+                Debug.LogError($"{button.transform.parent.name} doesn't have a component that implement IGamepadButtonListener!");
+            }
+
+            gamepadButtonListener.OnGamepadButtonSelected += CheckSelectedStatus;
+        }
+    }
+   
+    #endregion
 
     IEnumerator RotateObjectForward()
     {
@@ -278,11 +334,9 @@ public class SelectionItem : MonoBehaviour
         
             transform.rotation = Quaternion.Euler( 0,angle, 0);
             yield return null;
-        } while( angle > 0);
-
-
-        
+        } while( angle > 0);        
     }
+
     IEnumerator RotateObjectBack(Action onFinish = null)
     {
         isFlipping = true;
@@ -294,8 +348,7 @@ public class SelectionItem : MonoBehaviour
             angle += 200 * Time.deltaTime;
             if (angle > 180)
             {
-                angle = 180; // clamp
-                
+                angle = 180; // clamp                
             }
 
             if (angle >= 90 && halfway == false)
@@ -311,15 +364,16 @@ public class SelectionItem : MonoBehaviour
 
         isFlipping = false;
 
-        //move the handling of this to SelectionManager
-        //if (SelectionManager._instance.selectionsLeft <= 0)
-        //{
-        //    SelectionManager._instance.ClearSelections();
-        //}
-
         onFinish?.Invoke();
     }
-    
+
+    private void FinishedRotateBackCallback()
+    {
+        isAvailable = false;
+        OnSelectionItemPanelClosed?.Invoke(this);
+        DisableButtons();
+    }
+
     private void SetRarityText(int r, Equipment e)
     {
         rarity.text = "";
@@ -394,34 +448,46 @@ public class SelectionItem : MonoBehaviour
 
     }
 
+    public void SelectPanel()
+    {
+        if (isPanelSelected) return;
+
+        isPanelSelected = true;
+        panelHoverEffect.ScaleUp();
+    }
+
+    public void DeselectPanel()
+    {
+        if (!isPanelSelected) return;
+
+        isPanelSelected = false;
+        panelHoverEffect.ScaleDown();
+    }
+
+    #region Editor bind function
     public void SelectRelic()
     {
-        available = false;
+        //should behave similar to AddToInventory()
+        isAvailable = false;
         UIController._instance.PlayUIClick();
         UIController._instance.PlayGetRelic();
         StatsTracker.Instance.TrackRelicSelected(item);
 
         //clear selections
-        SelectionManager._instance.ClearSelections();
+        SelectionManager._instance.ClearSelections(); //don't call this, use callback from RotateObjectBack instead, see AddToInventory()
         // add to character
         CombatController._instance.Player._Relics.Add(item);
         //remove relic from seen relic list
-        RelicManager._instance.SelectRelic(item);        
-    }
-
-    private void FinishedRotateBackCallback()
-    {
-        OnSelectionItemSelected?.Invoke(this);
-        DisableButtons();
+        RelicManager._instance.SelectRelic(item);       
     }
 
     public void AddToInventory()
-    {
-        UIController._instance.PlayPlaceItem();
+    {       
 
         bool canAddToInventory = EquipmentManager._instance.TryPutItemToInventoryFromSelection(item, this);
         if (canAddToInventory)
         {
+            UIController._instance.PlayPlaceItem();
             Debug.Log($"successfully add item to the inventory");
             StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));
         }
@@ -446,12 +512,13 @@ public class SelectionItem : MonoBehaviour
             Debug.Log($"Should handle cannot equip item here");
         }
     }
+    #endregion
 
     //public void RemoveSelection()
     //{
     //    // disable interation on buttons
     //    SelectionManager._instance.SelectionMade(this);
-        
+
     //    StartCoroutine(RotateObjectBack());
     //    //Destroy(gameObject);
     //}

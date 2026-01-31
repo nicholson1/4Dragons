@@ -3,17 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ImportantStuff;
+//using PlayFab.EconomyModels;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
-public class SelectionManager : MonoBehaviour
+public class SelectionManager : UIInventorySubPanel
 {
     public event Action OnSelectionFinished;
+    public event Action<UIInventorySubPanel> OnPanelOpen;
+    public event Action<UIInventorySubPanel> OnPanelClosed;
 
     [SerializeField] private SelectionItem selectionItemPrefab;
-        
+
     public int selectionsLeft = 2;
     public static SelectionManager _instance;
     public Button SkipButton;
@@ -35,24 +40,143 @@ public class SelectionManager : MonoBehaviour
 
     [SerializeField] private TutorialDisplay skipSelectionTutorial;
 
-    public List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
+    private List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
+    private SelectionItem currentSelectedItem = null;
+    private List<Button> cachedInventoryButtons = null;
 
-
-    private void Awake()
+    public Selectable GetMostLeftSelectionItemMainButton()
     {
-        if (_instance != null && _instance != this)
+        return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault().MainButton;
+    }
+
+    private void SetRightMostInventoryButtonsNavigation()
+    {
+        foreach(var selectable in cachedInventoryButtons)
         {
-            Destroy(this.gameObject);
-            return;
+            float selectableY = selectable.transform.position.y;
+            Navigation navi = selectable.navigation;
+
+            Selectable closestSelectionItemSelectable = GetLeftMostAvailableSelectionItem().CurrentActiveGamepadButtons.
+                                                            OrderBy(s => Mathf.Abs(s.transform.position.y - selectableY)).FirstOrDefault();
+
+            navi.selectOnRight = closestSelectionItemSelectable;
+
+            selectable.navigation = navi;
         }
-        else
+    }
+
+    public void SetSelectionManagerButtonsLeftNavigationToInventory(List<Button> inventoryButtons = null)
+    {
+        if (inventoryButtons != null)
         {
-            _instance = this;
+            cachedInventoryButtons.Clear();
+            cachedInventoryButtons = inventoryButtons;
+        }
+            
+        SelectionItem item = GetLeftMostAvailableSelectionItem();
+        foreach(var button in item.CurrentActiveGamepadButtons)
+        {
+            float buttonY = button.transform.position.y;
+            Navigation navi = button.navigation;
+
+            Button closestInventoryButton = inventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buttonY)).FirstOrDefault();
+
+            navi.selectOnLeft = closestInventoryButton;
+
+            button.navigation = navi;
         }
 
-        selectionParentLayoutGroup = GetComponentInChildren<HorizontalLayoutGroup>();
+        SetRightMostInventoryButtonsNavigation();
     }
+
+    private SelectionItem GetLeftMostAvailableSelectionItem()
+    {
+        return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault();
+    }
+
+    public void SelectLeftMostAvailableSelectionItem()
+    {
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+        if(cachedInventoryButtons != null)
+            SetSelectionManagerButtonsLeftNavigationToInventory(null);
+
+        EventSystem.current.SetSelectedGameObject(GetLeftMostAvailableSelectionItem().gameObject);
+
+    }
+
     
+    private SelectionItem GetClosestAvailableLeftSelectionItem(int currentIndex)
+    {      
+        for (int i = currentIndex; i >= 0 ; i--) //(indexToFind >= 0 && indexToFind < currentActiveSelectionItems.Count)
+        {
+            int nextIndex = i - 1;
+            if (nextIndex < 0)
+                return null;
+
+            SelectionItem item = currentActiveSelectionItems[nextIndex];
+            if (item.isAvailable)
+                return item;            
+        }
+
+        return null;
+    }
+
+    private SelectionItem GetClosestAvailableRightSelectionItem(int currentIndex)
+    {
+        for (int i = currentIndex; i < currentActiveSelectionItems.Count; i++)
+        {
+            int nextIndex = i + 1;
+            if (nextIndex >= currentActiveSelectionItems.Count)
+                return null;
+
+            SelectionItem item = currentActiveSelectionItems[nextIndex];
+            if (item.isAvailable)
+                return item;
+        }
+
+        return null;
+    }
+
+    private void SetIndividualSelectionItemHorizontalNavigation(SelectionItem item, Selectable targetLeft, Selectable targetRight)
+    {
+        foreach(var selectable in item.CurrentActiveGamepadButtons)
+        {
+            Navigation navi = selectable.navigation;
+            navi.selectOnLeft = targetLeft;
+            navi.selectOnRight = targetRight;
+
+            selectable.navigation = navi;
+        }
+    }
+
+
+    private void SetupGamepadHorizontalNavigationForCurrentSelections()
+    {
+        var availableSelectionItems = currentActiveSelectionItems.Where(i => i.isAvailable).ToList();
+
+        for (int i = 0; i < availableSelectionItems.Count; i++)
+        {
+            var selectionItem = availableSelectionItems[i];
+            var targetLeftSelectable = i - 1 >= 0 ? availableSelectionItems[i - 1].MainButton : null;
+            var targetRightSelectable = i + 1 < availableSelectionItems.Count ? availableSelectionItems[i + 1].MainButton : null;
+
+            SetIndividualSelectionItemHorizontalNavigation(selectionItem, targetLeftSelectable, targetRightSelectable);
+        }
+
+    }
+
+    public void SetupAndOpenSelectionScreen(List<Equipment> equipments)
+    {
+
+    }
+
+    private void FinalizeAndCloseSelectionPanel()
+    {
+        //give access back to Loot Panel
+        OnSelectionFinished?.Invoke();
+        OnPanelClosed?.Invoke(this);
+    }
+
     public void RandomSelectionFromEquipment(Character c)
     {
         Random.InitState(CombatController._instance.CurrentSeed);
@@ -65,7 +189,7 @@ public class SelectionManager : MonoBehaviour
         ImportantStuff.Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
 
         equipments.Add(forcedWep);
-        
+
         // fill the rest with 3 random
         while (equipments.Count < 4)
         {
@@ -75,7 +199,7 @@ public class SelectionManager : MonoBehaviour
             {
                 continue;
             }
-            
+
             if (!equipments.Contains(temp))
             {
                 equipments.Add(temp);
@@ -94,16 +218,16 @@ public class SelectionManager : MonoBehaviour
                     possible.Add(e);
                 }
             }
-            if(possible.Count > 4)
+            if (possible.Count > 4)
             {
                 while (possible.Count > 4)
                 {
                     possible.RemoveAt(Random.Range(0, possible.Count));
                 }
             }
-            
+
             EquipmentSelection.Add(possible);
-            
+
         }
 
         List<List<ImportantStuff.Equipment>> RelicSelections = new List<List<ImportantStuff.Equipment>>();
@@ -143,11 +267,11 @@ public class SelectionManager : MonoBehaviour
 
         if (Modifiers._instance.CurrentMods.Contains(Mods.AlwaysPotion))
             potionRoll = true;
-        
-        
+
+
         if (potionRoll || combatSincePotions >= forcePotionAfter)
         {
-            List<ImportantStuff.Equipment> potions = new List<ImportantStuff.Equipment>();
+            List<Equipment> potions = new List<Equipment>();
             potions.Add(EquipmentCreator._instance.CreateRandomPotion(c._level));
 
             combatSincePotions = 0;
@@ -174,18 +298,18 @@ public class SelectionManager : MonoBehaviour
         {
             c._gold += Mathf.RoundToInt(c._gold * .25f);
         }
-        
+
         GoldSelections.Add(c._gold);
-        
+
         if (RelicManager._instance.CheckRelic(RelicType.Relic25))
         {
-            GoldSelections.Add(Mathf.Max(1,Mathf.RoundToInt(CombatController._instance.Player._gold * .05f)));
+            GoldSelections.Add(Mathf.Max(1, Mathf.RoundToInt(CombatController._instance.Player._gold * .05f)));
         }
 
         LootButtonManager._instance.SetLootButtons(EquipmentSelection, GoldSelections, RelicSelections);
         //UIController._instance.ToggleLootUI(1);
         //UIController._instance.ToggleInventoryUI(1);
-        
+
         // foreach (var i in equipments)
         // {
         //     SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
@@ -195,31 +319,8 @@ public class SelectionManager : MonoBehaviour
         // StartCoroutine(FadeImage(.75f));
     }
 
-    private void SetupGamepadNavigationForCurrentSelections()
-    {
 
-        foreach(var selection in currentActiveSelectionItems)
-        {
-
-            var activeSelectables = selection.GetComponentsInChildren<Selectable>().Where(s => s.gameObject.activeSelf).ToList();
-            for(int i = 0; i<activeSelectables.Count; i++)
-            {
-                Debug.Log($"{i} - {activeSelectables[i].gameObject.name}");
-            }
-        }
-    }
-
-    public void SetupAndOpenSelectionScreen(List<ImportantStuff.Equipment> equipments)
-    {
-
-    }
-
-    private void FinalizeAndCloseSelectionPanel()
-    {
-        OnSelectionFinished?.Invoke();
-    }
-
-    public void SelectionsFromList(List<ImportantStuff.Equipment> equipments)
+    public void SelectionsFromList(List<Equipment> equipments)
     {
         currentActiveSelectionItems.Clear();
         SkipButton.gameObject.SetActive(true);
@@ -228,38 +329,54 @@ public class SelectionManager : MonoBehaviour
             SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
             item.InitializeSelectionItem(i);
             currentActiveSelectionItems.Add(item);
-            item.OnSelectionItemSelected += SelectionItemSelectedCallback;
+            item.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
+            item.OnSelectionItemPanelSelected += SelectionItemPanelSelectedCallback;
+        }
+           
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+
+        StartCoroutine(FadeImage(0.8f,.75f, SelectionItemsCreatedCallback));
+    }
+
+    private void SelectionItemsCreatedCallback()
+    {
+        var firstTargetSelected = currentActiveSelectionItems.FirstOrDefault().MainButton;
+        OnPanelOpen?.Invoke(this);
+
+        EventSystem.current.SetSelectedGameObject(firstTargetSelected.gameObject);
+    }
+
+    private void InitiateClosingSelectionManagerUI()
+    {
+        foreach (var selectionItem in currentActiveSelectionItems)
+        {
+            selectionItem.DisableButtons();
         }
 
-        SetupGamepadNavigationForCurrentSelections();
-
-        StartCoroutine(FadeImage(1,.75f));
-
+        ClearSelections();
     }
 
-    public void SelectionMade(SelectionItem si)
+    private void SelectionItemPanelClosedCallback(SelectionItem selectedItem)
     {
-        //todo pool these
-        Debug.Log($"SelectionMade! {si.name}");
-        //si.DisableButtons();
-    }
-
-    private void SelectionItemSelectedCallback(SelectionItem selectedItem)
-    {
-        selectedItem.OnSelectionItemSelected += SelectionItemSelectedCallback;
+        selectedItem.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
         
-        //currentActiveSelectionItems.Remove(selectedItem);
         selectionsLeft -= 1;
 
-        if(selectionsLeft <= 0)
-        {
-            foreach(var selectionItem in currentActiveSelectionItems)
-            {
-                selectionItem.DisableButtons();
-            }
+        SelectLeftMostAvailableSelectionItem();
 
-            ClearSelections();
-        }
+        if(selectionsLeft <= 0)
+            InitiateClosingSelectionManagerUI();
+    }
+
+    private void SelectionItemPanelSelectedCallback(SelectionItem selectionItem)
+    {
+        if (currentSelectedItem == selectionItem) return;
+
+        currentSelectedItem ??= selectionItem;
+                
+        currentSelectedItem.DeselectPanel();
+        currentSelectedItem = selectionItem;
+        currentSelectedItem.SelectPanel();
     }
 
     public void SkipSelectionButton()
@@ -276,7 +393,6 @@ public class SelectionManager : MonoBehaviour
     //Closing selection screen
     public void ClearSelections()
     {
-        SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
         foreach (var si in currentActiveSelectionItems)
         {
             if (si.isFlipping) //we don't need this anymore, handled in coroutine callbacks
@@ -284,7 +400,7 @@ public class SelectionManager : MonoBehaviour
                 return;
             }
 
-            if (si.item.isRelic && si.available)
+            if (si.item.isRelic && si.isAvailable)
             {
                 StatsTracker.Instance.TrackUnSelected(si.item);
             }
@@ -292,7 +408,9 @@ public class SelectionManager : MonoBehaviour
         //selectionsLeft = 10;
         for (int i = currentActiveSelectionItems.Count -1; i >= 0; i--)
         {
-            Destroy(currentActiveSelectionItems[i].gameObject);
+            currentActiveSelectionItems[i].OnSelectionItemPanelClosed -= SelectionItemPanelClosedCallback;
+            currentActiveSelectionItems[i].OnSelectionItemPanelSelected -= SelectionItemPanelSelectedCallback;
+            currentActiveSelectionItems[i].DeinitializeSelectionItem();
         }
 
         //what's this?
@@ -838,6 +956,22 @@ public class SelectionManager : MonoBehaviour
     //     int[] damageSpells = new[] { 0,1,2,3,6,7,8,9,10,11,12,13,14 };
     //     return damageSpells[Random.Range(0, damageSpells.Length)];
     // }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+        }
+
+        selectionParentLayoutGroup = GetComponentInChildren<HorizontalLayoutGroup>();
+    }
+
 
     private (ChestType, ChestType) SelectChestType()
     {

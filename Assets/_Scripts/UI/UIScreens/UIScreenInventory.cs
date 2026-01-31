@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,6 +16,7 @@ public class UIScreenInventory : UIScreen
     [SerializeField] public GameObject LootPanel = null;
 
     [SerializeField] private LootButtonManager lootButtonManager;
+    [SerializeField] private SelectionManager selectionManager;
 
     [SerializeField] private Button leftSelectableForLootPanel;
     [SerializeField] private List<Button> rightmostInventoryButtons = new List<Button>();
@@ -54,6 +53,8 @@ public class UIScreenInventory : UIScreen
         {
             case InventoryState.Loot:
                 return lootButtonManager.GetTopMostInteractableLootButton();
+            //case InventoryState.Selection:
+            //    return 
 
             default:
                 return defaultSelectable;
@@ -77,13 +78,13 @@ public class UIScreenInventory : UIScreen
         switch(state)
         {
             case InventoryState.Base:
-                //Set slot gamepadButton navigation
-                
+                //Set slot gamepadButton navigation                
                 closableWithToggleOrButtonBackButton = true;     
                 
                 break;
 
             case InventoryState.Loot:
+                
                 closableWithToggleOrButtonBackButton = false;
                 break;
 
@@ -138,6 +139,9 @@ public class UIScreenInventory : UIScreen
                 break;
             case InventoryState.Upgrade:
                 break;
+            case InventoryState.Selection:
+                selectionManager.SetSelectionManagerButtonsLeftNavigationToInventory(rightmostInventoryButtons);
+                break;
             default:
                 break;
         }
@@ -172,6 +176,23 @@ public class UIScreenInventory : UIScreen
         inputHandler.OnNo.RemoveListener(SetGamepadNavigationBackToInventory);
     }
 
+    private void TriggerPanelSwitch(UIInventorySubPanel panel)
+    {
+        switch(panel)
+        {
+            case SelectionManager:
+
+                break;
+
+            case LootButtonManager:
+                break;
+
+            default:
+                break;
+
+        }
+    }
+
     private void BackButtonSetup(bool toActive)
     {
         backButton.gameObject.SetActive(toActive);
@@ -180,12 +201,16 @@ public class UIScreenInventory : UIScreen
     
     protected override void Start()
     {
-        base.Start();                
+        base.Start();
+        //temp
+        selectionManager = SelectionManager._instance;
+        selectionManager.OnPanelOpen += TriggerPanelSwitch;
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
     }
 
     protected override void OnDestroy()
     {
+        selectionManager.OnPanelOpen -= TriggerPanelSwitch;
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
         base.OnDestroy();
     }
@@ -197,6 +222,7 @@ public enum InventoryState
     Loot,
     StatDisplay,
     Shop,
-    Upgrade
+    Upgrade,
+    Selection
 
 }

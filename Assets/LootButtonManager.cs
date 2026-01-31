@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class LootButtonManager : MonoBehaviour
+public class LootButtonManager : UIInventorySubPanel
 {
     public EquipmentButton[] EquipmentButtons;
     public EquipmentButton[] GoldButtons;
@@ -293,6 +293,7 @@ public class LootButtonManager : MonoBehaviour
         SelectionManager._instance.OnSelectionFinished -= SelectionFinishedCallback;
 
         Debug.Log($"LootButtonManager should refresh button navigation here");
+
         RefreshLootButtonNavigation();
     }
 
