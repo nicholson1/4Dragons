@@ -27,6 +27,7 @@ public class UIStateMonitor : MonoBehaviour
 
     public void HandleToggleTransition(bool isTransitioning)
     {
+        Debug.Log($"UI state monitor: transitioning");
         if(isTransitioning)
         {
             currentNavigatableScreen.SetNavigatable(false);
@@ -80,9 +81,9 @@ public class UIStateMonitor : MonoBehaviour
         Debug.Log($"Tutorial {tutorial} is closed");
         //make exception for CombatUI
 
-        currentActiveScreen.SetNavigatable(true);
+        //currentActiveScreen.SetNavigatable(true);
 
-        inputHandler.RevertActionMap();
+        //inputHandler.RevertActionMap();
     }
 
     private void Start()

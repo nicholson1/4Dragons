@@ -6814,6 +6814,7 @@ MonoBehaviour:
   InventoryPanel: {fileID: 216094450715910406}
   LootPanel: {fileID: 6959927234733790357}
   lootButtonManager: {fileID: 8565369570850981644}
+  selectionManager: {fileID: 0}
   leftSelectableForLootPanel: {fileID: 1582816749088514698}
   rightmostInventoryButtons:
   - {fileID: 1582816749088514698}
@@ -7357,6 +7358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d30dfc308171934093b341d71fb621f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  subPanelType: 4
   EquipmentButtons:
   - {fileID: 2055285060591651259}
   - {fileID: 2883135036169239011}
@@ -12054,6 +12056,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1538458613161063300}
     m_Modifications:
+    - target: {fileID: 7946565123875889761, guid: 8e7e6f961459df641a9207433332b879, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7946565123875889761, guid: 8e7e6f961459df641a9207433332b879, type: 3}
+      propertyPath: m_Navigation.m_SelectOnLeft
+      value: 
+      objectReference: {fileID: 5998629517930578281}
+    - target: {fileID: 7946565123875889761, guid: 8e7e6f961459df641a9207433332b879, type: 3}
+      propertyPath: m_Navigation.m_SelectOnRight
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7946565123875889762, guid: 8e7e6f961459df641a9207433332b879, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

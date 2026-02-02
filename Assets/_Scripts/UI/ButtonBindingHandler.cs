@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using InputIcons;
 
 public class ButtonBindingHandler : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class ButtonBindingHandler : MonoBehaviour
     [SerializeField] protected bool clickableWithNo = false;
 
     [SerializeField] protected bool shouldHaveClickableButton = true;
+
+    private Image glyphImage = null;
 
     public virtual void ButtonClickCallback()
     {
@@ -91,6 +94,9 @@ public class ButtonBindingHandler : MonoBehaviour
                 break;
 
         }
+
+        if (glyphImage != null)
+            glyphImage.enabled = true;
     }
 
     protected void UnbindGamepadFromButton()
@@ -119,9 +125,10 @@ public class ButtonBindingHandler : MonoBehaviour
             case ExtraButton.Select:
                 inputHandler.OnSelect.RemoveListener(ClickThroughInput);
                 break;
-
-
         }
+
+        if (glyphImage != null)
+            glyphImage.enabled = false;
     }
 
     protected void BindInput(UIScreen screen, bool navigatable)
@@ -136,6 +143,16 @@ public class ButtonBindingHandler : MonoBehaviour
     {
         UnbindGamepadFromButton();
         
+    }
+
+    /// <summary>
+    /// for non UIScreen panel buttons that requires runtime binding/unbinding    /// </summary>
+    public void ManualBindInput(bool toBind)
+    {
+        UnbindGamepadFromButton();
+
+        if(toBind)
+            BindGamepadToButton();
     }
 
     public virtual void SetUIScreen(UIScreen screen)
@@ -162,6 +179,9 @@ public class ButtonBindingHandler : MonoBehaviour
     protected virtual void Awake()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        var imagePrompt = GetComponentInChildren<II_ImagePrompt>();
+        if(imagePrompt)
+            glyphImage = imagePrompt.GetComponent<Image>();
 
         if (shouldHaveClickableButton)
             InitializeButton();            

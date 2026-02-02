@@ -81,7 +81,7 @@ public class InputHandler : MonoBehaviour
 
     public void SwitchActionMap(ActionMaps targetMap)
     {
-        if (cachedPreviousActionMap == ActionMaps.Undefined)
+        if (cachedPreviousActionMap == ActionMaps.Undefined && targetMap != ActionMaps.Disabled)
             cachedPreviousActionMap = targetMap;
 
         switch(targetMap)
@@ -117,8 +117,10 @@ public class InputHandler : MonoBehaviour
                 Debug.LogError($"ERROR: target ActionMap not available!");
                 break;
         }
+        
+        if(targetMap != ActionMaps.Disabled)
+            cachedPreviousActionMap = currentActionMap;
 
-        cachedPreviousActionMap = currentActionMap;
         currentActionMap = targetMap;
     }
 

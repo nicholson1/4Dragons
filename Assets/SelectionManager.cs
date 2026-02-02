@@ -8,14 +8,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 public class SelectionManager : UIInventorySubPanel
 {
     public event Action OnSelectionFinished;
-    public event Action<UIInventorySubPanel> OnPanelOpen;
-    public event Action<UIInventorySubPanel> OnPanelClosed;
+    public event Action OnPanelOpen;
+    public event Action OnPanelClosed;
 
     [SerializeField] private SelectionItem selectionItemPrefab;
 
@@ -91,6 +90,7 @@ public class SelectionManager : UIInventorySubPanel
 
     private SelectionItem GetLeftMostAvailableSelectionItem()
     {
+        Debug.Log($"mostleft available selection item? {currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault().item.name}");
         return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault();
     }
 
@@ -100,7 +100,7 @@ public class SelectionManager : UIInventorySubPanel
         if(cachedInventoryButtons != null)
             SetSelectionManagerButtonsLeftNavigationToInventory(null);
 
-        EventSystem.current.SetSelectedGameObject(GetLeftMostAvailableSelectionItem().gameObject);
+        
 
     }
 
@@ -163,6 +163,8 @@ public class SelectionManager : UIInventorySubPanel
             SetIndividualSelectionItemHorizontalNavigation(selectionItem, targetLeftSelectable, targetRightSelectable);
         }
 
+        var firstTargetSelected = GetLeftMostAvailableSelectionItem().MainButton;
+        EventSystem.current.SetSelectedGameObject(firstTargetSelected.gameObject);
     }
 
     public void SetupAndOpenSelectionScreen(List<Equipment> equipments)
@@ -173,8 +175,9 @@ public class SelectionManager : UIInventorySubPanel
     private void FinalizeAndCloseSelectionPanel()
     {
         //give access back to Loot Panel
+        currentSelectedItem = null;
         OnSelectionFinished?.Invoke();
-        OnPanelClosed?.Invoke(this);
+        OnPanelClosed?.Invoke();
     }
 
     public void RandomSelectionFromEquipment(Character c)
@@ -331,19 +334,16 @@ public class SelectionManager : UIInventorySubPanel
             currentActiveSelectionItems.Add(item);
             item.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
             item.OnSelectionItemPanelSelected += SelectionItemPanelSelectedCallback;
-        }
-           
-        SetupGamepadHorizontalNavigationForCurrentSelections();
+        }          
+        
 
         StartCoroutine(FadeImage(0.8f,.75f, SelectionItemsCreatedCallback));
     }
 
     private void SelectionItemsCreatedCallback()
     {
-        var firstTargetSelected = currentActiveSelectionItems.FirstOrDefault().MainButton;
-        OnPanelOpen?.Invoke(this);
-
-        EventSystem.current.SetSelectedGameObject(firstTargetSelected.gameObject);
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+        OnPanelOpen?.Invoke();
     }
 
     private void InitiateClosingSelectionManagerUI()
@@ -358,7 +358,7 @@ public class SelectionManager : UIInventorySubPanel
 
     private void SelectionItemPanelClosedCallback(SelectionItem selectedItem)
     {
-        selectedItem.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
+        selectedItem.OnSelectionItemPanelClosed -= SelectionItemPanelClosedCallback;
         
         selectionsLeft -= 1;
 

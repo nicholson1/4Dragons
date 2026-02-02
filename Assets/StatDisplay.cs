@@ -26,14 +26,12 @@ public class StatDisplay : MonoBehaviour, IGamepadButtonListener
     public void HandleGamepadButtonSelected()
     {
         OnGamepadButtonSelected?.Invoke();
-        Debug.Log($"Should show tip on {stat}");
         toolTip.ShowTipFromGamepadNavi();
     }
 
     public void HandleGamepadButtonDeselected()
     {
         OnGamepadButtonDeselected?.Invoke();
-        Debug.Log($"Deselected stat display for {stat}");
         toolTip.CloseTip();
     }
 

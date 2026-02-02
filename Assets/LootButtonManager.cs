@@ -46,12 +46,21 @@ public class LootButtonManager : UIInventorySubPanel
     public void RefreshLootButtonNavigation()
     {
         SetupLootPanelNavigation();
+
+        SetPanelLeftNavigation(leftSelectableAtInventoryUI);
+                
+        EventSystem.current.SetSelectedGameObject(GetTopMostInteractableLootButton().gameObject);
     }
 
     public Selectable GetTopMostInteractableLootButton()
     {
         var topMostLootButton = currentActiveButtons.Where(eb => eb.Button.interactable).FirstOrDefault();
-        return topMostLootButton.Button as Selectable;
+        if (topMostLootButton != null)
+        {
+            return topMostLootButton.Button;
+        }
+
+        return leaveButton;
     }
 
     private IEnumerator SetPanelLeftNavigationRoutine(Selectable selectable)
@@ -66,15 +75,23 @@ public class LootButtonManager : UIInventorySubPanel
     {
         for (int i = 0; i < currentActiveButtons.Count; i++)
         {
-            if (i % 2 == 0)
-            {
-                var button = currentActiveButtons[i].Button;
-                var navi = button.navigation;
-                if (navi.mode != Navigation.Mode.Explicit)
-                    navi.mode = Navigation.Mode.Explicit;
+            var button = currentActiveButtons[i].Button;
+            var navi = button.navigation;
 
+            bool isLeftColumn = i % 2 == 0;
+            
+            if (isLeftColumn)
+            {
                 navi.selectOnLeft = selectable;
                 button.navigation = navi;
+            }
+            else
+            {
+                if (i - 1 >= 0 && !currentActiveButtons[i - 1].Button.interactable)
+                {
+                    navi.selectOnLeft = selectable;
+                    button.navigation = navi;
+                }
             }
         }
     }
@@ -86,9 +103,17 @@ public class LootButtonManager : UIInventorySubPanel
 
         while (index >= 0 && index < currentActiveButtons.Count)
         {
-            var button = currentActiveButtons[index].Button;
-            if (button.interactable)
-                return button;
+            var directButton = currentActiveButtons[index].Button;
+            if (directButton.interactable)
+                return directButton;
+
+            int otherRow = index ^ 1;
+            if (otherRow >= 0 && otherRow < currentActiveButtons.Count)
+            {
+                var otherRowButton = currentActiveButtons[otherRow].Button;
+                if (otherRowButton.interactable)
+                    return otherRowButton;
+            }
 
             index += step; 
         }
@@ -101,13 +126,38 @@ public class LootButtonManager : UIInventorySubPanel
         return nextIndex < currentActiveButtons.Count && currentActiveButtons[nextIndex].gameObject.activeSelf && currentActiveButtons[nextIndex].Button.interactable;
     }
 
+    private void SetLeaveButtonUpNavigation()
+    {
+        Button buttonOnUp = null;
+        for(int i = currentActiveButtons.Count - 1; i >= 0; i--)
+        {
+            if (currentActiveButtons[i].Button.interactable)
+            {
+                buttonOnUp = currentActiveButtons[i].Button;
+                break;
+            }
+        }
+
+        if(buttonOnUp != null)
+        {
+            Navigation navi = leaveButton.navigation;
+            if (navi.mode != Navigation.Mode.Explicit)
+                navi.mode = Navigation.Mode.Explicit;
+
+            navi.selectOnUp = buttonOnUp;
+            leaveButton.navigation = navi;
+        }
+    }
+
+
     private void SetupLootPanelNavigation()
     {
         for (int i = 0; i < currentActiveButtons.Count; i++)
         {
             var button = currentActiveButtons[i].Button;
             var navi = button.navigation;
-            navi.mode = Navigation.Mode.Explicit;
+            if (navi.mode != Navigation.Mode.Explicit)
+                navi.mode = Navigation.Mode.Explicit;
             bool isLeftColumn = (i % 2 == 0);
 
             if (isLeftColumn)
@@ -128,6 +178,8 @@ public class LootButtonManager : UIInventorySubPanel
 
             button.navigation = navi;
         }
+
+        SetLeaveButtonUpNavigation();
 
         stillSettingUpButtons = false;
     }
@@ -292,8 +344,6 @@ public class LootButtonManager : UIInventorySubPanel
     {
         SelectionManager._instance.OnSelectionFinished -= SelectionFinishedCallback;
 
-        Debug.Log($"LootButtonManager should refresh button navigation here");
-
         RefreshLootButtonNavigation();
     }
 
@@ -301,11 +351,9 @@ public class LootButtonManager : UIInventorySubPanel
     {
         SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
 
+        var equipmentButton = EquipmentButtons[i];
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
-        //UIController._instance.ToggleInventoryUI(1);
-        EquipmentButtons[i].DeactivateButton();
-
-        //RefreshLootButtonNavigation();
+        equipmentButton.DeactivateButton();
 
         if (EquipmentLists[i].Count == 1)
         {
@@ -315,11 +363,10 @@ public class LootButtonManager : UIInventorySubPanel
 
     public void RelicSelect(int i)
     {
-        SelectionManager._instance.SelectionsFromList(RelicLists[i]);
-        //UIController._instance.ToggleInventoryUI(1);
-        RelicButtons[i].DeactivateButton();
+        SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
 
-        RefreshLootButtonNavigation();
+        SelectionManager._instance.SelectionsFromList(RelicLists[i]);
+        RelicButtons[i].DeactivateButton();
     }
 
     public void GoldSelect(int i)

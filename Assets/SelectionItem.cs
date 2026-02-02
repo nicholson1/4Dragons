@@ -58,6 +58,7 @@ public class SelectionItem : MonoBehaviour
 
     private PanelHoverEffect panelHoverEffect = null;
     private bool isPanelSelected = false;
+    private bool isEquipment = false;
 
     #region Initialization
     public void InitializeSelectionItem(Equipment equipmentToSet)
@@ -91,8 +92,7 @@ public class SelectionItem : MonoBehaviour
             rarityTutorial.SetActive(false);
 
         SetupVerticalNavigation();
-        SetupGamepadButtonListener();
-
+        
         isAvailable = true;
 
         StartCoroutine(RotateObjectForward());
@@ -100,18 +100,13 @@ public class SelectionItem : MonoBehaviour
 
     public void DeinitializeSelectionItem()
     {
-        foreach (var button in currentActiveGamepadButtons)
-        {
-            var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
-            if (gamepadButtonListener != null)
-                gamepadButtonListener.OnGamepadButtonSelected -= CheckSelectedStatus;
-        }
 
         Destroy(this.gameObject);
     }
 
     private void SetDescriptionActive(Equipment equipmentToSet)
     {
+        isEquipment = equipmentToSet is not Relic or Consumable;
         RelicDescription.gameObject.SetActive(equipmentToSet is Relic);
         _spellDisplay.gameObject.SetActive(equipmentToSet is Weapon);
         ScrollDescription.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll);
@@ -120,13 +115,33 @@ public class SelectionItem : MonoBehaviour
 
     private void SetButtonActive(Equipment equipmentToSet)
     {
-        selectRelic.gameObject.SetActive(equipmentToSet is Relic);
-        inventory.gameObject.SetActive(equipmentToSet is not Relic);
-        equip.gameObject.SetActive(equipmentToSet is not Relic and not Consumable);
+        if(equipmentToSet is Relic or Consumable)
+        {
+            equip.gameObject.SetActive(false);
+            inventory.gameObject.SetActive(false);
+            equip.interactable = false;
+            inventory.interactable = false;
 
-        selectRelic.interactable = equipmentToSet is Relic;
-        inventory.interactable = equipmentToSet is not Relic;
-        equip.interactable = equipmentToSet is not Relic and not Consumable;
+            selectRelic.gameObject.SetActive(true);
+            selectRelic.interactable = true;
+        }
+        else
+        {
+            selectRelic.gameObject.SetActive(false);
+            selectRelic.interactable = false;
+
+            equip.gameObject.SetActive(true);
+            inventory.gameObject.SetActive(true);
+            equip.interactable = true;
+            inventory.interactable = true;
+        }
+        //selectRelic.gameObject.SetActive(equipmentToSet is Relic);
+        //inventory.gameObject.SetActive(equipmentToSet is not Relic);
+        //equip.gameObject.SetActive(equipmentToSet is not Relic and not Consumable);
+
+        //selectRelic.interactable = equipmentToSet is Relic;
+        //inventory.interactable = equipmentToSet is not Relic;
+        //equip.interactable = equipmentToSet is not Relic and not Consumable;
 
         mainButton = equipmentToSet is Relic or Consumable ? selectRelic : equip;
     }
@@ -256,8 +271,22 @@ public class SelectionItem : MonoBehaviour
         RelicDescription.text = description;        
     }
 
+    private void ClearLastActiveGamepadButtons()
+    {
+        if (currentActiveGamepadButtons.Count <= 0) return;
+
+        foreach (var button in currentActiveGamepadButtons)
+        {
+            var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
+            if (gamepadButtonListener != null)
+                gamepadButtonListener.OnGamepadButtonSelected -= CheckSelectedStatus;
+        }
+        currentActiveGamepadButtons.Clear();
+    }
+
     private void SetupVerticalNavigation()
     {
+        ClearLastActiveGamepadButtons();
         currentActiveGamepadButtons = GetComponentsInChildren<Button>().Where(b => b.gameObject.activeSelf).ToList();
         for (int i=0; i < currentActiveGamepadButtons.Count; i++)
         {
@@ -270,6 +299,8 @@ public class SelectionItem : MonoBehaviour
             
             selectable.navigation = navi;
         }
+
+        SetupGamepadButtonListener();
     }
 
     private void CheckSelectedStatus()
@@ -281,17 +312,24 @@ public class SelectionItem : MonoBehaviour
 
     private void SetupGamepadButtonListener()
     {
-        foreach (var button in currentActiveGamepadButtons)
+        var gamepadButtonListener = mainButton.GetComponent<IGamepadButtonListener>();
+        if (gamepadButtonListener == null)
         {
-            var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
-
-            if(gamepadButtonListener == null)
-            {
-                Debug.LogError($"{button.transform.parent.name} doesn't have a component that implement IGamepadButtonListener!");
-            }
-
-            gamepadButtonListener.OnGamepadButtonSelected += CheckSelectedStatus;
+            Debug.LogError($"main button for {this.item.name} panel doesn't have a IGamepadButtonListener!");
         }
+        gamepadButtonListener.OnGamepadButtonSelected += CheckSelectedStatus;
+
+        //foreach (var button in currentActiveGamepadButtons)
+        //{
+        //    var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
+
+        //    if(gamepadButtonListener == null)
+        //    {
+        //        Debug.LogError($"{button.transform.parent.name} doesn't have a component that implement IGamepadButtonListener!");
+        //    }
+
+        //    gamepadButtonListener.OnGamepadButtonSelected += CheckSelectedStatus;
+        //}
     }
    
     #endregion
@@ -370,8 +408,9 @@ public class SelectionItem : MonoBehaviour
     private void FinishedRotateBackCallback()
     {
         isAvailable = false;
-        OnSelectionItemPanelClosed?.Invoke(this);
         DisableButtons();
+
+        OnSelectionItemPanelClosed?.Invoke(this);
     }
 
     private void SetRarityText(int r, Equipment e)
@@ -448,20 +487,37 @@ public class SelectionItem : MonoBehaviour
 
     }
 
+    private void BindMainButtons(bool toBind)
+    {
+        if (isEquipment)
+        {
+            equip.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
+            inventory.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
+        }
+        else
+            selectRelic.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
+    }
+
     public void SelectPanel()
     {
+        Debug.Log($"SelectPanel() is called from SelectionManager callback!");
         if (isPanelSelected) return;
 
+        Debug.Log($"Selecting panel {gameObject.name}");
         isPanelSelected = true;
         panelHoverEffect.ScaleUp();
+
+        BindMainButtons(true);
     }
 
     public void DeselectPanel()
     {
-        if (!isPanelSelected) return;
+        if (!isPanelSelected || !isAvailable) return;
 
         isPanelSelected = false;
         panelHoverEffect.ScaleDown();
+
+        BindMainButtons(false);
     }
 
     #region Editor bind function
@@ -469,21 +525,21 @@ public class SelectionItem : MonoBehaviour
     {
         //should behave similar to AddToInventory()
         isAvailable = false;
-        UIController._instance.PlayUIClick();
         UIController._instance.PlayGetRelic();
         StatsTracker.Instance.TrackRelicSelected(item);
 
-        //clear selections
-        SelectionManager._instance.ClearSelections(); //don't call this, use callback from RotateObjectBack instead, see AddToInventory()
-        // add to character
+        // add to character  
         CombatController._instance.Player._Relics.Add(item);
         //remove relic from seen relic list
-        RelicManager._instance.SelectRelic(item);       
+        RelicManager._instance.SelectRelic(item);
+
+        //clear selections
+        StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));   
     }
 
     public void AddToInventory()
-    {       
-
+    {
+        isAvailable = false;
         bool canAddToInventory = EquipmentManager._instance.TryPutItemToInventoryFromSelection(item, this);
         if (canAddToInventory)
         {
@@ -494,11 +550,13 @@ public class SelectionItem : MonoBehaviour
         else
         {
             Debug.Log($"Should handle item can't go to inventory here");
+            //timed-interactable popup to instruct player to clean the inventory?
         }
     }
 
     public void EquipedFromSelection()
     {
+        isAvailable = false;
         UIController._instance.PlayPlaceItem();
 
         bool canEquipItem = EquipmentManager._instance.TryEquipItemFromSelection(item, this);

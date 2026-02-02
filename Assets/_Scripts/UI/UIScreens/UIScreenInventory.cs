@@ -74,7 +74,8 @@ public class UIScreenInventory : UIScreen
     }
 
     public void ChangeInventoryState(InventoryState state)
-    {        
+    {
+        Debug.Log($"current inventory state = {state}");
         switch(state)
         {
             case InventoryState.Base:
@@ -84,6 +85,11 @@ public class UIScreenInventory : UIScreen
                 break;
 
             case InventoryState.Loot:
+
+                closableWithToggleOrButtonBackButton = false;
+                break;
+
+            case InventoryState.Selection:
                 
                 closableWithToggleOrButtonBackButton = false;
                 break;
@@ -111,7 +117,7 @@ public class UIScreenInventory : UIScreen
             switch(state)
             {
                 case InventoryState.Loot:
-                    navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
+                    navi.selectOnRight = lootButtonManager.GetTopMostInteractableLootButton();
                     break;
                 case InventoryState.Shop:
                     navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
@@ -124,7 +130,7 @@ public class UIScreenInventory : UIScreen
             selectable.navigation = navi;
         }
 
-        SetAttachedPanelLeftmostButtonNavigation(state);       
+        SetAttachedPanelLeftmostButtonNavigation(state);      
         
     }
 
@@ -150,7 +156,8 @@ public class UIScreenInventory : UIScreen
 
     private void RevertInventoryState()
     {
-        ChangeInventoryState(cachedLastInventoryState);        
+        ChangeInventoryState(cachedLastInventoryState);
+        SetupRuntimeNavigation(currentInventoryState);
     }
 
     private void SetGamepadNavigationToStatDisplay()
@@ -176,21 +183,18 @@ public class UIScreenInventory : UIScreen
         inputHandler.OnNo.RemoveListener(SetGamepadNavigationBackToInventory);
     }
 
-    private void TriggerPanelSwitch(UIInventorySubPanel panel)
+    private void SelectionPanelOpenCallback()
     {
-        switch(panel)
-        {
-            case SelectionManager:
+        if (EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
+            SetSelectableToSelectOnActivated(selectable);
 
-                break;
+        cachedLastInventoryState = currentInventoryState;
+        ChangeInventoryState(InventoryState.Selection);
+    }
 
-            case LootButtonManager:
-                break;
-
-            default:
-                break;
-
-        }
+    private void SelectionPanelClosedCallback()
+    {
+        RevertInventoryState();
     }
 
     private void BackButtonSetup(bool toActive)
@@ -204,13 +208,17 @@ public class UIScreenInventory : UIScreen
         base.Start();
         //temp
         selectionManager = SelectionManager._instance;
-        selectionManager.OnPanelOpen += TriggerPanelSwitch;
+        selectionManager.OnPanelOpen += SelectionPanelOpenCallback;
+        selectionManager.OnPanelClosed += SelectionPanelClosedCallback;
+
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
     }
 
     protected override void OnDestroy()
     {
-        selectionManager.OnPanelOpen -= TriggerPanelSwitch;
+        selectionManager.OnPanelOpen -= SelectionPanelOpenCallback;
+        selectionManager.OnPanelClosed -= SelectionPanelClosedCallback;
+
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
         base.OnDestroy();
     }
