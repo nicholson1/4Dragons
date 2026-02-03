@@ -788,7 +788,7 @@ public class Character : MonoBehaviour
             // die
             
             _currentHealth = 0;
-            if (!isPlayerCharacter)
+            if (!isPlayerCharacter &&  CombatController._instance.Player._currentHealth > 0)
             {
                 CombatController._instance.entitiesInCombat.Remove(this.GetComponent<CombatEntity>());
 
