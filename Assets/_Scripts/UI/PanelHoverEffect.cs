@@ -14,7 +14,6 @@ public class PanelHoverEffect : MonoBehaviour
 
     public void ScaleUp()
     {
-        Debug.Log($"calling ScaleUIElement() on PanelHoverEffect!");
         ScaleUIElement(initialScale * hoveredScale, scalingTime);
     }
 
@@ -24,9 +23,7 @@ public class PanelHoverEffect : MonoBehaviour
     }
 
     private void ScaleUIElement(Vector3 targetScale, float duration)
-    {
-        Debug.Log($"Scaling UIElement!");
-                
+    {                
         LeanTween.cancel(gameObject);
         LeanTween.scale(gameObject, targetScale, duration).setEaseInOutQuad();
     }

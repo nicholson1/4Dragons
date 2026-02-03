@@ -500,10 +500,8 @@ public class SelectionItem : MonoBehaviour
 
     public void SelectPanel()
     {
-        Debug.Log($"SelectPanel() is called from SelectionManager callback!");
         if (isPanelSelected) return;
 
-        Debug.Log($"Selecting panel {gameObject.name}");
         isPanelSelected = true;
         panelHoverEffect.ScaleUp();
 

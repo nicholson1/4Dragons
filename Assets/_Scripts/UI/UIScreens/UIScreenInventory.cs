@@ -90,7 +90,7 @@ public class UIScreenInventory : UIScreen
                 break;
 
             case InventoryState.Selection:
-                
+                selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
                 closableWithToggleOrButtonBackButton = false;
                 break;
 
@@ -119,6 +119,9 @@ public class UIScreenInventory : UIScreen
                 case InventoryState.Loot:
                     navi.selectOnRight = lootButtonManager.GetTopMostInteractableLootButton();
                     break;
+                case InventoryState.Selection:
+                    navi.selectOnRight = selectionManager.GetMostLeftSelectionItemMainButton();
+                    break;
                 case InventoryState.Shop:
                     navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
                     break;
@@ -146,7 +149,7 @@ public class UIScreenInventory : UIScreen
             case InventoryState.Upgrade:
                 break;
             case InventoryState.Selection:
-                selectionManager.SetSelectionManagerButtonsLeftNavigationToInventory(rightmostInventoryButtons);
+                selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
                 break;
             default:
                 break;
@@ -185,10 +188,10 @@ public class UIScreenInventory : UIScreen
 
     private void SelectionPanelOpenCallback()
     {
-        if (EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
+        var eventSystem = EventSystem.current;
+        if (eventSystem.alreadySelecting && eventSystem.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
             SetSelectableToSelectOnActivated(selectable);
 
-        cachedLastInventoryState = currentInventoryState;
         ChangeInventoryState(InventoryState.Selection);
     }
 

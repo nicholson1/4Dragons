@@ -45,7 +45,6 @@ public class InventoryButtonBindingHandler : ButtonBindingHandler
     private void InventoryStateChangeCallback(InventoryState state)
     {
         bool shouldBeAccessible = state == InventoryState.Base;
-        Debug.Log($"current inventoryState = {state}, shouldBeAccessible = {shouldBeAccessible}");
 
         if (!shouldBeAccessible)
         {

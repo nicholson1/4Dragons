@@ -41,7 +41,7 @@ public class SelectionManager : UIInventorySubPanel
 
     private List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
     private SelectionItem currentSelectedItem = null;
-    private List<Button> cachedInventoryButtons = null;
+    private List<Button> cachedInventoryButtons = new List<Button>();
 
     public Selectable GetMostLeftSelectionItemMainButton()
     {
@@ -50,12 +50,13 @@ public class SelectionManager : UIInventorySubPanel
 
     private void SetRightMostInventoryButtonsNavigation()
     {
-        foreach(var selectable in cachedInventoryButtons)
+        var leftMostItem = GetLeftMostAvailableSelectionItem();
+        foreach (var selectable in cachedInventoryButtons)
         {
             float selectableY = selectable.transform.position.y;
             Navigation navi = selectable.navigation;
 
-            Selectable closestSelectionItemSelectable = GetLeftMostAvailableSelectionItem().CurrentActiveGamepadButtons.
+            Selectable closestSelectionItemSelectable = leftMostItem.CurrentActiveGamepadButtons.
                                                             OrderBy(s => Mathf.Abs(s.transform.position.y - selectableY)).FirstOrDefault();
 
             navi.selectOnRight = closestSelectionItemSelectable;
@@ -64,21 +65,25 @@ public class SelectionManager : UIInventorySubPanel
         }
     }
 
-    public void SetSelectionManagerButtonsLeftNavigationToInventory(List<Button> inventoryButtons = null)
+    public void SetInventoryButtonsCache(List<Button> inventoryButtons)
     {
-        if (inventoryButtons != null)
-        {
-            cachedInventoryButtons.Clear();
-            cachedInventoryButtons = inventoryButtons;
-        }
-            
+        cachedInventoryButtons.Clear();
+        cachedInventoryButtons = inventoryButtons;
+
+        SetLeftMostSelectionItemButtonsLeftNavigationToInventory();
+    }
+
+
+    private void SetLeftMostSelectionItemButtonsLeftNavigationToInventory()
+    {
         SelectionItem item = GetLeftMostAvailableSelectionItem();
+
         foreach(var button in item.CurrentActiveGamepadButtons)
-        {
+        {            
             float buttonY = button.transform.position.y;
             Navigation navi = button.navigation;
 
-            Button closestInventoryButton = inventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buttonY)).FirstOrDefault();
+            Button closestInventoryButton = cachedInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buttonY)).FirstOrDefault();
 
             navi.selectOnLeft = closestInventoryButton;
 
@@ -90,18 +95,22 @@ public class SelectionManager : UIInventorySubPanel
 
     private SelectionItem GetLeftMostAvailableSelectionItem()
     {
-        Debug.Log($"mostleft available selection item? {currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault().item.name}");
         return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault();
     }
 
-    public void SelectLeftMostAvailableSelectionItem()
+    private void SelectLeftMostAvailableSelectionItem()
     {
         SetupGamepadHorizontalNavigationForCurrentSelections();
+
         if(cachedInventoryButtons != null)
-            SetSelectionManagerButtonsLeftNavigationToInventory(null);
+            SetLeftMostSelectionItemButtonsLeftNavigationToInventory();        
 
-        
+    }
 
+    private void RefreshSelectionManagerHorizontalNavigation()
+    {
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+        SetLeftMostSelectionItemButtonsLeftNavigationToInventory();
     }
 
     
@@ -139,10 +148,14 @@ public class SelectionManager : UIInventorySubPanel
 
     private void SetIndividualSelectionItemHorizontalNavigation(SelectionItem item, Selectable targetLeft, Selectable targetRight)
     {
+        var leftMostItem = GetLeftMostAvailableSelectionItem();
+
         foreach(var selectable in item.CurrentActiveGamepadButtons)
         {
             Navigation navi = selectable.navigation;
-            navi.selectOnLeft = targetLeft;
+            if(item != leftMostItem)
+                navi.selectOnLeft = targetLeft;
+            
             navi.selectOnRight = targetRight;
 
             selectable.navigation = navi;
@@ -161,15 +174,11 @@ public class SelectionManager : UIInventorySubPanel
             var targetRightSelectable = i + 1 < availableSelectionItems.Count ? availableSelectionItems[i + 1].MainButton : null;
 
             SetIndividualSelectionItemHorizontalNavigation(selectionItem, targetLeftSelectable, targetRightSelectable);
+             
         }
 
-        var firstTargetSelected = GetLeftMostAvailableSelectionItem().MainButton;
-        EventSystem.current.SetSelectedGameObject(firstTargetSelected.gameObject);
-    }
-
-    public void SetupAndOpenSelectionScreen(List<Equipment> equipments)
-    {
-
+        var firstTargetSelected = GetLeftMostAvailableSelectionItem();
+        EventSystem.current.SetSelectedGameObject(firstTargetSelected.MainButton.gameObject);
     }
 
     private void FinalizeAndCloseSelectionPanel()
@@ -336,14 +345,13 @@ public class SelectionManager : UIInventorySubPanel
             item.OnSelectionItemPanelSelected += SelectionItemPanelSelectedCallback;
         }          
         
-
         StartCoroutine(FadeImage(0.8f,.75f, SelectionItemsCreatedCallback));
     }
 
     private void SelectionItemsCreatedCallback()
     {
-        SetupGamepadHorizontalNavigationForCurrentSelections();
         OnPanelOpen?.Invoke();
+        SetupGamepadHorizontalNavigationForCurrentSelections();
     }
 
     private void InitiateClosingSelectionManagerUI()
@@ -362,10 +370,10 @@ public class SelectionManager : UIInventorySubPanel
         
         selectionsLeft -= 1;
 
-        SelectLeftMostAvailableSelectionItem();
-
-        if(selectionsLeft <= 0)
+        if (selectionsLeft <= 0)
             InitiateClosingSelectionManagerUI();
+        else
+            RefreshSelectionManagerHorizontalNavigation();
     }
 
     private void SelectionItemPanelSelectedCallback(SelectionItem selectionItem)
