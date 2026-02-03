@@ -319,17 +319,6 @@ public class SelectionItem : MonoBehaviour
         }
         gamepadButtonListener.OnGamepadButtonSelected += CheckSelectedStatus;
 
-        //foreach (var button in currentActiveGamepadButtons)
-        //{
-        //    var gamepadButtonListener = button.GetComponentInParent<IGamepadButtonListener>();
-
-        //    if(gamepadButtonListener == null)
-        //    {
-        //        Debug.LogError($"{button.transform.parent.name} doesn't have a component that implement IGamepadButtonListener!");
-        //    }
-
-        //    gamepadButtonListener.OnGamepadButtonSelected += CheckSelectedStatus;
-        //}
     }
    
     #endregion

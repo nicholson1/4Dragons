@@ -75,7 +75,6 @@ public class UIScreenInventory : UIScreen
 
     public void ChangeInventoryState(InventoryState state)
     {
-        Debug.Log($"current inventory state = {state}");
         switch(state)
         {
             case InventoryState.Base:

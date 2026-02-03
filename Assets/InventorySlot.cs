@@ -35,7 +35,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     public void HandleGamepadButtonSelected()
     {
         OnGamepadButtonSelected?.Invoke();
-        Debug.Log($"{gameObject.name} - {Slot} button SELECTED");
+        if(Item != null)
+            Item.HighlightItem(true);
 
         //this should open tooltip if it's available
     }
@@ -43,6 +44,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     public void HandleGamepadButtonDeselected()
     {
         OnGamepadButtonDeselected?.Invoke();
+        if (Item != null)
+            Item.HighlightItem(false);
 
         //this should close currently opened tooltip
     }
@@ -208,13 +211,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             
             if (Item == null)
             {
-                di.transform.SetParent(_rt.parent);
-                di._rectTransform.anchoredPosition = _rt.anchoredPosition;
-                di._rectTransform.localScale = _rt.localScale;
-                di.currentLocation.Item = null;
-                di.currentLocation.LabelCheck();
-                di.currentLocation = this;
-                Item = di;
+                AssignDroppedItemToSlot(di);
 
                 if (Slot != Equipment.Slot.All)
                 {
@@ -239,6 +236,22 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             UIController._instance.PlayPlaceItem();
 
         }
+    }
+
+    private void RemoveItemFromSlot()
+    {
+        Item = null;
+    }
+
+    private void AssignDroppedItemToSlot(DragItem di)
+    {
+        di.transform.SetParent(_rt.parent);
+        di._rectTransform.anchoredPosition = _rt.anchoredPosition;
+        di._rectTransform.localScale = _rt.localScale;
+        di.currentLocation.RemoveItemFromSlot();
+        di.currentLocation.LabelCheck();
+        di.currentLocation = this;
+        Item = di;
     }
 
     public void NotEnoughGoldEvent()

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ImportantStuff;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -10,24 +11,23 @@ using UnityEngine.UI;
 
 public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
+    public bool IsBeingDragged => isBeingDragged;
+
     public Equipment e;
     public InventorySlot currentLocation;
     private InventorySlot temp;
     public Image icon;
     public Image Background;
     public Image Glow;
-
+    public Image GamepadHighlighter;
 
     [SerializeField] private Sprite[] BackgroundSprites;
     [SerializeField] private Sprite[] GlowSprites;
-
 
     public Equipment.Slot slotType;
     public TextMeshProUGUI LvlText;
     
     public static event Action<ErrorMessageManager.Errors> CombatMove;
-
-
 
     [SerializeField] public RectTransform _rectTransform;
     [SerializeField] private Canvas canvas;
@@ -41,7 +41,13 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private float pickUpPitch;
     
     [SerializeField] private TextMeshProUGUI sellPrice;
+
+    private bool isBeingDragged = false;
     
+    public void HighlightItem(bool toHighlight)
+    {
+        GamepadHighlighter.enabled = toHighlight;
+    }
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
@@ -158,6 +164,8 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     {
         if(e.isRelic)
             return;
+
+        isBeingDragged = true;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = .6f;
         SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
@@ -197,6 +205,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
+        isBeingDragged = false;
         if (canBeDragged == false)
         {
             //notification
@@ -411,6 +420,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     }
     private void Start()
     {
+        if (GamepadHighlighter.enabled)
+            GamepadHighlighter.enabled = false;
+
         Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         //CombatController.EndCombatEvent += EndCombat;
     }
