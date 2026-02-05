@@ -333,7 +333,7 @@ public class SelectionManager : UIInventorySubPanel
 
 
     public void SelectionsFromList(List<Equipment> equipments)
-    {
+    {        
         currentActiveSelectionItems.Clear();
         SkipButton.gameObject.SetActive(true);
         foreach (var i in equipments)

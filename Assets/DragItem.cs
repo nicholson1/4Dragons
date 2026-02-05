@@ -47,6 +47,10 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public void HighlightItem(bool toHighlight)
     {
         GamepadHighlighter.enabled = toHighlight;
+        if (toHighlight)
+            _toolTip.ShowTipFromGamepadNavi(_rectTransform);
+        else
+            _toolTip.CloseTip();
     }
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)

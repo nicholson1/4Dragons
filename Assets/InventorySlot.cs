@@ -32,7 +32,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
 
-    public void HandleGamepadButtonSelected()
+    public void HandleGamepadButtonSelected(Selectable selectable)
     {
         OnGamepadButtonSelected?.Invoke();
         if(Item != null)
@@ -41,7 +41,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         //this should open tooltip if it's available
     }
 
-    public void HandleGamepadButtonDeselected()
+    public void HandleGamepadButtonDeselected(Selectable selectable)
     {
         OnGamepadButtonDeselected?.Invoke();
         if (Item != null)
@@ -50,7 +50,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         //this should close currently opened tooltip
     }
 
-    public void HandleGamepadButtonPressed()
+    public void HandleGamepadButtonPressed(Selectable selectable)
     {
         Debug.Log($"{gameObject.name} - {Slot} button PRESSED");
 

@@ -37,7 +37,20 @@ public class ToolTipManager : MonoBehaviour
    [SerializeField] public Color[] rarityColors;
    private RectTransform _rt;
 
+    private float tooltipDisplayDelay = 0.35f;
+    private Coroutine tooltipDisplayRoutine;
 
+    private IEnumerator TooltipDisplayRoutine(Vector3 position)
+    {
+        float current = 0f;
+
+        while (current < tooltipDisplayDelay)
+        {
+            yield return null;
+        }
+
+
+    }
 
    //public HorizontalLayoutGroup LayoutGroup;
    private void Awake()
@@ -108,18 +121,25 @@ public class ToolTipManager : MonoBehaviour
         return pivot;
     }
 
-    private Vector2 GetOffset(Vector2 referenceRT)
-    {
-        return Vector2.zero;
+    private Vector2 GetOffset(Vector2 position)
+    {        
+
+        float offsetX = position.x > Screen.width * 0.5f ? -300f : 300f;
+        float offsetY = position.y > Screen.height * 0.5f ? -50f : 50f;
+
+        return new Vector2(offsetX, offsetY);
     }
 
-   public void SetAndShowToolTip(RectTransform toolTipRT, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
+
+   public void SetAndShowToolTip(RectTransform toolTipRT, Vector2 position, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
    {
         //transform.position = Input.mousePosition;
         //transform.position = toolTipRT.position;
-        transform.position = toolTipRT.transform.position;
+        //transform.position = toolTipRT.transform.position;
 
-        _rt.pivot = GetPivot(toolTipRT);
+        //_rt.pivot = GetPivot(toolTipRT);
+        _rt.position = position;
+        _rt.position = position + GetOffset(_rt.position);
 
       if (activated)
       {
@@ -179,8 +199,6 @@ public class ToolTipManager : MonoBehaviour
 
       //Debug.Log("hello");
       uiHoverEffect.FlashScale(.25f);
-
-
    }
 
    private void UpdateComparisonTip( Equipment newItem)
@@ -304,7 +322,7 @@ public class ToolTipManager : MonoBehaviour
       //current.gameObject.SetActive(true);
       
       
-      transform.position = Input.mousePosition;
+      //transform.position = Input.mousePosition;
       gameObject.SetActive(true);
       
       int count = 0;
@@ -416,7 +434,7 @@ public class ToolTipManager : MonoBehaviour
          // figure out the color
       }
       
-      transform.position = Input.mousePosition;
+      //transform.position = Input.mousePosition;
       SetRarityText(itemRarity, current);
       gameObject.SetActive(true);
       current.tiptext.text = message;
@@ -438,7 +456,8 @@ public class ToolTipManager : MonoBehaviour
 
       }
    }
-   private void UpdateItemTipDisplay(ToolTipDisplay current, string title, string itemLvl, int itemRarity, Equipment e)
+   
+    private void UpdateItemTipDisplay(ToolTipDisplay current, string title, string itemLvl, int itemRarity, Equipment e)
    {
       //Debug.Log("hellllo");
      
@@ -452,7 +471,7 @@ public class ToolTipManager : MonoBehaviour
       current.gameObject.SetActive(true);
       
       
-      transform.position = Input.mousePosition;
+      //transform.position = Input.mousePosition;
       SetRarityText(itemRarity, current);
       gameObject.SetActive(true);
       current.tiptitle.text = title;
@@ -539,9 +558,10 @@ public class ToolTipManager : MonoBehaviour
       {
          return;
       }
-      //Debug.Log("Hide Tool Tip");
+        //Debug.Log("Hide Tool Tip");
 
-      //Debug.Log("Hide tool tip");
+        //Debug.Log("Hide tool tip");
+        _rt.anchoredPosition = Vector2.zero;
       HideToolTip(MainTip);
       HideToolTip(ItemTip);
       HideToolTip(SpellTip);
@@ -550,7 +570,8 @@ public class ToolTipManager : MonoBehaviour
       gameObject.SetActive(false);
 
    }
-   public void HideToolTip(ToolTipDisplay current)
+
+   private void HideToolTip(ToolTipDisplay current)
    {
       //Debug.Log("Hide tool tip");
       current.gameObject.SetActive(false);
@@ -562,7 +583,8 @@ public class ToolTipManager : MonoBehaviour
 
       
    }
-   public string AdjustDescriptionValues(string message, int turns, float amount)
+
+   private string AdjustDescriptionValues(string message, int turns, float amount)
    {
       message = message.Replace("$", turns.ToString());
       message = message.Replace("@", amount.ToString());

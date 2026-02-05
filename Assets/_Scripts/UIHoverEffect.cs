@@ -54,12 +54,12 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         isPointerEvent = true;
                 
 
-        if(!setOnce)
-        {
-            initialScale = transform.localScale;
-            initialRotation = transform.localRotation;
-            setOnce = true;
-        }
+        //if(!setOnce)
+        //{
+        //    initialScale = transform.localScale;
+        //    initialRotation = transform.localRotation;
+        //    setOnce = true;
+        //}
 
         // Scale up and start shaking when mouse enters the UI element
         if (shouldTween)
@@ -88,12 +88,12 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (!selectable.interactable) return;
 
-        if (!setOnce)
-        {
-            initialScale = transform.localScale;
-            initialRotation = transform.localRotation;
-            setOnce = true;
-        }
+        //if (!setOnce)
+        //{
+        //    initialScale = transform.localScale;
+        //    initialRotation = transform.localRotation;
+        //    setOnce = true;
+        //}
         // Scale up and start shaking when mouse enters the UI element
         if(shouldTween)
         {
@@ -151,12 +151,12 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private IEnumerator BlinkScale(float time = .5f)
     {
-        if(!setOnce)
-        {
-            initialScale = transform.localScale;
-            initialRotation = transform.localRotation;
-            setOnce = true;
-        }
+        //if(!setOnce)
+        //{
+        //    initialScale = transform.localScale;
+        //    initialRotation = transform.localRotation;
+        //    setOnce = true;
+        //}
         //LeanTween.cancel(gameObject);
         LeanTween.scale(gameObject, initialScale * hoverScale, 0.1f).setEaseInOutQuad();
         yield return new WaitForSeconds(time);
@@ -178,7 +178,11 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         //    button ??= GetComponentInChildren<Button>();
 
         inputHandler.OnInputTypeChange += HandleInputChange;
-        shouldShake = shakeUI;
+        shouldShake = shouldTween = shakeUI;
+
+        initialScale = transform.localScale;
+        initialRotation = transform.localRotation;
+
     }
 
     private void OnDestroy()

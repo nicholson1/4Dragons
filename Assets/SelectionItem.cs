@@ -544,11 +544,12 @@ public class SelectionItem : MonoBehaviour
     public void EquipedFromSelection()
     {
         isAvailable = false;
-        UIController._instance.PlayPlaceItem();
+        
 
         bool canEquipItem = EquipmentManager._instance.TryEquipItemFromSelection(item, this);
         if (canEquipItem)
         {
+            UIController._instance.PlayPlaceItem();
             Debug.Log($"successfully equip item from selection!");
             StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));
         }

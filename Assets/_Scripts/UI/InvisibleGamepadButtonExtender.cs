@@ -11,17 +11,17 @@ public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDe
 
     public void OnSelect(BaseEventData eventData)
     {
-        buttonListener.HandleGamepadButtonSelected();
+        buttonListener.HandleGamepadButtonSelected(button);
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
-        buttonListener.HandleGamepadButtonDeselected();
+        buttonListener.HandleGamepadButtonDeselected(button);
     }
 
     private void OnClickCallback()
     {
-        buttonListener.HandleGamepadButtonPressed();
+        buttonListener.HandleGamepadButtonPressed(button);
     }
 
     private void Start()
