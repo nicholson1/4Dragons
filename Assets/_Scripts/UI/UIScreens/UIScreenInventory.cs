@@ -214,6 +214,7 @@ public class UIScreenInventory : UIScreen
         selectionManager.OnPanelClosed += SelectionPanelClosedCallback;
 
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
+
     }
 
     protected override void OnDestroy()
