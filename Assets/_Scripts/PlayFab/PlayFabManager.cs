@@ -634,13 +634,13 @@ public class PlayFabManager : MonoBehaviour
     }
     
     
-    public void OnGUI()
-    {
-        if (GUILayout.Button("Log In") && SteamManager.Initialized)
-        {
-            GetSteamAuthTicket();
-        }
-    }
+    // public void OnGUI()
+    // {
+    //     if (GUILayout.Button("Log In") && SteamManager.Initialized)
+    //     {
+    //         GetSteamAuthTicket();
+    //     }
+    // }
 
     private void GetSteamAuthTicket()
     {

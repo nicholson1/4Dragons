@@ -19,13 +19,13 @@ public class SteamScript : MonoBehaviour
         m_OnGetSteamAuthTicket = Callback<GetTicketForWebApiResponse_t>.Create(OnGetSteamAuthTicket);
     }
     
-    public void OnGUI()
-    {
-        if (GUILayout.Button("Log In") && SteamManager.Initialized)
-        {
-            GetSteamAuthTicket();
-        }
-    }
+    // public void OnGUI()
+    // {
+    //     if (GUILayout.Button("Log In") && SteamManager.Initialized)
+    //     {
+    //         GetSteamAuthTicket();
+    //     }
+    // }
 
     private void GetSteamAuthTicket()
     {
