@@ -16,7 +16,7 @@ namespace Map
 
 namespace Map
 {
-    public class MapNode : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+    public class MapNode : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IGamepadButtonListener
     {
         public SpriteRenderer sr;
         public Image image;
@@ -45,7 +45,10 @@ namespace Map
         private bool isPingPongingColor = false;
         
         private ToolTip toolTip;
-        
+
+        public event Action OnGamepadButtonSelected;
+        public event Action OnGamepadButtonDeselected;
+
         void Start()
         {
             iconTransform = this.transform;
@@ -227,10 +230,44 @@ namespace Map
                 MapPlayerTracker.Instance.SelectNode(this);
                 CombatController._instance.MapNodeClicked(this.Node);
                 UIController._instance.ToggleMapUI(0);
-                UIController._instance.ToggleInventoryUI(0);
-                UIController._instance.ToggleLootUI(0);
+                //UIController._instance.ToggleInventoryUI(0);
+                //UIController._instance.ToggleLootUI(0);
                 UIController._instance.ToggleShopUI(0);
             }
+        }
+
+        public void HandleGamepadButtonSelected(Selectable selectable)
+        {
+            if (image != null)
+            {
+                image.color = MapView.Instance.visitedColor;
+
+            }
+        }
+
+        public void HandleGamepadButtonDeselected(Selectable selectable)
+        {
+
+
+            if (image != null)
+            {
+                if (Node.State == NodeStates.Visited)
+                    image.color = MapView.Instance.visitedColor;
+                if (Node.State == NodeStates.Locked)
+                    image.color = MapView.Instance.lockedColor;
+            }
+        }
+
+        public void HandleGamepadButtonPressed(Selectable selectable)
+        {
+            if (Node.State != NodeStates.Attainable) return;
+
+            MapPlayerTracker.Instance.SelectNode(this);
+            CombatController._instance.MapNodeClicked(this.Node);
+            UIController._instance.ToggleMapUI(0);
+            //UIController._instance.ToggleInventoryUI(0);
+            //UIController._instance.ToggleLootUI(0);
+            UIController._instance.ToggleShopUI(0);
         }
 
         public void ShowSwirlAnimation()
@@ -344,5 +381,7 @@ namespace Map
                     
             }
         }
+
+
     }
 }

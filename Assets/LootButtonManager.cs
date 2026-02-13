@@ -377,6 +377,14 @@ public class LootButtonManager : UIInventorySubPanel
         RefreshLootButtonNavigation();
     }
 
+    public void ExitLoot()
+    {
+        //close loot
+        //close inventory
+        //open map
+        //map can be clicked, check game manager
+    }
+
    
     // public void AddRelicButton()
     // {

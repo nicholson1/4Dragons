@@ -131,7 +131,8 @@ namespace Map
                 {
                     position = new Vector2(-offset + i * layer.nodesApartDistance, GetDistanceToLayer(layerIndex))
                 };
-                
+
+                node.layer = layerIndex;
                 nodesOnThisLayer.Add(node);
                 
             }

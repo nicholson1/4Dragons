@@ -21,6 +21,8 @@ namespace Map
 
         public int nodeSeed = -1;
 
+        public int layer = 0;
+
 
         public Node(NodeType nodeType, string blueprintName, Point point, int seed)
         {

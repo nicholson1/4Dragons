@@ -15,6 +15,9 @@ namespace Map
         public static MapManager _instance;
 
         private int nextMapSeed = -1;
+
+        public int TotalLayer => config != null ? config.layers.Count : 0;
+
         private void Awake()
         {
             if (_instance != null && _instance != this)

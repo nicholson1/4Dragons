@@ -218,6 +218,11 @@ public class UIController : MonoBehaviour
         Debug.Log($"OPEN MAP SCREEN HERE");
     }
 
+    public void OpenStartingMap()
+    {
+
+    }
+
 
     private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
     {
@@ -546,6 +551,8 @@ public class UIController : MonoBehaviour
         //ToggleShopUI();
         
     }
+
+
     bool mapMoving = false;
     private bool MapOn;
 
@@ -573,6 +580,34 @@ public class UIController : MonoBehaviour
         }
         //ToggleShopUI();
         PlayOpenMap();
+    }
+
+    IEnumerator MoveMapObject(GameObject moveObj, Action onMapMoveFinished = null)
+    {
+        mapMoving = true;
+        RectTransform rt = moveObj.GetComponent<RectTransform>();
+        Vector2 startpos = rt.anchoredPosition;
+        Vector2 endpos = new Vector2(startpos.x, -startpos.y);
+
+        //Debug.Log(startpos.y + " == " + endpos.y);
+
+        float t = 0;
+        while (t < 1)
+        {
+            rt.anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        rt.anchoredPosition = endpos;
+        mapMoving = false;
+
+        onMapMoveFinished?.Invoke();
+    }
+
+    private void MapMoveCallback()
+    {
+
     }
 
     bool shopMoving = false;
@@ -715,6 +750,8 @@ public class UIController : MonoBehaviour
 
     }
 
+
+
     private Vector2 GetPanelTargetPosition(PanelMoveDirection direction, Vector2 startPos)
     {
         switch (direction)
@@ -775,27 +812,7 @@ public class UIController : MonoBehaviour
         moving = false;
     }
 
-    IEnumerator MoveMapObject(GameObject moveObj)
-    { 
-        mapMoving = true;
-        RectTransform rt = moveObj.GetComponent<RectTransform>();
-        Vector2 startpos = rt.anchoredPosition;
-        Vector2 endpos = new Vector2(startpos.x, -startpos.y);
-        
-        //Debug.Log(startpos.y + " == " + endpos.y);
-            
-        float t = 0;
-        while (t < 1)
-        {
-            rt.anchoredPosition = Vector2.Lerp(startpos, endpos, t);
-            t = t + Time.deltaTime / .75f;
-            yield return new WaitForEndOfFrame();
-        }
 
-        rt.anchoredPosition = endpos;
-
-        mapMoving = false;
-    }
 
     IEnumerator MoveShopObject(GameObject moveObj)
     {
