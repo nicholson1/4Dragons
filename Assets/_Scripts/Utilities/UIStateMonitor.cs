@@ -10,6 +10,7 @@ public class UIStateMonitor : MonoBehaviour
     public UIScreen CurrentNavigatableScreen => currentNavigatableScreen;
     public UIScreen CurrentActiveScreen => currentActiveScreen;
     public UIScreen PreviousActiveScreen => previousActiveScreen;
+    public bool PanelCurrentlyMove => panelCurrentlyMove;
 
     private Stack<UIScreen> UIScreenStack = new Stack<UIScreen>();
     private List<UIScreen> uiScreens = new List<UIScreen>();
@@ -24,10 +25,12 @@ public class UIStateMonitor : MonoBehaviour
 
     private InputHandler inputHandler = null;
 
-    private Queue<UIScreen> transitioningScreen = new Queue<UIScreen>();
+    private bool panelCurrentlyMove = false;
 
     public void HandleToggleTransition(bool isTransitioning)
-    {        
+    {
+        panelCurrentlyMove = isTransitioning;
+
         if(isTransitioning)
         {
             
@@ -87,6 +90,7 @@ public class UIStateMonitor : MonoBehaviour
         //currentActiveScreen.SetNavigatable(true);
 
         //inputHandler.RevertActionMap();
+        inputHandler.SwitchActionMap(currentActiveScreen.DefaultScreenActionMap);
     }
 
     private void Start()

@@ -115,10 +115,7 @@ public class CombatController : MonoBehaviour
     public Elite Blacksmith;
     public GameObject BlacksmithDeco;
    
-
     [SerializeField] private AudioClip _beginAdventure;
-
-    private UIScreenCombat combatScreen = null;
 
     private void Awake()
     {
@@ -1076,9 +1073,7 @@ public class CombatController : MonoBehaviour
         CombatTrigger.EndCombat += EndCombat;
         MusicManager.Instance.PlayMenuMusic();
         
-        Player._am.SetBool("Walk", true);
-
-        combatScreen = CombatUI.GetComponent<UIScreenCombat>();
+        Player._am.SetBool("Walk", true);       
 
     }
     private void OnDestroy()

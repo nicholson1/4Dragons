@@ -47,6 +47,7 @@ namespace Map
         
         private ToolTip toolTip;
 
+        private RectTransform nodeRt;
         private UIScreenMap mapScreen;
         private Button gamepadButton;
 
@@ -62,6 +63,7 @@ namespace Map
             BaseColor = image.color;
             mapScreen = GetComponentInParent<UIScreenMap>();
             gamepadButton = GetComponentInChildren<Button>();
+            nodeRt = GetComponent<RectTransform>();
         }
 
         public void SetUp(Node node, NodeBlueprint blueprint)
@@ -249,7 +251,11 @@ namespace Map
             if (image != null)
             {
                 image.color = MapView.Instance.visitedColor;
+            }
 
+            if(toolTip != null)
+            {
+                toolTip.ShowTipFromGamepadNavi(nodeRt);
             }
         }
 
@@ -264,6 +270,9 @@ namespace Map
                 if (Node.State == NodeStates.Locked)
                     image.color = MapView.Instance.lockedColor;
             }
+
+            if (toolTip != null)
+                toolTip.CloseTip();
         }
 
         public void HandleGamepadButtonPressed(Selectable selectable)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
@@ -24,10 +25,20 @@ public class CombatButtonController : MonoBehaviour
     private int currentEnergy = 0;
 
     private CombatEntity character = null;
+
+    private InputHandler inputHandler = null;
+
+    private void BindCombatButtons()
+    {
+
+    }
     
     private void Start()
     {
         //CombatTrigger.TriggerCombat += UpdateCombatUI;
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        BindCombatButtons();
+
         Character.UpdateEnergy += UpdateEnergy;
         CombatController.UpdateUIButtons += UpdateCombatUI;
         

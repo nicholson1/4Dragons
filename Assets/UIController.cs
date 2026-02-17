@@ -240,6 +240,14 @@ public class UIController : MonoBehaviour
     }
     #endregion
 
+    public void ToggleMapFromMapButton()
+    {
+        if (stateMonitor.PanelCurrentlyMove) return;
+
+        bool isOpen = stateMonitor.CurrentActiveScreen == mapScreen;
+        ToggleMapNew(!isOpen, false);
+    }
+
     public void ToggleMapNew(bool toOpen = false, bool isClickable = false)
     {
         PlayOpenMap();
@@ -265,8 +273,6 @@ public class UIController : MonoBehaviour
         }
         //stateMonitor.HandleToggleTransition(false);
     }
-
-
 
     //For handling closing settings menu through UI [X] close button
     public void CloseSettings()
