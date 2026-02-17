@@ -28,7 +28,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private bool count;
     private bool count1;
 
-    private float timer = .5f;
+    private float timer = .25f;
 
     public void ResetTooltip()
     {
@@ -135,7 +135,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (count1 == true)
         {
             //count1 = false;
-            timer = .5f;
+            timer = .25f;
             ToolTipManager._instance.HideToolTipAll();
         }
 

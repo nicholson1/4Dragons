@@ -693,6 +693,10 @@ public class TheSpellBook : MonoBehaviour
             target.Buff(target, CombatEntity.BuffTypes.Block, -1,-target.myCharacter.Buffs[block].Item3 );
         }
     }
+
+    private int pyroCounter = 0;
+    private int isSameTurn = -1;
+    private int isSameLevel = -1;
     private void Pyroblast(SpellTypes spell, Weapon w, CombatEntity caster, CombatEntity target)
     {
         List<int> power = GetPowerValues(spell, w, caster);
@@ -703,6 +707,27 @@ public class TheSpellBook : MonoBehaviour
 
         // big hit on target
         caster.AttackBasic(target, CombatEntity.AbilityTypes.SpellAttack, power[0], crit, WaitTimeForAnimation((AnimationTriggerNames)power[2]));
+
+        if (CombatController._instance.Player == caster.myCharacter)
+        {
+            
+            if (isSameTurn == CombatController._instance.turnCounter && isSameLevel == caster.myCharacter._level)
+            {
+                pyroCounter += 1;
+                if (pyroCounter >= 2)
+                {
+                    SteamAchievementManager.Unlock("Pyro_2");
+                }
+            }
+            else
+            {
+                isSameLevel = caster.myCharacter._level;
+                isSameTurn = CombatController._instance.turnCounter;
+                pyroCounter = 1;
+            }
+            
+        }
+        
         // smaller hit on all other
         // foreach (var t in CombatController._instance.entitiesInCombat)
         // {

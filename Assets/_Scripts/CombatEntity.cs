@@ -549,6 +549,7 @@ public class CombatEntity : MonoBehaviour
             // adjust damage so that it only puts us to 1 hp
             if (attackDamage > myCharacter._currentHealth)
             {
+                SteamAchievementManager.Unlock("devils_dance");
                 reductionAmount += attackDamage - myCharacter._currentHealth -1;
                 attackDamage = myCharacter._currentHealth - 1;
             }

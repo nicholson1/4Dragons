@@ -1045,7 +1045,21 @@ public class UIController : MonoBehaviour
 #endif
     }
 
+<<<<<<< HEAD
     #region Audio Related
+=======
+    public void OpenQuitConfirmation()
+    {
+        ConfirmationManager._instance.OpenConfirmation(ConfirmationType.Quit);
+    }
+    public void OpenRestartConfirmation()
+    {
+        ConfirmationManager._instance.OpenConfirmation(ConfirmationType.Restart);
+
+    }
+    
+
+>>>>>>> origin/main
     public void PlayUIHover()
     {
         SoundManager.Instance.Play2DSFX(_hoverSFX, hoverVol, .75f, .05f);

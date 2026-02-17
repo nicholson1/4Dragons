@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.Threading.Tasks;
@@ -33,6 +34,8 @@ public class PlayFabManager : MonoBehaviour
     public string SavedPassword => LoadCredential(PasswordKey);
     public string LoggedInPassword => (IsLoggedIn) ? LoadCredential(PasswordKey) : "";
 
+    protected Callback<GetTicketForWebApiResponse_t> m_OnGetSteamAuthTicket;
+
 
     public static PlayFabManager _instance;
     private void Awake()
@@ -50,6 +53,8 @@ public class PlayFabManager : MonoBehaviour
         {
             Debug.LogError("Title ID is not set. Please set the Title ID in the PlayFab settings.");
         }
+        m_TicketCallback = Callback<GetTicketForWebApiResponse_t>.Create(OnGetSteamAuthTicket);
+
 
         current_sw_version = Application.version;
         current_platform = Application.platform.ToString();
@@ -260,6 +265,36 @@ public class PlayFabManager : MonoBehaviour
 
     public async Task<AutoResult> AutoLogin()
     {
+        
+        // 1) Steam login first
+        var steamLogin = await TryPlayFabSteamLoginAsync();
+        if (steamLogin != null)
+        {
+            Debug.Log("Steam login success");
+            OnLoginSuccess(steamLogin);
+            CancelSteamTicket();
+            return AutoResult.SUCCESS;
+        }
+
+        // Debug.Log("WAIT");
+        // await Task.Delay(5000);
+        // Debug.Log("GO");
+
+        // 2) If Steam login failed, try Steam register (create account)
+        var steamRegister = await TryPlayFabSteamRegisterAsync();
+        if (steamRegister != null)
+        {
+            Debug.Log("Steam register/login success");
+            OnLoginSuccess(steamRegister);
+            CancelSteamTicket();
+            return AutoResult.SUCCESS;
+        }
+        // Debug.Log("WAIT");
+        // await Task.Delay(5000);
+        // Debug.Log("GO");
+
+        
+        CancelSteamTicket();
         
         string email = LoadCredential(EmailKey);
         string password = LoadCredential(PasswordKey);
@@ -564,6 +599,145 @@ public class PlayFabManager : MonoBehaviour
         PlayFabClientAPI.WritePlayerEvent(request, 
             result => Debug.Log("Successfully submitted Run Data to PlayFab."),
             error => Debug.LogError("Failed to submit data: " + error.GenerateErrorReport()));
+    }
+    //// =======================Steam login handler================================================
+    
+
+    private HAuthTicket m_hTicket = HAuthTicket.Invalid;
+    private Callback<GetTicketForWebApiResponse_t> m_TicketCallback;
+
+    private System.Threading.Tasks.TaskCompletionSource<string> _steamTicketTcs;
+    private async Task<string> GetSteamWebApiTicketAsync()
+    {
+        if (!SteamManager.Initialized)
+            return null;
+
+        _steamTicketTcs = new TaskCompletionSource<string>();
+
+        m_hTicket = SteamUser.GetAuthTicketForWebApi("AzurePlayFab");
+        if (m_hTicket == HAuthTicket.Invalid)
+        {
+            Debug.Log("Failed to request steam auth ticket");
+            _steamTicketTcs.TrySetResult(null);
+        }
+        else
+        {
+            Debug.Log("Steam auth ticket requested");
+        }
+
+        // Optional timeout so it never hangs forever
+        var completed = await Task.WhenAny(_steamTicketTcs.Task, Task.Delay(5000));
+        if (completed != _steamTicketTcs.Task)
+            return null;
+
+        return await _steamTicketTcs.Task;
+    }
+    
+    
+    // public void OnGUI()
+    // {
+    //     if (GUILayout.Button("Log In") && SteamManager.Initialized)
+    //     {
+    //         GetSteamAuthTicket();
+    //     }
+    // }
+
+    private void GetSteamAuthTicket()
+    {
+        m_hTicket = SteamUser.GetAuthTicketForWebApi("AzurePlayFab");
+
+        if (m_hTicket == HAuthTicket.Invalid)
+        {
+            Debug.Log("Failed to request steam auth ticket");
+        }
+        else
+        {
+            Debug.Log("Steam auth ticket requested");
+        }
+    }
+
+    private void OnGetSteamAuthTicket(GetTicketForWebApiResponse_t pCallback)
+    {
+        Debug.Log("Steam auth ticket callback invoked");
+
+        if (pCallback.m_eResult != EResult.k_EResultOK)
+        {
+            Debug.Log("Failed to get steam auth ticket: " + pCallback.m_eResult);
+            _steamTicketTcs?.TrySetResult(null);
+            return;
+        }
+
+        var sb = new StringBuilder(pCallback.m_cubTicket * 2);
+        for (int i = 0; i < pCallback.m_cubTicket; ++i)
+            sb.AppendFormat("{0:x2}", pCallback.m_rgubTicket[i]);
+
+        _steamTicketTcs?.TrySetResult(sb.ToString());
+    }
+
+    private async Task<LoginResult> TryPlayFabSteamLoginAsync()
+    {
+        var ticketHex = await GetSteamWebApiTicketAsync();
+        if (string.IsNullOrEmpty(ticketHex))
+            return null;
+
+        var request = new LoginWithSteamRequest
+        {
+            CreateAccount = false,
+            SteamTicket = ticketHex,
+            TicketIsServiceSpecific = true
+        };
+
+        return await LoginWithSteamAsync(request);
+    }
+    private async Task<LoginResult> TryPlayFabSteamRegisterAsync()
+    {
+        var ticketHex = await GetSteamWebApiTicketAsync();
+        if (string.IsNullOrEmpty(ticketHex))
+            return null;
+
+        var request = new LoginWithSteamRequest
+        {
+            CreateAccount = true,
+            SteamTicket = ticketHex,
+            TicketIsServiceSpecific = true
+        };
+
+        return await LoginWithSteamAsync(request);
+    }
+    private Task<LoginResult> LoginWithSteamAsync(LoginWithSteamRequest request)
+    {
+        var tcs = new TaskCompletionSource<LoginResult>();
+
+        PlayFabClientAPI.LoginWithSteam(
+            request,
+            result => tcs.SetResult(result),
+            error =>
+            {
+                Debug.Log("Steam login failed: " + error.GenerateErrorReport());
+                tcs.SetResult(null);
+            });
+
+        return tcs.Task;
+    }
+    private void OnComplete(LoginResult obj)
+    {
+        SteamUser.CancelAuthTicket(m_hTicket);
+        Debug.Log("steam login Success!");
+    }
+
+    private void OnFailed(PlayFabError error)
+    {
+        SteamUser.CancelAuthTicket(m_hTicket);
+        Debug.Log("Failed PlayFab login: " + error.GenerateErrorReport());
+    }
+    
+    private void CancelSteamTicket()
+    {
+        if (m_hTicket != HAuthTicket.Invalid)
+        {
+            SteamUser.CancelAuthTicket(m_hTicket);
+            m_hTicket = HAuthTicket.Invalid;
+        }
     }
 }
 

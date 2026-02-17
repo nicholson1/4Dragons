@@ -30,6 +30,11 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
               potion = p;
               _toolTip.e = potion;
               image.sprite = p.icon;
+
+              if (transform.GetSiblingIndex() >= 5)
+              {
+                     SteamAchievementManager.Unlock("bag_potions");
+              }
               
               TutorialManager.Instance.QueueTip(TutorialNames.Potions);
        }
