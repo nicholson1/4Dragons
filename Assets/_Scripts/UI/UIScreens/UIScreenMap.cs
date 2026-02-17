@@ -8,30 +8,51 @@ using UnityEngine.UI;
 
 public class UIScreenMap : UIScreen
 {
-
-    //don't need this, we have navigatable prop here
     public bool AreNodesClickable => areNodesClickable;
 
     private bool areNodesClickable = false;
 
     [SerializeField] private MapView mapView;
     private Dictionary<MapNode, int> mapNodes = new Dictionary<MapNode, int>();
+    private MapNode currenOccupiedNode;
+
+    public void SetNodesClickable(bool clickable) => areNodesClickable = clickable;
+    public void SetCurrentOccupiedNode(MapNode mapNode) => currenOccupiedNode = mapNode;
+
+
+    public override void Activate(bool navigatableOnActivated = true)
+    {
+        PopulateMapNodes();
+
+        base.Activate(navigatableOnActivated);
+    }
+
 
     public override Selectable GetSelectableToSelectOnActivated()
     {
-        //select the current occupied one
+        if (currenOccupiedNode == null)
+        {
+            var mapNode = mapNodes.Where(n => n.Value == 0).FirstOrDefault().Key;
+            Selectable selectable = mapNode.GetComponentInChildren<Selectable>();
+            return selectable;
+        }            
 
-        return null;
-
+        return currenOccupiedNode.GetComponentInChildren<Selectable>();
     }
 
-    private void SetupNodeNavigation()
+    private void PopulateMapNodes()
     {
         mapNodes.Clear();
         for(int i = 0; i<mapView.MapNodes.Count; i++)
         {
             var mapNode = mapView.MapNodes[i];
             mapNodes.Add(mapNode, mapNode.Node.layer);
+            
+            var button = mapNode.GamepadButton;
+            if(button.TryGetComponent(out ButtonBindingHandler bindHandler))
+            {
+                bindHandler.SetUIScreen(this);
+            }
         }
 
         SetNodesNavigation();
@@ -41,7 +62,7 @@ public class UIScreenMap : UIScreen
     {
         foreach(var kvp in mapNodes)
         {
-            Selectable selectable = kvp.Key.GetComponentInChildren<Selectable>();
+            Selectable selectable = kvp.Key.GamepadButton;
             Navigation navi = selectable.navigation;
             if (navi.mode != Navigation.Mode.Explicit)
                 navi.mode = Navigation.Mode.Explicit;
@@ -49,8 +70,8 @@ public class UIScreenMap : UIScreen
             navi.selectOnRight = GetHorizontalClosestNodeButton(kvp.Value, 1, kvp.Key);
             navi.selectOnLeft = GetHorizontalClosestNodeButton(kvp.Value, -1, kvp.Key);
 
-            navi.selectOnUp = GetVerticalNodeButton(kvp.Key, -1);
-            navi.selectOnDown = GetVerticalNodeButton(kvp.Key, 1);
+            navi.selectOnUp = GetVerticalNodeButton(kvp.Key, 1);
+            navi.selectOnDown = GetVerticalNodeButton(kvp.Key, -1);
 
             selectable.navigation = navi;
         }
@@ -76,7 +97,7 @@ public class UIScreenMap : UIScreen
             firstConnectedCandidate = candidates.Where(n => n.Key.Node.outgoing.Contains(current.Node.point)).LastOrDefault().Key;
 
         if (firstConnectedCandidate == null) return null;
-        Selectable selectableToChoose = firstConnectedCandidate.GetComponentInChildren<Selectable>();
+        Selectable selectableToChoose = firstConnectedCandidate.GamepadButton;
         return selectableToChoose;
     }
 
@@ -95,7 +116,7 @@ public class UIScreenMap : UIScreen
 
         if (outOfRange) return null;
 
-        return candidates[targetIndex].GetComponentInChildren<Selectable>();
+        return candidates[targetIndex].GamepadButton;
     }
 
 }

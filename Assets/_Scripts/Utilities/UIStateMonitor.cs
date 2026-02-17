@@ -24,18 +24,21 @@ public class UIStateMonitor : MonoBehaviour
 
     private InputHandler inputHandler = null;
 
+    private Queue<UIScreen> transitioningScreen = new Queue<UIScreen>();
 
     public void HandleToggleTransition(bool isTransitioning)
-    {
-        Debug.Log($"UI state monitor: transitioning");
+    {        
         if(isTransitioning)
         {
+            
             currentNavigatableScreen.SetNavigatable(false);
             inputHandler.SwitchActionMap(ActionMaps.Disabled);
+            Debug.Log($"UI state monitor: transitioning - switch map to {inputHandler.CurrentActionMap}");
         }
         else
-        {
-            inputHandler.RevertActionMap();
+        {            
+            inputHandler.SwitchActionMap(currentNavigatableScreen.DefaultScreenActionMap);
+            Debug.Log($"UI state monitor: should revert to non-disabled map, reality: {inputHandler.CurrentActionMap}");
         }
             
     }

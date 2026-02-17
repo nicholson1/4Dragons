@@ -28,6 +28,7 @@ namespace Map
 
         public Node Node { get; private set; }
         public NodeBlueprint Blueprint { get; private set; }
+        public Button GamepadButton => gamepadButton;
 
         private float initialScale;
         private const float HoverScaleFactor = 1.2f;
@@ -46,16 +47,22 @@ namespace Map
         
         private ToolTip toolTip;
 
+        private UIScreenMap mapScreen;
+        private Button gamepadButton;
+
         public event Action OnGamepadButtonSelected;
         public event Action OnGamepadButtonDeselected;
+
+        //Bind the IGamepadListener events!!!
 
         void Start()
         {
             iconTransform = this.transform;
             initialScaleIcon = iconTransform.localScale;
             BaseColor = image.color;
+            mapScreen = GetComponentInParent<UIScreenMap>();
+            gamepadButton = GetComponentInChildren<Button>();
         }
-        
 
         public void SetUp(Node node, NodeBlueprint blueprint)
         {
@@ -220,24 +227,25 @@ namespace Map
 
         public void OnPointerUp(PointerEventData data)
         {
-            if (!CombatController._instance.MapCanBeClicked || Node.State != NodeStates.Attainable)
-            {
-                return;
-            }
+            if (!mapScreen.AreNodesClickable) return;
+            if (Node.State != NodeStates.Attainable) return;
             if (Time.time - mouseDownTime < MaxClickDuration)
             {
                 // user clicked on this node:
-                MapPlayerTracker.Instance.SelectNode(this);
-                CombatController._instance.MapNodeClicked(this.Node);
-                UIController._instance.ToggleMapUI(0);
-                //UIController._instance.ToggleInventoryUI(0);
-                //UIController._instance.ToggleLootUI(0);
-                UIController._instance.ToggleShopUI(0);
+                //MapPlayerTracker.Instance.SelectNode(this);
+                //CombatController._instance.MapNodeClicked(this.Node);
+                //UIController._instance.ToggleMapUI(0);
+                ////UIController._instance.ToggleInventoryUI(0);
+                ////UIController._instance.ToggleLootUI(0);
+                //UIController._instance.ToggleShopUI(0);
+
+                SelectNode();
             }
         }
 
         public void HandleGamepadButtonSelected(Selectable selectable)
         {
+            Debug.Log($"gamepad button for {this.gameObject.name} selected");
             if (image != null)
             {
                 image.color = MapView.Instance.visitedColor;
@@ -247,7 +255,7 @@ namespace Map
 
         public void HandleGamepadButtonDeselected(Selectable selectable)
         {
-
+            Debug.Log($"gamepad button for {this.gameObject.name} deselected");
 
             if (image != null)
             {
@@ -260,14 +268,19 @@ namespace Map
 
         public void HandleGamepadButtonPressed(Selectable selectable)
         {
+            Debug.Log($"Node {gameObject.name} clicked w/ gamepad!");
+            if (!mapScreen.AreNodesClickable) return;
             if (Node.State != NodeStates.Attainable) return;
 
+            SelectNode();
+            
+        }
+
+        public void SelectNode()
+        {
             MapPlayerTracker.Instance.SelectNode(this);
             CombatController._instance.MapNodeClicked(this.Node);
-            UIController._instance.ToggleMapUI(0);
-            //UIController._instance.ToggleInventoryUI(0);
-            //UIController._instance.ToggleLootUI(0);
-            UIController._instance.ToggleShopUI(0);
+            UIController._instance.ToggleMapNew(false, false);
         }
 
         public void ShowSwirlAnimation()

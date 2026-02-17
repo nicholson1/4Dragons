@@ -379,6 +379,8 @@ public class LootButtonManager : UIInventorySubPanel
 
     public void ExitLoot()
     {
+        UIController._instance.CloseInventoryScreenWithLootPanel();
+        UIController._instance.ToggleMapNew(true, true);
         //close loot
         //close inventory
         //open map

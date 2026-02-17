@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// Invisible Gamepad Button requires a ButtonBindingHandler to be clickable.
+/// </summary>
+/// <param name="selectable"></param>
 public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     private Button button;
@@ -19,8 +23,10 @@ public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDe
         buttonListener.HandleGamepadButtonDeselected(button);
     }
 
+
     private void OnClickCallback()
     {
+        Debug.Log($"Onclick detected");
         buttonListener.HandleGamepadButtonPressed(button);
     }
 

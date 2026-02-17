@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime;
@@ -19,7 +20,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private UIScreenInventory inventoryScreen;
     [SerializeField] private UIScreen settingsScreen;
     [SerializeField] private UIScreen startingTreasureScreen;
-    [SerializeField] private UIScreen mapScreen;
+    [SerializeField] private UIScreenMap mapScreen;
+    [SerializeField] private UIScreenCombat combatScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -69,6 +71,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private AnimationCurve panelMoveCurve;
 
     private bool InventoryOn = false;
+
+    private HashSet<GameObject> movingPanels = new HashSet<GameObject>();
+
     public static UIController _instance;
 
     #region Audio Variables
@@ -122,7 +127,7 @@ public class UIController : MonoBehaviour
 
     public void ActivateCombatScreen()
     {
-        CombatUI.GetComponent<UIScreen>().Activate(false);
+        combatScreen.Activate(false);
     }
 
     public void ActivateTreasureScreen()
@@ -130,6 +135,7 @@ public class UIController : MonoBehaviour
         startingTreasureScreen.Activate();
     }
 
+    #region InventoryUI Related
     //make an overload for toggling InventoryUI+Loot and other similar behaviour
     public void ToggleInventoryUINew(bool toOpen)
     {
@@ -148,7 +154,6 @@ public class UIController : MonoBehaviour
 
         PlayOpenInventory();
 
-        stateMonitor.HandleToggleTransition(true);
         inventoryScreen.ChangeInventoryState(InventoryState.Base); //InventoryUI toggle specific only for Base
 
         StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
@@ -171,7 +176,7 @@ public class UIController : MonoBehaviour
 
         PlayOpenInventory();
 
-        stateMonitor.HandleToggleTransition(true);        
+        //stateMonitor.HandleToggleTransition(true);        
 
         switch (targetInventoryState)
         {
@@ -186,6 +191,23 @@ public class UIController : MonoBehaviour
         }
 
         StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
+    }
+
+    private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
+    {
+        if (toOpen)
+        {
+            inventoryScreen.Activate();
+        }
+        else
+        {
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            inventoryScreen.Deactivate();
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
+            Debug.Log($"closed inventory UI and reactivate {screenToReturnTo.gameObject.name}");
+        }
+
+        //stateMonitor.HandleToggleTransition(false);
     }
 
     public void CloseInventoryScreenWithLootPanel()
@@ -206,7 +228,7 @@ public class UIController : MonoBehaviour
 
         PlayOpenInventory();
 
-        stateMonitor.HandleToggleTransition(true);
+        //stateMonitor.HandleToggleTransition(true);
 
         StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, false));
         StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false, CloseInventoryScreenWithLootPanelCallback));
@@ -215,31 +237,36 @@ public class UIController : MonoBehaviour
     private void CloseInventoryScreenWithLootPanelCallback(bool _)
     {
         inventoryScreen.Deactivate();
-        Debug.Log($"OPEN MAP SCREEN HERE");
+    }
+    #endregion
+
+    public void ToggleMapNew(bool toOpen = false, bool isClickable = false)
+    {
+        PlayOpenMap();
+
+        mapScreen.SetNodesClickable(isClickable);
+
+        //stateMonitor.HandleToggleTransition(true);
+        StartCoroutine(MovePanel(mapScreen.gameObject, PanelMoveDirection.Vertical, toOpen, MapMoveCompletedCallback));
     }
 
-    public void OpenStartingMap()
+    private void MapMoveCompletedCallback(bool toOpen)
     {
-
-    }
-
-
-    private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
-    {
+        Debug.Log($"map move completed, now map open? {toOpen}");
         if (toOpen)
         {
-            inventoryScreen.Activate();
+            mapScreen.Activate();
         }
         else
         {
             var screenToReturnTo = stateMonitor.PreviousActiveScreen;
-            inventoryScreen.Deactivate();
-            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
-            Debug.Log($"closed inventory UI and reactivate {screenToReturnTo.gameObject.name}");
+            mapScreen.Deactivate();
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);            
         }
-
-        stateMonitor.HandleToggleTransition(false);
+        //stateMonitor.HandleToggleTransition(false);
     }
+
+
 
     //For handling closing settings menu through UI [X] close button
     public void CloseSettings()
@@ -504,8 +531,6 @@ public class UIController : MonoBehaviour
     }
 
 
-
-
     public void ToggleInventoryUI(int force = -1)
     {
         EquipmentManager._instance.c.UpdateStats();
@@ -768,8 +793,17 @@ public class UIController : MonoBehaviour
         }
     }
 
+    private void UpdateToggleTransitionState(bool transitioning)
+    {
+        if (movingPanels.Count == 0)
+            stateMonitor.HandleToggleTransition(transitioning);
+    }
+
     private IEnumerator MovePanel(GameObject targetPanel, PanelMoveDirection moveDirection, bool toOpen, Action<bool> OnFinished = null)
     {
+        UpdateToggleTransitionState(true);
+        movingPanels.Add(targetPanel);
+
         //Disable input before move        
         RectTransform rt = targetPanel.GetComponent<RectTransform>();
 
@@ -786,9 +820,12 @@ public class UIController : MonoBehaviour
         }
 
         rt.anchoredPosition = endPos;
-        OnFinished?.Invoke(toOpen);
 
-        //Enable input after move
+        movingPanels.Remove(targetPanel);
+        movingPanels.TrimExcess();
+        UpdateToggleTransitionState(false);
+
+        OnFinished?.Invoke(toOpen);
     }
 
     IEnumerator MoveInventoryUI(GameObject moveObj)

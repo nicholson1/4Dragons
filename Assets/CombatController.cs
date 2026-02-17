@@ -886,8 +886,8 @@ public class CombatController : MonoBehaviour
             //Debug.Log("DESTRIYING GAME OBJECT");
         }
 
-
-        UIController._instance.ToggleInventoryUINew(false);
+        //we already close it when we're done looting
+        //UIController._instance.ToggleInventoryUINew(false);
 
         NextCombatButton.gameObject.SetActive(false);
 

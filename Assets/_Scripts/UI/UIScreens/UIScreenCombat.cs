@@ -7,7 +7,6 @@ public class UIScreenCombat : UIScreen
 {
     //we might need button assigned for toggling Combat and Potion mode
 
-    private InputHandler inputHandler;
     private CombatUINavigationMode currentCombatNavigation = CombatUINavigationMode.Combat;
 
     public void SetCombatUINavigation(CombatUINavigationMode mode)

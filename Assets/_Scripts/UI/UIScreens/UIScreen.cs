@@ -16,6 +16,7 @@ public class UIScreen : MonoBehaviour
     public bool Navigatable => navigatable;
     public bool IsScreenActive => isScreenActive;
     public List<GlobalButton> AccessibleGlobalButtons => accessibleGlobalButtons;
+    public ActionMaps DefaultScreenActionMap => defaultActionMap;
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
@@ -29,11 +30,12 @@ public class UIScreen : MonoBehaviour
     [SerializeField] protected bool canAccessSettingsButton = true;
     [SerializeField] protected List<GlobalButton> accessibleGlobalButtons= new List<GlobalButton>();
 
-    [SerializeField] protected ActionMaps defaultInputActionMap = ActionMaps.Menu;
+    [SerializeField] protected ActionMaps defaultActionMap = ActionMaps.Menu;
     protected bool navigatable = true;
     protected bool isScreenActive = false;
 
     protected InputHandler inputHandler = null;
+
 
 
     protected virtual void HandleInputTypeChange(InputType inputType)

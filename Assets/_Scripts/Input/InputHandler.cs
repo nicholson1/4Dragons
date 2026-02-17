@@ -81,8 +81,10 @@ public class InputHandler : MonoBehaviour
 
     public void SwitchActionMap(ActionMaps targetMap)
     {
-        if (cachedPreviousActionMap == ActionMaps.Undefined && targetMap != ActionMaps.Disabled)
+        Debug.Log($"targetMap = {targetMap}");
+        if (targetMap != ActionMaps.Disabled)
             cachedPreviousActionMap = targetMap;
+        Debug.Log($"cachedmap = {cachedPreviousActionMap}");
 
         switch(targetMap)
         {
@@ -118,7 +120,7 @@ public class InputHandler : MonoBehaviour
                 break;
         }
         
-        if(targetMap != ActionMaps.Disabled)
+        if(targetMap != ActionMaps.Disabled && currentActionMap != ActionMaps.Disabled)
             cachedPreviousActionMap = currentActionMap;
 
         currentActionMap = targetMap;
