@@ -79,6 +79,7 @@ public class CombatButtonController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            Debug.Log($"GetKeyDown({Input.inputString})");
             if (weapon1.interactable)
             {
                 character.CastAbility(0);
@@ -87,6 +88,7 @@ public class CombatButtonController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            Debug.Log($"GetKeyDown({Input.inputString})");
             if (weapon2.interactable)
             {
                 character.CastAbility(1);
@@ -96,6 +98,7 @@ public class CombatButtonController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
+            Debug.Log($"GetKeyDown({Input.inputString})");
             if (scroll1.interactable)
             {
                 character.CastAbility(2);
@@ -104,6 +107,7 @@ public class CombatButtonController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
+            Debug.Log($"GetKeyDown({Input.inputString})");
             if (scroll2.interactable)
             {
                 character.CastAbility(3);
@@ -113,6 +117,7 @@ public class CombatButtonController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log($"GetKeyDown({Input.inputString})");
             if (endTurn.isActiveAndEnabled && endTurn.interactable)
             {
                 character.EndTurn();

@@ -20,6 +20,11 @@ public class CombatButtonBindingHandler : MonoBehaviour
         }
     }
 
+    private void DebugClickCombatButton()
+    {
+        Debug.Log($"combatButton of {gameObject.name} was clicked!");
+    }
+
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -30,10 +35,14 @@ public class CombatButtonBindingHandler : MonoBehaviour
     private void OnEnable()
     {
         inputHandler.OnAttackButtonPressed.AddListener(HandleAttackPressed);
+
+        button.onClick.AddListener(DebugClickCombatButton);
     }
 
     private void OnDisable()
     {
         inputHandler.OnAttackButtonPressed.RemoveListener(HandleAttackPressed);
+
+        button.onClick.RemoveListener(DebugClickCombatButton);
     }
 }

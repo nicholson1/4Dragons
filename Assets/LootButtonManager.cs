@@ -36,7 +36,8 @@ public class LootButtonManager : UIInventorySubPanel
 
     private bool stillSettingUpButtons = false;
 
-    
+    public void SetLeaveButtonInteractable(bool shouldInteractable) => leaveButton.interactable = shouldInteractable;
+
     public void SetLootPanelButtonsLeftNavigation(Selectable selectable)
     {
         leftSelectableAtInventoryUI = selectable;
@@ -354,7 +355,6 @@ public class LootButtonManager : UIInventorySubPanel
         var equipmentButton = EquipmentButtons[i];
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         equipmentButton.DeactivateButton();
-
         if (EquipmentLists[i].Count == 1)
         {
             SelectionManager._instance.selectionsLeft = 1;

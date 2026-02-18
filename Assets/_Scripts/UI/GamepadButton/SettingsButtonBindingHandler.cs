@@ -13,13 +13,11 @@ public class SettingsButtonBindingHandler : ButtonBindingHandler
         {
             button.interactable = true;
             //BindGamepadToButton();
-            Debug.Log($"Toggle {gameObject.name} interactability for screen {screen.gameObject.name} to {button.interactable}");
         }
         else
         {
             button.interactable = false;
             //UnbindGamepadFromButton();
-            Debug.Log($"Toggle {gameObject.name} interactability for screen {screen.gameObject.name} to {button.interactable}");
         }
     }
 

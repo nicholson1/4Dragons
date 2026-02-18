@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
@@ -15,6 +13,8 @@ public class UIController : MonoBehaviour
 {
     public UIStateMonitor StateMonitor => stateMonitor;
     private UIStateMonitor stateMonitor = null;
+
+    
 
     [SerializeField] private UIScreen titleScreen;
     [SerializeField] private UIScreenInventory inventoryScreen;
@@ -72,7 +72,7 @@ public class UIController : MonoBehaviour
 
     private bool InventoryOn = false;
 
-    private HashSet<GameObject> movingPanels = new HashSet<GameObject>();
+    private List<GameObject> movingPanels = new List<GameObject>();
 
     public static UIController _instance;
 
@@ -120,19 +120,38 @@ public class UIController : MonoBehaviour
     [SerializeField] private float UpgradeSoundVol;
     #endregion
 
+    
+    public void ClearScreenFlowHistory()
+    {
+
+    }
+    
     public void ActivateTitleScreen()
     {
         TitleScreen.GetComponent<UIScreen>().Activate();
     }
 
+    [ContextMenu("activate combat screen!")]
     public void ActivateCombatScreen()
     {
         combatScreen.Activate(false);
     }
 
+    
     public void ActivateTreasureScreen()
     {
         startingTreasureScreen.Activate();
+    }
+
+    public IEnumerator AwaitScreenTransition(UIScreen oldScreen, UIScreen newScreen, Action<UIScreen, UIScreen> onFinishTransition = null)
+    {
+        while (oldScreen.IsScreenActive)
+            yield return null;
+
+        while (!newScreen.IsScreenActive)
+            yield return null;
+
+        onFinishTransition?.Invoke(oldScreen, newScreen);
     }
 
     #region InventoryUI Related
@@ -154,7 +173,7 @@ public class UIController : MonoBehaviour
 
         PlayOpenInventory();
 
-        inventoryScreen.ChangeInventoryState(InventoryState.Base); //InventoryUI toggle specific only for Base
+        inventoryScreen.ChangeInventoryState(InventoryState.Base);
 
         StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
     }
@@ -175,8 +194,6 @@ public class UIController : MonoBehaviour
         }
 
         PlayOpenInventory();
-
-        //stateMonitor.HandleToggleTransition(true);        
 
         switch (targetInventoryState)
         {
@@ -805,6 +822,11 @@ public class UIController : MonoBehaviour
             stateMonitor.HandleToggleTransition(transitioning);
     }
 
+    public bool IsAnyPanelTransitioning()
+    {
+        return movingPanels.Count > 0;
+    }
+
     private IEnumerator MovePanel(GameObject targetPanel, PanelMoveDirection moveDirection, bool toOpen, Action<bool> OnFinished = null)
     {
         UpdateToggleTransitionState(true);
@@ -828,7 +850,7 @@ public class UIController : MonoBehaviour
         rt.anchoredPosition = endPos;
 
         movingPanels.Remove(targetPanel);
-        movingPanels.TrimExcess();
+
         UpdateToggleTransitionState(false);
 
         OnFinished?.Invoke(toOpen);

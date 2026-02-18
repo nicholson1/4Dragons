@@ -49,7 +49,6 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public virtual void Activate(bool navigatableOnActivated = true)
     {
-        Debug.Log($"Activate on base {this.gameObject.name} called!");
         isScreenActive = true;
 
         if (!gameObject.activeSelf)
@@ -60,7 +59,6 @@ public class UIScreen : MonoBehaviour
 
         OnNewScreenActive?.Invoke(this, navigatable);
 
-        Debug.Log($"Screen {gameObject.name} is activated with navigatable = {navigatable}");
         if (navigatable)
         {            
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
@@ -159,4 +157,5 @@ public enum GlobalButton
     Inventory,
     Map
 }
+
 

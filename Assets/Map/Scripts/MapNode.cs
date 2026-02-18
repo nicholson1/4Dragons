@@ -247,7 +247,6 @@ namespace Map
 
         public void HandleGamepadButtonSelected(Selectable selectable)
         {
-            Debug.Log($"gamepad button for {this.gameObject.name} selected");
             if (image != null)
             {
                 image.color = MapView.Instance.visitedColor;
@@ -261,8 +260,6 @@ namespace Map
 
         public void HandleGamepadButtonDeselected(Selectable selectable)
         {
-            Debug.Log($"gamepad button for {this.gameObject.name} deselected");
-
             if (image != null)
             {
                 if (Node.State == NodeStates.Visited)
@@ -277,7 +274,6 @@ namespace Map
 
         public void HandleGamepadButtonPressed(Selectable selectable)
         {
-            Debug.Log($"Node {gameObject.name} clicked w/ gamepad!");
             if (!mapScreen.AreNodesClickable) return;
             if (Node.State != NodeStates.Attainable) return;
 
@@ -288,7 +284,7 @@ namespace Map
         public void SelectNode()
         {
             MapPlayerTracker.Instance.SelectNode(this);
-            CombatController._instance.MapNodeClicked(this.Node);
+            CombatController._instance.MapNodeClicked(this.Node); //Activate combat screen happen here
             UIController._instance.ToggleMapNew(false, false);
         }
 

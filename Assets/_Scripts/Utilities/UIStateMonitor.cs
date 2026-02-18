@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,8 +13,10 @@ public class UIStateMonitor : MonoBehaviour
     public UIScreen PreviousActiveScreen => previousActiveScreen;
     public bool PanelCurrentlyMove => panelCurrentlyMove;
 
-    private Stack<UIScreen> UIScreenStack = new Stack<UIScreen>();
+    private List<UIScreen> screenHistory = new List<UIScreen>();
     private List<UIScreen> uiScreens = new List<UIScreen>();
+
+    private int maxScreenHistory = 5;
 
     private UIScreen currentNavigatableScreen = null;
     private UIScreen currentActiveScreen = null;
@@ -21,27 +24,24 @@ public class UIStateMonitor : MonoBehaviour
 
     private TutorialManager tutorialManager = null;
 
-    public UIScreen GetCurrentTopMostScreen => UIScreenStack.Count > 0 ? UIScreenStack.Peek() : null;
+    public UIScreen GetLatestScreenInHistory() => screenHistory.Count > 0 ? screenHistory.LastOrDefault() : null;
 
     private InputHandler inputHandler = null;
 
     private bool panelCurrentlyMove = false;
 
     public void HandleToggleTransition(bool isTransitioning)
-    {
+    {        
         panelCurrentlyMove = isTransitioning;
 
         if(isTransitioning)
-        {
-            
+        {            
             currentNavigatableScreen.SetNavigatable(false);
             inputHandler.SwitchActionMap(ActionMaps.Disabled);
-            Debug.Log($"UI state monitor: transitioning - switch map to {inputHandler.CurrentActionMap}");
         }
         else
         {            
             inputHandler.SwitchActionMap(currentNavigatableScreen.DefaultScreenActionMap);
-            Debug.Log($"UI state monitor: should revert to non-disabled map, reality: {inputHandler.CurrentActionMap}");
         }
             
     }
@@ -49,12 +49,26 @@ public class UIStateMonitor : MonoBehaviour
     public void RegisterScreen(UIScreen screen)
     {
         uiScreens.Add(screen);
-        screen.OnNewScreenActive += HandleScreenNavigatableChange;
-        
+        screen.OnNewScreenActive += HandleScreenNavigatableChange;        
+    }
+
+    private void UpdateScreenHistory()
+    {
+        screenHistory.Add(currentActiveScreen);
+
+        if (screenHistory.Count > 5)
+            screenHistory.RemoveAt(0);
+    }
+
+    public void ClearScreenHistory()
+    {
+        screenHistory.Clear();
     }
 
     private void HandleScreenNavigatableChange(UIScreen eventOwner, bool navigatable)
     {
+        Debug.Log($"UIStateMonitor: handleScreenChange for eventOwner: {eventOwner}");
+        UpdateScreenHistory();
         previousActiveScreen = currentActiveScreen;
 
         foreach (var screen in uiScreens)
@@ -65,12 +79,14 @@ public class UIStateMonitor : MonoBehaviour
             }
             else 
             {
-                if(screen.Navigatable)
+                currentActiveScreen = screen;
+                if (screen.Navigatable)
                     currentNavigatableScreen = screen;                
             }
         }
 
-        currentActiveScreen = eventOwner;
+        //currentActiveScreen = eventOwner;
+        Debug.Log($"UIStateMonitor: currentActiveScreen = {currentActiveScreen}");
         OnScreenChanged?.Invoke(currentActiveScreen);
     }
 

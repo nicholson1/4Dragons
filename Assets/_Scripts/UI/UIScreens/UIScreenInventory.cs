@@ -75,16 +75,17 @@ public class UIScreenInventory : UIScreen
 
     public void ChangeInventoryState(InventoryState state)
     {
-        switch(state)
+
+        lootButtonManager.SetLeaveButtonInteractable(state == InventoryState.Loot);
+        switch (state)
         {
             case InventoryState.Base:
-                //Set slot gamepadButton navigation                
+                //Set slot gamepadButton navigation
                 closableWithToggleOrButtonBackButton = true;     
                 
                 break;
 
             case InventoryState.Loot:
-
                 closableWithToggleOrButtonBackButton = false;
                 break;
 

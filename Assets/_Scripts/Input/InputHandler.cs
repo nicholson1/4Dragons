@@ -1,13 +1,11 @@
 using InputIcons;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.InputSystem.UI;
+
 
 /// <summary>
 /// Accessible through EventSystem.current.GetComponent<InputHandler>()
@@ -80,10 +78,8 @@ public class InputHandler : MonoBehaviour
 
     public void SwitchActionMap(ActionMaps targetMap)
     {
-        Debug.Log($"targetMap = {targetMap}");
         if (targetMap != ActionMaps.Disabled)
             cachedPreviousActionMap = targetMap;
-        Debug.Log($"cachedmap = {cachedPreviousActionMap}");
 
         switch(targetMap)
         {

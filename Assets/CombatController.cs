@@ -666,6 +666,8 @@ public class CombatController : MonoBehaviour
         PreCombatDeBuffs.Clear();
 
         UpdateUiButtons();
+
+        UIController._instance.ActivateCombatScreen();
     }
 
     public void UpdateUiButtons()
@@ -942,8 +944,7 @@ public class CombatController : MonoBehaviour
         WeatherManager._instance.UpdateWeather(node.point.y, nextDragonSchool);
 
         previousDragonSchool = nextDragonSchool;
-            
-
+        
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
 
@@ -970,8 +971,17 @@ public class CombatController : MonoBehaviour
 
     private IEnumerator waitTheStartCombat(Character p, Character e)
     {
+        Debug.Log($"start waitStartCombat coroutine");
+
         CombatNotifications(ErrorMessageManager.Errors.NewFoe);
         yield return new WaitForSeconds(.5f);
+
+        while (UIController._instance.IsAnyPanelTransitioning())
+        {
+            Debug.Log($"waitStartCombat: anyPanelTransitioning = {UIController._instance.IsAnyPanelTransitioning()}");
+            yield return null;
+        }
+
         StartCombat(p, e);
         ToolTipManager._instance.HideToolTipAll();
         TutorialManager.Instance.QueueTip(TutorialNames.Energy);
@@ -1003,9 +1013,8 @@ public class CombatController : MonoBehaviour
         enemy.transform.LookAt(Player.transform.position);
         Player.transform.LookAt(enemy.transform.position);
 
-        UIController._instance.ActivateCombatScreen();
-        //
-        
+        // 
+ 
     }
 
     public void RestartCombat()
