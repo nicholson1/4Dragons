@@ -18,7 +18,6 @@ public class InputHandler : MonoBehaviour
 
     public UnityEvent<int> OnAttackButtonPressed;
     public UnityEvent<bool> OnInspectTogglePressed;
-    public UnityEvent OnMapTogglePressed;
     public UnityEvent OnEndTurnPressed;
     public UnityEvent OnYes;
     public UnityEvent OnNo;
@@ -26,6 +25,10 @@ public class InputHandler : MonoBehaviour
     public UnityEvent OnMenuExtra2;
     public UnityEvent OnStart;
     public UnityEvent OnSelect;
+    public UnityEvent OnL1;
+    public UnityEvent OnL2;
+    public UnityEvent OnR1;
+    public UnityEvent OnR2;
 
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
@@ -35,7 +38,7 @@ public class InputHandler : MonoBehaviour
 
     [SerializeField] private InputActionReference move, pause, inspectToggleOn, action0, action1, action2, action3, endTurn;
     [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no, menuExtra1, menuExtra2, start, select;
-    [SerializeField] private InputActionReference mapToggle, r1, r2;
+    [SerializeField] private InputActionReference l1, l2, r1, r2;
 
     [SerializeField] private ActionMaps defaultActionMap = ActionMaps.Menu;
     private ActionMaps currentActionMap = ActionMaps.Menu;
@@ -52,20 +55,26 @@ public class InputHandler : MonoBehaviour
 
 
     #region Button Events
-    private void Weapon1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(0);
-    private void Weapon2Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(1);
-    private void Scroll1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(2);
-    private void Scroll2Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed.Invoke(3);
-    private void EndTurnPressed(InputAction.CallbackContext context) => OnEndTurnPressed.Invoke();
-    private void InspectToggleOnPressed(InputAction.CallbackContext context) => OnInspectTogglePressed.Invoke(true);
-    private void InspectToggleOffPressed(InputAction.CallbackContext context) => OnInspectTogglePressed.Invoke(false);
-    private void ToggleMapPressed(InputAction.CallbackContext context) => OnMapTogglePressed?.Invoke();
-    private void YesPressed(InputAction.CallbackContext context) => OnYes.Invoke();
-    private void NoPressed(InputAction.CallbackContext context) => OnNo.Invoke();
-    private void MenuExtra1Pressed(InputAction.CallbackContext context) => OnMenuExtra1.Invoke();
-    private void MenuExtra2Pressed(InputAction.CallbackContext context) => OnMenuExtra2.Invoke();
-    private void StartPressed(InputAction.CallbackContext context) => OnStart.Invoke();
-    private void SelectPressed(InputAction.CallbackContext context) => OnSelect.Invoke();
+    private void Weapon1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed?.Invoke(0);
+    private void Weapon2Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed?.Invoke(1);
+    private void Scroll1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed?.Invoke(2);
+    private void Scroll2Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed?.Invoke(3);
+    private void EndTurnPressed(InputAction.CallbackContext context) => OnEndTurnPressed?.Invoke();
+    private void InspectToggleOnPressed(InputAction.CallbackContext context) => OnInspectTogglePressed?.Invoke(true);
+    private void InspectToggleOffPressed(InputAction.CallbackContext context) => OnInspectTogglePressed?.Invoke(false);
+
+    private void YesPressed(InputAction.CallbackContext context) => OnYes?.Invoke();
+    private void NoPressed(InputAction.CallbackContext context) => OnNo?.Invoke();
+    private void MenuExtra1Pressed(InputAction.CallbackContext context) => OnMenuExtra1?.Invoke();
+    private void MenuExtra2Pressed(InputAction.CallbackContext context) => OnMenuExtra2?.Invoke();
+
+    private void StartPressed(InputAction.CallbackContext context) => OnStart?.Invoke();
+    private void SelectPressed(InputAction.CallbackContext context) => OnSelect?.Invoke();
+    private void R2Pressed(InputAction.CallbackContext context) => OnR1?.Invoke();
+    private void R1Pressed(InputAction.CallbackContext context) => OnR2?.Invoke();
+    private void L1Pressed(InputAction.CallbackContext context) => OnL1?.Invoke();
+    private void L2Pressed(InputAction.CallbackContext context) => OnL2?.Invoke();
+
 
     #endregion
 
@@ -167,16 +176,22 @@ public class InputHandler : MonoBehaviour
         action2.action.started += Scroll1Pressed;
         action3.action.started += Scroll2Pressed;
         endTurn.action.started += EndTurnPressed;
-        inspectToggleOn.action.started += InspectToggleOnPressed;
-        inspectToggleOff.action.started += InspectToggleOffPressed;
+        //inspectToggleOn.action.started += InspectToggleOnPressed;
+        //inspectToggleOff.action.started += InspectToggleOffPressed;
         yes.action.started += YesPressed;
         no.action.started += NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
         menuExtra2.action.started += MenuExtra2Pressed;
         start.action.started += StartPressed;
         select.action.started += SelectPressed;
-        mapToggle.action.started += ToggleMapPressed;
+
+        l1.action.started += L1Pressed;
+        l2.action.started += L2Pressed;
+        r1.action.started += R1Pressed;
+        r2.action.started += R2Pressed;
     }
+
+
 
     private void UnbindInputEvents()
     {
@@ -185,15 +200,19 @@ public class InputHandler : MonoBehaviour
         action2.action.started -= Scroll1Pressed;
         action3.action.started -= Scroll2Pressed;
         endTurn.action.started -= EndTurnPressed;
-        inspectToggleOn.action.started -= InspectToggleOnPressed;
-        inspectToggleOff.action.started -= InspectToggleOffPressed;
+        //inspectToggleOn.action.started -= InspectToggleOnPressed;
+        //inspectToggleOff.action.started -= InspectToggleOffPressed;
         yes.action.started -= YesPressed;
         no.action.started -= NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
         menuExtra2.action.started += MenuExtra2Pressed;
         start.action.started -= StartPressed;
         select.action.started -= SelectPressed;
-        mapToggle.action.started -= ToggleMapPressed;
+
+        l1.action.started -= L1Pressed;
+        l2.action.started -= L2Pressed;
+        r1.action.started -= R1Pressed;
+        r2.action.started -= R2Pressed;
     }
 
     private void EnableAllInputActions()

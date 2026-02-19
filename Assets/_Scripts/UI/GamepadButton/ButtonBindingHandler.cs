@@ -93,7 +93,7 @@ public class ButtonBindingHandler : MonoBehaviour
                 inputHandler.OnSelect.AddListener(ClickThroughInput);
                 break;
             case ExtraButton.L1:
-                inputHandler.OnMapTogglePressed.AddListener(ClickThroughInput);
+                inputHandler.OnL2.AddListener(ClickThroughInput);
                 break;
 
         }
@@ -129,7 +129,7 @@ public class ButtonBindingHandler : MonoBehaviour
                 inputHandler.OnSelect.RemoveListener(ClickThroughInput);
                 break;
             case ExtraButton.L1:
-                inputHandler.OnMapTogglePressed.RemoveListener(ClickThroughInput);
+                inputHandler.OnL2.RemoveListener(ClickThroughInput);
                 break;
         }
 

@@ -22,8 +22,6 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen currentActiveScreen = null;
     private UIScreen previousActiveScreen = null;
 
-    private TutorialManager tutorialManager = null;
-
     public UIScreen GetLatestScreenInHistory() => screenHistory.Count > 0 ? screenHistory.LastOrDefault() : null;
 
     private InputHandler inputHandler = null;
@@ -67,7 +65,6 @@ public class UIStateMonitor : MonoBehaviour
 
     private void HandleScreenNavigatableChange(UIScreen eventOwner, bool navigatable)
     {
-        Debug.Log($"UIStateMonitor: handleScreenChange for eventOwner: {eventOwner}");
         UpdateScreenHistory();
         previousActiveScreen = currentActiveScreen;
 
@@ -90,38 +87,9 @@ public class UIStateMonitor : MonoBehaviour
         OnScreenChanged?.Invoke(currentActiveScreen);
     }
 
-    private void TutorialOpenCallback(TutorialNames tutorial)
-    {
-        Debug.Log($"Tutorial {tutorial} is open");
-        currentActiveScreen.SetNavigatable(false);
-        if (inputHandler.CurrentActionMap != ActionMaps.Menu)
-            inputHandler.SwitchActionMap(ActionMaps.Menu);
-    }
-
-    private void TutorialCloseCallback(TutorialNames tutorial)
-    {
-        Debug.Log($"Tutorial {tutorial} is closed");
-        //make exception for CombatUI
-
-        //currentActiveScreen.SetNavigatable(true);
-
-        //inputHandler.RevertActionMap();
-        inputHandler.SwitchActionMap(currentActiveScreen.DefaultScreenActionMap);
-    }
-
     private void Start()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
-        tutorialManager = TutorialManager.Instance;
-
-        tutorialManager.TriggerTutorial += TutorialOpenCallback;
-        tutorialManager.CloseTutorial += TutorialCloseCallback;
-    }
-
-    private void OnDestroy()
-    {
-        tutorialManager.TriggerTutorial -= TutorialOpenCallback;
-        tutorialManager.CloseTutorial -= TutorialCloseCallback;
     }
 }

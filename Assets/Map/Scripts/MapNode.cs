@@ -277,8 +277,7 @@ namespace Map
             if (!mapScreen.AreNodesClickable) return;
             if (Node.State != NodeStates.Attainable) return;
 
-            SelectNode();
-            
+            SelectNode();            
         }
 
         public void SelectNode()

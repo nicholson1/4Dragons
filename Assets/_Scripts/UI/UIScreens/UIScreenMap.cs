@@ -30,6 +30,9 @@ public class UIScreenMap : UIScreen
 
     public override Selectable GetSelectableToSelectOnActivated()
     {
+        if (mapNodes.Count == 0)
+            return base.GetSelectableToSelectOnActivated();
+
         if (currenOccupiedNode == null)
         {
             var mapNode = mapNodes.Where(n => n.Value == 0).FirstOrDefault().Key;

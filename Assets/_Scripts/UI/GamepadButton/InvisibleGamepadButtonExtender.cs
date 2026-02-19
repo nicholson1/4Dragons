@@ -24,9 +24,8 @@ public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDe
     }
 
 
-    private void OnClickCallback()
+    public void OnGamepadButtonClick()
     {
-        Debug.Log($"Onclick detected");
         buttonListener.HandleGamepadButtonPressed(button);
     }
 
@@ -34,6 +33,6 @@ public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDe
     {
         button = GetComponent<Button>();
         buttonListener = GetComponentInParent<IGamepadButtonListener>();
-        button.onClick.AddListener(OnClickCallback);
+        button.onClick.AddListener(OnGamepadButtonClick);
     }
 }

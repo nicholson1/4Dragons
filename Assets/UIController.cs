@@ -155,8 +155,8 @@ public class UIController : MonoBehaviour
     }
 
     #region InventoryUI Related
-    //make an overload for toggling InventoryUI+Loot and other similar behaviour
-    public void ToggleInventoryUINew(bool toOpen)
+
+    private void UpdateCombatStatsAndUI()
     {
         EquipmentManager._instance.c.UpdateStats();
 
@@ -170,6 +170,12 @@ public class UIController : MonoBehaviour
         {
             CombatController._instance.UpdateUiButtons();
         }
+    }
+
+    //make an overload for toggling InventoryUI+Loot and other similar behaviour
+    public void ToggleInventoryUINew(bool toOpen)
+    {
+        UpdateCombatStatsAndUI();
 
         PlayOpenInventory();
 

@@ -43,6 +43,8 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     [SerializeField] private TextMeshProUGUI sellPrice;
 
     private bool isBeingDragged = false;
+
+    private Character character;
     
     public void HighlightItem(bool toHighlight)
     {
@@ -152,7 +154,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //Debug.Log("OnPointerDown");
         if(e.isRelic)
             return;
-        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
+        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
         
         if (ForgeManager._instance.Upgrading)
         {
@@ -375,7 +377,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     }
 
-    private void AdjustDragabilityBasedOnEnergy( Character c, int cur, int max, int amount)
+    private void AdjustDragabilityBasedOnEnergy( Character c, int cur)
     {
         if (!c.isPlayerCharacter)
         {
@@ -427,12 +429,13 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         if (GamepadHighlighter.enabled)
             GamepadHighlighter.enabled = false;
 
-        Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
+        character = CombatController._instance.Player;
+        character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         //CombatController.EndCombatEvent += EndCombat;
     }
     private void OnDestroy()
     {
-        Character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;
+        character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;
 
         //CombatController.EndCombatEvent -= EndCombat;
 

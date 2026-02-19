@@ -16,7 +16,7 @@ public class UIScreen : MonoBehaviour
     public bool Navigatable => navigatable;
     public bool IsScreenActive => isScreenActive;
     public List<GlobalButton> AccessibleGlobalButtons => accessibleGlobalButtons;
-    public ActionMaps DefaultScreenActionMap => defaultActionMap;
+    public ActionMaps DefaultScreenActionMap => requiredActionMap;
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
@@ -31,6 +31,8 @@ public class UIScreen : MonoBehaviour
     [SerializeField] protected List<GlobalButton> accessibleGlobalButtons= new List<GlobalButton>();
 
     [SerializeField] protected ActionMaps defaultActionMap = ActionMaps.Menu;
+    protected ActionMaps requiredActionMap = ActionMaps.Menu;
+    protected ActionMaps lastActionMap = ActionMaps.Menu;
     protected bool navigatable = true;
     protected bool isScreenActive = false;
 
@@ -106,13 +108,13 @@ public class UIScreen : MonoBehaviour
         navigatable = value;
             
         if (navigatable)
-        {
-            EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
+        {                
+            EventSystem.current.SetSelectedGameObject(GetSelectableToSelectOnActivated().gameObject);
             OnNewScreenActive?.Invoke(this, true);
         }
         else
         {
-            if (EventSystem.current.currentSelectedGameObject == null)
+            if (!EventSystem.current.alreadySelecting)
                 return;
 
             if(EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable) && selectables.Contains(selectable))
@@ -123,6 +125,22 @@ public class UIScreen : MonoBehaviour
         }
     }
       
+    protected virtual void HandleTutorialOpen(TutorialNames tutorial)
+    {
+        SetNavigatable(false);
+        lastActionMap = requiredActionMap;
+        requiredActionMap = ActionMaps.Menu;
+        if(inputHandler.CurrentActionMap != requiredActionMap)
+            inputHandler.SwitchActionMap(requiredActionMap);
+    }
+
+    protected virtual void HandleTutorialClosed(TutorialNames tutorial)
+    {
+        SetNavigatable(true);        
+        requiredActionMap = lastActionMap;
+        if (inputHandler.CurrentActionMap != requiredActionMap)
+            inputHandler.SwitchActionMap(requiredActionMap);
+    }
 
     protected virtual void Start()
     {
@@ -132,6 +150,11 @@ public class UIScreen : MonoBehaviour
 
         inputHandler.OnInputTypeChange += HandleInputTypeChange;
         UIController._instance.StateMonitor.RegisterScreen(this);
+
+        tutorialManager ??= TutorialManager.Instance;
+
+        tutorialManager.TriggerTutorial += HandleTutorialOpen;
+        tutorialManager.CloseTutorial += HandleTutorialClosed;
 
         foreach (var selectable in selectables)
         {
@@ -143,11 +166,16 @@ public class UIScreen : MonoBehaviour
 
         if (defaultSelectable == null && selectables.Count > 0)
             defaultSelectable = selectables[0];
-    }   
+
+        requiredActionMap = defaultActionMap;
+    }
 
     protected virtual void OnDestroy()
     {
         inputHandler.OnInputTypeChange -= HandleInputTypeChange;
+
+        tutorialManager.TriggerTutorial -= HandleTutorialOpen;
+        tutorialManager.CloseTutorial -= HandleTutorialClosed;
     }
 }
 

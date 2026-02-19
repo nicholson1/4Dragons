@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
 using Map;
 using PlayFab.Internal;
@@ -57,7 +56,7 @@ public class Character : MonoBehaviour
     public static event Action<Character,int, int> UpdateBlock; 
     public static event Action<Character> UsePrep; 
 
-    public static event Action<Character,int, int, int> UpdateEnergy; 
+    public event Action<Character,int> UpdateEnergy; 
     public static event Action<Character> UpdateStatsEvent;
     public static event Action<ErrorMessageManager.Errors> Notification;
     public static event Action<ErrorMessageManager.Errors, int> NotificationGold;
@@ -320,7 +319,7 @@ public class Character : MonoBehaviour
         if (_currentEnergy < 0)
             _currentEnergy = 0;
 
-        UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
+        UpdateEnergy?.Invoke(this, _currentEnergy);
 
         if (amount > 0 && isPlayerCharacter && EnergyGlow != null)
         {

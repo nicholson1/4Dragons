@@ -246,12 +246,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCharacter: {fileID: 0}
+  character: {fileID: 0}
   spell: 0
   SpellIcon: {fileID: 6976835503733464374}
   SpellText: {fileID: 6358820396601920633}
   _toolTip: {fileID: 401789186151078628}
   interactable: 1
+  button: {fileID: 0}
   buttonGlow: {fileID: 2264355088837346151}
 --- !u!114 &401789186151078628
 MonoBehaviour:
@@ -318,43 +319,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8042666596687360287}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6244142215463426263}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: ShowSpell
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CombatEntity, Assembly-CSharp
-        m_MethodName: CastAbility
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6244142215463426263}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: TriggerButtonGlow
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2789144507187238988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1499,12 +1464,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCharacter: {fileID: 0}
+  character: {fileID: 0}
   spell: 15
   SpellIcon: {fileID: 5252560090647837664}
   SpellText: {fileID: 6599561685834883765}
   _toolTip: {fileID: 8311270612293523894}
   interactable: 1
+  button: {fileID: 0}
   buttonGlow: {fileID: 5235170695287519774}
 --- !u!114 &8311270612293523894
 MonoBehaviour:
@@ -1571,43 +1537,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3100306200392750855}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 207165022284542019}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: ShowSpell
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CombatEntity, Assembly-CSharp
-        m_MethodName: CastAbility
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 207165022284542019}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: TriggerButtonGlow
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &7130613787432059030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2964,12 +2894,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCharacter: {fileID: 0}
+  character: {fileID: 0}
   spell: 0
   SpellIcon: {fileID: 6189202692472207128}
   SpellText: {fileID: 1240373802603976002}
   _toolTip: {fileID: 4136257208065004760}
   interactable: 1
+  button: {fileID: 0}
   buttonGlow: {fileID: 6432189321967768610}
 --- !u!114 &4136257208065004760
 MonoBehaviour:
@@ -3036,43 +2967,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1257816524453827638}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4560779306963610778}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: ShowSpell
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CombatEntity, Assembly-CSharp
-        m_MethodName: CastAbility
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4560779306963610778}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: TriggerButtonGlow
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &7842056196270993339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3552,12 +3447,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCharacter: {fileID: 0}
+  character: {fileID: 0}
   spell: 0
   SpellIcon: {fileID: 87344546800735568}
   SpellText: {fileID: 8789026598345679985}
   _toolTip: {fileID: 7139493143527826490}
   interactable: 1
+  button: {fileID: 0}
   buttonGlow: {fileID: 8411660563090153447}
 --- !u!114 &7139493143527826490
 MonoBehaviour:
@@ -3624,43 +3520,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7222064054554907574}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4269711051656311709}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: ShowSpell
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CombatEntity, Assembly-CSharp
-        m_MethodName: CastAbility
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4269711051656311709}
-        m_TargetAssemblyTypeName: SpellButton, Assembly-CSharp
-        m_MethodName: TriggerButtonGlow
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &4552329832114033749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5761,6 +5621,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8059196887315320025}
+    - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 159583755137362452}
   m_SourcePrefab: {fileID: 100100000, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
 --- !u!1 &7642906337875183869 stripped
 GameObject:
@@ -5781,6 +5644,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
+--- !u!114 &159583755137362452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7642906337875183869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5476d9644a2ea6943ab7c2a135981ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7642906337875183870 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274350897321453315, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
