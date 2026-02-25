@@ -246,14 +246,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
   spell: 0
   SpellIcon: {fileID: 6976835503733464374}
   SpellText: {fileID: 6358820396601920633}
   _toolTip: {fileID: 401789186151078628}
-  interactable: 1
-  button: {fileID: 0}
-  buttonGlow: {fileID: 2264355088837346151}
+  isSpellUsable: 1
 --- !u!114 &401789186151078628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1464,14 +1461,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
   spell: 15
   SpellIcon: {fileID: 5252560090647837664}
   SpellText: {fileID: 6599561685834883765}
   _toolTip: {fileID: 8311270612293523894}
-  interactable: 1
-  button: {fileID: 0}
-  buttonGlow: {fileID: 5235170695287519774}
+  isSpellUsable: 1
 --- !u!114 &8311270612293523894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2894,14 +2888,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
   spell: 0
   SpellIcon: {fileID: 6189202692472207128}
   SpellText: {fileID: 1240373802603976002}
   _toolTip: {fileID: 4136257208065004760}
-  interactable: 1
-  button: {fileID: 0}
-  buttonGlow: {fileID: 6432189321967768610}
+  isSpellUsable: 1
 --- !u!114 &4136257208065004760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3447,14 +3438,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff4ee132d806b49ab4228a562a47b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
   spell: 0
   SpellIcon: {fileID: 87344546800735568}
   SpellText: {fileID: 8789026598345679985}
   _toolTip: {fileID: 7139493143527826490}
-  interactable: 1
-  button: {fileID: 0}
-  buttonGlow: {fileID: 8411660563090153447}
+  isSpellUsable: 1
 --- !u!114 &7139493143527826490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5623,7 +5611,7 @@ PrefabInstance:
       addedObject: {fileID: 8059196887315320025}
     - targetCorrespondingSourceObject: {fileID: 274350897321453312, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 159583755137362452}
+      addedObject: {fileID: 4155433165688587410}
   m_SourcePrefab: {fileID: 100100000, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}
 --- !u!1 &7642906337875183869 stripped
 GameObject:
@@ -5644,7 +5632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScale: 1.1
   shakeUI: 1
---- !u!114 &159583755137362452
+--- !u!114 &4155433165688587410
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5653,9 +5641,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7642906337875183869}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5476d9644a2ea6943ab7c2a135981ddc, type: 3}
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  extraButtonToUse: 7
+  clickableWithYes: 1
+  clickableWithNo: 0
+  shouldHaveClickableButton: 1
 --- !u!224 &7642906337875183870 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 274350897321453315, guid: 0767699d167fa4530a0fb52359271ab6, type: 3}

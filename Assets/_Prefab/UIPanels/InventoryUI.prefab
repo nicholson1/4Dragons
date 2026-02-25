@@ -6812,7 +6812,7 @@ MonoBehaviour:
   defaultSelectable: {fileID: 3899568595005659235}
   canAccessSettingsButton: 0
   accessibleGlobalButtons: 01000000
-  defaultInputActionMap: 0
+  defaultActionMap: 0
   InventoryPanel: {fileID: 216094450715910406}
   LootPanel: {fileID: 6959927234733790357}
   lootButtonManager: {fileID: 8565369570850981644}
@@ -7360,7 +7360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d30dfc308171934093b341d71fb621f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  subPanelType: 4
+  subPanelType: 0
   EquipmentButtons:
   - {fileID: 2055285060591651259}
   - {fileID: 2883135036169239011}
@@ -13005,14 +13005,6 @@ PrefabInstance:
       propertyPath: inventoryButton
       value: 
       objectReference: {fileID: 5912435512783071545}
-    - target: {fileID: 1740171710791500090, guid: 4bd0f3314cf875548b179f2db8e01f1d, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740171710791500090, guid: 4bd0f3314cf875548b179f2db8e01f1d, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3352100702547392193, guid: 4bd0f3314cf875548b179f2db8e01f1d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13934,12 +13926,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3649468993971493532, guid: dd2a5156485420144b1856a52102f788, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7004525115007894535, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
+    - target: {fileID: 3649468993971493532, guid: dd2a5156485420144b1856a52102f788, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8419496199740363777, guid: dd2a5156485420144b1856a52102f788, type: 3}
       propertyPath: m_Name
       value: SkipButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8419496199740363777, guid: dd2a5156485420144b1856a52102f788, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
@@ -55,6 +56,7 @@ public class SelectionItem : MonoBehaviour
 
     [SerializeField] private List<Button> currentActiveGamepadButtons = new List<Button>();
     private Button mainButton = null;
+    private Button skipButton = null;
 
     private PanelHoverEffect panelHoverEffect = null;
     private bool isPanelSelected = false;
@@ -97,6 +99,8 @@ public class SelectionItem : MonoBehaviour
 
         StartCoroutine(RotateObjectForward());
     }
+
+    public void SetSkipButton(Button button) => skipButton = button;
 
     public void DeinitializeSelectionItem()
     {
@@ -288,15 +292,19 @@ public class SelectionItem : MonoBehaviour
     {
         ClearLastActiveGamepadButtons();
         currentActiveGamepadButtons = GetComponentsInChildren<Button>().Where(b => b.gameObject.activeSelf).ToList();
+        
         for (int i=0; i < currentActiveGamepadButtons.Count; i++)
         {
             Selectable selectable = currentActiveGamepadButtons[i];
             Navigation navi = selectable.navigation;
             navi.mode = Navigation.Mode.Explicit;
 
-            navi.selectOnUp = i - 1 < 0 ? null : currentActiveGamepadButtons[i - 1];
-            navi.selectOnDown = i + 1 >= currentActiveGamepadButtons.Count ? null : currentActiveGamepadButtons[i + 1];
-            
+            navi.selectOnUp = i > 0 ? currentActiveGamepadButtons[i - 1] : null;
+
+            if (i == currentActiveGamepadButtons.Count - 1)
+                Debug.Log($"current active gamepad button for {item.name} target down should be {skipButton.name}");
+            navi.selectOnDown = i < currentActiveGamepadButtons.Count - 1 ? currentActiveGamepadButtons[i + 1] : skipButton;
+
             selectable.navigation = navi;
         }
 

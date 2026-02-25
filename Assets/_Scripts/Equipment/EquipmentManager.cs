@@ -188,7 +188,7 @@ public class EquipmentManager : MonoBehaviour
 
                     //si.RemoveSelection(); we'll handle this through the return
 
-                    Debug.Log($"Return true case 1: drag item on case eq slot empty. item: {di.e.name}");
+                    //Debug.Log($"Return true case 1: drag item on case eq slot empty. item: {di.e.name}");
                     return true;
                 }
                 

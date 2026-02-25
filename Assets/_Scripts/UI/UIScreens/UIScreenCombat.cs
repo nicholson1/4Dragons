@@ -27,19 +27,19 @@ public class UIScreenCombat : UIScreen
 
     public void SetCombatUINavigation(CombatUINavigationMode mode)
     {
+       
         inputHandler ??= EventSystem.current.GetComponent<InputHandler>();
-        switch(mode)
+        currentCombatNavigation = mode;
+        switch(currentCombatNavigation)
         {
             case CombatUINavigationMode.Combat:
-                inputHandler.SwitchActionMap(ActionMaps.Combat);
-                currentCombatNavigation = CombatUINavigationMode.Combat;
+                inputHandler.SwitchActionMap(ActionMaps.Combat);              
                 
                 break;
             case CombatUINavigationMode.Potion:
                 //Set potion buttons navigation in runtime now based on which slots are navigatable
-
                 inputHandler.SwitchActionMap(ActionMaps.Menu);
-                currentCombatNavigation = CombatUINavigationMode.Potion;
+
                 break;
             case CombatUINavigationMode.Inspect:
                 //set buttons navigation in runtime based on which icons are navigatable
@@ -50,10 +50,11 @@ public class UIScreenCombat : UIScreen
                 //items
 
                 inputHandler.SwitchActionMap(ActionMaps.Combat);
-                currentCombatNavigation = CombatUINavigationMode.Inspect;
-                break;           
+                break;
+
         }
 
+        EventSystem.current.sendNavigationEvents = currentCombatNavigation != CombatUINavigationMode.Combat;
         OnCombatUINavigationChanged?.Invoke(currentCombatNavigation);
     }
 
@@ -62,6 +63,13 @@ public class UIScreenCombat : UIScreen
         base.Activate(false);
 
         SetCombatUINavigation(CombatUINavigationMode.Combat);
+    }
+
+    public override void Deactivate()
+    {
+        base.Deactivate();
+
+        SetCombatUINavigation(CombatUINavigationMode.Disabled);
     }
 
     protected override void HandleTutorialClosed(TutorialNames tutorial)

@@ -83,7 +83,6 @@ public class UIStateMonitor : MonoBehaviour
         }
 
         //currentActiveScreen = eventOwner;
-        Debug.Log($"UIStateMonitor: currentActiveScreen = {currentActiveScreen}");
         OnScreenChanged?.Invoke(currentActiveScreen);
     }
 

@@ -20,7 +20,7 @@ public class SelectionManager : UIInventorySubPanel
 
     public int selectionsLeft = 2;
     public static SelectionManager _instance;
-    public Button SkipButton;
+    [SerializeField] private Button SkipButton;
 
     private bool startingSelections = true;
 
@@ -67,7 +67,7 @@ public class SelectionManager : UIInventorySubPanel
 
     public void SetInventoryButtonsCache(List<Button> inventoryButtons)
     {
-        cachedInventoryButtons.Clear();
+        //cachedInventoryButtons.Clear();
         cachedInventoryButtons = inventoryButtons;
 
         SetLeftMostSelectionItemButtonsLeftNavigationToInventory();
@@ -170,6 +170,7 @@ public class SelectionManager : UIInventorySubPanel
         for (int i = 0; i < availableSelectionItems.Count; i++)
         {
             var selectionItem = availableSelectionItems[i];
+
             var targetLeftSelectable = i - 1 >= 0 ? availableSelectionItems[i - 1].MainButton : null;
             var targetRightSelectable = i + 1 < availableSelectionItems.Count ? availableSelectionItems[i + 1].MainButton : null;
 
@@ -179,6 +180,21 @@ public class SelectionManager : UIInventorySubPanel
 
         var firstTargetSelected = GetLeftMostAvailableSelectionItem();
         EventSystem.current.SetSelectedGameObject(firstTargetSelected.MainButton.gameObject);
+    }
+
+    private void SetupSkipButtonNavigation()
+    {
+        Navigation navi = SkipButton.navigation;
+        if (navi.mode != Navigation.Mode.Explicit)
+            navi.mode = Navigation.Mode.Explicit;
+
+        var selectionItem = GetLeftMostAvailableSelectionItem();
+        var targetSelectable = selectionItem.CurrentActiveGamepadButtons.LastOrDefault();
+        var targetInventoryButton = cachedInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - SkipButton.transform.position.y)).FirstOrDefault();
+        navi.selectOnUp = targetSelectable;
+        navi.selectOnLeft = targetInventoryButton;
+        SkipButton.navigation = navi;
+
     }
 
     private void FinalizeAndCloseSelectionPanel()
@@ -335,10 +351,11 @@ public class SelectionManager : UIInventorySubPanel
     public void SelectionsFromList(List<Equipment> equipments)
     {        
         currentActiveSelectionItems.Clear();
-        SkipButton.gameObject.SetActive(true);
+        
         foreach (var i in equipments)
         {
             SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
+            item.SetSkipButton(SkipButton); //should be set before initializing the SelectionItem
             item.InitializeSelectionItem(i);
             currentActiveSelectionItems.Add(item);
             item.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
@@ -352,6 +369,8 @@ public class SelectionManager : UIInventorySubPanel
     {
         OnPanelOpen?.Invoke();
         SetupGamepadHorizontalNavigationForCurrentSelections();
+        SkipButton.gameObject.SetActive(true);
+        SetupSkipButtonNavigation();
     }
 
     private void InitiateClosingSelectionManagerUI()
@@ -361,6 +380,7 @@ public class SelectionManager : UIInventorySubPanel
             selectionItem.DisableButtons();
         }
 
+        SkipButton.gameObject.SetActive(false);
         ClearSelections();
     }
 
@@ -370,7 +390,8 @@ public class SelectionManager : UIInventorySubPanel
         
         selectionsLeft -= 1;
 
-        if (selectionsLeft <= 0)
+
+        if (selectionsLeft <= 0 || selectedItem.item.isRelic)
             InitiateClosingSelectionManagerUI();
         else
             RefreshSelectionManagerHorizontalNavigation();
@@ -393,7 +414,7 @@ public class SelectionManager : UIInventorySubPanel
             TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
         else
         {
-            ClearSelections();
+            InitiateClosingSelectionManagerUI();
         }
 
     }
@@ -431,9 +452,7 @@ public class SelectionManager : UIInventorySubPanel
             selectionsLeft = 2;
         }
 
-        SkipButton.gameObject.SetActive(false);
-
-
+        
         //UIController._instance.ToggleLootUI();
         //selectionScreen.SetActive(false);
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
@@ -933,7 +952,7 @@ public class SelectionManager : UIInventorySubPanel
         onFadeFinished?.Invoke();
     }
 
-    bool HasDamageSpell(List<ImportantStuff.Equipment> equipments)
+    bool HasDamageSpell(List<Equipment> equipments)
     {
         bool hasDamage = false;
         foreach (var eq in equipments)
@@ -978,6 +997,7 @@ public class SelectionManager : UIInventorySubPanel
         }
 
         selectionParentLayoutGroup = GetComponentInChildren<HorizontalLayoutGroup>();
+        SkipButton.gameObject.SetActive(false);
     }
 
 

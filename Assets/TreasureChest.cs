@@ -69,7 +69,6 @@ public class TreasureChest : MonoBehaviour
 
             //UIController._instance.ToggleLootUI(1);
 
-            Debug.Log($"Open starting treasure chest");
             UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
             button.interactable = false;
         }

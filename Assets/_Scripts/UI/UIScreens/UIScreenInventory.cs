@@ -48,7 +48,6 @@ public class UIScreenInventory : UIScreen
 
     public override Selectable GetSelectableToSelectOnActivated()
     {
-        Debug.Log($"call GetSelectableToSelectOnActivated from UIScreenInventory");
         switch(currentInventoryState)
         {
             case InventoryState.Loot:
@@ -165,8 +164,6 @@ public class UIScreenInventory : UIScreen
 
     private void SetGamepadNavigationToStatDisplay()
     {
-        Debug.Log($"Setting gamepad navi to stat display");
-
         if (EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
             SetSelectableToSelectOnActivated(selectable);
 
@@ -180,7 +177,6 @@ public class UIScreenInventory : UIScreen
 
     private void SetGamepadNavigationBackToInventory()
     {
-        Debug.Log($"Setting gamepad navi to InventoryUI");
         RevertInventoryState();
         EventSystem.current.SetSelectedGameObject(selectableToSelectOnActivated.gameObject);
         inputHandler.OnNo.RemoveListener(SetGamepadNavigationBackToInventory);

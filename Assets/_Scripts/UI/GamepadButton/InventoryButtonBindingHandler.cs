@@ -20,7 +20,6 @@ public class InventoryButtonBindingHandler : ButtonBindingHandler
     private void CheckPlayerAccessibility(UIScreen screen)
     {
         bool shouldBeAccessible = screen.AccessibleGlobalButtons.Contains(globalButton) && inventoryScreen.CurrentInventoryState == InventoryState.Base;
-        Debug.Log($"current screen = {screen.name}, shouldBeAccessible = {shouldBeAccessible}");
         
         if(!shouldBeAccessible)
         {

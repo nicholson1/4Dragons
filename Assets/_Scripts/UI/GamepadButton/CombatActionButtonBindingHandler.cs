@@ -37,6 +37,7 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
             return;
 
         pressedOnce = true;
+        button.Select();
         toolTip.ShowTipFromGamepadNavi(rt);
     }
 
@@ -77,18 +78,9 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
         combatScreen.OnCombatUINavigationChanged += UpdateBinding;
     }
 
-    private void OnEnable()
+
+    private void OnDestroy()
     {
-        inputHandler.OnAttackButtonPressed.AddListener(HandleAttackPressed);
-
-        //button.onClick.AddListener(DebugClickCombatButton);
-    }
-
-    private void OnDisable()
-    {
-        inputHandler.OnAttackButtonPressed.RemoveListener(HandleAttackPressed);
-
-        //button.onClick.RemoveListener(DebugClickCombatButton);
         combatScreen.OnCombatUINavigationChanged -= UpdateBinding;
     }
 }

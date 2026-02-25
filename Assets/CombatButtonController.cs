@@ -66,51 +66,51 @@ public class CombatButtonController : MonoBehaviour
         character.UpdateEnergy -= UpdateEnergy;
     }
 
-    private void Update()
-    {
+    //private void Update()
+    //{
         
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (weapon1.isSpellUsable)
-            {
-                combatEntity.CastAbility(0);
-                //weapon1.TriggerButtonGlow();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (weapon2.isSpellUsable)
-            {
-                combatEntity.CastAbility(1);
-                //weapon2.TriggerButtonGlow();
+    //    if (Input.GetKeyDown(KeyCode.Alpha1))
+    //    {
+    //        if (weapon1.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(0);
+    //            //weapon1.TriggerButtonGlow();
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Alpha2))
+    //    {
+    //        if (weapon2.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(1);
+    //            //weapon2.TriggerButtonGlow();
 
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            if (scroll1.isSpellUsable)
-            {
-                combatEntity.CastAbility(2);
-                //scroll1.TriggerButtonGlow();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            if (scroll2.isSpellUsable)
-            {
-                combatEntity.CastAbility(3);
-                //scroll2.TriggerButtonGlow();
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Alpha3))
+    //    {
+    //        if (scroll1.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(2);
+    //            //scroll1.TriggerButtonGlow();
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Alpha4))
+    //    {
+    //        if (scroll2.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(3);
+    //            //scroll2.TriggerButtonGlow();
 
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (endTurn.isActiveAndEnabled && endTurn.interactable)
-            {
-                combatEntity.EndTurn();
-            }
-        }
-    }
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        if (endTurn.isActiveAndEnabled && endTurn.interactable)
+    //        {
+    //            combatEntity.EndTurn();
+    //        }
+    //    }
+    //}
 
     private void UpdateEnergy(Character c, int current)
     {
