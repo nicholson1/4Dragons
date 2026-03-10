@@ -51,6 +51,7 @@ public class UIController : MonoBehaviour
 
     [SerializeField] public GameObject[] KeybindVisuals;
     private bool showKeybinds = true;
+    private bool spinfinity = false;
 
     
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
@@ -762,6 +763,13 @@ public class UIController : MonoBehaviour
             PlayerPrefsManager.SetKeyBindEnabled(1);
         else
             PlayerPrefsManager.SetKeyBindEnabled(0);
+    }
+    
+    public void ToggleSpinfinity()
+    {
+        spinfinity = !spinfinity;
+
+        CombatController._instance.Player._am.SetBool("INFINITESPIN", spinfinity);
     }
 
 
