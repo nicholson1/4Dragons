@@ -406,6 +406,8 @@ public class SelectionManager : UIInventorySubPanel
         currentSelectedItem.DeselectPanel();
         currentSelectedItem = selectionItem;
         currentSelectedItem.SelectPanel();
+
+        SetupSkipButtonNavigation();
     }
 
     public void SkipSelectionButton()

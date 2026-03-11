@@ -29,6 +29,7 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
             }
 
             button.onClick.Invoke();
+            toolTip.CloseTip();
             pressedOnce = false;
             return;
         }

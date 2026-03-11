@@ -22,6 +22,18 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen currentActiveScreen = null;
     private UIScreen previousActiveScreen = null;
 
+    private DragItem itemOnGamepad;
+    public void SetItemOnGamepad(DragItem item)
+    {
+        itemOnGamepad = item;
+    }
+    public bool TryGetItemOnGamepad(out DragItem item)
+    {
+        item = itemOnGamepad;
+        return itemOnGamepad != null;
+    }
+
+
     public UIScreen GetLatestScreenInHistory() => screenHistory.Count > 0 ? screenHistory.LastOrDefault() : null;
 
     private InputHandler inputHandler = null;
@@ -92,3 +104,4 @@ public class UIStateMonitor : MonoBehaviour
 
     }
 }
+

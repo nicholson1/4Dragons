@@ -11,20 +11,20 @@ using UnityEngine.UI;
 public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     private Button button;
+
     private IGamepadButtonListener buttonListener;
 
-    public void OnSelect(BaseEventData eventData)
+    public virtual void OnSelect(BaseEventData eventData)
     {
         buttonListener.HandleGamepadButtonSelected(button);
     }
 
-    public void OnDeselect(BaseEventData eventData)
+    public virtual void OnDeselect(BaseEventData eventData)
     {
         buttonListener.HandleGamepadButtonDeselected(button);
     }
 
-
-    public void OnGamepadButtonClick()
+    public virtual void OnGamepadButtonClick()
     {
         buttonListener.HandleGamepadButtonPressed(button);
     }
@@ -33,6 +33,6 @@ public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDe
     {
         button = GetComponent<Button>();
         buttonListener = GetComponentInParent<IGamepadButtonListener>();
-        button.onClick.AddListener(OnGamepadButtonClick);
+        button.onClick.AddListener(OnGamepadButtonClick);        
     }
 }

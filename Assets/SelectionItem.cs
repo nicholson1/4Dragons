@@ -405,8 +405,7 @@ public class SelectionItem : MonoBehaviour
     private void FinishedRotateBackCallback()
     {
         isAvailable = false;
-        DisableButtons();
-
+        
         OnSelectionItemPanelClosed?.Invoke(this);
     }
 
@@ -520,6 +519,9 @@ public class SelectionItem : MonoBehaviour
     {
         //should behave similar to AddToInventory()
         isAvailable = false;
+
+        DisableButtons();
+
         UIController._instance.PlayGetRelic();
         StatsTracker.Instance.TrackRelicSelected(item);
 
@@ -535,6 +537,9 @@ public class SelectionItem : MonoBehaviour
     public void AddToInventory()
     {
         isAvailable = false;
+
+        DisableButtons();
+
         bool canAddToInventory = EquipmentManager._instance.TryPutItemToInventoryFromSelection(item, this);
         if (canAddToInventory)
         {
@@ -552,7 +557,8 @@ public class SelectionItem : MonoBehaviour
     public void EquipedFromSelection()
     {
         isAvailable = false;
-        
+
+        DisableButtons();
 
         bool canEquipItem = EquipmentManager._instance.TryEquipItemFromSelection(item, this);
         if (canEquipItem)

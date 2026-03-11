@@ -164,6 +164,9 @@ public class UIScreenInventory : UIScreen
 
     private void SetGamepadNavigationToStatDisplay()
     {
+        if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out _)) 
+            return;
+
         if (EventSystem.current.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
             SetSelectableToSelectOnActivated(selectable);
 

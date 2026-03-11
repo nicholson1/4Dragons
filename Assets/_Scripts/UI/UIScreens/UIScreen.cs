@@ -153,8 +153,11 @@ public class UIScreen : MonoBehaviour
 
         tutorialManager ??= TutorialManager.Instance;
 
-        tutorialManager.TriggerTutorial += HandleTutorialOpen;
-        tutorialManager.CloseTutorial += HandleTutorialClosed;
+        if (tutorialManager != null)
+        {
+            tutorialManager.TriggerTutorial += HandleTutorialOpen;
+            tutorialManager.CloseTutorial += HandleTutorialClosed;
+        }
 
         foreach (var selectable in selectables)
         {
@@ -174,8 +177,11 @@ public class UIScreen : MonoBehaviour
     {
         inputHandler.OnInputTypeChange -= HandleInputTypeChange;
 
-        tutorialManager.TriggerTutorial -= HandleTutorialOpen;
-        tutorialManager.CloseTutorial -= HandleTutorialClosed;
+        if (tutorialManager != null)
+        {
+            tutorialManager.TriggerTutorial += HandleTutorialOpen;
+            tutorialManager.CloseTutorial += HandleTutorialClosed;
+        }
     }
 }
 

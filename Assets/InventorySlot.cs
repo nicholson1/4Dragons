@@ -1,12 +1,14 @@
+using ImportantStuff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
+//using UnityEngine.UIElements;
 
 public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 {
@@ -21,45 +23,18 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     [SerializeField] private Color baseColor;
 
     public SellShopType SellType = SellShopType.None;
-    public bool CanDropHere = true;
+    public bool CanAcceptItem = true;
 
     
-    public static event Action<ErrorMessageManager.Errors> CombatMove;
-    public static event Action<ErrorMessageManager.Errors, int> SellItem;
+    public static event Action<ErrorMessageManager.Errors> OnCannotDragItemOnCombat;
+    public static event Action<ErrorMessageManager.Errors, int> OnBoughtItem;
     public static event Action<ErrorMessageManager.Errors> NotEnoughGold;
 
     [SerializeField] private AudioClip dropItem;
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
 
-    public void HandleGamepadButtonSelected(Selectable selectable)
-    {
-        OnGamepadButtonSelected?.Invoke();
-        if(Item != null)
-            Item.HighlightItem(true);
-
-        //this should open tooltip if it's available
-    }
-
-    public void HandleGamepadButtonDeselected(Selectable selectable)
-    {
-        OnGamepadButtonDeselected?.Invoke();
-        if (Item != null)
-            Item.HighlightItem(false);
-
-        //this should close currently opened tooltip
-    }
-
-    public void HandleGamepadButtonPressed(Selectable selectable)
-    {
-        Debug.Log($"{gameObject.name} - {Slot} button PRESSED");
-
-        if (Item == null) return;
-
-        //this is for gamepad item drag/drop functionalities 
-
-        Debug.Log($"ButtonPress detected on slot {gameObject.name} - {Slot} with item {Item.e.name} ");
-    }
+    private InputHandler inputHandler;
 
     public void LabelCheck()
     {
@@ -69,7 +44,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             background = GetComponent<Image>();
             baseColor = background.color;
         }
-        
+
         if (Slot == Equipment.Slot.Drop)
         {
             return;
@@ -90,14 +65,14 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             if (Slot == Equipment.Slot.OneHander)
             {
                 SlotLable.text = "Weapon";
-            } 
-            else if(Slot != Equipment.Slot.All)
+            }
+            else if (Slot != Equipment.Slot.All)
             {
                 SlotLable.text = Slot.ToString();
             }
             else
             {
-                if (CanDropHere)
+                if (CanAcceptItem)
                 {
                     SlotLable.text = "";
                 }
@@ -116,21 +91,253 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     }
 
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        OnGamepadButtonSelected?.Invoke();
+        if(Item != null && !UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem item))
+            Item.HighlightItem(true);
+
+        //this should open tooltip if it's available
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        OnGamepadButtonDeselected?.Invoke();
+        if (Item != null && !UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem item))
+            Item.HighlightItem(false);
+
+        //this should close currently opened tooltip
+    }
+
+    public void HandleGamepadButtonPressed(Selectable selectable)
+    {
+        Debug.Log($"{gameObject.name} - {Slot} button PRESSED");
+        
+        //pressing inventory slot gamepad button while dragging item
+        if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
+        {
+            if(itemOnGamepad == Item)
+            {
+                itemOnGamepad.GamepadFinishDrag();
+                return;
+            }
+
+            //try drop here
+            InitiateDroppingItem(itemOnGamepad);
+        }
+        else
+        {
+            if (Item == null) return;
+            
+            Debug.Log($"ButtonPress detected on slot {gameObject.name} - {Slot} with item {Item.e.name} ");
+            Item.GamepadStartDrag(this);
+
+            inputHandler.OnNo.AddListener(CancelGamepadDrag);
+        }            
+    }
+
+    private void CancelGamepadDrag()
+    {
+        inputHandler.OnNo.RemoveListener(CancelGamepadDrag);
+
+        if (!UIController._instance.StateMonitor.TryGetItemOnGamepad(out var item)) return;
+
+        item.GamepadFinishDrag(false);
+        UIController._instance.PlayUIClick();
+    }
+
+
+    private int GetItemCost(DragItem itemToBuy)
+    {
+        int cost = (itemToBuy.e.stats[Stats.Rarity] + 1) * 60;
+
+        if (CombatController._instance.Difficulty >= 7)
+            cost += Mathf.RoundToInt(cost * .2f);
+
+        return cost;
+    }
+
+    private bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
+
+    private bool CanItemBeDroppedHere(DragItem itemToDrop)
+    {
+        if(IsInCombat() && !itemToDrop.canBeDragged && (Slot is not Equipment.Slot.Drop or Equipment.Slot.Sell))
+        {
+            Debug.LogError($"Item can't be dropped: combat related");
+            OnCannotDragItemOnCombat(ErrorMessageManager.Errors.CombatMove); //consider invoke
+            return false;
+        }
+
+        if (itemToDrop.IsShopItem())
+        {
+            // if item is coming from shop
+            // check if we have enough gold AND the target slot is empty
+            if(Item != null)
+            {
+                Debug.Log($"Cannot drag item from shop - target slot is occupied by {Item.name}");
+                return false;
+            }
+
+            int currentGold = CombatController._instance.Player._gold;
+            if (currentGold < GetItemCost(itemToDrop))
+            {
+                NotEnoughGoldEvent();
+                return false;
+            }
+        }       
+
+        if (!itemToDrop.HasSameSlotType(Slot) && Slot != Equipment.Slot.All)
+        {
+            Debug.LogError($"Item can't be dropped, target slot != item.slotType, target slot != All");
+            return false;
+        }
+
+        if (Item != null && !Item.HasSameSlotType(itemToDrop.slotType) && (!itemToDrop.IsItemFromInventory() || Item.HasSameSlotType(itemToDrop.currentLocation.Slot)))
+        {
+            Debug.LogError($"Item can't be dropped, item in here {Item.slotType}, itemToDrop {itemToDrop.slotType}, item to drop from inventory? {itemToDrop.IsItemFromInventory()}");
+            return false;
+        }
+
+        return CanAcceptItem;
+    }
+       
+
+    private void InitiateDroppingItem(DragItem itemToDrop)
+    {
+        if (!CanItemBeDroppedHere(itemToDrop))
+        {
+            SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
+            return;
+        }
+
+        inputHandler.OnNo.RemoveListener(CancelGamepadDrag);
+
+        if (Slot == Equipment.Slot.Drop)
+        {
+            DiscardItem(itemToDrop);
+            return;
+        }
+        else if(Slot == Equipment.Slot.Sell)
+        {
+            SellItem(itemToDrop);
+            return;
+        }
+
+        if (itemToDrop.IsShopItem())
+        {
+            BuyItem(itemToDrop);
+            return;
+        }
+
+        if (Item != null && Item != itemToDrop && Item.slotType == itemToDrop.slotType)
+        {
+            MoveItemHereToItemToDropOrigin(Item, itemToDrop.currentLocation);
+        }
+
+        AssignDroppedItemToSlot(itemToDrop);
+
+        if (Slot != Equipment.Slot.All)
+        {
+            EquipmentManager._instance.EquipFromInventory(Item.e);
+            //di._rectTransform.position = _rt.position;
+        }
+        else
+        {
+            // unequip
+            EquipmentManager._instance.UnEquipItem(Item.e);
+        }
+
+        if (itemToDrop.slotType == Equipment.Slot.Consumable)
+        {
+            //Debug.Log("from inventory slot potion");
+            EquipmentManager._instance.AddPotionToPotionBar((Consumable)itemToDrop.e);
+        }
+
+        
+        LabelCheck();
+        UIController._instance.PlayPlaceItem();
+    }
+
+    //for gamepad version, we shouldn't drag/drop the item to buy it
+    private void BuyItem(DragItem itemToDrop)
+    {
+        // if we do - gold
+        CombatController._instance.Player._gold -= GetItemCost(itemToDrop);
+        BuyItemEvent(-GetItemCost(itemToDrop));
+    }    
+
+    private void SellItem(DragItem itemToSell)
+    {
+        if (itemToSell.currentLocation.Slot == Equipment.Slot.Sold)
+            return;
+
+        int gold = CalculateGold(itemToSell.e, this);
+        CombatController._instance.Player.GetGold(gold);
+
+        itemToSell.currentLocation.Item = null;
+        itemToSell.currentLocation.LabelCheck();
+        EquipmentManager._instance.PoolItem(itemToSell);
+        UIController._instance.PlaySellItem();
+    }
+
+    private void DiscardItem(DragItem itemToDrop)
+    {
+        itemToDrop.currentLocation.Item = null;
+        itemToDrop.currentLocation.LabelCheck();
+        EquipmentManager._instance.PoolItem(itemToDrop);
+        SoundManager.Instance.Play2DSFX(dropItem, dropItemVol, 1, .05f);
+    }
+
+    private void MoveItemHereToItemToDropOrigin(DragItem itemToMove, InventorySlot targetSlot)
+    {
+        targetSlot.Item = itemToMove;
+
+        itemToMove.transform.SetParent(targetSlot.transform.parent);
+        itemToMove._rectTransform.anchoredPosition = targetSlot._rt.anchoredPosition;
+        itemToMove._rectTransform.localScale = targetSlot._rt.localScale;
+        
+        itemToMove.currentLocation.RemoveItemFromSlot();
+        itemToMove.currentLocation.LabelCheck();
+        itemToMove.currentLocation = targetSlot;
+    }
+
+    private void RemoveItemFromSlot()
+    {
+        Item = null;
+    }
+
+    private void AssignDroppedItemToSlot(DragItem di)
+    {
+        di.transform.SetParent(_rt.parent);
+        di._rectTransform.anchoredPosition = _rt.anchoredPosition;
+        di._rectTransform.localScale = _rt.localScale;
+
+        if(di.currentLocation.Item == di) //if not swapping with other item
+        {
+            di.currentLocation.RemoveItemFromSlot();
+            di.currentLocation.LabelCheck();
+        }
+
+        di.currentLocation = this;
+        Item = di;
+        di.GamepadFinishDrag();
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         //AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
-
         DragItem item = eventData.pointerDrag.GetComponent<DragItem>();
+
         if (item.canBeDragged == false && (Slot != Equipment.Slot.Drop || Slot != Equipment.Slot.Sell))
         {
             if (CombatController._instance.entitiesInCombat.Count > 1)
             {
-                CombatMove(ErrorMessageManager.Errors.CombatMove);
+                OnCannotDragItemOnCombat(ErrorMessageManager.Errors.CombatMove);
                 SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
                 return;
             }
         }
-        if (CanDropHere == false)
+        if (CanAcceptItem == false)
         {
             SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
             return;
@@ -142,12 +349,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             
             if (Slot == Equipment.Slot.Drop)
             {
-                di.currentLocation.Item = null;
-                di.currentLocation.LabelCheck();
-                //EquipmentManager._instance.DropItem(di.e);
-                EquipmentManager._instance.PoolItem(di);
-                //Destroy(di.gameObject);
-                SoundManager.Instance.Play2DSFX(dropItem, dropItemVol, 1, .05f);
+                DiscardItem(di);
                 return;
             }
             if (Slot == Equipment.Slot.Sell)
@@ -158,19 +360,12 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
                 int gold = CalculateGold(di.e, this);
                 //character add gold
                 CombatController._instance.Player.GetGold(gold);
-                //trigger notification event
-                //SellItem(ErrorMessageManager.Errors.GetGold, gold);
-
-                
                 
                 di.currentLocation.Item = null;
                 di.currentLocation.LabelCheck();
                 EquipmentManager._instance.PoolItem(di);
                 UIController._instance.PlaySellItem();
-                
-                //Destroy(di.gameObject);
-                
-                
+
                 return;
             }
             
@@ -217,7 +412,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
                 {
                     EquipmentManager._instance.EquipFromInventory(Item.e);
                     //di._rectTransform.position = _rt.position;
-
                 }
                 else
                 {
@@ -238,21 +432,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         }
     }
 
-    private void RemoveItemFromSlot()
-    {
-        Item = null;
-    }
 
-    private void AssignDroppedItemToSlot(DragItem di)
-    {
-        di.transform.SetParent(_rt.parent);
-        di._rectTransform.anchoredPosition = _rt.anchoredPosition;
-        di._rectTransform.localScale = _rt.localScale;
-        di.currentLocation.RemoveItemFromSlot();
-        di.currentLocation.LabelCheck();
-        di.currentLocation = this;
-        Item = di;
-    }
 
     public void NotEnoughGoldEvent()
     {
@@ -261,7 +441,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     public void BuyItemEvent(int i)
     {
-        SellItem(ErrorMessageManager.Errors.LoseGold, -i);
+        OnBoughtItem(ErrorMessageManager.Errors.LoseGold, -i);
     }
 
     // public bool canBeDragged = true;
@@ -299,6 +479,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
    
     private void Start()
     {
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
         //Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         LabelCheck();
         //CombatController.EndCombatEvent += EndCombat;

@@ -45,15 +45,126 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     private bool isBeingDragged = false;
 
     private Character character;
+
+    private InputHandler inputHandler;
+    private Coroutine draggingRoutine = null;
+    private DragItemHoverEffect hoverEffect;
+
+    private Vector2 offsetWhenDragged = new Vector2(-50f, 50f);
     
+    public bool IsItemFromInventory()
+    {
+        return currentLocation != null && currentLocation.Slot == Equipment.Slot.All;
+    }
+
+    public bool HasSameSlotType(Equipment.Slot otherSlotType)
+    {
+        Debug.Log($"Item A = {this.slotType} | Item B = { otherSlotType}");
+        return this.slotType == otherSlotType;
+    }
+
+    public bool IsShopItem()
+    {
+        return currentLocation.Slot == Equipment.Slot.Sold;
+    }
+
     public void HighlightItem(bool toHighlight)
     {
         GamepadHighlighter.enabled = toHighlight;
+
         if (toHighlight)
+        {
+            hoverEffect.GamepadSelect();
             _toolTip.ShowTipFromGamepadNavi(_rectTransform);
+        }
         else
+        {
+            hoverEffect.GamepadDeselect();
             _toolTip.CloseTip();
+        }
     }
+
+    public void GamepadStartDrag(InventorySlot origin)
+    {
+        Debug.Log($"start dragging item ");
+        if (e.isRelic)
+            return;
+
+        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
+
+        if (ForgeManager._instance.Upgrading)
+        {
+            EquipmentManager._instance.UpgradeEquipment(this);
+        }
+        if (ForgeManager._instance.Enhancing)
+        {
+            EquipmentManager._instance.EnhanceEquipment(this);
+        }
+
+        isBeingDragged = true;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.alpha = .6f;
+        SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
+        UIController._instance.StateMonitor.SetItemOnGamepad(this);
+
+        HighlightItem(false);
+        
+        if(draggingRoutine != null)
+        {
+            StopCoroutine(draggingRoutine);
+            draggingRoutine = null;
+        }
+        draggingRoutine = StartCoroutine(GamepadDragRoutine());
+    }
+
+    public void GamepadFinishDrag(bool shouldHighlight = true)
+    {
+        if(draggingRoutine != null)
+        {
+            StopCoroutine(draggingRoutine);
+            draggingRoutine = null;
+        }
+
+        UIController._instance.StateMonitor.SetItemOnGamepad(null);
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.alpha = 1f;
+        _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
+        HighlightItem(shouldHighlight);
+    }
+
+    private IEnumerator GamepadDragRoutine()
+    {
+        transform.SetAsLastSibling();
+        _rectTransform.anchoredPosition += offsetWhenDragged;
+
+        GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
+        RectTransform currentRectTransform = currentSelected.GetComponent<RectTransform>();
+        while (isBeingDragged)
+        {
+            //TODO: handle if during this process, mouse detected
+            if(currentSelected != EventSystem.current.currentSelectedGameObject)
+            {
+                currentSelected = EventSystem.current.currentSelectedGameObject;
+                transform.position = currentSelected.transform.position;
+                _rectTransform.anchoredPosition += offsetWhenDragged;
+                //currentRectTransform = currentSelected.GetComponent<RectTransform>();
+                //_rectTransform.anchoredPosition = currentRectTransform.anchoredPosition;
+            }
+
+            yield return null;
+        }
+    }
+
+    public void SetInventorySlot(InventorySlot slot)
+    {        
+        currentLocation = slot;
+        var slotRT = currentLocation.GetComponent<RectTransform>();
+        transform.SetParent(currentLocation.transform);
+
+        _rectTransform.anchoredPosition = slotRT.anchoredPosition;
+        _rectTransform.localScale = slotRT.localScale;
+    }
+
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
@@ -426,6 +537,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     }
     private void Start()
     {
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        hoverEffect = GetComponent<DragItemHoverEffect>();
+
         if (GamepadHighlighter.enabled)
             GamepadHighlighter.enabled = false;
 

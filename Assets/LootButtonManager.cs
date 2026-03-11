@@ -139,15 +139,12 @@ public class LootButtonManager : UIInventorySubPanel
             }
         }
 
-        if(buttonOnUp != null)
-        {
-            Navigation navi = leaveButton.navigation;
-            if (navi.mode != Navigation.Mode.Explicit)
-                navi.mode = Navigation.Mode.Explicit;
+        Navigation navi = leaveButton.navigation;
+        if (navi.mode != Navigation.Mode.Explicit)
+            navi.mode = Navigation.Mode.Explicit;
 
-            navi.selectOnUp = buttonOnUp;
-            leaveButton.navigation = navi;
-        }
+        navi.selectOnUp = buttonOnUp != null && buttonOnUp.interactable ? buttonOnUp : null;
+        leaveButton.navigation = navi;
     }
 
 
@@ -346,9 +343,10 @@ public class LootButtonManager : UIInventorySubPanel
         SelectionManager._instance.OnSelectionFinished -= SelectionFinishedCallback;
 
         RefreshLootButtonNavigation();
+        SetLeaveButtonUpNavigation();
     }
 
-    public void EquipmentSelect(int i)
+public void EquipmentSelect(int i)
     {
         SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
 
@@ -375,6 +373,7 @@ public class LootButtonManager : UIInventorySubPanel
         GoldButtons[i].DeactivateButton();
 
         RefreshLootButtonNavigation();
+        SelectionFinishedCallback();
     }
 
     public void ExitLoot()

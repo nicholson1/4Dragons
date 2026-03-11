@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using InputIcons;
+using System;
 
 public class ButtonBindingHandler : MonoBehaviour
 {
@@ -15,7 +16,6 @@ public class ButtonBindingHandler : MonoBehaviour
 
     [SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
     [SerializeField] protected bool clickableWithYes = true;
-    [SerializeField] protected bool clickableWithNo = false;
 
     [SerializeField] protected bool shouldHaveClickableButton = true;
 
@@ -26,7 +26,7 @@ public class ButtonBindingHandler : MonoBehaviour
         Debug.LogError($"Error: No function bind");
     }
 
-    protected void HandleClickThroughYes()
+    protected virtual void HandleClickThroughYes()
     {
         if (button == null)
         {
@@ -41,12 +41,7 @@ public class ButtonBindingHandler : MonoBehaviour
             button.onClick.Invoke();
     }
 
-    protected void HandleClickThroughNo()
-    {
-        ClickThroughInput();
-    }
-
-    protected void ClickThroughInput()
+    protected virtual void ClickThroughInput()
     {
         if (button == null)
         {
@@ -63,7 +58,7 @@ public class ButtonBindingHandler : MonoBehaviour
 
     protected virtual void ToggleButtonInteractability(UIScreen screen)
     {
-
+        throw new NotImplementedException();
     }
 
 
@@ -74,9 +69,6 @@ public class ButtonBindingHandler : MonoBehaviour
 
         if (clickableWithYes)
             inputHandler.OnYes.AddListener(HandleClickThroughYes);
-
-        if (clickableWithNo)
-            inputHandler.OnNo.AddListener(ClickThroughInput);
 
         switch (extraButtonToUse)
         {
@@ -112,10 +104,6 @@ public class ButtonBindingHandler : MonoBehaviour
 
         if (clickableWithYes)
             inputHandler.OnYes.RemoveListener(HandleClickThroughYes);
-
-        if (clickableWithNo)
-            inputHandler.OnNo.RemoveListener(ClickThroughInput);
-
 
         switch (extraButtonToUse)
         {
@@ -153,8 +141,7 @@ public class ButtonBindingHandler : MonoBehaviour
 
     protected void UnbindInput(UIScreen _)
     {
-        UnbindGamepadFromButton();
-        
+        UnbindGamepadFromButton();        
     }
 
     /// <summary>
