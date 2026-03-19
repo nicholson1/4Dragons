@@ -197,6 +197,19 @@ public class SelectionManager : UIInventorySubPanel
 
     }
 
+    public void SkipSelectionButton()
+    {
+        if (TutorialManager.Instance.TutorialsEnabled && !TutorialManager.Instance.CheckIsShown(TutorialNames.SkipSelection))
+        {
+            TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
+        }
+        else
+        {
+            InitiateClosingSelectionManagerUI();
+        }
+
+    }
+
     private void FinalizeAndCloseSelectionPanel()
     {
         //give access back to Loot Panel
@@ -408,17 +421,6 @@ public class SelectionManager : UIInventorySubPanel
         currentSelectedItem.SelectPanel();
 
         SetupSkipButtonNavigation();
-    }
-
-    public void SkipSelectionButton()
-    {
-        if(TutorialManager.Instance.TutorialsEnabled && !TutorialManager.Instance.CheckIsShown(TutorialNames.SkipSelection))
-            TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
-        else
-        {
-            InitiateClosingSelectionManagerUI();
-        }
-
     }
 
     //Closing selection screen
@@ -999,9 +1001,13 @@ public class SelectionManager : UIInventorySubPanel
         }
 
         selectionParentLayoutGroup = GetComponentInChildren<HorizontalLayoutGroup>();
-        SkipButton.gameObject.SetActive(false);
+
     }
 
+    private void Start()
+    {
+        SkipButton.gameObject.SetActive(false);
+    }
 
     private (ChestType, ChestType) SelectChestType()
     {

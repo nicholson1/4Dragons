@@ -300,6 +300,7 @@ public class UIController : MonoBehaviour
     //For handling closing settings menu through UI [X] close button
     public void CloseSettings()
     {
+        Debug.LogError($"Call CloseSettings()");
         var settingsScreen = SettingUI.GetComponent<UIScreen>();
 
         if (StateMonitor.CurrentActiveScreen == settingsScreen)
@@ -311,14 +312,18 @@ public class UIController : MonoBehaviour
 
     public void ToggleSettings()
     {
-        SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
-        if (SettingUI.activeSelf)
+
+        bool currentlyActive = settingsScreen.IsScreenActive;
+
+        if (currentlyActive)
         {
-            SettingUI.GetComponent<UIScreen>().Activate();
+            SettingUI.gameObject.SetActive(false);
+            StateMonitor.PreviousActiveScreen.Activate();
         }
         else
         {
-            StateMonitor.PreviousActiveScreen.Activate();
+            SettingUI.gameObject.SetActive(true);
+            settingsScreen.Activate(true);
         }
     }
     public void RestartGame(bool victory = false)

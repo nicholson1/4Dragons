@@ -74,7 +74,6 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
             
         }
-
         StartCoroutine(ShowTooltipRoutine(Input.mousePosition));
     }
 
@@ -94,6 +93,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 ForgeManager._instance.HidePrice();
             }
         }
+
+        
 
         ToolTipManager._instance.HideToolTipAll();
     }
@@ -118,8 +119,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         }
 
-        //ToolTipManager._instance.SetAndShowToolTip(rectTransform, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
-        StartCoroutine(ShowTooltipRoutine(referenceRT.position));
+        ToolTipManager._instance.SetAndShowToolTip(rectTransform, referenceRT.position, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
+        //StartCoroutine(ShowTooltipRoutine(referenceRT.position));
     }
 
     private IEnumerator ShowTooltipRoutine(Vector2 position)

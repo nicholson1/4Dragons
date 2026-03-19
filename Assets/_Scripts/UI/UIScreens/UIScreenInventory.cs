@@ -53,7 +53,7 @@ public class UIScreenInventory : UIScreen
             case InventoryState.Loot:
                 return lootButtonManager.GetTopMostInteractableLootButton();
             //case InventoryState.Selection:
-            //    return 
+            //    return s
 
             default:
                 return defaultSelectable;
@@ -208,8 +208,8 @@ public class UIScreenInventory : UIScreen
     protected override void Start()
     {
         base.Start();
-        //temp
         selectionManager = SelectionManager._instance;
+        //temp
         selectionManager.OnPanelOpen += SelectionPanelOpenCallback;
         selectionManager.OnPanelClosed += SelectionPanelClosedCallback;
 

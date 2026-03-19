@@ -30,8 +30,6 @@ public class SettingsManager : MonoBehaviour
         difficultySlider.SetValueWithoutNotify(diff);
         OnValueChangeSlider();
         
-
-        this.gameObject.SetActive(false);
     }
 
     private string[] DifficultyTexts = new[]

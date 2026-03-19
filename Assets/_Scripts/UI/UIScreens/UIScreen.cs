@@ -38,6 +38,8 @@ public class UIScreen : MonoBehaviour
 
     protected InputHandler inputHandler = null;
 
+    [SerializeField] protected bool startDisabled = false;
+
 
 
     protected virtual void HandleInputTypeChange(InputType inputType)
@@ -99,6 +101,8 @@ public class UIScreen : MonoBehaviour
 
     }
 
+
+
     /// <summary>
     /// Manual navigatable toggle for panel that's not navigatable by default, like CombatUI
     /// </summary>
@@ -108,8 +112,9 @@ public class UIScreen : MonoBehaviour
         navigatable = value;
             
         if (navigatable)
-        {                
+        {
             EventSystem.current.SetSelectedGameObject(GetSelectableToSelectOnActivated().gameObject);
+            
             OnNewScreenActive?.Invoke(this, true);
         }
         else
@@ -145,7 +150,7 @@ public class UIScreen : MonoBehaviour
     protected virtual void Start()
     {
         navigatable = NavigatableByDefault;
-        selectables = GetComponentsInChildren<Selectable>().ToList();
+        selectables = GetComponentsInChildren<Selectable>(true).ToList();
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
         inputHandler.OnInputTypeChange += HandleInputTypeChange;
@@ -171,6 +176,9 @@ public class UIScreen : MonoBehaviour
             defaultSelectable = selectables[0];
 
         requiredActionMap = defaultActionMap;
+
+        if (startDisabled)
+            gameObject.SetActive(false);
     }
 
     protected virtual void OnDestroy()

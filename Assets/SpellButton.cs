@@ -234,6 +234,8 @@ public class SpellButton : MonoBehaviour
         character.UpdateEnergy += SetUsability;
     }
 
+    
+
 
     private void OnDestroy()
     {

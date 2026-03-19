@@ -133,6 +133,10 @@ public class ToolTipManager : MonoBehaviour
 
    public void SetAndShowToolTip(RectTransform toolTipRT, Vector2 position, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
    {
+      if (activated)
+      {
+         return;
+      }
         //transform.position = Input.mousePosition;
         //transform.position = toolTipRT.position;
         //transform.position = toolTipRT.transform.position;
@@ -141,10 +145,6 @@ public class ToolTipManager : MonoBehaviour
         _rt.position = position;
         _rt.position = position + GetOffset(_rt.position);
 
-      if (activated)
-      {
-         return;
-      }
       
       Comparison1tip.gameObject.SetActive(false);
       Comparison2tip.gameObject.SetActive(false);
