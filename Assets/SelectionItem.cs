@@ -119,7 +119,12 @@ public class SelectionItem : MonoBehaviour
 
     private void SetButtonActive(Equipment equipmentToSet)
     {
-        if(equipmentToSet is Relic or Consumable)
+        //equip.onClick.RemoveAllListeners();
+        //inventory.onClick.RemoveAllListeners();
+        //selectRelic.onClick.RemoveAllListeners();
+
+        Debug.LogError($"SelectionItem: SetButtonActive for: {equipmentToSet.GetType()}");
+        if (equipmentToSet is Relic)
         {
             equip.gameObject.SetActive(false);
             inventory.gameObject.SetActive(false);
@@ -128,6 +133,18 @@ public class SelectionItem : MonoBehaviour
 
             selectRelic.gameObject.SetActive(true);
             selectRelic.interactable = true;
+            selectRelic.onClick.AddListener(SelectRelic);
+        }
+        else if(equipmentToSet is Consumable)
+        {
+            equip.gameObject.SetActive(false);
+            inventory.gameObject.SetActive(false);
+            equip.interactable = false;
+            inventory.interactable = false;
+
+            selectRelic.gameObject.SetActive(true);
+            selectRelic.interactable = true;
+            selectRelic.onClick.AddListener(AddToInventory);
         }
         else
         {
@@ -138,6 +155,8 @@ public class SelectionItem : MonoBehaviour
             inventory.gameObject.SetActive(true);
             equip.interactable = true;
             inventory.interactable = true;
+            equip.onClick.AddListener(EquipedFromSelection);
+            inventory.onClick.AddListener(AddToInventory);
         }
         //selectRelic.gameObject.SetActive(equipmentToSet is Relic);
         //inventory.gameObject.SetActive(equipmentToSet is not Relic);
@@ -493,6 +512,9 @@ public class SelectionItem : MonoBehaviour
         else
             selectRelic.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
     }
+
+
+
 
     public void SelectPanel()
     {

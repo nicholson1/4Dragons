@@ -13,8 +13,7 @@ public class UIController : MonoBehaviour
 {
     public UIStateMonitor StateMonitor => stateMonitor;
     private UIStateMonitor stateMonitor = null;
-
-    
+        
 
     [SerializeField] private UIScreen titleScreen;
     [SerializeField] private UIScreenInventory inventoryScreen;
@@ -131,10 +130,14 @@ public class UIController : MonoBehaviour
         TitleScreen.GetComponent<UIScreen>().Activate();
     }
 
-    [ContextMenu("activate combat screen!")]
     public void ActivateCombatScreen()
     {
-        combatScreen.Activate(false);
+        combatScreen.Activate();
+    }
+
+    public void DeactivateCombatScreen()
+    {
+        combatScreen.Deactivate();
     }
 
     
@@ -280,6 +283,7 @@ public class UIController : MonoBehaviour
         //stateMonitor.HandleToggleTransition(true);
         StartCoroutine(MovePanel(mapScreen.gameObject, PanelMoveDirection.Vertical, toOpen, MapMoveCompletedCallback));
     }
+        
 
     private void MapMoveCompletedCallback(bool toOpen)
     {
@@ -290,9 +294,9 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            //var screenToReturnTo = stateMonitor.PreviousActiveScreen;
             mapScreen.Deactivate();
-            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);            
+            //screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);            
         }
         //stateMonitor.HandleToggleTransition(false);
     }

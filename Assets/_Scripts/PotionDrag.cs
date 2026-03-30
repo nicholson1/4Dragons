@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 //using Microsoft.Unity.VisualStudio.Editor;
@@ -5,93 +6,128 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler, IGamepadButtonListener
 {
-       [SerializeField] private ToolTip _toolTip;
-       public Consumable potion;
-       [SerializeField] private Image image;
-       private RectTransform _rectTransform;
-       private Canvas canvas;
-       private Transform holder;
-       private Vector3 startPos;
+    public Button GamepadButton => gamepadButton;
+    public Image PotionImage => image;
+
+    [SerializeField] private ToolTip _toolTip;
+    public Consumable potion;
+    [SerializeField] private Image image;
+    private RectTransform _rectTransform;
+    private Canvas canvas;
+    private Transform holder;
+    private Vector3 startPos;
        
        
-       [SerializeField] private AudioClip usePotion;
-       [SerializeField] private float usePotionVol;
+    [SerializeField] private AudioClip usePotion;
+    [SerializeField] private float usePotionVol;
 
-       public void InitializePotion(Consumable p)
-       {
-              if (_rectTransform == null)
-              {
-                     _rectTransform = GetComponent<RectTransform>();
-                     canvas = transform.parent.parent.GetComponent<Canvas>();
-                     holder = transform.parent;
-              }
-              potion = p;
-              _toolTip.e = potion;
-              image.sprite = p.icon;
+    public event Action OnGamepadButtonSelected;
+    public event Action OnGamepadButtonDeselected;
 
-              if (transform.GetSiblingIndex() >= 5)
-              {
-                     SteamAchievementManager.Unlock("bag_potions");
-              }
+    private UIScreenCombat combatScreen;
+    private Button gamepadButton;
+
+    public void InitializePotion(Consumable p)
+    {
+        if (_rectTransform == null)
+        {
+            _rectTransform = GetComponent<RectTransform>();
+            canvas = transform.parent.parent.GetComponent<Canvas>();
+            holder = transform.parent;
+        }
+
+        potion = p;
+        _toolTip.e = potion;
+        image.sprite = p.icon;
+
+        if (transform.GetSiblingIndex() >= 5)
+        {
+            SteamAchievementManager.Unlock("bag_potions");
+        }
+
+        gamepadButton ??= GetComponentInChildren<Button>();
+        combatScreen = GetComponentInParent<UIScreenCombat>(true);
+        combatScreen.RegisterActivePotionDrag(this);
+
+        TutorialManager.Instance.QueueTip(TutorialNames.Potions);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        //throw new System.NotImplementedException();
+        //tartPos
+        startPos = _rectTransform.anchoredPosition;
+        holder.GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+        //_rectTransform.SetParent(transform.parent);
               
-              TutorialManager.Instance.QueueTip(TutorialNames.Potions);
-       }
-
-       public void OnBeginDrag(PointerEventData eventData)
-       {
-              //throw new System.NotImplementedException();
-              //tartPos
-              startPos = _rectTransform.anchoredPosition;
-              holder.GetComponent<CanvasGroup>().blocksRaycasts = false;
-
-              //_rectTransform.SetParent(transform.parent);
-              
-       }
+    }
        
 
-       public void OnDrag(PointerEventData eventData)
-       {
-              //throw new System.NotImplementedException();
-              _rectTransform.anchoredPosition += eventData.delta/ canvas.scaleFactor;
-       }
+    public void OnDrag(PointerEventData eventData)
+    {
+        //throw new System.NotImplementedException();
+        _rectTransform.anchoredPosition += eventData.delta/ canvas.scaleFactor;
+    }
 
-       public void OnDrop(PointerEventData eventData)
-       {
+    public void OnDrop(PointerEventData eventData)
+    {
 
               
 
-       }
+    }
 
-       public void OnEndDrag(PointerEventData eventData)
-       {
-              int layer_mask = LayerMask.GetMask("Characters");
-              Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-              RaycastHit hit;
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        int layer_mask = LayerMask.GetMask("Characters");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-              // Check if the ray hits any object
-              if (Physics.Raycast(ray, out hit,100,layer_mask))
-              {
-                     CombatEntity CE = hit.transform.gameObject.GetComponent<CombatEntity>();
-                     if (CE != null)
-                     {
-                            CE.HitWithPotion(potion.ConsumableType);
-                            EquipmentManager._instance.PoolPotion(this);
-                            
-                            SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, .05f);
-                            
-                     }
-              }
+        // Check if the ray hits any object
+        if (Physics.Raycast(ray, out hit,100,layer_mask))
+        {
+            CombatEntity CE = hit.transform.gameObject.GetComponent<CombatEntity>();
+            if (CE != null)
+            {
+                UsePotion(CE);                            
+            }
+        }
 
-              holder.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        holder.GetComponent<CanvasGroup>().blocksRaycasts = true;
 
-              //else reset to the pos start position
-              _rectTransform.anchoredPosition = startPos;
-       }
+        //else reset to the pos start position
+        _rectTransform.anchoredPosition = startPos;
+    }
 
-       public void OnPointerDown(PointerEventData eventData)
-       {
-              //throw new System.NotImplementedException();
-       }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        //throw new System.NotImplementedException();
+    }
+
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        OnGamepadButtonSelected?.Invoke();
+        _toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        OnGamepadButtonDeselected?.Invoke();
+        _toolTip.CloseTip();
+    }
+
+    public void HandleGamepadButtonPressed(Selectable selectable)
+    {        
+        combatScreen.InitiatePotionTargetting(this);
+    }
+
+    public void UsePotion(CombatEntity target)
+    {
+        target.HitWithPotion(potion.ConsumableType);
+        EquipmentManager._instance.PoolPotion(this);
+        combatScreen.RemoveActivePotionDrag(this);
+        SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, .05f);
+    }
 }

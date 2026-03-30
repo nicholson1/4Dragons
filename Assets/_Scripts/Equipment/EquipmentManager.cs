@@ -506,6 +506,7 @@ public class EquipmentManager : MonoBehaviour
             p = PotionPool[0];
             PotionPool.RemoveAt(0);
             p.gameObject.SetActive(true);
+            Debug.LogError($"potion parent = {p.transform.parent.name}");
         }
         else
         {

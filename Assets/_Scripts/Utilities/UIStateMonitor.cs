@@ -50,7 +50,7 @@ public class UIStateMonitor : MonoBehaviour
             inputHandler.SwitchActionMap(ActionMaps.Disabled);
         }
         else
-        {            
+        {          
             inputHandler.SwitchActionMap(currentNavigatableScreen.DefaultScreenActionMap);
         }
             
@@ -76,7 +76,7 @@ public class UIStateMonitor : MonoBehaviour
     }
 
     private void HandleScreenNavigatableChange(UIScreen eventOwner, bool navigatable)
-    {
+    {        
         UpdateScreenHistory();
         previousActiveScreen = currentActiveScreen;
 
@@ -88,9 +88,12 @@ public class UIStateMonitor : MonoBehaviour
             }
             else 
             {
+                Debug.LogError($"New screen active: {eventOwner.name}");
                 currentActiveScreen = screen;
                 if (screen.Navigatable)
-                    currentNavigatableScreen = screen;                
+                    currentNavigatableScreen = screen;
+
+                inputHandler.SwitchActionMap(currentActiveScreen.DefaultScreenActionMap);
             }
         }
 

@@ -805,8 +805,6 @@ public class CombatController : MonoBehaviour
             hb.Initialize(c, CombatCamera);
             
         }
-
-
     }
 
 

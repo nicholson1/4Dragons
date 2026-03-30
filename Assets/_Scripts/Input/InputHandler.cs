@@ -25,7 +25,7 @@ public class InputHandler : MonoBehaviour
     public UnityEvent OnMenuExtra2;
     public UnityEvent OnStart;
     public UnityEvent OnSelect;
-    public UnityEvent OnL1;
+    public UnityEvent OnL1; //on combat, toggle potion
     public UnityEvent OnL2;
     public UnityEvent OnR1;
     public UnityEvent OnR2;
@@ -128,6 +128,8 @@ public class InputHandler : MonoBehaviour
             cachedPreviousActionMap = currentActionMap;
 
         currentActionMap = targetMap;
+
+        Debug.LogError($"current action map: {currentActionMap}");
     }
 
     private void SetMapEnabled(bool toEnable, string actionMapName)

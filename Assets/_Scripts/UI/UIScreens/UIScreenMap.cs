@@ -8,7 +8,11 @@ using UnityEngine.UI;
 
 public class UIScreenMap : UIScreen
 {
+    public bool CanBeToggled => canBeToggled;
+
     public bool AreNodesClickable => areNodesClickable;
+
+    private bool canBeToggled = false;
 
     private bool areNodesClickable = false;
 
@@ -19,6 +23,7 @@ public class UIScreenMap : UIScreen
     public void SetNodesClickable(bool clickable) => areNodesClickable = clickable;
     public void SetCurrentOccupiedNode(MapNode mapNode) => currenOccupiedNode = mapNode;
 
+    public void SetCanBeToggled(bool value) => canBeToggled = value;
 
     public override void Activate(bool navigatableOnActivated = true)
     {
