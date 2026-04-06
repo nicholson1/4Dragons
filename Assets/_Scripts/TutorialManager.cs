@@ -22,6 +22,8 @@ public class TutorialManager : MonoBehaviour
 
     [SerializeField] private MoveAndSpin guide;
 
+    private bool isTutorialCurrentlyActive = false;
+
     private InputHandler inputHandler;
     
 
@@ -112,7 +114,8 @@ public class TutorialManager : MonoBehaviour
         if (tipID == TutorialNames.SkipSelection)
         {
             tipDictionary[tipID].IsShown = true;
-            if (TriggerTutorial != null) TriggerTutorial(tipID);
+
+            TriggerTutorial?.Invoke(tipID);
             return;
         }
 
@@ -155,7 +158,11 @@ public class TutorialManager : MonoBehaviour
         tip.IsShown = true;
         tipDictionary[tipID] = tip;
 
-        TriggerTutorial?.Invoke(tipID);
+        if(!isTutorialCurrentlyActive)
+        {
+            isTutorialCurrentlyActive = true;
+            TriggerTutorial?.Invoke(tipID);
+        }
 
         Debug.Log($"Trigger opening tutorial {tip.ID}");
     }
@@ -163,10 +170,10 @@ public class TutorialManager : MonoBehaviour
     
     public void CloseTip(TutorialNames tipID)
     {
-        if (CloseTutorial != null)
-        {
-            CloseTutorial?.Invoke(tipID);            
-        }
+        if (!isTutorialCurrentlyActive) return;
+
+        isTutorialCurrentlyActive = false;
+        CloseTutorial?.Invoke(tipID);        
     }
 
     public string GetText(TutorialNames id)

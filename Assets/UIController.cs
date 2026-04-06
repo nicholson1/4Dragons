@@ -119,12 +119,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private float UpgradeSoundVol;
     #endregion
 
-    
-    public void ClearScreenFlowHistory()
-    {
-
-    }
-    
+        
     public void ActivateTitleScreen()
     {
         TitleScreen.GetComponent<UIScreen>().Activate();
@@ -210,7 +205,7 @@ public class UIController : MonoBehaviour
                 inventoryScreen.ChangeInventoryState(InventoryState.Loot);
                 StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
-            case InventoryState.Shop:
+            case InventoryState.Merchant:
                 break;
             case InventoryState.Upgrade:
                 break;
@@ -221,6 +216,7 @@ public class UIController : MonoBehaviour
 
     private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
     {
+        Debug.LogError($"InventoryScreenToggleMoveFinished - toOpen? {toOpen}");
         if (toOpen)
         {
             inventoryScreen.Activate();
@@ -238,7 +234,6 @@ public class UIController : MonoBehaviour
 
     public void CloseInventoryScreenWithLootPanel()
     {
-        Debug.Log($"CloseInventoryScreenWithLootPanel()");
         EquipmentManager._instance.c.UpdateStats();
 
         if (!haveInitializedEquipmentItems)
@@ -287,7 +282,6 @@ public class UIController : MonoBehaviour
 
     private void MapMoveCompletedCallback(bool toOpen)
     {
-        Debug.Log($"map move completed, now map open? {toOpen}");
         if (toOpen)
         {
             mapScreen.Activate();
@@ -831,10 +825,14 @@ public class UIController : MonoBehaviour
         }
     }
 
-    private void UpdateToggleTransitionState(bool transitioning)
+    private void UpdateToggleTransitionState(bool transitioning, GameObject targetPanel)
     {
-        if (movingPanels.Count == 0)
-            stateMonitor.HandleToggleTransition(transitioning);
+        if (transitioning)
+            movingPanels.Add(targetPanel);
+        else
+            movingPanels.Remove(targetPanel);
+
+        stateMonitor.HandleToggleTransition(movingPanels.Count != 0);
     }
 
     public bool IsAnyPanelTransitioning()
@@ -844,8 +842,8 @@ public class UIController : MonoBehaviour
 
     private IEnumerator MovePanel(GameObject targetPanel, PanelMoveDirection moveDirection, bool toOpen, Action<bool> OnFinished = null)
     {
-        UpdateToggleTransitionState(true);
-        movingPanels.Add(targetPanel);
+        UpdateToggleTransitionState(true, targetPanel);
+        //movingPanels.Add(targetPanel);
 
         //Disable input before move        
         RectTransform rt = targetPanel.GetComponent<RectTransform>();
@@ -864,9 +862,9 @@ public class UIController : MonoBehaviour
 
         rt.anchoredPosition = endPos;
 
-        movingPanels.Remove(targetPanel);
+        //movingPanels.Remove(targetPanel);
 
-        UpdateToggleTransitionState(false);
+        UpdateToggleTransitionState(false, targetPanel);
 
         OnFinished?.Invoke(toOpen);
     }

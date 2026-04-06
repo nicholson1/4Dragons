@@ -64,7 +64,7 @@ public class UIScreen : MonoBehaviour
         OnNewScreenActive?.Invoke(this, navigatable);
 
         if (navigatable)
-        {            
+        {
             EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
         }
         else
@@ -97,14 +97,14 @@ public class UIScreen : MonoBehaviour
             SetSelectableToSelectOnActivated(selectable);
             
         OnScreenDeactivated?.Invoke(this);
-        SetNavigatable(false);
+        //SetNavigatable(false);
 
     }
 
-
-
     /// <summary>
     /// Manual navigatable toggle for panel that's not navigatable by default, like CombatUI
+    /// TODO: Scrap this we should only use this for gating the input during any transition and tutorial open/close
+    /// 
     /// </summary>
     /// <param name="value"></param>
     public virtual void SetNavigatable(bool value)
@@ -115,7 +115,7 @@ public class UIScreen : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(GetSelectableToSelectOnActivated().gameObject);
             
-            OnNewScreenActive?.Invoke(this, true);
+            //OnNewScreenActive?.Invoke(this, true);
         }
         else
         {
@@ -132,6 +132,7 @@ public class UIScreen : MonoBehaviour
       
     protected virtual void HandleTutorialOpen(TutorialNames tutorial)
     {
+        Debug.LogError($"Handle open tutorial {tutorial}");
         SetNavigatable(false);
         lastActionMap = requiredActionMap;
         requiredActionMap = ActionMaps.Menu;
@@ -141,6 +142,7 @@ public class UIScreen : MonoBehaviour
 
     protected virtual void HandleTutorialClosed(TutorialNames tutorial)
     {
+        Debug.LogError($"Handle close tutorial {tutorial}");
         SetNavigatable(true);        
         requiredActionMap = lastActionMap;
         if (inputHandler.CurrentActionMap != requiredActionMap)
@@ -154,7 +156,6 @@ public class UIScreen : MonoBehaviour
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
         inputHandler.OnInputTypeChange += HandleInputTypeChange;
-        UIController._instance.StateMonitor.RegisterScreen(this);
 
         tutorialManager ??= TutorialManager.Instance;
 

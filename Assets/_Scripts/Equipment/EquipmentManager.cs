@@ -161,7 +161,6 @@ public class EquipmentManager : MonoBehaviour
 
     public bool TryEquipItemFromSelection(Equipment equipmentToEquip, SelectionItem si)
     {
-        Debug.Log($"Start trying to equip item from selection");
         for (int invSloti = 0; invSloti < InventorySlots.Length; invSloti++)
         {
             //find the slot that has the item

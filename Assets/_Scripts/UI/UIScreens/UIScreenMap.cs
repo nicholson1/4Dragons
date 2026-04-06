@@ -20,6 +20,9 @@ public class UIScreenMap : UIScreen
     private Dictionary<MapNode, int> mapNodes = new Dictionary<MapNode, int>();
     private MapNode currenOccupiedNode;
 
+
+    public int GetNodeLayer(MapNode node) => mapNodes[node];
+
     public void SetNodesClickable(bool clickable) => areNodesClickable = clickable;
     public void SetCurrentOccupiedNode(MapNode mapNode) => currenOccupiedNode = mapNode;
 
@@ -42,10 +45,22 @@ public class UIScreenMap : UIScreen
         {
             var mapNode = mapNodes.Where(n => n.Value == 0).FirstOrDefault().Key;
             Selectable selectable = mapNode.GetComponentInChildren<Selectable>();
+            SetCurrentOccupiedNode(mapNode);
             return selectable;
-        }            
+        }
 
-        return currenOccupiedNode.GetComponentInChildren<Selectable>();
+        if (!areNodesClickable)
+        {
+            return currenOccupiedNode.GetComponentInChildren<Selectable>();
+        }
+        else
+        {
+            var candidatesOnLayer = mapNodes.Where(m => m.Value == GetNodeLayer(currenOccupiedNode) + 1);
+            var realCandidate = candidatesOnLayer.Where(m => m.Key.Node.IsConnected(currenOccupiedNode.Node)).FirstOrDefault().Key;
+            Debug.LogError($"Selectable MapNode on map nodes are clickable is {realCandidate.name}");
+            return realCandidate.GetComponentInChildren<Selectable>();
+        }
+        
     }
 
     private void PopulateMapNodes()

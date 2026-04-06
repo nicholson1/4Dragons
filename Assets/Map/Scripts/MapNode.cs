@@ -157,8 +157,8 @@ namespace Map
                         
                     }
                     
-                    if (visitedCircle != null) visitedCircle.gameObject.SetActive(true);
-                    if (circleImage != null) circleImage.gameObject.SetActive(true);
+                    //if (visitedCircle != null) visitedCircle.gameObject.SetActive(true);
+                    //if (circleImage != null) circleImage.gameObject.SetActive(true);
                     break;
                 case NodeStates.Attainable:
                     // start pulsating from visited to locked color:

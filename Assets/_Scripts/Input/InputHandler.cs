@@ -128,8 +128,6 @@ public class InputHandler : MonoBehaviour
             cachedPreviousActionMap = currentActionMap;
 
         currentActionMap = targetMap;
-
-        Debug.LogError($"current action map: {currentActionMap}");
     }
 
     private void SetMapEnabled(bool toEnable, string actionMapName)

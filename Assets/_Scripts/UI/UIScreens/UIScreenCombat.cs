@@ -47,7 +47,7 @@ public class UIScreenCombat : UIScreen
             case CombatUINavigationMode.Potion:
                 //Set potion buttons navigation in runtime now based on which slots are navigatable
                 inputHandler.SwitchActionMap(ActionMaps.Menu);
-                HandlePotionSelectionNavigation();
+
                 break;
             case CombatUINavigationMode.Targetting:
                 inputHandler.SwitchActionMap(ActionMaps.Menu);                
@@ -82,13 +82,17 @@ public class UIScreenCombat : UIScreen
         }
 
         //can only switch between combat and potion!
-        if (currentCombatNavigationMode is CombatUINavigationMode.Potion)
+        if (currentCombatNavigationMode == CombatUINavigationMode.Potion)
         {
+            inputHandler.OnNo.RemoveListener(HandleCancelPressed);
+
             SetCombatUINavigationMode(CombatUINavigationMode.Combat);
         }
-        else if(currentCombatNavigationMode is CombatUINavigationMode.Combat && PlayerHasPotion())
+        else if(currentCombatNavigationMode == CombatUINavigationMode.Combat && PlayerHasPotion())
         {
             SetCombatUINavigationMode(CombatUINavigationMode.Potion);
+            HandlePotionSelectionNavigation();
+            BindPotionButtons();
             inputHandler.OnNo.AddListener(HandleCancelPressed);
         }
         else
@@ -122,6 +126,7 @@ public class UIScreenCombat : UIScreen
 
         activePotions.Remove(potion);
         HandlePotionSelectionNavigation();
+        HandleCancelPressed();
     }
 
     private bool PlayerHasPotion()
@@ -129,12 +134,29 @@ public class UIScreenCombat : UIScreen
         return activePotions.Count > 0;
     }
 
+    private void BindPotionButtons()
+    {
+        foreach(var potion in activePotions)
+        {
+            Debug.LogError($"binding button for {potion.name}");
+            var bindingHandler = potion.GetComponentInChildren<ButtonBindingHandler>();
+            bindingHandler.ManualBindInput(false);
+            bindingHandler.ManualBindInput(true);
+        }
+    }
+
     private void HandlePotionSelectionNavigation()
     {
+        if(activePotions.Count < 1)
+        {
+            return;
+        }
+
         for(int i = 0; i<activePotions.Count; i++)
         {
             var potion = activePotions[i];
             var button = potion.GamepadButton;
+                        
             var navi = button.navigation;
             if (navi.mode != Navigation.Mode.Explicit)
                 navi.mode = Navigation.Mode.Explicit;
@@ -151,9 +173,10 @@ public class UIScreenCombat : UIScreen
 
     public void InitiatePotionTargetting(PotionDrag potion)
     {
+        Debug.LogError($"UIScreenCombat: InitiatePotionTargetting for {potion.potion.name}");
         RegisterTargettingListeners();
-        HandleTargetSelectionNavigation(potion);
         SetCombatUINavigationMode(CombatUINavigationMode.Targetting);
+        HandleTargetSelectionNavigation(potion);
 
         inputHandler.OnNo.AddListener(HandleCancelPressed);        
     }
@@ -185,13 +208,13 @@ public class UIScreenCombat : UIScreen
         inputHandler.OnNo.RemoveListener(HandleCancelPressed);
     }
 
-    protected override void HandleTutorialClosed(TutorialNames tutorial)
-    {
-        SetNavigatable(false);
+    //protected override void HandleTutorialClosed(TutorialNames tutorial)
+    //{
+    //    SetNavigatable(false);
 
-        if (inputHandler.CurrentActionMap != ActionMaps.Combat)
-            inputHandler.SwitchActionMap(ActionMaps.Combat);
-    }
+    //    if (inputHandler.CurrentActionMap != ActionMaps.Combat)
+    //        inputHandler.SwitchActionMap(ActionMaps.Combat);
+    //}
 
     private void RegisterTargettingListeners()
     {
@@ -205,7 +228,15 @@ public class UIScreenCombat : UIScreen
             if(buttonListener != null)
             {
                 targettingButtonListeners.Add(buttonListener);
+                
             }
+        }
+
+        foreach(var buttonListener in targettingButtonListeners)
+        {
+            var bindHandler = buttonListener.GetComponentInChildren<ButtonBindingHandler>();
+            bindHandler.ManualBindInput(false);
+            bindHandler.ManualBindInput(true);
         }
     }
 
@@ -214,7 +245,7 @@ public class UIScreenCombat : UIScreen
         base.Activate(navigatableOnActivated);
 
         inputHandler ??= EventSystem.current.GetComponent<InputHandler>();
-        inputHandler.OnL2.AddListener(TogglePotionMode);
+        inputHandler.OnL1.AddListener(TogglePotionMode);
 
         SetCombatUINavigationMode(CombatUINavigationMode.Combat);
 
@@ -225,7 +256,7 @@ public class UIScreenCombat : UIScreen
         SetCombatUINavigationMode(CombatUINavigationMode.Disabled);
         base.Deactivate();
 
-        inputHandler.OnL2.RemoveListener(TogglePotionMode);
+        inputHandler.OnL1.RemoveListener(TogglePotionMode);
 
     }
 

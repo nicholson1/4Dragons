@@ -32,6 +32,13 @@ namespace Map
             this.nodeSeed = seed;
         }
 
+        public bool IsConnected(Node target)
+        {
+            bool connected = outgoing.Contains(target.point) || incoming.Contains(target.point);
+
+            return connected;
+        }
+
         public void AddIncoming(Point p)
         {
             if (incoming.Any(element => element.Equals(p)))

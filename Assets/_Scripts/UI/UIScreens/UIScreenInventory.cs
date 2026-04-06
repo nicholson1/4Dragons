@@ -121,7 +121,7 @@ public class UIScreenInventory : UIScreen
                 case InventoryState.Selection:
                     navi.selectOnRight = selectionManager.GetMostLeftSelectionItemMainButton();
                     break;
-                case InventoryState.Shop:
+                case InventoryState.Merchant:
                     navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
                     break;
                 default:
@@ -143,7 +143,7 @@ public class UIScreenInventory : UIScreen
             case InventoryState.Loot:
                 lootButtonManager.SetLootPanelButtonsLeftNavigation(leftSelectableForLootPanel);
                 break;
-            case InventoryState.Shop:
+            case InventoryState.Merchant:
                 break;
             case InventoryState.Upgrade:
                 break;
@@ -152,8 +152,7 @@ public class UIScreenInventory : UIScreen
                 break;
             default:
                 break;
-        }
-        
+        }        
     }
 
     private void RevertInventoryState()
@@ -232,8 +231,8 @@ public enum InventoryState
     Base,
     Loot,
     StatDisplay,
-    Shop,
+    Merchant,
     Upgrade,
-    Selection
-
+    Selection,
+    Blacksmith
 }

@@ -6,8 +6,9 @@ using TMPro;
 using UnityEngine;
 using ImportantStuff;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class SpellButton : MonoBehaviour
+public class SpellButton : MonoBehaviour, IGamepadButtonListener
 {    
     public SpellTypes spell;
     public Weapon weapon;
@@ -25,23 +26,67 @@ public class SpellButton : MonoBehaviour
     private Character character;
     private Button button;
     private ButtonGlow buttonGlow;
+    private RectTransform rt;
+
+    private bool isSpellReady = false;
+
+    public event Action OnGamepadButtonSelected;
+    public event Action OnGamepadButtonDeselected;
 
     public void SetDataTable(List<List<object>> WeaponScalingTable )
     {        
        DataTable = WeaponScalingTable;
     }
 
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        if (!isSpellUsable)
+        {
+            Debug.LogError($"Spell is not usable!");
+
+            return;
+        }
+
+        Debug.LogError($"Ready casting spell for {weapon.name}");
+        ReadyCastingSpell(true);
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        Debug.LogError($"Cancel ready casting spell for {weapon.name}");
+        _toolTip.CloseTip();
+        ReadyCastingSpell(false);
+    }
+
+    public void HandleGamepadButtonPressed(Selectable selectable)
+    {
+        Debug.LogError($"attempt to cast the spell on button pressed");
+        if (isSpellReady)
+            InitiateCastSpell();
+    }
+
+    private void ReadyCastingSpell(bool isReady)
+    {
+        isSpellReady = isReady;
+        if (isSpellReady)
+            _toolTip.ShowTipFromGamepadNavi(rt);
+    }
+
     private void InitiateCastSpell()
     {
-        if(!isSpellUsable)
+        //close tip
+        if (!isSpellUsable)
         {
             //handle spell not usable effects?
+            
             return;
         }
 
         Debug.Log($"Initiate casting spell for {spell}");
+        _toolTip.CloseTip();
         character._combatEntity.CastTheAbility(spell, weapon);
         buttonGlow.TriggerEffect(_toolTip.IconColor);
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
 
@@ -229,6 +274,7 @@ public class SpellButton : MonoBehaviour
     {
         button = GetComponent<Button>();
         buttonGlow = GetComponentInChildren<ButtonGlow>();
+        rt = GetComponent<RectTransform>();
 
         character = CombatController._instance.Player;
         character.UpdateEnergy += SetUsability;
@@ -242,14 +288,15 @@ public class SpellButton : MonoBehaviour
         character.UpdateEnergy -= SetUsability;
     }
 
-    private void OnEnable()
-    {
-        button.onClick.AddListener(InitiateCastSpell);
-    }
+    //private void OnEnable()
+    //{
+    //    button.onClick.AddListener(InitiateCastSpell);
+    //}
 
-    private void OnDisable()
-    {
-        button.onClick.RemoveListener(InitiateCastSpell);
-    }
+    //private void OnDisable()
+    //{
+    //    button.onClick.RemoveListener(InitiateCastSpell);
+    //}
+
 
 }

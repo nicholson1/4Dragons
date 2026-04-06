@@ -119,12 +119,12 @@ public class SelectionItem : MonoBehaviour
 
     private void SetButtonActive(Equipment equipmentToSet)
     {
-        //equip.onClick.RemoveAllListeners();
-        //inventory.onClick.RemoveAllListeners();
-        //selectRelic.onClick.RemoveAllListeners();
+        equip.onClick.RemoveListener(EquipedFromSelection);
+        inventory.onClick.RemoveListener(AddToInventory);
+        selectRelic.onClick.RemoveListener(SelectRelic);
+        selectRelic.onClick.RemoveListener(AddToInventory);
 
-        Debug.LogError($"SelectionItem: SetButtonActive for: {equipmentToSet.GetType()}");
-        if (equipmentToSet is Relic)
+        if (equipmentToSet.isRelic)
         {
             equip.gameObject.SetActive(false);
             inventory.gameObject.SetActive(false);
@@ -135,7 +135,7 @@ public class SelectionItem : MonoBehaviour
             selectRelic.interactable = true;
             selectRelic.onClick.AddListener(SelectRelic);
         }
-        else if(equipmentToSet is Consumable)
+        else if(equipmentToSet.isPotion)
         {
             equip.gameObject.SetActive(false);
             inventory.gameObject.SetActive(false);
@@ -318,10 +318,7 @@ public class SelectionItem : MonoBehaviour
             Navigation navi = selectable.navigation;
             navi.mode = Navigation.Mode.Explicit;
 
-            navi.selectOnUp = i > 0 ? currentActiveGamepadButtons[i - 1] : null;
-
-            if (i == currentActiveGamepadButtons.Count - 1)
-                Debug.Log($"current active gamepad button for {item.name} target down should be {skipButton.name}");
+            navi.selectOnUp = i > 0 ? currentActiveGamepadButtons[i - 1] : null;                       
             navi.selectOnDown = i < currentActiveGamepadButtons.Count - 1 ? currentActiveGamepadButtons[i + 1] : skipButton;
 
             selectable.navigation = navi;
@@ -504,13 +501,13 @@ public class SelectionItem : MonoBehaviour
 
     private void BindMainButtons(bool toBind)
     {
-        if (isEquipment)
+        if(item is Relic or Consumable)
+            selectRelic.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
+        else
         {
             equip.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
             inventory.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
         }
-        else
-            selectRelic.GetComponent<ButtonBindingHandler>().ManualBindInput(toBind);
     }
 
 
@@ -566,7 +563,6 @@ public class SelectionItem : MonoBehaviour
         if (canAddToInventory)
         {
             UIController._instance.PlayPlaceItem();
-            Debug.Log($"successfully add item to the inventory");
             StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));
         }
         else
@@ -586,7 +582,6 @@ public class SelectionItem : MonoBehaviour
         if (canEquipItem)
         {
             UIController._instance.PlayPlaceItem();
-            Debug.Log($"successfully equip item from selection!");
             StartCoroutine(RotateObjectBack(FinishedRotateBackCallback));
         }
         else

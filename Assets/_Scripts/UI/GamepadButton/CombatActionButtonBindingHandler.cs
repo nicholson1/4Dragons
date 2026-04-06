@@ -19,27 +19,45 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
     
     private void HandleAttackPressed(int index)
     {
-        if(pressedOnce)
+        if(actionIndex == index)
         {
-            if(actionIndex != index)
+            if(EventSystem.current.currentSelectedGameObject == button.gameObject)
             {
-                toolTip.CloseTip();
-                pressedOnce = false;
+                button.onClick.Invoke();
                 return;
             }
 
-            button.onClick.Invoke();
-            toolTip.CloseTip();
-            pressedOnce = false;
+            button.Select();
             return;
         }
 
-        if (actionIndex != index)
-            return;
+        
 
-        pressedOnce = true;
-        button.Select();
-        toolTip.ShowTipFromGamepadNavi(rt);
+        //if (pressedOnce)
+        //{
+        //    pressedOnce = false;
+
+        //    if (actionIndex != index)
+        //    {
+        //        Debug.LogError($"Attack pressed for something else (index {index} - Closing tooltip for attack {actionIndex}");                
+        //        return;
+        //    }
+
+        //    Debug.LogError($"Attack Pressed twice with Index {index} - Closing tooltip for attack {actionIndex}");
+        //    button.onClick.Invoke();            
+        //    return;
+        //}
+
+        //if (actionIndex != index)
+        //{
+        //    pressedOnce = false;
+        //    return;
+        //}
+
+        //pressedOnce = true;
+        //button.Select();
+        //Debug.LogError($"Attack Pressed once with Index {index} - Opening tooltip for attack index {actionIndex}");
+        //toolTip.ShowTipFromGamepadNavi(rt);
     }
 
     //private void DebugClickCombatButton()

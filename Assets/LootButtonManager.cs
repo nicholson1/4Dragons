@@ -373,7 +373,7 @@ public void EquipmentSelect(int i)
         GoldButtons[i].DeactivateButton();
 
         RefreshLootButtonNavigation();
-        SelectionFinishedCallback();
+        SetLeaveButtonUpNavigation();
     }
 
     public void ExitLoot()

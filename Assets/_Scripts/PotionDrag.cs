@@ -110,17 +110,22 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
     {
         OnGamepadButtonSelected?.Invoke();
         _toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
+
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
         OnGamepadButtonDeselected?.Invoke();
         _toolTip.CloseTip();
+
     }
 
     public void HandleGamepadButtonPressed(Selectable selectable)
     {        
+        Debug.LogError($"Potion button pressed, initiatePotionTargetting!");
         combatScreen.InitiatePotionTargetting(this);
+
+
     }
 
     public void UsePotion(CombatEntity target)

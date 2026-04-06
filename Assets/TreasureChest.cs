@@ -90,13 +90,11 @@ public class TreasureChest : MonoBehaviour
 
         if (!button.interactable) return;
 
-        Debug.Log($"Click through input");
         ClickOnTreaure(true);
     }
 
     private void HandleClickThroughClick()
     {
-        Debug.Log($"Click through event system");
         ClickOnTreaure(true);
     }
 

@@ -13,6 +13,6 @@ public class UIScreenTreasureStart : UIScreen
         base.Start();
 
         var button = defaultSelectable as Button;
-        button.onClick.AddListener(Deactivate);
+        //button.onClick.AddListener(Deactivate);
     }
 }

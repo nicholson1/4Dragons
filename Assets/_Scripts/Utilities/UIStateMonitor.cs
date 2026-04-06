@@ -33,7 +33,6 @@ public class UIStateMonitor : MonoBehaviour
         return itemOnGamepad != null;
     }
 
-
     public UIScreen GetLatestScreenInHistory() => screenHistory.Count > 0 ? screenHistory.LastOrDefault() : null;
 
     private InputHandler inputHandler = null;
@@ -41,7 +40,9 @@ public class UIStateMonitor : MonoBehaviour
     private bool panelCurrentlyMove = false;
 
     public void HandleToggleTransition(bool isTransitioning)
-    {        
+    {
+        if (panelCurrentlyMove == isTransitioning) return;
+
         panelCurrentlyMove = isTransitioning;
 
         if(isTransitioning)
@@ -52,8 +53,7 @@ public class UIStateMonitor : MonoBehaviour
         else
         {          
             inputHandler.SwitchActionMap(currentNavigatableScreen.DefaultScreenActionMap);
-        }
-            
+        }            
     }
 
     public void RegisterScreen(UIScreen screen)
@@ -76,9 +76,9 @@ public class UIStateMonitor : MonoBehaviour
     }
 
     private void HandleScreenNavigatableChange(UIScreen eventOwner, bool navigatable)
-    {        
-        UpdateScreenHistory();
-        previousActiveScreen = currentActiveScreen;
+    {
+        //if(currentActiveScreen != null)
+        //    Debug.LogError($"UIStateMonitor 1 - Handle screen change from {currentActiveScreen.name} to {eventOwner.name}");
 
         foreach (var screen in uiScreens)
         {
@@ -88,7 +88,9 @@ public class UIStateMonitor : MonoBehaviour
             }
             else 
             {
-                Debug.LogError($"New screen active: {eventOwner.name}");
+                //Debug.LogError($"UIStateMonitor 2b- New screen active: {eventOwner.name}");
+                UpdateScreenHistory();
+                previousActiveScreen = currentActiveScreen;
                 currentActiveScreen = screen;
                 if (screen.Navigatable)
                     currentNavigatableScreen = screen;
@@ -104,7 +106,12 @@ public class UIStateMonitor : MonoBehaviour
     private void Start()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        var screens = FindObjectsByType<UIScreen>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
+        foreach(var screen in screens)
+        {
+            RegisterScreen(screen);
+        }
     }
 }
 
