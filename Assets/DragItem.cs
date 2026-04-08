@@ -129,6 +129,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
+        _rectTransform.localScale = currentLocation._rt.localScale;
         HighlightItem(shouldHighlight);
     }
 

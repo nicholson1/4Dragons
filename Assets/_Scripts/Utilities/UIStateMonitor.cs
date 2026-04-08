@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class UIStateMonitor : MonoBehaviour
 {
     public event Action<UIScreen> OnScreenChanged;
+    public event Action<bool> OnDragItem;
 
     public UIScreen CurrentNavigatableScreen => currentNavigatableScreen;
     public UIScreen CurrentActiveScreen => currentActiveScreen;
@@ -23,10 +24,14 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen previousActiveScreen = null;
 
     private DragItem itemOnGamepad;
+
     public void SetItemOnGamepad(DragItem item)
     {
         itemOnGamepad = item;
+
+        OnDragItem?.Invoke(itemOnGamepad != null);
     }
+
     public bool TryGetItemOnGamepad(out DragItem item)
     {
         item = itemOnGamepad;

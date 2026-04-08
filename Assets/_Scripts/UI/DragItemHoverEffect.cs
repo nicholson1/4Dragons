@@ -29,12 +29,14 @@ public class DragItemHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointer
 
     public void GamepadSelect()
     {
-        if (!setOnce)
-        {
+        //if (!setOnce)
+        //{
+
             initialScale = transform.localScale;
             initialRotation = transform.localRotation;
-            setOnce = true;
-        }
+
+        //    setOnce = true;
+        //}
 
         // Scale up and start shaking when mouse enters the UI element
         if (shouldTween)
@@ -55,6 +57,8 @@ public class DragItemHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointer
         ScaleUIElement(initialScale, 0.2f);
 
         gameObject.transform.localRotation = initialRotation;
+
+        
     }
 
     public void SetTweening(bool canTween)
@@ -162,6 +166,7 @@ public class DragItemHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointer
 
         inputHandler.OnInputTypeChange += HandleInputChange;
         shouldShake = shakeUI;
+        initialScale = Vector3.zero;
     }
 
     private void OnDestroy()

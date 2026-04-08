@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
 public class UIScreenInventory : UIScreen
@@ -22,6 +23,7 @@ public class UIScreenInventory : UIScreen
     [SerializeField] private List<Button> rightmostInventoryButtons = new List<Button>();
 
     [SerializeField] private List<InventorySlot> inventorySlots = new List<InventorySlot>();
+    [SerializeField] private List<InventorySlot> additionalSlots = new List<InventorySlot>();
 
     [SerializeField] private Button statDisplayGamepadButton = null;
     [SerializeField] private List<StatDisplay> statDisplays = new List<StatDisplay>();
@@ -64,12 +66,31 @@ public class UIScreenInventory : UIScreen
     {
         base.Activate(navigatableOnActivated);
         SetupRuntimeNavigation(currentInventoryState);
+
+        UIController._instance.StateMonitor.OnDragItem += HandleDragItemCallback;
     }
 
     public override void Deactivate()
     {
         base.Deactivate();
         ChangeInventoryState(InventoryState.Base);
+
+        UIController._instance.StateMonitor.OnDragItem -= HandleDragItemCallback;
+    }
+
+    private void HandleDragItemCallback(bool isDraggingItem)
+    {
+        if(isDraggingItem && !isOnDragModeNavigation)
+        {
+            cachedLastInventoryState = currentInventoryState;
+            currentInventoryState = InventoryState.ItemDrag;
+            SetItemDragModeNavigation();
+        }
+        else if(!isDraggingItem && isOnDragModeNavigation)
+        {
+            currentInventoryState = cachedLastInventoryState;
+            RevertNavigationOnFinishItemDrag();
+        }
     }
 
     public void ChangeInventoryState(InventoryState state)
@@ -106,8 +127,9 @@ public class UIScreenInventory : UIScreen
     }
 
     private void SetupRuntimeNavigation(InventoryState state)
-    {
-        foreach(var selectable in RightmostInventoryButtons)
+    {           
+
+        foreach (var selectable in RightmostInventoryButtons)
         {
             var navi = selectable.navigation;
             if (navi.mode != Navigation.Mode.Explicit)
@@ -150,9 +172,67 @@ public class UIScreenInventory : UIScreen
             case InventoryState.Selection:
                 selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
                 break;
+                
             default:
                 break;
         }        
+    }
+
+    private Dictionary<int, Navigation> cachedInventorySlotNavigation = new Dictionary<int, Navigation>();
+    bool isOnDragModeNavigation = false;
+    /// <summary>
+    /// We might need to include extra slots, like trash can, sell slot, and upgrade slot
+    /// </summary>
+    private void SetItemDragModeNavigation()
+    {
+        cachedInventorySlotNavigation.Clear();
+        for (int i = 0; i < inventorySlots.Count; i++)
+        {
+            var slot = inventorySlots[i];
+            var selectable = slot.GetComponentInChildren<Selectable>();
+            var navi = selectable.navigation;
+            cachedInventorySlotNavigation.Add(i, navi);
+
+            if (navi.selectOnUp != null && !IsSelectableInventorySlotChild(navi.selectOnUp))
+                navi.selectOnUp = null;
+            if (navi.selectOnDown != null && !IsSelectableInventorySlotChild(navi.selectOnDown))
+                navi.selectOnDown = null;
+            if (navi.selectOnRight != null && !IsSelectableInventorySlotChild(navi.selectOnRight))
+                navi.selectOnRight = null;
+            if (navi.selectOnLeft != null && !IsSelectableInventorySlotChild(navi.selectOnLeft))
+                navi.selectOnLeft = null;
+
+            selectable.navigation = navi;
+        }
+
+        isOnDragModeNavigation = true;
+    }
+
+    private void RevertNavigationOnFinishItemDrag()
+    {
+        if(cachedInventorySlotNavigation == null || cachedInventorySlotNavigation.Count < 1)
+        {
+            Debug.LogError($"Error: Cached navigation is null or empty! gamepad navigation will break!");
+            return;
+        }
+
+        for (int i = 0; i < inventorySlots.Count; i++)
+        {
+            var slot = inventorySlots[i];
+            var selectable = slot.GetComponentInChildren<Selectable>();
+            var targetNavigation = cachedInventorySlotNavigation[i];
+            selectable.navigation = targetNavigation;
+        }
+
+        cachedInventorySlotNavigation.Clear();
+        isOnDragModeNavigation = false;
+    }
+
+    private bool IsSelectableInventorySlotChild(Selectable selectable)
+    {
+        return selectable.transform.parent != null && 
+            selectable.transform.parent.TryGetComponent(out InventorySlot slot) && 
+            (inventorySlots.Contains(slot) || additionalSlots.Contains(slot));
     }
 
     private void RevertInventoryState()
@@ -234,5 +314,6 @@ public enum InventoryState
     Merchant,
     Upgrade,
     Selection,
-    Blacksmith
+    Blacksmith,
+    ItemDrag
 }

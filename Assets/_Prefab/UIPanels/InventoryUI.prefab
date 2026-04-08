@@ -2064,7 +2064,7 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 7149307672789977388}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 7593048353828175455}
     m_SelectOnRight: {fileID: 9138344598019568357}
   m_Transition: 2
   m_Colors:
@@ -3079,7 +3079,7 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 8559953925869115495}
     m_SelectOnDown: {fileID: 2991846289448303796}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 7593048353828175455}
     m_SelectOnRight: {fileID: 7839938865733370436}
   m_Transition: 2
   m_Colors:
@@ -3763,7 +3763,7 @@ MonoBehaviour:
     m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 3906526499091928634}
-    m_SelectOnDown: {fileID: 7149307672789977388}
+    m_SelectOnDown: {fileID: 7593048353828175455}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 8559953925869115495}
   m_Transition: 2
@@ -6201,6 +6201,8 @@ GameObject:
   - component: {fileID: 85364262277062205}
   - component: {fileID: 8513031761909343398}
   - component: {fileID: 7593048353828175455}
+  - component: {fileID: 2401327619220331958}
+  - component: {fileID: 8154821784841442787}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -6278,12 +6280,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 1861144003503755694}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 7149307672789977388}
   m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -6309,6 +6311,33 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2401327619220331958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6259028715963330078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 962b32e870c2cac4181f6e6885716af8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8154821784841442787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6259028715963330078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraButtonToUse: 2
+  clickableWithYes: 1
+  shouldHaveClickableButton: 1
 --- !u!1 &6279110969680121295
 GameObject:
   m_ObjectHideFlags: 0
@@ -6801,6 +6830,7 @@ MonoBehaviour:
   canAccessSettingsButton: 0
   accessibleGlobalButtons: 01000000
   defaultActionMap: 0
+  startDisabled: 0
   InventoryPanel: {fileID: 216094450715910406}
   LootPanel: {fileID: 6959927234733790357}
   lootButtonManager: {fileID: 8565369570850981644}
@@ -6830,6 +6860,8 @@ MonoBehaviour:
   - {fileID: 7856307391395375073}
   - {fileID: 5865764845272017895}
   - {fileID: 3325366196964137327}
+  additionalSlots:
+  - {fileID: 5518636807739797181}
   statDisplayGamepadButton: {fileID: 8238519941426280793}
   statDisplays:
   - {fileID: 2346738925154406867}
@@ -12181,7 +12213,7 @@ PrefabInstance:
     - target: {fileID: 1410574650376380132, guid: 8e7e6f961459df641a9207433332b879, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 0c1444104c00c534cb91b5e677b9d6ea, type: 3}
+      objectReference: {fileID: 21300000, guid: af247f9a44845ae4da6bb3c5db9f229b, type: 3}
     - target: {fileID: 7946565123875889761, guid: 8e7e6f961459df641a9207433332b879, type: 3}
       propertyPath: m_Navigation.m_Mode
       value: -1
@@ -13804,7 +13836,7 @@ PrefabInstance:
     - target: {fileID: 7391426795503355265, guid: cb569c99d72524e4abb9c9b0965aff1a, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 5c4cdf22b7537b74894eaf09d25eaef5, type: 3}
+      objectReference: {fileID: 21300000, guid: af247f9a44845ae4da6bb3c5db9f229b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

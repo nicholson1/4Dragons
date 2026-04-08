@@ -91,6 +91,15 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     }
 
+    public bool IsDiscardSlot() => Slot == Equipment.Slot.Drop;
+    public bool IsSellSlot() => Slot == Equipment.Slot.Sell;
+    public bool IsUpgradeSlot() => Slot == Equipment.Slot.Upgrade;
+    public bool IsShopSlot() => Slot == Equipment.Slot.Sold;
+    public bool IsRelicSlot() => Slot == Equipment.Slot.Relic;
+    public bool IsAllSlot() => Slot == Equipment.Slot.All;
+    public bool IsAllKindSlot() => IsDiscardSlot() || IsSellSlot() || IsUpgradeSlot() || IsShopSlot() || IsRelicSlot() || IsAllSlot();
+
+
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
         OnGamepadButtonSelected?.Invoke();
@@ -161,7 +170,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     private bool CanItemBeDroppedHere(DragItem itemToDrop)
     {
-        if(IsInCombat() && !itemToDrop.canBeDragged && (Slot is not Equipment.Slot.Drop or Equipment.Slot.Sell))
+        if(IsInCombat() && !itemToDrop.canBeDragged)
         {
             Debug.LogError($"Item can't be dropped: combat related");
             OnCannotDragItemOnCombat(ErrorMessageManager.Errors.CombatMove); //consider invoke
@@ -174,7 +183,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             // check if we have enough gold AND the target slot is empty
             if(Item != null)
             {
-                Debug.Log($"Cannot drag item from shop - target slot is occupied by {Item.name}");
                 return false;
             }
 
@@ -186,15 +194,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             }
         }       
 
-        if (!itemToDrop.HasSameSlotType(Slot) && Slot != Equipment.Slot.All)
+        if (!itemToDrop.HasSameSlotType(Slot) && IsCharacterEquipmentSlot())
         {
-            Debug.LogError($"Item can't be dropped, target slot != item.slotType, target slot != All");
             return false;
         }
 
         if (Item != null && !Item.HasSameSlotType(itemToDrop.slotType) && (!itemToDrop.IsItemFromInventory() || Item.HasSameSlotType(itemToDrop.currentLocation.Slot)))
         {
-            Debug.LogError($"Item can't be dropped, item in here {Item.slotType}, itemToDrop {itemToDrop.slotType}, item to drop from inventory? {itemToDrop.IsItemFromInventory()}");
             return false;
         }
 
@@ -229,22 +235,18 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             return;
         }
 
-        if (Item != null && Item != itemToDrop && Item.slotType == itemToDrop.slotType)
+        if (Item != null && Item != itemToDrop)
         {
-            MoveItemHereToItemToDropOrigin(Item, itemToDrop.currentLocation);
+            MoveItemOnThisSlotToItemToDropOriginSlot(Item, itemToDrop.currentLocation);                
         }
 
         AssignDroppedItemToSlot(itemToDrop);
 
-        if (Slot != Equipment.Slot.All)
+        if (Slot != Equipment.Slot.All) //slot is equipment
         {
+            //Debug.LogError($"This slot is not Slot.All. It's {Slot}. So we attempt to equip from inventory here!");
             EquipmentManager._instance.EquipFromInventory(Item.e);
             //di._rectTransform.position = _rt.position;
-        }
-        else
-        {
-            // unequip
-            EquipmentManager._instance.UnEquipItem(Item.e);
         }
 
         if (itemToDrop.slotType == Equipment.Slot.Consumable)
@@ -252,8 +254,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             //Debug.Log("from inventory slot potion");
             EquipmentManager._instance.AddPotionToPotionBar((Consumable)itemToDrop.e);
         }
-
-        
+                
         LabelCheck();
         UIController._instance.PlayPlaceItem();
     }
@@ -277,19 +278,23 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         itemToSell.currentLocation.Item = null;
         itemToSell.currentLocation.LabelCheck();
         EquipmentManager._instance.PoolItem(itemToSell);
+        itemToSell.GamepadFinishDrag();
         UIController._instance.PlaySellItem();
     }
 
     private void DiscardItem(DragItem itemToDrop)
     {
+        Debug.LogError($"Discarding item: {itemToDrop.name}");
         itemToDrop.currentLocation.Item = null;
         itemToDrop.currentLocation.LabelCheck();
         EquipmentManager._instance.PoolItem(itemToDrop);
+        itemToDrop.GamepadFinishDrag();
         SoundManager.Instance.Play2DSFX(dropItem, dropItemVol, 1, .05f);
     }
 
-    private void MoveItemHereToItemToDropOrigin(DragItem itemToMove, InventorySlot targetSlot)
+    private void MoveItemOnThisSlotToItemToDropOriginSlot(DragItem itemToMove, InventorySlot targetSlot)
     {
+        targetSlot.RemoveItemFromSlot();
         targetSlot.Item = itemToMove;
 
         itemToMove.transform.SetParent(targetSlot.transform.parent);
@@ -299,10 +304,41 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         itemToMove.currentLocation.RemoveItemFromSlot();
         itemToMove.currentLocation.LabelCheck();
         itemToMove.currentLocation = targetSlot;
+
+        if(targetSlot.IsCharacterEquipmentSlot())
+        {
+            if(targetSlot.Slot != itemToMove.slotType)
+            {
+                Debug.LogError($"Invalid item move, targetSlot is not All or {itemToMove.slotType}");
+                return;
+            }
+
+            EquipmentManager._instance.EquipFromInventory(itemToMove.e);
+        }
+    }
+
+    private bool IsCharacterEquipmentSlot()
+    {
+        bool isEqSlot = Slot is Equipment.Slot.Boots or 
+                                Equipment.Slot.Chest or 
+                                Equipment.Slot.Legs or 
+                                Equipment.Slot.Head or 
+                                Equipment.Slot.Gloves or
+                                Equipment.Slot.Shoulders or
+                                Equipment.Slot.OneHander or
+                                Equipment.Slot.TwoHander or
+                                Equipment.Slot.Scroll;
+
+        return isEqSlot;
     }
 
     private void RemoveItemFromSlot()
     {
+        if(IsCharacterEquipmentSlot())
+        {
+            EquipmentManager._instance.UnEquipItem(Item.e);
+        }
+
         Item = null;
     }
 
@@ -519,8 +555,11 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                Item._rectTransform.localScale = _rt.localScale;
-                Item.GetComponent<UIHoverEffect>().ResetScale();
+                if(Item != null)
+                {
+                    Item._rectTransform.localScale = _rt.localScale;
+                    //Item.GetComponent<DragItemHoverEffect>().ResetScale();
+                }
             }
         }
         

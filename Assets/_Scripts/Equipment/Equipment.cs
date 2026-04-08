@@ -6,7 +6,8 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace ImportantStuff
-{    
+{
+    [System.Serializable]
     public class Equipment
     {
 

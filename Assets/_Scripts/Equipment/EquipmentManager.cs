@@ -122,6 +122,12 @@ public class EquipmentManager : MonoBehaviour
 
     public void UnEquipItem(Equipment e)
     {
+        if (!c._equipment.Contains(e))
+        {
+            Debug.LogWarning($"Attempting to unequp item not in the equipment list! probably double called!");
+            return;
+        }
+
         c._equipment.Remove(e);
         if (!c._inventory.Contains(e))
         {
@@ -267,6 +273,7 @@ public class EquipmentManager : MonoBehaviour
     public void EquipFromInventory(Equipment e)
     {
         //Debug.Log("i only ran once" + e.name) ;
+        Debug.LogError($"Equipping item from inventory. Item: {e.name}");
         c._inventory.Remove(e);
         if (!c._equipment.Contains(e))
         {
