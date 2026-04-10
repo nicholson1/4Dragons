@@ -47,29 +47,35 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
             return;
         }
 
-        Debug.LogError($"Ready casting spell for {weapon.name}");
-        ReadyCastingSpell(true);
+        ReadyCastingSpell();
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
-        Debug.LogError($"Cancel ready casting spell for {weapon.name}");
-        _toolTip.CloseTip();
-        ReadyCastingSpell(false);
+        CancelCastingSpell();
     }
 
     public void HandleGamepadButtonPressed(Selectable selectable)
     {
-        Debug.LogError($"attempt to cast the spell on button pressed");
-        if (isSpellReady)
-            InitiateCastSpell();
+        if (!isSpellReady) return;
+            
+        InitiateCastSpell();
     }
 
-    private void ReadyCastingSpell(bool isReady)
+    private void ReadyCastingSpell()
     {
-        isSpellReady = isReady;
-        if (isSpellReady)
-            _toolTip.ShowTipFromGamepadNavi(rt);
+        if (isSpellReady) return;
+
+        _toolTip.ShowTipFromGamepadNavi(rt);
+        isSpellReady = true;
+    }
+
+    private void CancelCastingSpell()
+    {
+        if (!isSpellReady) return;
+
+        _toolTip.CloseTip();
+        isSpellReady = false;
     }
 
     private void InitiateCastSpell()
@@ -82,7 +88,6 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
             return;
         }
 
-        Debug.Log($"Initiate casting spell for {spell}");
         _toolTip.CloseTip();
         character._combatEntity.CastTheAbility(spell, weapon);
         buttonGlow.TriggerEffect(_toolTip.IconColor);

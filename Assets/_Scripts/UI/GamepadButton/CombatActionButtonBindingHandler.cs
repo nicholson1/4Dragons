@@ -23,15 +23,16 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
         {
             if(EventSystem.current.currentSelectedGameObject == button.gameObject)
             {
+                Debug.LogError($"press button {gameObject.name}");
                 button.onClick.Invoke();
                 return;
             }
 
+            Debug.LogError($"Select button {gameObject.name}");
             button.Select();
             return;
         }
 
-        
 
         //if (pressedOnce)
         //{
