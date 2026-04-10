@@ -5,13 +5,40 @@ using Map;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RelicDisplay : MonoBehaviour
+public class RelicDisplay : MonoBehaviour, IInspectableElement
 {
     [SerializeField]private ToolTip toolTip;
     [SerializeField]private Image icon;
     [SerializeField]private UIHoverEffect UIHoverEffect;
 
     public Relic Relic;
+
+    private Button gamepadButton;
+
+    public Button GetGamepadButton()
+    {
+        return GetComponentInChildren<Button>();
+    }
+
+    public void RegisterElementToScreen(IInspectableElement element)
+    {
+        throw new NotImplementedException();
+    }
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    private void Awake()
+    {
+        gamepadButton = GetComponentInChildren<Button>();
+    }
 
     private void Start()
     {
@@ -126,4 +153,6 @@ public class RelicDisplay : MonoBehaviour
             }
         }
     }
+
+
 }

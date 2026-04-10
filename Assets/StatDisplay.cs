@@ -22,16 +22,18 @@ public class StatDisplay : MonoBehaviour, IGamepadButtonListener
     [SerializeField] private ToolTip toolTip;
     public bool charStats = false;
 
+    private Button gamepadButton;
 
+ 
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
-        OnGamepadButtonSelected?.Invoke();
+        //OnGamepadButtonSelected?.Invoke();
         toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
-        OnGamepadButtonDeselected?.Invoke();
+        //OnGamepadButtonDeselected?.Invoke();
         toolTip.CloseTip();
     }
 

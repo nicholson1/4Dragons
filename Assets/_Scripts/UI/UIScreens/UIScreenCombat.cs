@@ -14,26 +14,144 @@ public class UIScreenCombat : UIScreen
     public event Action<CombatEntity> OnTargetSelected;
     public event Action<CombatUINavigationMode> OnCombatUINavigationChanged;
 
-    private CombatButtonController combatButtonController;
-
     private CombatController combatController;
     private CombatUINavigationMode currentCombatNavigationMode = CombatUINavigationMode.Combat;
 
     private Character player;
+    private Character currentEnemy;
 
     private List<PotionDrag> activePotions = new List<PotionDrag>();
     private List<TargettingButtonListener> targettingButtonListeners = new List<TargettingButtonListener>();
 
-    [ContextMenu("Log Selectables")]
-    private void LogSelectables()
+    [SerializeField] private Button skipButton;
+    [SerializeField] private Transform playerStatsParent, enemyStatsParent, enemyIntentsParent, relicHolder;
+
+    private List<IInspectableElement> playerStats = new List<IInspectableElement>();
+    private List<IInspectableElement> enemyStats = new List<IInspectableElement>();
+    private List<IInspectableElement> enemyIntents = new List<IInspectableElement>();
+    private List<IInspectableElement> relicDisplays = new List<IInspectableElement>();
+
+    #region Inspect Mode related
+    private List<IInspectableElement> GetInspectableElements(Transform parent)
     {
-        foreach(var s in selectables)
+        if (parent == null || parent.childCount == 0)
+            return new List<IInspectableElement>(); //empty list
+
+        var elements = parent.GetComponentsInChildren<IInspectableElement>(false).ToList();
+        SetGroupNavigation(elements);
+
+        return elements;
+    }
+
+    private void SetupInspectModeNavigation()
+    {
+        //Populate inspectable elements
+        playerStats = GetInspectableElements(playerStatsParent);
+        enemyStats = GetInspectableElements(enemyStatsParent);
+        enemyIntents = GetInspectableElements(enemyIntentsParent);
+        relicDisplays = GetInspectableElements(relicHolder);
+
+        //connect each group
+        if(playerStats.Count > 0)
         {
-            int index = 0;
-            Debug.Log($"selectable on CombatScreen - {index} - {s.gameObject.name}");
-            index++;
+            var lastButtonTargetRight = FirstButton(enemyStats) ?? (FirstButton(enemyIntents) ?? FirstButton(relicDisplays));
+            LinkGroupLastButton(LastButton(playerStats), lastButtonTargetRight);
+        }
+
+        var firstButtonTargetLeft = LastButton(playerStats);
+        if (enemyStats.Count > 0)
+        {
+            LinkGroupFirstButton(FirstButton(enemyStats), firstButtonTargetLeft);
+        }        
+
+        var statsTargetUp = FirstButton(enemyIntents) ?? FirstButton(relicDisplays);
+        LinkVerticalGroup(playerStats, statsTargetUp, null);
+        LinkVerticalGroup(enemyStats, statsTargetUp, null);
+
+        var intentsTargetUp = FirstButton(relicDisplays);
+        var intentsTargetDown = FirstButton(enemyStats) ?? FirstButton(playerStats);
+        LinkVerticalGroup(enemyIntents, intentsTargetUp, intentsTargetDown);
+
+        var relicTargetDown = FirstButton(enemyIntents) ?? (FirstButton(enemyStats) ?? FirstButton(playerStats));
+        LinkVerticalGroup(relicDisplays, null, relicTargetDown);
+
+        var firstSelectable = GetFirstInspectableToSelect();
+        EventSystem.current.SetSelectedGameObject(firstSelectable.gameObject);
+    }
+
+    private Selectable GetFirstInspectableToSelect()
+    {
+        return FirstButton(relicDisplays)
+            ?? FirstButton(playerStats)
+            ?? FirstButton(enemyStats)
+            ?? FirstButton(enemyIntents);
+    }
+
+    private Selectable FirstButton(List<IInspectableElement> group)
+    {
+        return group != null && group.Count > 0 ? group[0].GetGamepadButton() : null;
+    }
+
+    private Selectable LastButton(List<IInspectableElement> group)
+    {
+        return group != null && group.Count > 0 ? group[group.Count - 1].GetGamepadButton() : null;
+    }
+
+    private void LinkGroupFirstButton(Selectable buttonToLink, Selectable targetLink)
+    {
+        if (buttonToLink == null) return;
+
+        var navi = buttonToLink.navigation;
+        navi.selectOnLeft = targetLink;
+        buttonToLink.navigation = navi;
+    }
+
+    private void LinkGroupLastButton(Selectable buttonToLink, Selectable targetLink)
+    {
+        if (buttonToLink == null) return;
+
+        var navi = buttonToLink.navigation;
+        navi.selectOnRight = targetLink;
+        buttonToLink.navigation = navi;
+    }
+
+    private void LinkVerticalGroup(List<IInspectableElement> elementGroup, Selectable targetUp, Selectable targetDown)
+    {
+        if (elementGroup == null || elementGroup.Count == 0)
+            return;
+
+        foreach(var element in elementGroup)
+        {
+            var button = element.GetGamepadButton();
+            if (button == null) continue;
+
+            var navi = button.navigation;
+            navi.selectOnUp = targetUp;
+            navi.selectOnDown = targetDown;
+            button.navigation = navi;
         }
     }
+
+    private void SetGroupNavigation(List<IInspectableElement> elements)
+    {
+        if (elements.Count < 1) return;
+
+        for (int i=0; i<elements.Count; i++)
+        {
+            var element = elements[i];
+            var button = element.GetGamepadButton();
+            var navi = button.navigation;
+
+            if (navi.mode != Navigation.Mode.Explicit)
+                navi.mode = Navigation.Mode.Explicit;
+
+            navi.selectOnLeft = i - 1 >= 0 ? elements[i-1].GetGamepadButton() : null;
+            navi.selectOnRight = i + 1 < elements.Count ? elements[i + 1].GetGamepadButton() : null;
+
+            button.navigation = navi;
+        }
+    }
+    #endregion
 
     public void SetCombatUINavigationMode(CombatUINavigationMode mode)
     {
@@ -60,6 +178,10 @@ public class UIScreenCombat : UIScreen
                 //enemy intentions
                 //items
                 inputHandler.SwitchActionMap(ActionMaps.Menu);
+                SetupInspectModeNavigation();
+                break;
+            case CombatUINavigationMode.PostCombat:
+
                 break;
             case CombatUINavigationMode.Disabled:
                 inputHandler.SwitchActionMap(ActionMaps.Menu);
@@ -71,7 +193,19 @@ public class UIScreenCombat : UIScreen
         OnCombatUINavigationChanged?.Invoke(currentCombatNavigationMode);
     }
 
-
+    //hook this to inspectmode button, make inspect mode button only visible when last input detected = gamepad
+    public void ToggleInspectMode()
+    {
+        //only go to inspect mode from and to combat
+        if (currentCombatNavigationMode == CombatUINavigationMode.Combat)
+        {
+            SetCombatUINavigationMode(CombatUINavigationMode.Inspect);
+        }
+        else if(currentCombatNavigationMode == CombatUINavigationMode.Inspect)
+        {
+            SetCombatUINavigationMode(CombatUINavigationMode.Combat);
+        }
+    }
 
     public void TogglePotionMode()
     {
@@ -113,7 +247,6 @@ public class UIScreenCombat : UIScreen
 
         HandlePotionSelectionNavigation();
     }
-
     
 
     public void RemoveActivePotionDrag(PotionDrag potion)
@@ -260,10 +393,33 @@ public class UIScreenCombat : UIScreen
 
     }
 
+    private void RegisterEnemy(Character enemyCharacter)
+    {
+        currentEnemy = enemyCharacter;
+
+    }
+
+    private void UnregisterEnemy(Character enemyCharacter)
+    {
+
+        if (currentEnemy != null && currentEnemy == enemyCharacter)
+        {
+            skipButton.gameObject.SetActive(true);
+            
+            currentEnemy = null;
+        }
+    }
+
     private void Awake()
     {
-        combatButtonController = GetComponentInParent<CombatButtonController>();
         combatController ??= CombatController._instance;
+        combatController.OnEnemySpawned += RegisterEnemy;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        combatController.OnEnemySpawned -= RegisterEnemy;
     }
 
     private void OnEnable()
@@ -280,5 +436,6 @@ public enum CombatUINavigationMode
     Potion,
     Targetting,
     Tutorial,
+    PostCombat,
     Disabled
 }

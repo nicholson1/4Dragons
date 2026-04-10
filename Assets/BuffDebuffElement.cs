@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuffDebuffElement : MonoBehaviour
+public class BuffDebuffElement : MonoBehaviour, IInspectableElement
 {
     [SerializeField] private TextMeshProUGUI turnCounter;
     [SerializeField] private Image icon;
@@ -22,6 +22,25 @@ public class BuffDebuffElement : MonoBehaviour
     public CombatEntity.BuffTypes _buff;
     public CombatEntity.BlessingTypes _blessing;
 
+    public Button GetGamepadButton()
+    {
+        return GetComponentInChildren<Button>();
+    }
+
+    public void RegisterElementToScreen(IInspectableElement element)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        throw new NotImplementedException();
+    }
 
     public void InitializeDisplay(CombatEntity.DeBuffTypes deBuff, int turns, float amount)
     {
@@ -116,4 +135,6 @@ public class BuffDebuffElement : MonoBehaviour
         return message;
 
     }
+
+
 }

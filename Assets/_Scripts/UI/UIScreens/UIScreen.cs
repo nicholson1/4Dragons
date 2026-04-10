@@ -17,11 +17,15 @@ public class UIScreen : MonoBehaviour
     public bool IsScreenActive => isScreenActive;
     public List<GlobalButton> AccessibleGlobalButtons => accessibleGlobalButtons;
     public ActionMaps DefaultScreenActionMap => requiredActionMap;
+    public GameObject DefaultMainPanel => defaultMainPanel;
+    public GameObject DefaultRaycastBlocker => defaultRaycastBlocker;
    
     [field: SerializeField] public bool NavigatableByDefault { get; private set; } = true;
 
     protected TutorialManager tutorialManager = null;
 
+    [SerializeField] protected GameObject defaultMainPanel;
+    [SerializeField] protected GameObject defaultRaycastBlocker;
     [SerializeField] protected Selectable defaultSelectable = null;
     protected Selectable currentSelectable = null;
     protected Selectable selectableToSelectOnActivated = null;

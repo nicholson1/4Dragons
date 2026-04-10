@@ -90,6 +90,12 @@ public class ButtonBindingHandler : MonoBehaviour
             case ExtraButton.R1:
                 inputHandler.OnR1.AddListener(ClickThroughInput);
                 break;
+            case ExtraButton.L2:
+                inputHandler.OnL2.AddListener(ClickThroughInput);
+                break;
+            case ExtraButton.R2:
+                inputHandler.OnR2.AddListener(ClickThroughInput);
+                break;
 
         }
 
@@ -123,7 +129,13 @@ public class ButtonBindingHandler : MonoBehaviour
                 inputHandler.OnL1.RemoveListener(ClickThroughInput);
                 break;
             case ExtraButton.R1:
-                inputHandler.OnR1.AddListener(ClickThroughInput);
+                inputHandler.OnR1.RemoveListener(ClickThroughInput);
+                break;
+            case ExtraButton.L2:
+                inputHandler.OnL2.RemoveListener(ClickThroughInput);
+                break;
+            case ExtraButton.R2:
+                inputHandler.OnR2.RemoveListener(ClickThroughInput);
                 break;
         }
 

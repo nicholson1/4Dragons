@@ -8,13 +8,15 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    public static UIController _instance;
+
     public UIStateMonitor StateMonitor => stateMonitor;
     private UIStateMonitor stateMonitor = null;
         
-
     [SerializeField] private UIScreen titleScreen;
     [SerializeField] private UIScreenInventory inventoryScreen;
     [SerializeField] private UIScreen settingsScreen;
@@ -73,7 +75,9 @@ public class UIController : MonoBehaviour
 
     private List<GameObject> movingPanels = new List<GameObject>();
 
-    public static UIController _instance;
+    [SerializeField] private Button globalSettingsButton;
+    private int settingsButtonDefaultSiblingIndex = 0;
+
 
     #region Audio Variables
     //========= Sound Fx ===========
@@ -216,7 +220,6 @@ public class UIController : MonoBehaviour
 
     private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
     {
-        Debug.LogError($"InventoryScreenToggleMoveFinished - toOpen? {toOpen}");
         if (toOpen)
         {
             inventoryScreen.Activate();
@@ -226,7 +229,6 @@ public class UIController : MonoBehaviour
             var screenToReturnTo = stateMonitor.PreviousActiveScreen;
             inventoryScreen.Deactivate();
             screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
-            Debug.Log($"closed inventory UI and reactivate {screenToReturnTo.gameObject.name}");
         }
 
         //stateMonitor.HandleToggleTransition(false);
@@ -261,19 +263,21 @@ public class UIController : MonoBehaviour
     }
     #endregion
 
+    #region MapUI Related
     public void ToggleMapFromMapButton()
     {
+        Debug.LogError($"ToggleMapFromButton is called!");
         if (stateMonitor.PanelCurrentlyMove) return;
 
         bool isOpen = stateMonitor.CurrentActiveScreen == mapScreen;
         ToggleMapNew(!isOpen, false);
     }
 
-    public void ToggleMapNew(bool toOpen = false, bool isClickable = false)
+    public void ToggleMapNew(bool toOpen = false, bool areNodesClickable = false)
     {
         PlayOpenMap();
 
-        mapScreen.SetNodesClickable(isClickable);
+        mapScreen.SetNodesClickable(areNodesClickable);
 
         //stateMonitor.HandleToggleTransition(true);
         StartCoroutine(MovePanel(mapScreen.gameObject, PanelMoveDirection.Vertical, toOpen, MapMoveCompletedCallback));
@@ -288,42 +292,44 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            //var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
             mapScreen.Deactivate();
-            //screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);            
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);            
         }
-        //stateMonitor.HandleToggleTransition(false);
+
     }
+    #endregion
 
-    //For handling closing settings menu through UI [X] close button
-    public void CloseSettings()
-    {
-        Debug.LogError($"Call CloseSettings()");
-        var settingsScreen = SettingUI.GetComponent<UIScreen>();
-
-        if (StateMonitor.CurrentActiveScreen == settingsScreen)
-        {
-            SettingUI.gameObject.SetActive(false);
-            StateMonitor.PreviousActiveScreen.Activate();
-        }
-    }
-
+    #region SettingsUI related
     public void ToggleSettings()
     {
+        if (stateMonitor.PanelCurrentlyMove) return;
 
-        bool currentlyActive = settingsScreen.IsScreenActive;
+        bool toOpen = !settingsScreen.IsScreenActive;     
+        if(toOpen)
+            settingsScreen.DefaultRaycastBlocker.SetActive(true);
 
-        if (currentlyActive)
+        StartCoroutine(MovePanel(settingsScreen.DefaultMainPanel, PanelMoveDirection.Horizontal, toOpen, SettingsMoveCompletedCallback));
+    }
+
+    private void SettingsMoveCompletedCallback(bool toOpen)
+    {
+        if(toOpen)
         {
-            SettingUI.gameObject.SetActive(false);
-            StateMonitor.PreviousActiveScreen.Activate();
+            settingsScreen.Activate(true);
+            globalSettingsButton.transform.SetSiblingIndex(settingsScreen.transform.GetSiblingIndex() + 1);
         }
         else
         {
-            SettingUI.gameObject.SetActive(true);
-            settingsScreen.Activate(true);
+            globalSettingsButton.transform.SetSiblingIndex(settingsButtonDefaultSiblingIndex);
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            settingsScreen.Deactivate();
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
+            settingsScreen.DefaultRaycastBlocker.SetActive(false);
         }
     }
+    #endregion
+
     public void RestartGame(bool victory = false)
     {
         PlayFabManager._instance.SubmitRunData(victory);
@@ -1053,6 +1059,7 @@ public class UIController : MonoBehaviour
     }
     private void Start()
     {
+        settingsButtonDefaultSiblingIndex = globalSettingsButton.transform.GetSiblingIndex();
         if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
         {
             ToggleKeyBindVisual();

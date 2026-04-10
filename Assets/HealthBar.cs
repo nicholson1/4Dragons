@@ -66,7 +66,7 @@ public class HealthBar : MonoBehaviour
         CombatEntity.ReduceDebuffCount += ReduceDebuffCount;
         CombatEntity.ReduceBuffCount += ReduceBuffCount;
 
-        CombatController.EndTurn += FixBars;
+        CombatController._instance.EndTurn += FixBars;
 
 
     }
@@ -91,7 +91,7 @@ public class HealthBar : MonoBehaviour
         CombatEntity.ReduceDebuffCount -= ReduceDebuffCount;
         CombatEntity.ReduceBuffCount -= ReduceBuffCount;
 
-        CombatController.EndTurn -= FixBars;
+        CombatController._instance.EndTurn -= FixBars;
     }
 
     private void FixBars()

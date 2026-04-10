@@ -119,9 +119,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     }
 
     public void HandleGamepadButtonPressed(Selectable selectable)
-    {
-        Debug.Log($"{gameObject.name} - {Slot} button PRESSED");
-        
+    {        
         //pressing inventory slot gamepad button while dragging item
         if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
         {
@@ -138,7 +136,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         {
             if (Item == null) return;
             
-            Debug.Log($"ButtonPress detected on slot {gameObject.name} - {Slot} with item {Item.e.name} ");
             Item.GamepadStartDrag(this);
 
             inputHandler.OnNo.AddListener(CancelGamepadDrag);

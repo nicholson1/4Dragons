@@ -6,7 +6,7 @@ public class SettingsButtonBindingHandler : ButtonBindingHandler
 {
     private UIStateMonitor stateMonitor = null;
     [SerializeField] private GlobalButton globalButton = GlobalButton.Settings;
-
+    
     protected override void ToggleButtonInteractability(UIScreen screen)
     {        
         if(screen.AccessibleGlobalButtons.Contains(globalButton))

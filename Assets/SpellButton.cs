@@ -42,8 +42,6 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
     {
         if (!isSpellUsable)
         {
-            Debug.LogError($"Spell is not usable!");
-
             return;
         }
 

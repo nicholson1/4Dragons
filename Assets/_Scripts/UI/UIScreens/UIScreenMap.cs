@@ -20,19 +20,27 @@ public class UIScreenMap : UIScreen
     private Dictionary<MapNode, int> mapNodes = new Dictionary<MapNode, int>();
     private MapNode currenOccupiedNode;
 
+    [SerializeField] private Button mapToggleButton;
+
 
     public int GetNodeLayer(MapNode node) => mapNodes[node];
 
-    public void SetNodesClickable(bool clickable) => areNodesClickable = clickable;
+    public void SetNodesClickable(bool clickable)
+    {
+        areNodesClickable = clickable;
+    }
+
     public void SetCurrentOccupiedNode(MapNode mapNode) => currenOccupiedNode = mapNode;
 
     public void SetCanBeToggled(bool value) => canBeToggled = value;
 
     public override void Activate(bool navigatableOnActivated = true)
-    {
+    {       
+
         PopulateMapNodes();
 
         base.Activate(navigatableOnActivated);
+
     }
 
 
@@ -57,7 +65,6 @@ public class UIScreenMap : UIScreen
         {
             var candidatesOnLayer = mapNodes.Where(m => m.Value == GetNodeLayer(currenOccupiedNode) + 1);
             var realCandidate = candidatesOnLayer.Where(m => m.Key.Node.IsConnected(currenOccupiedNode.Node)).FirstOrDefault().Key;
-            Debug.LogError($"Selectable MapNode on map nodes are clickable is {realCandidate.name}");
             return realCandidate.GetComponentInChildren<Selectable>();
         }
         

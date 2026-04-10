@@ -6,10 +6,11 @@ using UnityEngine.UI;
 
 public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener
 {
+    public Button GamepadButton => button;
     public event Action OnGamepadButtonSelected;
     public event Action OnGamepadButtonDeselected;
 
-    public Button GamepadButton => button;
+    //public Button GamepadButton => button;
     public Image TargetImage => targetImage;
 
     private Button button;
@@ -17,7 +18,6 @@ public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener
     private CombatEntity combatEntity;
 
     private PotionDrag potionDrag;
-
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {

@@ -11,6 +11,11 @@ public class RawGamepadButtonListener : MonoBehaviour, IGamepadButtonListener
 
     private ToolTip tooltip = null;
 
+    public Button GetGamepadButton()
+    {
+        return GetComponent<Button>();
+    }
+
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
         OnGamepadButtonDeselected?.Invoke();

@@ -5,16 +5,38 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class IntentDisplay : MonoBehaviour, IPointerExitHandler
+public class IntentDisplay : MonoBehaviour, IPointerExitHandler, IInspectableElement
 {
     [SerializeField]private Image intent0;
     [SerializeField]private Image intent1;
 
     [SerializeField] private ToolTip _toolTip;
 
-
     public float bounceHeight;
     private RectTransform rt;
+
+
+    public Button GetGamepadButton()
+    {
+        return GetComponentInChildren<Button>();
+    }
+
+    public void RegisterElementToScreen(IInspectableElement element)
+    {
+
+    }
+
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        throw new NotImplementedException();
+    }
+
+
     public void UpdateInfo(SpellTypes spell)
     {
         (Sprite, Sprite) sprites = TheSpellBook._instance.GetAbilityTypeIcons(spell);
@@ -86,9 +108,14 @@ public class IntentDisplay : MonoBehaviour, IPointerExitHandler
     }
 
     private float timer = -1;
+
+    public event Action OnGamepadButtonSelected;
+    public event Action OnGamepadButtonDeselected;
+
     public void OnPointerExit(PointerEventData eventData)
     {
         timer = 2;
 
     }
+
 }

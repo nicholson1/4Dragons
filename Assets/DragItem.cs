@@ -86,7 +86,6 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
     public void GamepadStartDrag(InventorySlot origin)
     {
-        Debug.Log($"start dragging item ");
         if (e.isRelic)
             return;
 

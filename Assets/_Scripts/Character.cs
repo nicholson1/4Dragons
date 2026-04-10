@@ -62,7 +62,6 @@ public class Character : MonoBehaviour
     public static event Action<ErrorMessageManager.Errors> Notification;
     public static event Action<ErrorMessageManager.Errors, int> NotificationGold;
 
-
     public EquipmentModelManager EqMM;
     
     [SerializeField] private AudioClip getGold;

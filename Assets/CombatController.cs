@@ -62,13 +62,18 @@ public class CombatController : MonoBehaviour
     public float EliteHealingMultiplier => _eliteHealingMultiplier;
     public float NormalHealingMultiplier => _normalHealingMultiplier;
 
-    public static event Action EndTurn;
+    public event Action EndTurn;
     // public static event Action EndCombatEvent;
     // public static event Action StartCombatEvent;
 
     public static event Action<Character, Character> UpdateUIButtons;
     public static event Action<Character, Character> ActivateCombatEntities;
     public static event Action<ErrorMessageManager.Errors> CombatNotifications;
+
+    public event Action<Character> OnEnemySpawned;
+    public event Action<Character> OnEnemyDies;
+    public event Action OnCombatEnd;
+
 
     public Character Player;
 

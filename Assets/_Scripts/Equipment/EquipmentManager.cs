@@ -213,7 +213,6 @@ public class EquipmentManager : MonoBehaviour
                 {
                     InventoryNotifications(ErrorMessageManager.Errors.InventoryFull);
 
-                    Debug.Log($"Return False case 2");
                     return false;
                 }
                 else
@@ -230,14 +229,12 @@ public class EquipmentManager : MonoBehaviour
 
                             EquipItem(equipmentToEquip);
 
-                            Debug.Log($"Return true case 3: drag item on case 2nd weapon/scroll slot empty: {wep.e.name}");
                             return true;
                         }
                     }
                     
                     //move the currently equipped weapon in the target slot to empty inventory slot
                     DragItem previouslyEquipped = InventorySlots[invSloti].Item;
-                    Debug.Log($"drag item on case previously equipped: {previouslyEquipped.e.name}");
                     previouslyEquipped.currentLocation = slot;
                     previouslyEquipped._rectTransform.anchoredPosition = slot._rt.anchoredPosition;
                     previouslyEquipped.currentLocation.Item = previouslyEquipped;
@@ -252,7 +249,6 @@ public class EquipmentManager : MonoBehaviour
                     UnEquipItem(previouslyEquipped.e);
                     EquipItem(equipmentToEquip);
 
-                    Debug.Log($"Return true case 4: drag item on... is this the new item to put into the newly cleaned slot? {previouslyEquipped.e.name}");
                     //si.RemoveSelection();
                     return true;
                 }                
