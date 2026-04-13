@@ -947,6 +947,7 @@ public class CombatController : MonoBehaviour
         WeatherManager._instance.UpdateWeather(node.point.y, nextDragonSchool);
 
         previousDragonSchool = nextDragonSchool;
+              
         
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
@@ -1016,8 +1017,10 @@ public class CombatController : MonoBehaviour
         enemy.transform.LookAt(Player.transform.position);
         Player.transform.LookAt(enemy.transform.position);
 
+        OnEnemySpawned?.Invoke(enemy);
+
         //
- 
+
     }
 
     public void RestartCombat()

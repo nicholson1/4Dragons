@@ -20,9 +20,11 @@ public class UIScreenCombat : UIScreen
     private Character player;
     private Character currentEnemy;
 
+    private List<HealthBar> currentHealthbars = new List<HealthBar>();
     private List<PotionDrag> activePotions = new List<PotionDrag>();
     private List<TargettingButtonListener> targettingButtonListeners = new List<TargettingButtonListener>();
 
+    [SerializeField] private Button endTurn;
     [SerializeField] private Button skipButton;
     [SerializeField] private Transform playerStatsParent, enemyStatsParent, enemyIntentsParent, relicHolder;
 
@@ -32,6 +34,22 @@ public class UIScreenCombat : UIScreen
     private List<IInspectableElement> relicDisplays = new List<IInspectableElement>();
 
     #region Inspect Mode related
+    //hook this to inspectmode button, make inspect mode button only visible when last input detected = gamepad
+    public void ToggleInspectMode()
+    {
+        //only go to inspect mode from and to combat
+        if (currentCombatNavigationMode == CombatUINavigationMode.Combat)
+        {            
+            SetCombatUINavigationMode(CombatUINavigationMode.Inspect);
+            inputHandler.OnNo.AddListener(HandleCancelPressed);
+        }
+        else if (currentCombatNavigationMode == CombatUINavigationMode.Inspect)
+        {
+
+            HandleCancelPressed();
+        }
+    }
+
     private List<IInspectableElement> GetInspectableElements(Transform parent)
     {
         if (parent == null || parent.childCount == 0)
@@ -45,6 +63,7 @@ public class UIScreenCombat : UIScreen
 
     private void SetupInspectModeNavigation()
     {
+        
         //Populate inspectable elements
         playerStats = GetInspectableElements(playerStatsParent);
         enemyStats = GetInspectableElements(enemyStatsParent);
@@ -52,17 +71,14 @@ public class UIScreenCombat : UIScreen
         relicDisplays = GetInspectableElements(relicHolder);
 
         //connect each group
-        if(playerStats.Count > 0)
-        {
-            var lastButtonTargetRight = FirstButton(enemyStats) ?? (FirstButton(enemyIntents) ?? FirstButton(relicDisplays));
+        var lastButtonTargetRight = FirstButton(enemyStats) ?? (FirstButton(enemyIntents) ?? FirstButton(relicDisplays));
+        if(lastButtonTargetRight != null)
             LinkGroupLastButton(LastButton(playerStats), lastButtonTargetRight);
-        }
 
         var firstButtonTargetLeft = LastButton(playerStats);
-        if (enemyStats.Count > 0)
-        {
+        if(firstButtonTargetLeft != null)
             LinkGroupFirstButton(FirstButton(enemyStats), firstButtonTargetLeft);
-        }        
+     
 
         var statsTargetUp = FirstButton(enemyIntents) ?? FirstButton(relicDisplays);
         LinkVerticalGroup(playerStats, statsTargetUp, null);
@@ -76,7 +92,11 @@ public class UIScreenCombat : UIScreen
         LinkVerticalGroup(relicDisplays, null, relicTargetDown);
 
         var firstSelectable = GetFirstInspectableToSelect();
-        EventSystem.current.SetSelectedGameObject(firstSelectable.gameObject);
+
+        if(firstSelectable != null)
+        {
+            EventSystem.current.SetSelectedGameObject(firstSelectable.gameObject);
+        }
     }
 
     private Selectable GetFirstInspectableToSelect()
@@ -155,11 +175,13 @@ public class UIScreenCombat : UIScreen
 
     public void SetCombatUINavigationMode(CombatUINavigationMode mode)
     {
+        endTurn.interactable = false;
         currentCombatNavigationMode = mode;
         switch(currentCombatNavigationMode)
         {
             case CombatUINavigationMode.Combat:
                 inputHandler.SwitchActionMap(ActionMaps.Combat);
+                endTurn.interactable = true;
                 EventSystem.current.SetSelectedGameObject(null);
                 break;
             case CombatUINavigationMode.Potion:
@@ -193,19 +215,8 @@ public class UIScreenCombat : UIScreen
         OnCombatUINavigationChanged?.Invoke(currentCombatNavigationMode);
     }
 
-    //hook this to inspectmode button, make inspect mode button only visible when last input detected = gamepad
-    public void ToggleInspectMode()
-    {
-        //only go to inspect mode from and to combat
-        if (currentCombatNavigationMode == CombatUINavigationMode.Combat)
-        {
-            SetCombatUINavigationMode(CombatUINavigationMode.Inspect);
-        }
-        else if(currentCombatNavigationMode == CombatUINavigationMode.Inspect)
-        {
-            SetCombatUINavigationMode(CombatUINavigationMode.Combat);
-        }
-    }
+
+    #region Potion Mode Related
 
     public void TogglePotionMode()
     {
@@ -218,9 +229,7 @@ public class UIScreenCombat : UIScreen
         //can only switch between combat and potion!
         if (currentCombatNavigationMode == CombatUINavigationMode.Potion)
         {
-            inputHandler.OnNo.RemoveListener(HandleCancelPressed);
-
-            SetCombatUINavigationMode(CombatUINavigationMode.Combat);
+            HandleCancelPressed();
         }
         else if(currentCombatNavigationMode == CombatUINavigationMode.Combat && PlayerHasPotion())
         {
@@ -335,6 +344,34 @@ public class UIScreenCombat : UIScreen
         EventSystem.current.SetSelectedGameObject(targettingButtonListeners[0].GamepadButton.gameObject);
     }
 
+    private void RegisterTargettingListeners()
+    {
+        targettingButtonListeners.Clear();
+
+        foreach (var bar in currentHealthbars)
+        {
+            var buttonListener = bar.GetComponentInChildren<TargettingButtonListener>();
+
+            if (buttonListener != null)
+            {
+                targettingButtonListeners.Add(buttonListener);
+            }
+        }
+
+        foreach (var buttonListener in targettingButtonListeners)
+        {
+            var bindHandler = buttonListener.GetComponentInChildren<ButtonBindingHandler>();
+            bindHandler.ManualBindInput(false);
+            bindHandler.ManualBindInput(true);
+        }
+    }
+    #endregion
+
+
+    #region Combat Mode Related
+
+    #endregion
+
     private void HandleCancelPressed()
     {
         SetCombatUINavigationMode(CombatUINavigationMode.Combat);
@@ -349,28 +386,66 @@ public class UIScreenCombat : UIScreen
     //        inputHandler.SwitchActionMap(ActionMaps.Combat);
     //}
 
-    private void RegisterTargettingListeners()
+    
+
+    private HealthBar GetPlayerHealthBar()
     {
-        targettingButtonListeners.Clear();
-        HealthBar[] healthBars = FindObjectsOfType<HealthBar>(); 
+        return currentHealthbars.Where(b => b.displayCharacter == player).FirstOrDefault();
+    }
 
-        foreach(var bar in healthBars)
+    private HealthBar GetEnemyHealthBar()
+    {
+        return currentHealthbars.Where(b => b.displayCharacter == currentEnemy).FirstOrDefault();
+    }
+
+    private void UpdateHealthbars()
+    {
+        Debug.LogError($"Setting up healthbars");
+        HealthBar[] healthBars = FindObjectsOfType<HealthBar>();
+
+        foreach(var bar in currentHealthbars)
         {
-            var buttonListener = bar.GetComponentInChildren<TargettingButtonListener>();
-
-            if(buttonListener != null)
-            {
-                targettingButtonListeners.Add(buttonListener);
-                
-            }
+            if (!healthBars.Contains(bar))
+                currentHealthbars.Remove(bar);
         }
-
-        foreach(var buttonListener in targettingButtonListeners)
+        foreach(var healthBar in healthBars)
         {
-            var bindHandler = buttonListener.GetComponentInChildren<ButtonBindingHandler>();
-            bindHandler.ManualBindInput(false);
-            bindHandler.ManualBindInput(true);
+            if (!currentHealthbars.Contains(healthBar))
+                currentHealthbars.Add(healthBar);
         }
+    }
+            
+
+
+    private void SetupInspectableDisplayParents()
+    {
+        var enemyHealthBar = GetEnemyHealthBar();
+        enemyIntentsParent = enemyHealthBar.IntentDisplay;
+        enemyStatsParent = enemyHealthBar.BuffDebuffDisplay;
+        playerStatsParent = GetPlayerHealthBar().BuffDebuffDisplay;
+    }
+
+
+    private void EndTurn()
+    {
+        if (currentCombatNavigationMode != CombatUINavigationMode.Combat)
+            return;
+
+        endTurn.onClick.Invoke();
+    }
+
+    private void BindGamepadListener()
+    {
+        inputHandler.OnL1.AddListener(TogglePotionMode);
+        inputHandler.OnR1.AddListener(ToggleInspectMode);
+        inputHandler.OnR2.AddListener(EndTurn);
+    }
+
+    private void UnbindGamepadListener()
+    {
+        inputHandler.OnL1.RemoveListener(TogglePotionMode);
+        inputHandler.OnR1.RemoveListener(ToggleInspectMode);
+        inputHandler.OnR2.RemoveListener(EndTurn);
     }
 
     public override void Activate(bool navigatableOnActivated = true)
@@ -378,9 +453,11 @@ public class UIScreenCombat : UIScreen
         base.Activate(navigatableOnActivated);
 
         inputHandler ??= EventSystem.current.GetComponent<InputHandler>();
-        inputHandler.OnL1.AddListener(TogglePotionMode);
 
-        SetCombatUINavigationMode(CombatUINavigationMode.Combat);
+        UnbindGamepadListener();
+        BindGamepadListener();
+
+        SetCombatUINavigationMode(CombatUINavigationMode.Combat);       
 
     }
 
@@ -389,19 +466,18 @@ public class UIScreenCombat : UIScreen
         SetCombatUINavigationMode(CombatUINavigationMode.Disabled);
         base.Deactivate();
 
-        inputHandler.OnL1.RemoveListener(TogglePotionMode);
-
+        UnbindGamepadListener();
     }
 
     private void RegisterEnemy(Character enemyCharacter)
     {
         currentEnemy = enemyCharacter;
-
+        UpdateHealthbars();
+        SetupInspectableDisplayParents();
     }
 
     private void UnregisterEnemy(Character enemyCharacter)
     {
-
         if (currentEnemy != null && currentEnemy == enemyCharacter)
         {
             skipButton.gameObject.SetActive(true);

@@ -36,8 +36,8 @@ public class InputHandler : MonoBehaviour
 
     [SerializeField] private InputActionAsset inputActions;
 
-    [SerializeField] private InputActionReference move, pause, inspectToggleOn, action0, action1, action2, action3, endTurn;
-    [SerializeField] private InputActionReference navigate, inspectToggleOff, leftClick, point, yes, no, menuExtra1, menuExtra2, start, select;
+    [SerializeField] private InputActionReference move, pause, action0, action1, action2, action3;
+    [SerializeField] private InputActionReference navigate, leftClick, point, yes, no, menuExtra1, menuExtra2, start, select;
     [SerializeField] private InputActionReference l1, l2, r1, r2;
 
     [SerializeField] private ActionMaps defaultActionMap = ActionMaps.Menu;
@@ -70,9 +70,16 @@ public class InputHandler : MonoBehaviour
 
     private void StartPressed(InputAction.CallbackContext context) => OnStart?.Invoke();
     private void SelectPressed(InputAction.CallbackContext context) => OnSelect?.Invoke();
-    private void R2Pressed(InputAction.CallbackContext context) => OnR1?.Invoke();
-    private void R1Pressed(InputAction.CallbackContext context) => OnR2?.Invoke();
-    private void L1Pressed(InputAction.CallbackContext context) => OnL1?.Invoke();
+    private void R1Pressed(InputAction.CallbackContext context) => OnR1?.Invoke();
+    private void R2Pressed(InputAction.CallbackContext context)
+    {
+        OnR2?.Invoke();
+    }
+    private void L1Pressed(InputAction.CallbackContext context)
+    {
+        OnL1?.Invoke();
+    }
+
     private void L2Pressed(InputAction.CallbackContext context) => OnL2?.Invoke();
 
 
@@ -166,6 +173,11 @@ public class InputHandler : MonoBehaviour
     {
         SwitchActionMap(debugTargetActionMap);
     }
+
+    public void ButtonClickedLog(Transform buttonTransform)
+    {
+        Debug.LogError($"Button {buttonTransform.name} is pressed");
+    }
     #endregion
 
     #region Initialization
@@ -175,9 +187,7 @@ public class InputHandler : MonoBehaviour
         action1.action.started += Weapon2Pressed;
         action2.action.started += Scroll1Pressed;
         action3.action.started += Scroll2Pressed;
-        endTurn.action.started += EndTurnPressed;
-        //inspectToggleOn.action.started += InspectToggleOnPressed;
-        //inspectToggleOff.action.started += InspectToggleOffPressed;
+
         yes.action.started += YesPressed;
         no.action.started += NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
@@ -186,9 +196,9 @@ public class InputHandler : MonoBehaviour
         select.action.started += SelectPressed;
 
         l1.action.started += L1Pressed;
-        l2.action.started += L2Pressed;
+        l2.action.performed += L2Pressed;
         r1.action.started += R1Pressed;
-        r2.action.started += R2Pressed;
+        r2.action.performed += R2Pressed;
     }
 
 
@@ -199,9 +209,7 @@ public class InputHandler : MonoBehaviour
         action1.action.started -= Weapon2Pressed;
         action2.action.started -= Scroll1Pressed;
         action3.action.started -= Scroll2Pressed;
-        endTurn.action.started -= EndTurnPressed;
-        //inspectToggleOn.action.started -= InspectToggleOnPressed;
-        //inspectToggleOff.action.started -= InspectToggleOffPressed;
+
         yes.action.started -= YesPressed;
         no.action.started -= NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
@@ -210,9 +218,9 @@ public class InputHandler : MonoBehaviour
         select.action.started -= SelectPressed;
 
         l1.action.started -= L1Pressed;
-        l2.action.started -= L2Pressed;
+        l2.action.performed -= L2Pressed;
         r1.action.started -= R1Pressed;
-        r2.action.started -= R2Pressed;
+        r2.action.performed -= R2Pressed;
     }
 
     private void EnableAllInputActions()

@@ -8,11 +8,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatDisplay : MonoBehaviour, IGamepadButtonListener
+public class StatDisplay : MonoBehaviour, IInspectableElement
 {
-    public event Action OnGamepadButtonSelected;
-    public event Action OnGamepadButtonDeselected;
-
     [SerializeField]private Image icon;
     [SerializeField] private TextMeshProUGUI text;
 
@@ -24,6 +21,11 @@ public class StatDisplay : MonoBehaviour, IGamepadButtonListener
 
     private Button gamepadButton;
 
+    public Button GetGamepadButton()
+    {
+        gamepadButton ??= GetComponentInChildren<Button>();
+        return gamepadButton;
+    }
  
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
@@ -37,10 +39,6 @@ public class StatDisplay : MonoBehaviour, IGamepadButtonListener
         toolTip.CloseTip();
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable)
-    {
-        throw new NotImplementedException();
-    }
 
     private void Awake()
     {

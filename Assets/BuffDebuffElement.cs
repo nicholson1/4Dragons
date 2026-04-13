@@ -22,24 +22,23 @@ public class BuffDebuffElement : MonoBehaviour, IInspectableElement
     public CombatEntity.BuffTypes _buff;
     public CombatEntity.BlessingTypes _blessing;
 
+    private Button gamepadButton;
+
     public Button GetGamepadButton()
     {
-        return GetComponentInChildren<Button>();
+        gamepadButton ??= GetComponentInChildren<Button>();
+        return gamepadButton;
     }
 
-    public void RegisterElementToScreen(IInspectableElement element)
-    {
-        throw new NotImplementedException();
-    }
 
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
-        throw new NotImplementedException();
+        toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
-        throw new NotImplementedException();
+        toolTip.CloseTip();
     }
 
     public void InitializeDisplay(CombatEntity.DeBuffTypes deBuff, int turns, float amount)

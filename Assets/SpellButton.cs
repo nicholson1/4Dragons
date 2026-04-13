@@ -42,6 +42,7 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
     {
         if (!isSpellUsable)
         {
+            //Handle spell cannot be used
             return;
         }
 
@@ -79,7 +80,7 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
     private void InitiateCastSpell()
     {
         //close tip
-        if (!isSpellUsable)
+        if (!isSpellReady)
         {
             //handle spell not usable effects?
             

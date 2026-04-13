@@ -145,6 +145,7 @@ public class ButtonBindingHandler : MonoBehaviour
 
     protected void BindInput(UIScreen screen, bool navigatable)
     {
+
         UnbindGamepadFromButton();
 
         if (navigatable)

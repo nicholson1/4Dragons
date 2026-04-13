@@ -15,25 +15,22 @@ public class IntentDisplay : MonoBehaviour, IPointerExitHandler, IInspectableEle
     public float bounceHeight;
     private RectTransform rt;
 
+    private Button gamepadButton;
 
     public Button GetGamepadButton()
     {
-        return GetComponentInChildren<Button>();
-    }
-
-    public void RegisterElementToScreen(IInspectableElement element)
-    {
-
+        gamepadButton ??= GetComponentInChildren<Button>();
+        return gamepadButton;
     }
 
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
-        throw new NotImplementedException();
+        _toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
-        throw new NotImplementedException();
+        _toolTip.CloseTip();
     }
 
 

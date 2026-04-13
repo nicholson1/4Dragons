@@ -17,21 +17,18 @@ public class RelicDisplay : MonoBehaviour, IInspectableElement
 
     public Button GetGamepadButton()
     {
-        return GetComponentInChildren<Button>();
+        gamepadButton ??= GetComponentInChildren<Button>();
+        return gamepadButton;
     }
 
-    public void RegisterElementToScreen(IInspectableElement element)
-    {
-        throw new NotImplementedException();
-    }
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
-        throw new NotImplementedException();
+        toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
-        throw new NotImplementedException();
+        toolTip.CloseTip();
     }
 
 

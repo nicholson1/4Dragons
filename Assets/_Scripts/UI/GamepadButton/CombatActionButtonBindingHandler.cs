@@ -38,7 +38,7 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
     }
 
     private void UnbindInput()
-    {
+    { 
         inputHandler.OnAttackButtonPressed.RemoveListener(HandleAttackPressed);
     }
 

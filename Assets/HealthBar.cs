@@ -11,6 +11,8 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     public Button GamepadTargettingButton => gamepadTargettingButton;
+    public Transform IntentDisplay => intentDisplay;
+    public Transform BuffDebuffDisplay => buffDebuffLayoutGroup;
 
     [SerializeField] private Slider bar;
     [SerializeField] private Slider tempBar;

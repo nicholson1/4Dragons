@@ -294,7 +294,7 @@ public class UIController : MonoBehaviour
         {
             var screenToReturnTo = stateMonitor.PreviousActiveScreen;
             mapScreen.Deactivate();
-            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);            
+            screenToReturnTo.Activate();            
         }
 
     }

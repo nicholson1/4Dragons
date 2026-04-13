@@ -30,11 +30,7 @@ public class CombatButtonController : MonoBehaviour
         combatEntity.CastAbility(abilityIndex);
     }
 
-    public void EndTurn()
-    {
-        combatEntity.EndTurn();
-    }
-    
+        
     private void Start()
     {
         //CombatTrigger.TriggerCombat += UpdateCombatUI;
