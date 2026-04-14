@@ -4,23 +4,26 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UIScreenInventory : UIScreen
 {
     public event Action<InventoryState> OnInventoryStateChanged;
-    public List<Button> RightmostInventoryButtons => rightmostInventoryButtons;
+    public List<Selectable> RightmostInventoryButtons => rightmostInventoryButtons;
     public bool ClosableWithToggleOrButton => closableWithToggleOrButtonBackButton;
     public InventoryState CurrentInventoryState => currentInventoryState;
 
     [SerializeField] public GameObject InventoryPanel = null;
     [SerializeField] public GameObject LootPanel = null;
+    [SerializeField] public GameObject ShopPanel = null;
 
     [SerializeField] private LootButtonManager lootButtonManager;
     [SerializeField] private SelectionManager selectionManager;
+    [SerializeField] private ShopManager shopManager;
 
-    [SerializeField] private Button leftSelectableForLootPanel;
-    [SerializeField] private List<Button> rightmostInventoryButtons = new List<Button>();
+    [SerializeField, FormerlySerializedAs("leftSelectableForLootPanel")] private Selectable leftSelectableTargetForSubPanel;
+    [SerializeField] private List<Selectable> rightmostInventoryButtons = new List<Selectable>();
 
     [SerializeField] private List<InventorySlot> inventorySlots = new List<InventorySlot>();
     [SerializeField] private List<InventorySlot> additionalSlots = new List<InventorySlot>();
@@ -53,7 +56,7 @@ public class UIScreenInventory : UIScreen
         switch(currentInventoryState)
         {
             case InventoryState.Loot:
-                return lootButtonManager.GetTopMostInteractableLootButton();
+                return lootButtonManager.GetFirstInteractableSelectable();
             //case InventoryState.Selection:
             //    return s
 
@@ -97,25 +100,24 @@ public class UIScreenInventory : UIScreen
     {
 
         lootButtonManager.SetLeaveButtonInteractable(state == InventoryState.Loot);
+        closableWithToggleOrButtonBackButton = state == InventoryState.Base;
         switch (state)
         {
             case InventoryState.Base:
                 //Set slot gamepadButton navigation
-                closableWithToggleOrButtonBackButton = true;     
                 
                 break;
 
             case InventoryState.Loot:
-                closableWithToggleOrButtonBackButton = false;
                 break;
 
             case InventoryState.Selection:
-                selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
-                closableWithToggleOrButtonBackButton = false;
+                //selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
                 break;
-
+            case InventoryState.Merchant:
+                
+                break;
             case InventoryState.StatDisplay:
-                closableWithToggleOrButtonBackButton = false;
                 break;
         }
 
@@ -138,13 +140,13 @@ public class UIScreenInventory : UIScreen
             switch(state)
             {
                 case InventoryState.Loot:
-                    navi.selectOnRight = lootButtonManager.GetTopMostInteractableLootButton();
+                    navi.selectOnRight = lootButtonManager.GetFirstInteractableSelectable();
                     break;
                 case InventoryState.Selection:
-                    navi.selectOnRight = selectionManager.GetMostLeftSelectionItemMainButton();
+                    navi.selectOnRight = selectionManager.GetFirstInteractableSelectable();
                     break;
                 case InventoryState.Merchant:
-                    navi.selectOnRight = lootButtonManager.CurrentActiveButtons[0].Button;
+                    navi.selectOnRight = shopManager.GetFirstInteractableSelectable();
                     break;
                 default:
                     navi.selectOnRight = null;
@@ -163,14 +165,14 @@ public class UIScreenInventory : UIScreen
         switch (state)
         {
             case InventoryState.Loot:
-                lootButtonManager.SetLootPanelButtonsLeftNavigation(leftSelectableForLootPanel);
+                lootButtonManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
             case InventoryState.Merchant:
                 break;
             case InventoryState.Upgrade:
                 break;
             case InventoryState.Selection:
-                selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
+                selectionManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
                 
             default:

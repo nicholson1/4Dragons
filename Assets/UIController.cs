@@ -210,6 +210,8 @@ public class UIController : MonoBehaviour
                 StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
             case InventoryState.Merchant:
+                inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
             case InventoryState.Upgrade:
                 break;

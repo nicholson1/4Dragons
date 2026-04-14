@@ -41,9 +41,9 @@ public class SelectionManager : UIInventorySubPanel
 
     private List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
     private SelectionItem currentSelectedItem = null;
-    private List<Button> cachedInventoryButtons = new List<Button>();
+    private List<Selectable> cachedInventoryButtons = new List<Selectable>();
 
-    public Selectable GetMostLeftSelectionItemMainButton()
+    public override Selectable GetFirstInteractableSelectable()
     {
         return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault().MainButton;
     }
@@ -65,25 +65,24 @@ public class SelectionManager : UIInventorySubPanel
         }
     }
 
-    public void SetInventoryButtonsCache(List<Button> inventoryButtons)
+    public void SetInventoryButtonsCache(List<Selectable> inventoryButtons)
     {
         //cachedInventoryButtons.Clear();
         cachedInventoryButtons = inventoryButtons;
 
-        SetLeftMostSelectionItemButtonsLeftNavigationToInventory();
+        SetupLeftNavigationToMainPanel();
     }
 
-
-    private void SetLeftMostSelectionItemButtonsLeftNavigationToInventory()
+    private void SetupLeftNavigationToMainPanel()
     {
         SelectionItem item = GetLeftMostAvailableSelectionItem();
 
-        foreach(var button in item.CurrentActiveGamepadButtons)
-        {            
+        foreach (var button in item.CurrentActiveGamepadButtons)
+        {
             float buttonY = button.transform.position.y;
             Navigation navi = button.navigation;
 
-            Button closestInventoryButton = cachedInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buttonY)).FirstOrDefault();
+            Selectable closestInventoryButton = cachedInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buttonY)).FirstOrDefault();
 
             navi.selectOnLeft = closestInventoryButton;
 
@@ -91,6 +90,13 @@ public class SelectionManager : UIInventorySubPanel
         }
 
         SetRightMostInventoryButtonsNavigation();
+    }
+
+    public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
+    {
+        cachedInventoryButtons = selectables;
+
+        SetupLeftNavigationToMainPanel();
     }
 
     private SelectionItem GetLeftMostAvailableSelectionItem()
@@ -103,14 +109,14 @@ public class SelectionManager : UIInventorySubPanel
         SetupGamepadHorizontalNavigationForCurrentSelections();
 
         if(cachedInventoryButtons != null)
-            SetLeftMostSelectionItemButtonsLeftNavigationToInventory();        
+            SetupLeftNavigationToMainPanel();        
 
     }
 
     private void RefreshSelectionManagerHorizontalNavigation()
     {
         SetupGamepadHorizontalNavigationForCurrentSelections();
-        SetLeftMostSelectionItemButtonsLeftNavigationToInventory();
+        SetupLeftNavigationToMainPanel();
     }
 
     

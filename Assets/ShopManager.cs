@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class ShopManager : MonoBehaviour
+public class ShopManager : UIInventorySubPanel
 {
     public InventorySlot Item1;
     public InventorySlot Item2;
@@ -34,6 +34,17 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField] private AudioClip openShop;
     [SerializeField] private float openShopVol;
+
+    public override Selectable GetFirstInteractableSelectable()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
+    {
+        throw new NotImplementedException();
+    }
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -67,8 +78,8 @@ public class ShopManager : MonoBehaviour
         }
         
         InitializeShop(roll);
-        UIController._instance.ToggleShopUI();
-        UIController._instance.ToggleInventoryUI(1);
+        UIController._instance.ToggleInventoryUINew(true, InventoryState.Merchant);
+        //UIController._instance.ToggleInventoryUI(1);
         
         SoundManager.Instance.Play2DSFX(openShop, openShopVol);
 
@@ -326,8 +337,8 @@ public class ShopManager : MonoBehaviour
 
     public void Leave()
     {
-        UIController._instance.ToggleShopUI(0);
-        UIController._instance.ToggleMapUI(1);
+        UIController._instance.ToggleInventoryUINew(false, InventoryState.Merchant);
+        //UIController._instance.ToggleMapUI(1);
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {
             if(slot.Item != null)

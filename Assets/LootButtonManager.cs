@@ -36,24 +36,26 @@ public class LootButtonManager : UIInventorySubPanel
 
     private bool stillSettingUpButtons = false;
 
+    private List<Selectable> cachedRightMostInventoryButtons = new List<Selectable>();
+
     public void SetLeaveButtonInteractable(bool shouldInteractable) => leaveButton.interactable = shouldInteractable;
 
-    public void SetLootPanelButtonsLeftNavigation(Selectable selectable)
+    public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
     {
-        leftSelectableAtInventoryUI = selectable;
-        StartCoroutine(SetPanelLeftNavigationRoutine(leftSelectableAtInventoryUI));   
+        cachedRightMostInventoryButtons = selectables;
+        StartCoroutine(SetPanelLeftNavigationRoutine(selectables));   
     }
 
     public void RefreshLootButtonNavigation()
     {
         SetupLootPanelNavigation();
 
-        SetPanelLeftNavigation(leftSelectableAtInventoryUI);
+        SetPanelLeftNavigation(cachedRightMostInventoryButtons);
                 
-        EventSystem.current.SetSelectedGameObject(GetTopMostInteractableLootButton().gameObject);
+        EventSystem.current.SetSelectedGameObject(GetFirstInteractableSelectable().gameObject);
     }
 
-    public Selectable GetTopMostInteractableLootButton()
+    public override Selectable GetFirstInteractableSelectable()
     {
         var topMostLootButton = currentActiveButtons.Where(eb => eb.Button.interactable).FirstOrDefault();
         if (topMostLootButton != null)
@@ -64,15 +66,15 @@ public class LootButtonManager : UIInventorySubPanel
         return leaveButton;
     }
 
-    private IEnumerator SetPanelLeftNavigationRoutine(Selectable selectable)
+    private IEnumerator SetPanelLeftNavigationRoutine(List<Selectable> selectables)
     {
         while (stillSettingUpButtons)
             yield return null;
 
-        SetPanelLeftNavigation(selectable);
+        SetPanelLeftNavigation(selectables);
     }
 
-    private void SetPanelLeftNavigation(Selectable selectable)
+    private void SetPanelLeftNavigation(List<Selectable> selectables)
     {
         for (int i = 0; i < currentActiveButtons.Count; i++)
         {
@@ -80,17 +82,19 @@ public class LootButtonManager : UIInventorySubPanel
             var navi = button.navigation;
 
             bool isLeftColumn = i % 2 == 0;
+
+            Selectable closestInventoryButton = selectables.OrderBy(b => Mathf.Abs(b.transform.position.y - button.transform.position.y)).FirstOrDefault();
             
             if (isLeftColumn)
             {
-                navi.selectOnLeft = selectable;
+                navi.selectOnLeft = closestInventoryButton;
                 button.navigation = navi;
             }
             else
             {
                 if (i - 1 >= 0 && !currentActiveButtons[i - 1].Button.interactable)
                 {
-                    navi.selectOnLeft = selectable;
+                    navi.selectOnLeft = closestInventoryButton;
                     button.navigation = navi;
                 }
             }
