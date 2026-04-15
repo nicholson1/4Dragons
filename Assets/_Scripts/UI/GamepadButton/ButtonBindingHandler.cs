@@ -196,7 +196,7 @@ public class ButtonBindingHandler : MonoBehaviour
             glyphImage = imagePrompt.GetComponent<Image>();
 
         if (shouldHaveClickableButton)
-            InitializeButton();            
+            InitializeButton();
     }
 
     protected virtual void OnDestroy()

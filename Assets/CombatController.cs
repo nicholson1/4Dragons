@@ -264,7 +264,9 @@ public class CombatController : MonoBehaviour
         LastNodeClicked = node;
         currentSeed = node.nodeSeed;
         Random.InitState(currentSeed);
-        
+
+        UIController._instance.ToggleMapNew(false, false);
+
         BlacksmithToggle(false);
         //Debug.Log("Current Node Seed: " + currentSeed);
         if(!retry)
@@ -282,6 +284,7 @@ public class CombatController : MonoBehaviour
             StartChest.gameObject.SetActive(false);
             ClickedFirstNode = true;
         }
+
         
         MapCanBeClicked = false;
         //clear current level remove shops, treasure chests, bodies
@@ -300,7 +303,7 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayDragonMusic();
                 break;
             case NodeType.Store:
-                ShopManager._instance.RandomShop();
+                StartRandomShop();
                 MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Treasure:
@@ -319,6 +322,21 @@ public class CombatController : MonoBehaviour
         
         TutorialManager.Instance.CloseTip(TutorialNames.Cleanse);
         TutorialManager.Instance.CloseTip(TutorialNames.Start);
+    }
+
+    private void StartRandomShop()
+    {
+        StartCoroutine(WaitOpenShop());
+    }
+
+    private IEnumerator WaitOpenShop()
+    {        
+        while (UIController._instance.IsAnyPanelTransitioning())
+        {
+            yield return null;
+        }
+
+        ShopManager._instance.RandomShop();
     }
 
     public void MysterySelect()
@@ -753,7 +771,7 @@ public class CombatController : MonoBehaviour
 
         turnCounter += 1;
         
-        EndTurn();
+        EndTurn?.Invoke();
         CurrentTurnIndex += 1;
         if (CurrentTurnIndex >= entitiesInCombat.Count)
         {

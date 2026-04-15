@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -14,9 +16,9 @@ public class ShopManager : UIInventorySubPanel
     public InventorySlot Item2;
     public InventorySlot Item3;
     public InventorySlot Item4;
-    
+
     public InventorySlot SellButton;
-    public TextMeshProUGUI RerollButton;
+    public Button RerollButton;
     public TextMeshProUGUI ShopTitle;
 
     public GameObject[] relicBuyButtons;
@@ -28,34 +30,88 @@ public class ShopManager : UIInventorySubPanel
 
     public static ShopManager _instance;
 
+    [SerializeField] private Button leaveButton;
     [SerializeField] private AudioClip reRollShop;
     [SerializeField] private float reRollVol;
     [SerializeField] private float reRollpitch;
+    [SerializeField] private TextMeshProUGUI rerollPrice;
 
     [SerializeField] private AudioClip openShop;
     [SerializeField] private float openShopVol;
 
+    private Selectable firstSelectable = null;
+    private List<Selectable> cachedInventoryButtons = new List<Selectable>();
+    private List<InventorySlot> currentShopItems = new List<InventorySlot>();
+
+    public override void SetLeaveButtonInteractable(bool isInteractable)
+    {
+        leaveButton.interactable = isInteractable;
+    }
+
     public override Selectable GetFirstInteractableSelectable()
     {
-        throw new NotImplementedException();
+        return Item1.GetComponentInChildren<Selectable>();
+    }
+
+    public void RefreshButtonNavigation()
+    {
+        SetupLeftNavigationToMainPanel();
+    }
+
+    private void SetupLeftNavigationToMainPanel()
+    {
+        var buySlot = GetFirstInteractableSelectable();
+        var buySlotNavi = buySlot.navigation;
+
+        var targetLeft = cachedInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buySlot.transform.position.y)).FirstOrDefault();
+        var sellSlot = SellButton.GetComponentInChildren<Selectable>();
+        var sellSlotNavi = sellSlot.navigation;
+
+        if (targetLeft != null)
+        {
+            buySlotNavi.selectOnLeft = targetLeft;
+            sellSlotNavi.selectOnLeft = targetLeft;
+            buySlot.navigation = buySlotNavi;
+            sellSlot.navigation = sellSlotNavi;
+        }
+
+        EventSystem.current.SetSelectedGameObject(GetFirstInteractableSelectable().gameObject);
+    }
+
+    private void SetupRerollButtonRelatedNavigation()
+    {
+        if (currentShopItems.Count > 2)
+        {
+            for (int i = currentShopItems.Count - 1; i >= 2; i--)
+            {
+                if (currentShopItems[i].Item == null) continue;
+
+                var button = currentShopItems[i].GetComponentInChildren<Selectable>();
+                var navi = button.navigation;
+                navi.selectOnDown = RerollButton.interactable ? RerollButton : leaveButton;
+                button.navigation = navi;
+            }
+        }
+
+        var leaveButtonNavi = leaveButton.navigation;
+        leaveButtonNavi.selectOnUp = RerollButton.interactable ? RerollButton : Item4.GetComponentInChildren<Selectable>();
+        leaveButton.navigation = leaveButtonNavi;
+
+        var sellSlotButton = SellButton.GetComponentInChildren<Selectable>();
+        var sellSlotNavi = sellSlotButton.navigation;
+        sellSlotNavi.selectOnRight = RerollButton.interactable ? RerollButton : leaveButton;
+        sellSlotButton.navigation = sellSlotNavi;
+
     }
 
     public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
     {
-        throw new NotImplementedException();
+        cachedInventoryButtons ??= selectables;
+
+        SetupLeftNavigationToMainPanel();
     }
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
+
 
     public void RandomShop()
     {
@@ -64,7 +120,7 @@ public class ShopManager : UIInventorySubPanel
         // Scrolls,
         // Weapons,
         // FullHalfPrice,
-        
+
         Random.InitState(CombatController._instance.CurrentSeed);
 
         int roll;
@@ -76,14 +132,36 @@ public class ShopManager : UIInventorySubPanel
         {
             roll = Random.Range(0, 6);
         }
-        
+
         InitializeShop(roll);
         UIController._instance.ToggleInventoryUINew(true, InventoryState.Merchant);
         //UIController._instance.ToggleInventoryUI(1);
-        
-        SoundManager.Instance.Play2DSFX(openShop, openShopVol);
 
+        SoundManager.Instance.Play2DSFX(openShop, openShopVol);
     }
+
+    private IEnumerator AwaitShopMenuOpen()
+    {
+        while (UIController._instance.IsAnyPanelTransitioning())
+            yield return null;
+
+        BroadcastPanelOpen();
+
+        BindLeaveAndRollButton();
+    }
+
+    private void BindLeaveAndRollButton()
+    {
+        leaveButton.onClick.AddListener(Leave);
+        RerollButton.onClick.AddListener(ReRollShop);
+    }
+
+    private void UnbindLeaveAndRerollButtons()
+    {
+        leaveButton.onClick.RemoveListener(Leave);
+        RerollButton.onClick.RemoveListener(ReRollShop);
+    }
+
 
     public void InitializeShop(int i)
     {
@@ -108,14 +186,32 @@ public class ShopManager : UIInventorySubPanel
 
         InitializeShop(ShopType, true);
         CombatController._instance.Player.UpdateStats();
-
-
     }
-    
+
+    private void ItemBoughtCallback(InventorySlot item)
+    {
+        UnregisterItem(item);
+    }
+
+    private void RegisterItem(InventorySlot slot)
+    {
+        slot.OnItemBought += ItemBoughtCallback;
+        AdjustGoldText(slot);
+        currentShopItems.Add(slot);
+    }
+
+    private void UnregisterItem(InventorySlot slot)
+    {
+        slot.OnItemBought -= ItemBoughtCallback;
+        currentShopItems.Remove(slot);
+        ClearItem(slot);
+        
+    }
 
     public void InitializeShop(InventorySlot.SellShopType type, bool reroll = false)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
+        
         if(!reroll)
             Random.InitState(CombatController._instance.CurrentSeed);
 
@@ -138,12 +234,12 @@ public class ShopManager : UIInventorySubPanel
         Equipment e;
         // create drag items
 
-        RerollButton.text = "Reroll - " + shopPrice;
+        rerollPrice.text = shopPrice.ToString();
 
-        ClearItem(Item1);
-        ClearItem(Item2);
-        ClearItem(Item3);
-        ClearItem(Item4);
+        UnregisterItem(Item1);
+        UnregisterItem(Item2);
+        UnregisterItem(Item3);
+        UnregisterItem(Item4);
 
         foreach (var buyButton in relicBuyButtons)
         {
@@ -161,64 +257,56 @@ public class ShopManager : UIInventorySubPanel
                 
                 e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
-                
+
                 e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
-                
+
                 e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
-            case InventorySlot.SellShopType.Scrolls:
 
+            case InventorySlot.SellShopType.Scrolls:
                 e = EC.CreateRandomSpellScroll(level);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
                 e = EC.CreateRandomSpellScroll(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
                 e = EC.CreateRandomSpellScroll(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
                 e = EC.CreateRandomSpellScroll(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
+
             case InventorySlot.SellShopType.Armor:
                 e = EC.CreateRandomArmor(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
                 e = EC.CreateRandomArmor(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
                 e = EC.CreateRandomArmor(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
                 e = EC.CreateRandomArmor(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
+
             case InventorySlot.SellShopType.Blacksmith:
                 e = EC.CreateRandomArmor(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
                 
                 e = EC.CreateRandomArmor(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
                 e = EC.CreateRandomWeapon(level, false);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
                 e = EC.CreateRandomWeapon(level, false);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 break;
+
             case InventorySlot.SellShopType.FullHalfPrice:
                 e = EC.CreateRandomWeapon(level, false);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
@@ -227,13 +315,13 @@ public class ShopManager : UIInventorySubPanel
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
                 
                 e = EC.CreateRandomSpellScroll(level);
-
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
                 
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
                 relicBuyButtons[3].gameObject.SetActive(true);
                 break;
+
             case InventorySlot.SellShopType.Relics:
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
@@ -267,25 +355,21 @@ public class ShopManager : UIInventorySubPanel
                 break;
             
         }
-        AdjustGoldText(Item1);
-        AdjustGoldText(Item2);
-        AdjustGoldText(Item3);
-        AdjustGoldText(Item4);
+        RegisterItem(Item1);
+        RegisterItem(Item2);
+        RegisterItem(Item3);
+        RegisterItem(Item4);
 
         if (Modifiers._instance.CurrentMods.Contains(Mods.NoShopRerolls))
         {
-            RerollButton.GetComponentInParent<Button>().interactable = false;
-        }
-
-        
-        
-        
-        
+            RerollButton.interactable = false;
+            SetupRerollButtonRelatedNavigation();
+        } 
+             
     }
 
     void AdjustGoldText(InventorySlot slot)
-    {
-        
+    {        
         TextMeshProUGUI goldText = slot.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>() ;
         int cost = (slot.Item.e.stats[Stats.Rarity] + 1) * 60;
         if (CombatController._instance.Difficulty >= 7)
@@ -337,16 +421,20 @@ public class ShopManager : UIInventorySubPanel
 
     public void Leave()
     {
-        UIController._instance.ToggleInventoryUINew(false, InventoryState.Merchant);
+        if (!leaveButton.interactable)
+            return;
+
+        Debug.LogError($"ShopManager Leave was triggered!");
+        UIController._instance.CloseInventoryWithExtraPanel(InventoryState.Merchant);
         //UIController._instance.ToggleMapUI(1);
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {
             if(slot.Item != null)
                 slot.Item.TurnOffSellPrice();
         }
-        
 
-        //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
+        UnbindLeaveAndRerollButtons();
+        UIController._instance.ToggleMapNew(true, true);
 
     }
 
@@ -375,23 +463,23 @@ public class ShopManager : UIInventorySubPanel
         {
             case 0:
                 RelicManager._instance.SelectRelic(Item1.Item.e);
-                ClearItem(Item1);
+                UnregisterItem(Item1);
                 relicBuyButtons[0].SetActive(false);
                 break;
             case 1:
                 RelicManager._instance.SelectRelic(Item2.Item.e);
                 relicBuyButtons[1].SetActive(false);
-                ClearItem(Item2);
+                UnregisterItem(Item2);
                 break;
             case 2:
                 RelicManager._instance.SelectRelic(Item3.Item.e);
                 relicBuyButtons[2].SetActive(false);
-                ClearItem(Item3);
+                UnregisterItem(Item3);
                 break;
             case 3:
                 RelicManager._instance.SelectRelic(Item4.Item.e);
                 relicBuyButtons[3].SetActive(false);
-                ClearItem(Item4);
+                UnregisterItem(Item4);
                 break;
         }
 
@@ -401,7 +489,20 @@ public class ShopManager : UIInventorySubPanel
 
     private void UpdateRerollButton(Character c)
     {
-        RerollButton.GetComponentInParent<Button>().interactable = shopPrice <= CombatController._instance.Player._gold;
+        RerollButton.interactable = shopPrice <= CombatController._instance.Player._gold;
+        SetupRerollButtonRelatedNavigation();
+    }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
     }
 
     private void Start()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -229,14 +230,14 @@ public class UIController : MonoBehaviour
         else
         {
             var screenToReturnTo = stateMonitor.PreviousActiveScreen;
-            inventoryScreen.Deactivate();
+            //inventoryScreen.Deactivate();
             screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
         }
 
         //stateMonitor.HandleToggleTransition(false);
     }
 
-    public void CloseInventoryScreenWithLootPanel()
+    public void CloseInventoryWithExtraPanel(InventoryState lastInventoryState)
     {
         EquipmentManager._instance.c.UpdateStats();
 
@@ -252,23 +253,34 @@ public class UIController : MonoBehaviour
         }
 
         PlayOpenInventory();
+                       
 
-        //stateMonitor.HandleToggleTransition(true);
+        switch (lastInventoryState)
+        {
+            case InventoryState.Loot:
+                inventoryScreen.ChangeInventoryState(InventoryState.Loot);
+                StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false));
+                break;
+            case InventoryState.Merchant:
+                inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, false));
+                break;
+            case InventoryState.Upgrade:
+                break;
+        }
 
-        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, false));
-        StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false, CloseInventoryScreenWithLootPanelCallback));
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, false, CloseInventoryScreenWithExtraPanelCallback));
     }
 
-    private void CloseInventoryScreenWithLootPanelCallback(bool _)
+    private void CloseInventoryScreenWithExtraPanelCallback(bool _)
     {
-        inventoryScreen.Deactivate();
+        //inventoryScreen.Deactivate();
     }
     #endregion
 
     #region MapUI Related
     public void ToggleMapFromMapButton()
     {
-        Debug.LogError($"ToggleMapFromButton is called!");
         if (stateMonitor.PanelCurrentlyMove) return;
 
         bool isOpen = stateMonitor.CurrentActiveScreen == mapScreen;
@@ -295,7 +307,7 @@ public class UIController : MonoBehaviour
         else
         {
             var screenToReturnTo = stateMonitor.PreviousActiveScreen;
-            mapScreen.Deactivate();
+            //mapScreen.Deactivate();
             screenToReturnTo.Activate();            
         }
 

@@ -559,7 +559,7 @@ public class SelectionItem : MonoBehaviour
 
         DisableButtons();
 
-        bool canAddToInventory = EquipmentManager._instance.TryPutItemToInventoryFromSelection(item, this);
+        bool canAddToInventory = EquipmentManager._instance.TryPutItemToInventory(item);
         if (canAddToInventory)
         {
             UIController._instance.PlayPlaceItem();
@@ -578,7 +578,7 @@ public class SelectionItem : MonoBehaviour
 
         DisableButtons();
 
-        bool canEquipItem = EquipmentManager._instance.TryEquipItemFromSelection(item, this);
+        bool canEquipItem = EquipmentManager._instance.TryEquipItem(item);
         if (canEquipItem)
         {
             UIController._instance.PlayPlaceItem();

@@ -14,6 +14,8 @@ public class UIStateMonitor : MonoBehaviour
     public UIScreen PreviousActiveScreen => previousActiveScreen;
     public bool PanelCurrentlyMove => panelCurrentlyMove;
 
+    [SerializeField] private Transform itemOnGamepadParent;
+
     private List<UIScreen> screenHistory = new List<UIScreen>();
     private List<UIScreen> uiScreens = new List<UIScreen>();
 
@@ -24,10 +26,25 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen previousActiveScreen = null;
 
     private DragItem itemOnGamepad;
+    private Transform itemOnGamepadPreviousParent;
+    private Vector3 itemOnGamepadPreviousLocalPos;
 
     public void SetItemOnGamepad(DragItem item)
     {
+        if(item == null && itemOnGamepad != null)
+        {
+            itemOnGamepad.transform.parent = itemOnGamepadPreviousParent;
+            itemOnGamepad.transform.localPosition = itemOnGamepadPreviousLocalPos;
+        }
+
         itemOnGamepad = item;
+
+        if(itemOnGamepad != null)
+        {
+            itemOnGamepadPreviousParent = itemOnGamepad.transform.parent;
+            itemOnGamepadPreviousLocalPos = itemOnGamepad.transform.localPosition;
+            itemOnGamepad.transform.parent = itemOnGamepadParent;
+        }
 
         OnDragItem?.Invoke(itemOnGamepad != null);
     }
@@ -64,7 +81,7 @@ public class UIStateMonitor : MonoBehaviour
     public void RegisterScreen(UIScreen screen)
     {
         uiScreens.Add(screen);
-        screen.OnNewScreenActive += HandleScreenNavigatableChange;        
+        screen.OnNewScreenActive += HandleNewScreenActivated;        
     }
 
     private void UpdateScreenHistory()
@@ -80,25 +97,21 @@ public class UIStateMonitor : MonoBehaviour
         screenHistory.Clear();
     }
 
-    private void HandleScreenNavigatableChange(UIScreen eventOwner, bool navigatable)
+    private void HandleNewScreenActivated(UIScreen eventOwner, bool navigatable)
     {
-        //if(currentActiveScreen != null)
-        //    Debug.LogError($"UIStateMonitor 1 - Handle screen change from {currentActiveScreen.name} to {eventOwner.name}");
-
         foreach (var screen in uiScreens)
         {
             if (screen != eventOwner)
             {
-                screen.SetNavigatable(false);
+                //screen.SetNavigatable(false);
+                screen.Deactivate();
             }
             else 
             {
-                //Debug.LogError($"UIStateMonitor 2b- New screen active: {eventOwner.name}");
                 UpdateScreenHistory();
                 previousActiveScreen = currentActiveScreen;
                 currentActiveScreen = screen;
-                if (screen.Navigatable)
-                    currentNavigatableScreen = screen;
+                currentNavigatableScreen = screen;
 
                 inputHandler.SwitchActionMap(currentActiveScreen.DefaultScreenActionMap);
             }

@@ -284,7 +284,7 @@ namespace Map
         {
             MapPlayerTracker.Instance.SelectNode(this);
             CombatController._instance.MapNodeClicked(this.Node); //Activate combat screen happen here
-            UIController._instance.ToggleMapNew(false, false);
+            
         }
 
         public void ShowSwirlAnimation()

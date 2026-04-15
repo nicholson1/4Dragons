@@ -15,6 +15,9 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     public event Action OnGamepadButtonSelected;
     public event Action OnGamepadButtonDeselected;
 
+    public event Action<InventorySlot> OnItemBought;
+    public event Action<DragItem> OnItemSold;
+
     public Equipment.Slot Slot;
     public DragItem Item = null;
     [SerializeField] public RectTransform _rt;
@@ -119,8 +122,15 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     }
 
     public void HandleGamepadButtonPressed(Selectable selectable)
-    {        
+    {
         //pressing inventory slot gamepad button while dragging item
+        if (Slot == Equipment.Slot.Sold)
+        {
+            Debug.LogError($"Try buying item from shop");
+            TryBuyItem(Item);
+            return;
+        }
+        
         if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
         {
             if(itemOnGamepad == Item)
@@ -131,15 +141,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
             //try drop here
             InitiateDroppingItem(itemOnGamepad);
+            return;
         }
-        else
-        {
-            if (Item == null) return;
-            
-            Item.GamepadStartDrag(this);
 
-            inputHandler.OnNo.AddListener(CancelGamepadDrag);
-        }            
+        if (Item == null) return;
+            
+        Item.GamepadStartDrag(this);
+        inputHandler.OnNo.AddListener(CancelGamepadDrag);            
     }
 
     private void CancelGamepadDrag()
@@ -256,12 +264,36 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         UIController._instance.PlayPlaceItem();
     }
 
-    //for gamepad version, we shouldn't drag/drop the item to buy it
+    private bool TryBuyItem(DragItem itemToBuy)
+    {
+        //check if equipment slot for the item is empty
+        var equipmentManager = EquipmentManager._instance;
+
+        int currentGold = CombatController._instance.Player._gold;
+        if (currentGold < GetItemCost(itemToBuy))
+        {
+            NotEnoughGoldEvent();
+            return false;
+        }
+
+        if (equipmentManager.TryEquipItem(itemToBuy.e) || equipmentManager.TryPutItemToInventory(itemToBuy.e))
+        {
+            BuyItem(itemToBuy);
+            return true;
+        }
+
+        //handle cannot buy item, popup message? sound?
+        return false;
+    }
+
+    //for gamepad version, we shouldn't drag/drop the item to buy it, or should we?
     private void BuyItem(DragItem itemToDrop)
     {
         // if we do - gold
         CombatController._instance.Player._gold -= GetItemCost(itemToDrop);
+        OnItemBought?.Invoke(this);
         BuyItemEvent(-GetItemCost(itemToDrop));
+        
     }    
 
     private void SellItem(DragItem itemToSell)
@@ -475,6 +507,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     public void BuyItemEvent(int i)
     {
         OnBoughtItem(ErrorMessageManager.Errors.LoseGold, -i);
+        
     }
 
     // public bool canBeDragged = true;

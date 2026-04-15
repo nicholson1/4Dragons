@@ -69,7 +69,10 @@ public class UIScreen : MonoBehaviour
 
         if (navigatable)
         {
-            EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
+            if(currentSelectable != null)
+            {
+                EventSystem.current.SetSelectedGameObject(currentSelectable.gameObject);
+            }
         }
         else
         {
@@ -94,6 +97,9 @@ public class UIScreen : MonoBehaviour
     /// </summary>
     public virtual void Deactivate()
     {
+        if (!isScreenActive)
+            return;
+
         isScreenActive = false;
 
         if (navigatable && EventSystem.current.currentSelectedGameObject != null &&

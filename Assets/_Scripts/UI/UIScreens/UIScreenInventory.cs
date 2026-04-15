@@ -18,8 +18,8 @@ public class UIScreenInventory : UIScreen
     [SerializeField] public GameObject LootPanel = null;
     [SerializeField] public GameObject ShopPanel = null;
 
-    [SerializeField] private LootButtonManager lootButtonManager;
-    [SerializeField] private SelectionManager selectionManager;
+    [SerializeField] private UIInventorySubPanel lootButtonManager;
+    [SerializeField] private UIInventorySubPanel selectionManager;
     [SerializeField] private ShopManager shopManager;
 
     [SerializeField, FormerlySerializedAs("leftSelectableForLootPanel")] private Selectable leftSelectableTargetForSubPanel;
@@ -57,8 +57,8 @@ public class UIScreenInventory : UIScreen
         {
             case InventoryState.Loot:
                 return lootButtonManager.GetFirstInteractableSelectable();
-            //case InventoryState.Selection:
-            //    return s
+            //case InventoryState.Merchant:
+            //    return shopManager.GetFirstInteractableSelectable();
 
             default:
                 return defaultSelectable;
@@ -75,6 +75,8 @@ public class UIScreenInventory : UIScreen
 
     public override void Deactivate()
     {
+        if (!isScreenActive) return;
+
         base.Deactivate();
         ChangeInventoryState(InventoryState.Base);
 
@@ -98,14 +100,12 @@ public class UIScreenInventory : UIScreen
 
     public void ChangeInventoryState(InventoryState state)
     {
-
         lootButtonManager.SetLeaveButtonInteractable(state == InventoryState.Loot);
         closableWithToggleOrButtonBackButton = state == InventoryState.Base;
         switch (state)
         {
             case InventoryState.Base:
-                //Set slot gamepadButton navigation
-                
+                //Set slot gamepadButton navigation                
                 break;
 
             case InventoryState.Loot:
@@ -168,6 +168,7 @@ public class UIScreenInventory : UIScreen
                 lootButtonManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
             case InventoryState.Merchant:
+                shopManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
             case InventoryState.Upgrade:
                 break;
@@ -266,16 +267,16 @@ public class UIScreenInventory : UIScreen
         inputHandler.OnNo.RemoveListener(SetGamepadNavigationBackToInventory);
     }
 
-    private void SelectionPanelOpenCallback()
+    private void SubPanelOpenCallback(UIInventorySubPanel panel)
     {
         var eventSystem = EventSystem.current;
         if (eventSystem.alreadySelecting && eventSystem.currentSelectedGameObject.TryGetComponent(out Selectable selectable))
             SetSelectableToSelectOnActivated(selectable);
 
-        ChangeInventoryState(InventoryState.Selection);
+        ChangeInventoryState(panel.subPanelType);
     }
 
-    private void SelectionPanelClosedCallback()
+    private void SelectionPanelClosedCallback(UIInventorySubPanel panel)
     {
         RevertInventoryState();
     }
@@ -291,8 +292,10 @@ public class UIScreenInventory : UIScreen
         base.Start();
         selectionManager = SelectionManager._instance;
         //temp
-        selectionManager.OnPanelOpen += SelectionPanelOpenCallback;
+        selectionManager.OnPanelOpen += SubPanelOpenCallback;
         selectionManager.OnPanelClosed += SelectionPanelClosedCallback;
+        shopManager.OnPanelOpen += SubPanelOpenCallback;
+        shopManager.OnPanelClosed += SelectionPanelClosedCallback;
 
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
 
@@ -300,8 +303,10 @@ public class UIScreenInventory : UIScreen
 
     protected override void OnDestroy()
     {
-        selectionManager.OnPanelOpen -= SelectionPanelOpenCallback;
+        selectionManager.OnPanelOpen -= SubPanelOpenCallback;
         selectionManager.OnPanelClosed -= SelectionPanelClosedCallback;
+        shopManager.OnPanelOpen -= SubPanelOpenCallback;
+        shopManager.OnPanelClosed -= SelectionPanelClosedCallback;
 
         statDisplayGamepadButton.onClick.AddListener(SetGamepadNavigationToStatDisplay);
         base.OnDestroy();

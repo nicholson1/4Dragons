@@ -13,8 +13,6 @@ using Random = UnityEngine.Random;
 public class SelectionManager : UIInventorySubPanel
 {
     public event Action OnSelectionFinished;
-    public event Action OnPanelOpen;
-    public event Action OnPanelClosed;
 
     [SerializeField] private SelectionItem selectionItemPrefab;
 
@@ -42,6 +40,11 @@ public class SelectionManager : UIInventorySubPanel
     private List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
     private SelectionItem currentSelectedItem = null;
     private List<Selectable> cachedInventoryButtons = new List<Selectable>();
+
+    public override void SetLeaveButtonInteractable(bool isInteractable)
+    {
+        SkipButton.gameObject.SetActive(isInteractable);
+    }
 
     public override Selectable GetFirstInteractableSelectable()
     {
@@ -221,7 +224,7 @@ public class SelectionManager : UIInventorySubPanel
         //give access back to Loot Panel
         currentSelectedItem = null;
         OnSelectionFinished?.Invoke();
-        OnPanelClosed?.Invoke();
+        BroadcastPanelClose();
     }
 
     public void RandomSelectionFromEquipment(Character c)
@@ -386,9 +389,9 @@ public class SelectionManager : UIInventorySubPanel
 
     private void SelectionItemsCreatedCallback()
     {
-        OnPanelOpen?.Invoke();
+        BroadcastPanelOpen();
         SetupGamepadHorizontalNavigationForCurrentSelections();
-        SkipButton.gameObject.SetActive(true);
+        SetLeaveButtonInteractable(true);
         SetupSkipButtonNavigation();
     }
 
@@ -399,7 +402,7 @@ public class SelectionManager : UIInventorySubPanel
             selectionItem.DisableButtons();
         }
 
-        SkipButton.gameObject.SetActive(false);
+        SetLeaveButtonInteractable(false);
         ClearSelections();
     }
 
@@ -445,6 +448,7 @@ public class SelectionManager : UIInventorySubPanel
             }
         }
         //selectionsLeft = 10;
+
         for (int i = currentActiveSelectionItems.Count -1; i >= 0; i--)
         {
             currentActiveSelectionItems[i].OnSelectionItemPanelClosed -= SelectionItemPanelClosedCallback;
@@ -1012,7 +1016,7 @@ public class SelectionManager : UIInventorySubPanel
 
     private void Start()
     {
-        SkipButton.gameObject.SetActive(false);
+        SetLeaveButtonInteractable(false);
     }
 
     private (ChestType, ChestType) SelectChestType()

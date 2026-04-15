@@ -400,14 +400,10 @@ public class UIScreenCombat : UIScreen
 
     private void UpdateHealthbars()
     {
-        Debug.LogError($"Setting up healthbars");
         HealthBar[] healthBars = FindObjectsOfType<HealthBar>();
 
-        foreach(var bar in currentHealthbars)
-        {
-            if (!healthBars.Contains(bar))
-                currentHealthbars.Remove(bar);
-        }
+        currentHealthbars.RemoveAll(h => h == null);
+
         foreach(var healthBar in healthBars)
         {
             if (!currentHealthbars.Contains(healthBar))
@@ -463,6 +459,8 @@ public class UIScreenCombat : UIScreen
 
     public override void Deactivate()
     {
+        if (!isScreenActive) return;
+
         SetCombatUINavigationMode(CombatUINavigationMode.Disabled);
         base.Deactivate();
 

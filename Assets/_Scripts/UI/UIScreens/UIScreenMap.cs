@@ -36,7 +36,7 @@ public class UIScreenMap : UIScreen
 
     public override void Activate(bool navigatableOnActivated = true)
     {       
-
+        
         PopulateMapNodes();
 
         base.Activate(navigatableOnActivated);

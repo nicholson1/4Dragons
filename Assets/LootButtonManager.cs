@@ -38,7 +38,7 @@ public class LootButtonManager : UIInventorySubPanel
 
     private List<Selectable> cachedRightMostInventoryButtons = new List<Selectable>();
 
-    public void SetLeaveButtonInteractable(bool shouldInteractable) => leaveButton.interactable = shouldInteractable;
+    public override void SetLeaveButtonInteractable(bool shouldInteractable) => leaveButton.interactable = shouldInteractable;
 
     public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
     {
@@ -382,7 +382,7 @@ public void EquipmentSelect(int i)
 
     public void ExitLoot()
     {
-        UIController._instance.CloseInventoryScreenWithLootPanel();
+        UIController._instance.CloseInventoryWithExtraPanel(InventoryState.Loot);
         UIController._instance.ToggleMapNew(true, true);
         //close loot
         //close inventory

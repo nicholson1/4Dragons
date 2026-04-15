@@ -40,26 +40,7 @@ public class EquipmentManager : MonoBehaviour
     private List<DragItem> ItemPool = new List<DragItem>();
     private List<DragItem> ActiveItems = new List<DragItem>();
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
 
-    private void Start()
-    {
-        Character.UpdateStatsEvent += UpdateStats;
-    }
-    private void OnDestroy()
-    {
-        Character.UpdateStatsEvent -= UpdateStats;
-    }
 
     private void UpdateStats(Character c)
     {
@@ -165,7 +146,7 @@ public class EquipmentManager : MonoBehaviour
 
     }
 
-    public bool TryEquipItemFromSelection(Equipment equipmentToEquip, SelectionItem si)
+    public bool TryEquipItem(Equipment equipmentToEquip)
     {
         for (int invSloti = 0; invSloti < InventorySlots.Length; invSloti++)
         {
@@ -262,14 +243,11 @@ public class EquipmentManager : MonoBehaviour
 
         Debug.Log($"Return true case 5: from inventory to equip?");
         return true;
-    }
-
-   
+    }       
 
     public void EquipFromInventory(Equipment e)
     {
         //Debug.Log("i only ran once" + e.name) ;
-        Debug.LogError($"Equipping item from inventory. Item: {e.name}");
         c._inventory.Remove(e);
         if (!c._equipment.Contains(e))
         {
@@ -387,7 +365,7 @@ public class EquipmentManager : MonoBehaviour
         di.transform.position = slot.transform.position;
     }
 
-    public bool TryPutItemToInventoryFromSelection(Equipment e, SelectionItem si)
+    public bool TryPutItemToInventory(Equipment e)
     {
         InventorySlot slot = null;
 
@@ -780,7 +758,26 @@ public class EquipmentManager : MonoBehaviour
         //todo PLAY BREAKING SOUND EFFECT
     }
 
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
 
+    private void Start()
+    {
+        Character.UpdateStatsEvent += UpdateStats;
+    }
+    private void OnDestroy()
+    {
+        Character.UpdateStatsEvent -= UpdateStats;
+    }
 
 
 }

@@ -286,6 +286,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = .6f;
         SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
+        UIController._instance.StateMonitor.SetItemOnGamepad(this);
         //Debug.Log("pickup");
 
     }
@@ -295,7 +296,8 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
-        
+        UIController._instance.StateMonitor.SetItemOnGamepad(null);
+
     }
 
     public void OnDrag(PointerEventData eventData)
