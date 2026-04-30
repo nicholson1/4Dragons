@@ -229,8 +229,8 @@ namespace Map
 
         public void OnPointerUp(PointerEventData data)
         {
-            if (!mapScreen.AreNodesClickable) return;
-            if (Node.State != NodeStates.Attainable) return;
+            //if (!mapScreen.AreNodesClickable) return;
+            //if (Node.State != NodeStates.Attainable) return;
             if (Time.time - mouseDownTime < MaxClickDuration)
             {
                 // user clicked on this node:

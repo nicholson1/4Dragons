@@ -51,6 +51,8 @@ public class UIScreenInventory : UIScreen
 
     //Who handle this change?
 
+
+
     public override Selectable GetSelectableToSelectOnActivated()
     {
         switch(currentInventoryState)
@@ -170,7 +172,8 @@ public class UIScreenInventory : UIScreen
             case InventoryState.Merchant:
                 shopManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
-            case InventoryState.Upgrade:
+            case InventoryState.Forge:
+                shopManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
             case InventoryState.Selection:
                 selectionManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
@@ -319,7 +322,7 @@ public enum InventoryState
     Loot,
     StatDisplay,
     Merchant,
-    Upgrade,
+    Forge,
     Selection,
     Blacksmith,
     ItemDrag

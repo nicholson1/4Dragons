@@ -24,6 +24,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private UIScreen startingTreasureScreen;
     [SerializeField] private UIScreenMap mapScreen;
     [SerializeField] private UIScreenCombat combatScreen;
+    [SerializeField] private BlacksmithController blacksmithScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -214,7 +215,8 @@ public class UIController : MonoBehaviour
                 inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
                 StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
-            case InventoryState.Upgrade:
+            case InventoryState.Forge:
+                Debug.LogError($"Opening forge menu!");
                 break;
         }
 
@@ -265,7 +267,7 @@ public class UIController : MonoBehaviour
                 inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
                 StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, false));
                 break;
-            case InventoryState.Upgrade:
+            case InventoryState.Forge:
                 break;
         }
 
@@ -292,19 +294,18 @@ public class UIController : MonoBehaviour
         PlayOpenMap();
 
         mapScreen.SetNodesClickable(areNodesClickable);
-
-        //stateMonitor.HandleToggleTransition(true);
-        StartCoroutine(MovePanel(mapScreen.gameObject, PanelMoveDirection.Vertical, toOpen, MapMoveCompletedCallback));
+        bool activatePreviousScene = !areNodesClickable;
+        StartCoroutine(MovePanel(mapScreen.gameObject, PanelMoveDirection.Vertical, toOpen, toOpen => MapMoveCompletedCallback(toOpen, activatePreviousScene)));
     }
         
 
-    private void MapMoveCompletedCallback(bool toOpen)
+    private void MapMoveCompletedCallback(bool toOpen, bool shouldActivatePreviousScene)
     {
         if (toOpen)
         {
             mapScreen.Activate();
         }
-        else
+        else if(!toOpen && shouldActivatePreviousScene)
         {
             var screenToReturnTo = stateMonitor.PreviousActiveScreen;
             //mapScreen.Deactivate();
@@ -770,11 +771,10 @@ public class UIController : MonoBehaviour
         }
         
     }
-    bool blackSmithMoving = false;
-    private bool blackSmithOn = false;
 
-    public void ToggleBlackSmithUI(int force = -1)
+    public void OpenBlacksmith()
     {
+        /*
         if (force == 0)
         {
             if (blackSmithOn == false)
@@ -795,7 +795,47 @@ public class UIController : MonoBehaviour
             blackSmithOn = !blackSmithOn;
             StartCoroutine(MoveBlacksmithObject(BlackSmithUI));
         }
-        
+        */
+        StartCoroutine(MovePanel(blacksmithScreen.TitlePanel, PanelMoveDirection.Vertical, true));
+        StartCoroutine(MovePanel(blacksmithScreen.SelectionPanel, PanelMoveDirection.Vertical, true, BlacksmithOpenedCallback));
+    }
+
+    private void BlacksmithOpenedCallback(bool toOpen)
+    {
+        blacksmithScreen.Activate();
+    }
+
+    public void CloseBlacksmith(BlacksmithMode mode)
+    {
+        StartCoroutine(MovePanel(blacksmithScreen.TitlePanel, PanelMoveDirection.Vertical, false));
+        StartCoroutine(MovePanel(blacksmithScreen.SelectionPanel, PanelMoveDirection.Vertical, false, _ => BlacksmithClosedCallback(mode)));
+    }
+
+    private void BlacksmithClosedCallback(BlacksmithMode mode)
+    {
+        switch (mode)
+        {
+            case BlacksmithMode.Forge:
+                //open inventory+forge menu
+                ToggleInventoryUINew(true, InventoryState.Forge);
+                break;
+            case BlacksmithMode.Shop:
+                //open inventory+shop menu
+                //might call the same one with the one on click shop on map
+                ShopManager._instance.BlacksmithShop();
+                break;
+
+            case BlacksmithMode.Duel:
+                //Open combat, start combat blacksmith
+                //check if this need special handling
+                CombatController._instance.StartCombatBlacksmith();
+                break;
+
+            case BlacksmithMode.Leave:
+                //check the click node function see if we can utilize this
+                ToggleMapNew(true, true);
+                break;
+        }
     }
     
     bool forgeMoving = false;
@@ -834,10 +874,10 @@ public class UIController : MonoBehaviour
         switch (direction)
         {
             case PanelMoveDirection.Horizontal:
-                return new Vector2(-startPos.x , startPos.y);
+                return new Vector2(startPos.x * -1, startPos.y);
 
             case PanelMoveDirection.Vertical:
-                return new Vector2(startPos.x, -startPos.y);
+                return new Vector2(startPos.x, startPos.y * -1);
             default:
                 Debug.LogError($"Error: PanelMoveDirection for panel you want to move is not set!");
                 return startPos;
@@ -1007,7 +1047,7 @@ public class UIController : MonoBehaviour
     IEnumerator MoveBlacksmithObject(GameObject moveObj)
     {
         
-        blackSmithMoving = true;
+        //blackSmithMoving = true;
         
         Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
         Vector2 endpos = new Vector2(-startpos.x, startpos.y);
@@ -1025,7 +1065,7 @@ public class UIController : MonoBehaviour
 
         moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
 
-        blackSmithMoving = false;
+        //blackSmithMoving = false;
     }
 
     public void ActivateDeathScreen()

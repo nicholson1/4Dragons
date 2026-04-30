@@ -140,6 +140,14 @@ public class ShopManager : UIInventorySubPanel
         SoundManager.Instance.Play2DSFX(openShop, openShopVol);
     }
 
+    public void BlacksmithShop()
+    {
+        InitializeShop(6);
+        UIController._instance.ToggleInventoryUINew(true, InventoryState.Merchant);
+
+        SoundManager.Instance.Play2DSFX(openShop, openShopVol);
+    }
+
     private IEnumerator AwaitShopMenuOpen()
     {
         while (UIController._instance.IsAnyPanelTransitioning())

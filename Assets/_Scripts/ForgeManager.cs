@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.UI;
 
-public class ForgeManager : MonoBehaviour
+public class ForgeManager : UIInventorySubPanel
 {
-
     public static ForgeManager _instance;
     public bool Upgrading = false;
     public bool Enhancing = false;
@@ -27,16 +28,77 @@ public class ForgeManager : MonoBehaviour
     public float priceMod = 1;
     public int amountOfClicks = 0;
 
-    private void Awake()
+    [SerializeField] private Toggle upgradeToggle;
+    [SerializeField] private Toggle enhanceToggle;
+    [SerializeField] private Button leaveButton;
+    [SerializeField] private Button smeltButton;
+
+    [SerializeField] private List<Selectable> leftmostSelectables = new List<Selectable>();
+
+    private List<Selectable> cachedRightMostInventoryButtons = new List<Selectable>();
+
+    private ForgeMode forgeMode = ForgeMode.None;
+
+    public override Selectable GetFirstInteractableSelectable()
     {
-        if (_instance != null && _instance != this)
+        return upgradeToggle;
+    }
+
+    public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
+    {
+        foreach(var selectable in leftmostSelectables)
         {
-            Destroy(this.gameObject);
+            Selectable closestInventoryButton = selectables.OrderBy(b => Mathf.Abs(b.transform.position.y - selectable.transform.position.y)).FirstOrDefault();
+
+            Navigation navi = selectable.navigation;
+            navi.selectOnLeft = closestInventoryButton;
+            selectable.navigation = navi;
         }
-        else
+    }
+
+    public override void SetLeaveButtonInteractable(bool isInteractable)
+    {
+        leaveButton.interactable = isInteractable;
+    }
+
+    private void OnUpgradeToggled(bool toOn)
+    {
+        if (!toOn)
         {
-            _instance = this;
+            Debug.LogError($"Upgrade Toggled OFF");
+            return;
         }
+
+        Debug.LogError($"Upgrade Toggled ON");
+        forgeMode = ForgeMode.Upgrade;
+        ToggleOff(enhanceToggle);
+    }
+
+    private void OnEnhanceToggled(bool toOn)
+    {
+        if (!toOn)
+        {
+            Debug.LogError($"Enhance Toggled OFF");
+            return;
+        }
+
+        Debug.LogError($"Enhance Toggled ON");
+        forgeMode = ForgeMode.Enhance;
+        ToggleOff(upgradeToggle);
+    }
+
+    private void ToggleOff(Toggle toggle, bool setModeNone = false)
+    {
+        toggle.isOn = false;
+
+        if (setModeNone)
+            forgeMode = ForgeMode.None;
+    }
+
+    private void CleanupToggle()
+    {
+        if (forgeMode != ForgeMode.None)
+            forgeMode = ForgeMode.None;
     }
 
     public void ShowIcon()
@@ -91,43 +153,6 @@ public class ForgeManager : MonoBehaviour
         UpgradePriceText.gameObject.SetActive(false);
     }
 
-    private void Start()
-    {
-        UpgradePriceText = UpgradingFollow.GetComponentInChildren<TextMeshProUGUI>();
-        UpgradePrice = UpgradePriceText.transform.parent.gameObject;
-        EnhancePriceText = EnhancingFollow.GetComponentInChildren<TextMeshProUGUI>();
-        EnhancePrice = EnhancePriceText.transform.parent.gameObject;
-        
-        UpgradePrice.SetActive(false);
-        EnhancePrice.SetActive(false);
-        UpgradingFollow.gameObject.SetActive(false);
-        EnhancingFollow.gameObject.SetActive(false);
-        
-    }
-
-    private void LateUpdate()
-    {
-        if (Enhancing || Upgrading)
-        {
-            // Convert the screen position to canvas space (UI space)
-            Vector3 mouseScreenPosition = Input.mousePosition;
-
-            // Convert the screen space position to local space of the RectTransform
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform, 
-                mouseScreenPosition, 
-                null, // No camera needed for Screen Space - Overlay
-                out Vector2 localPoint
-            );
-
-            // Set the UI element's position to the local point
-            if (Enhancing)
-                EnhancingFollow.localPosition = localPoint + EnhancingFollowOffset;
-            if (Upgrading)
-                UpgradingFollow.localPosition = localPoint + UpgradingFollowOffset;
-        }
-        
-    }
 
     public void ClickUpgradeButtonFromForge()
     {
@@ -165,8 +190,7 @@ public class ForgeManager : MonoBehaviour
         amountOfClicks = -1;
 
     }
-
-   
+       
     public void Leave()
     {
         Upgrading = false;
@@ -187,4 +211,68 @@ public class ForgeManager : MonoBehaviour
         amountOfClicks = 0;
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
     }
+
+    private void LateUpdate()
+    {
+        if (Enhancing || Upgrading)
+        {
+            // Convert the screen position to canvas space (UI space)
+            Vector3 mouseScreenPosition = Input.mousePosition;
+
+            // Convert the screen space position to local space of the RectTransform
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvas.transform as RectTransform,
+                mouseScreenPosition,
+                null, // No camera needed for Screen Space - Overlay
+                out Vector2 localPoint
+            );
+
+            // Set the UI element's position to the local point
+            if (Enhancing)
+                EnhancingFollow.localPosition = localPoint + EnhancingFollowOffset;
+            if (Upgrading)
+                UpgradingFollow.localPosition = localPoint + UpgradingFollowOffset;
+        }
+
+    }
+
+    private void Start()
+    {
+        UpgradePriceText = UpgradingFollow.GetComponentInChildren<TextMeshProUGUI>();
+        UpgradePrice = UpgradePriceText.transform.parent.gameObject;
+        EnhancePriceText = EnhancingFollow.GetComponentInChildren<TextMeshProUGUI>();
+        EnhancePrice = EnhancePriceText.transform.parent.gameObject;
+
+        UpgradePrice.SetActive(false);
+        EnhancePrice.SetActive(false);
+        UpgradingFollow.gameObject.SetActive(false);
+        EnhancingFollow.gameObject.SetActive(false);
+
+        upgradeToggle.onValueChanged.AddListener(OnUpgradeToggled);
+        enhanceToggle.onValueChanged.AddListener(OnEnhanceToggled);
+        leaveButton.onClick.AddListener(CleanupToggle);
+       
+
+    }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
+
+}
+
+public enum ForgeMode
+{
+    Upgrade,
+    Enhance,
+    None
 }

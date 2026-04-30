@@ -28,6 +28,13 @@ public class UIStateMonitor : MonoBehaviour
     private DragItem itemOnGamepad;
     private Transform itemOnGamepadPreviousParent;
     private Vector3 itemOnGamepadPreviousLocalPos;
+      
+    private ForgeMode forgeMode = ForgeMode.None;
+
+    public void SetForging(ForgeMode mode) => forgeMode = mode;
+
+    public ForgeMode GetForgeMode() => forgeMode;
+    
 
     public void SetItemOnGamepad(DragItem item)
     {

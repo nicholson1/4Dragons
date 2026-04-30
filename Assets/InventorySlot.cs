@@ -36,8 +36,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     [SerializeField] private AudioClip dropItem;
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
+    [SerializeField] private SlotHighlighter slotHighlighter;
 
     private InputHandler inputHandler;
+
 
     public void LabelCheck()
     {

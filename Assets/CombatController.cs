@@ -311,7 +311,7 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayAdventureMusic();
                 break;
             case NodeType.BlackSmith:
-                UIController._instance.ToggleBlackSmithUI();
+                UIController._instance.OpenBlacksmith();
                 MusicManager.Instance.PlayShopMusic();
                 BlacksmithToggle(true);
                 break;
@@ -980,7 +980,8 @@ public class CombatController : MonoBehaviour
             entitiesInCombat.RemoveAt(i);
             //Debug.Log("DESTRIYING GAME OBJECT");
         }
-        UIController._instance.ToggleInventoryUI(0);
+
+        Debug.LogError($"Starting Blacksmith Combat!");
 
         NextCombatButton.gameObject.SetActive(false);
 
