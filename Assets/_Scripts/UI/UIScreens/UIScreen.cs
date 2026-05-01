@@ -177,7 +177,7 @@ public class UIScreen : MonoBehaviour
 
         foreach (var selectable in selectables)
         {
-            if(selectable.TryGetComponent(out ButtonBindingHandler bindHandler))
+            if(selectable.TryGetComponent(out SelectableBindingHandler bindHandler))
             {
                 bindHandler.SetUIScreen(this);
             }

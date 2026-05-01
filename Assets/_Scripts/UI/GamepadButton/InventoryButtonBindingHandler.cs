@@ -60,7 +60,7 @@ public class InventoryButtonBindingHandler : ButtonBindingHandler
     {
         SetPlayerAccessible(isPlayerAccessible);
 
-        buttonOwnerUIScreen = screen;
+        selectableOwnerUIScreen = screen;
         BindInput(screen, screen.NavigatableByDefault);
         
 

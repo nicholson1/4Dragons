@@ -17,10 +17,12 @@ public class UIScreenInventory : UIScreen
     [SerializeField] public GameObject InventoryPanel = null;
     [SerializeField] public GameObject LootPanel = null;
     [SerializeField] public GameObject ShopPanel = null;
+    [SerializeField] public GameObject ForgePanel = null;
 
     [SerializeField] private UIInventorySubPanel lootButtonManager;
     [SerializeField] private UIInventorySubPanel selectionManager;
     [SerializeField] private ShopManager shopManager;
+    private ForgeManager forgeManager;
 
     [SerializeField, FormerlySerializedAs("leftSelectableForLootPanel")] private Selectable leftSelectableTargetForSubPanel;
     [SerializeField] private List<Selectable> rightmostInventoryButtons = new List<Selectable>();
@@ -73,6 +75,7 @@ public class UIScreenInventory : UIScreen
         SetupRuntimeNavigation(currentInventoryState);
 
         UIController._instance.StateMonitor.OnDragItem += HandleDragItemCallback;
+        Debug.LogError($"UIInventoryScreen activated on {currentInventoryState}");
     }
 
     public override void Deactivate()
@@ -150,6 +153,9 @@ public class UIScreenInventory : UIScreen
                 case InventoryState.Merchant:
                     navi.selectOnRight = shopManager.GetFirstInteractableSelectable();
                     break;
+                case InventoryState.Forge:
+                    navi.selectOnRight = forgeManager.GetFirstInteractableSelectable();
+                    break;
                 default:
                     navi.selectOnRight = null;
                     break;
@@ -173,7 +179,8 @@ public class UIScreenInventory : UIScreen
                 shopManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
                 break;
             case InventoryState.Forge:
-                shopManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
+                forgeManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
+                forgeManager.CacheInventorySlots(inventorySlots);
                 break;
             case InventoryState.Selection:
                 selectionManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
@@ -295,6 +302,8 @@ public class UIScreenInventory : UIScreen
         base.Start();
         selectionManager = SelectionManager._instance;
         //temp
+
+        forgeManager = ForgePanel.GetComponent<ForgeManager>();
         selectionManager.OnPanelOpen += SubPanelOpenCallback;
         selectionManager.OnPanelClosed += SelectionPanelClosedCallback;
         shopManager.OnPanelOpen += SubPanelOpenCallback;

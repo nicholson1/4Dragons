@@ -36,7 +36,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     [SerializeField] private AudioClip dropItem;
     [SerializeField] private float dropItemVol;
     //[SerializeField] private float placePitch;
-    [SerializeField] private SlotHighlighter slotHighlighter;
 
     private InputHandler inputHandler;
 
@@ -108,48 +107,121 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
         OnGamepadButtonSelected?.Invoke();
-        if(Item != null && !UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem item))
-            Item.HighlightItem(true);
+        //if(Item != null && !UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem item))
+        //    Item.HighlightItem(true);
 
         //this should open tooltip if it's available
+        if(Item != null && Item.e.isWeapon)
+        {
+            Debug.LogError($"Item {Item.name} isWeapon!");
+        }
+
+        NavigationMode currentCursorMode = UIController._instance.StateMonitor.GetCursorMode();
+
+        switch(currentCursorMode)
+        {
+            case NavigationMode.Neutral:
+                if (Item == null) return;
+
+                Item.HighlightItem(true);
+                break;
+
+            case NavigationMode.ItemDrag:
+
+                break;
+
+            case NavigationMode.Upgrade:
+                if(Item != null)
+                {
+                    Item.HighlightItem(true);
+                    Item.ShowForgePrice(true);
+                }
+                break;
+            case NavigationMode.Enhance:
+                if(Item != null)
+                {
+                    Item.HighlightItem(true);
+
+                    if (Item.e.stats[Stats.Rarity] < 3)
+                        Item.ShowForgePrice(true);
+                }
+                break;
+
+            case NavigationMode.Sell:
+                break;
+        }
     }
 
     public void HandleGamepadButtonDeselected(Selectable selectable)
     {
         OnGamepadButtonDeselected?.Invoke();
-        if (Item != null && !UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem item))
-            Item.HighlightItem(false);
+
+        var currentCursorMode = UIController._instance.StateMonitor.GetCursorMode();
 
         //this should close currently opened tooltip
+        switch (currentCursorMode)
+        {
+            case NavigationMode.Neutral:
+                if (Item == null) return;
+
+                Item.HighlightItem(false);
+                break;
+
+            case NavigationMode.ItemDrag:
+
+                break;
+
+            case NavigationMode.Upgrade:
+                if(Item != null)
+                {
+                    Item.HighlightItem(false);
+                    Item.ShowForgePrice(false);
+                }
+                break;
+            case NavigationMode.Enhance:
+                if(Item != null)
+                {
+                    Item.HighlightItem(false);
+                    Item.ShowForgePrice(false);
+                }
+                break;
+            case NavigationMode.Sell:
+                break;
+        }
     }
 
     public void HandleGamepadButtonPressed(Selectable selectable)
     {
-        //pressing inventory slot gamepad button while dragging item
-        if (Slot == Equipment.Slot.Sold)
-        {
-            Debug.LogError($"Try buying item from shop");
-            TryBuyItem(Item);
-            return;
-        }
-        
-        if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
-        {
-            if(itemOnGamepad == Item)
-            {
-                itemOnGamepad.GamepadFinishDrag();
-                return;
-            }
+        NavigationMode currentCursorMode = UIController._instance.StateMonitor.GetCursorMode();
 
-            //try drop here
-            InitiateDroppingItem(itemOnGamepad);
-            return;
-        }
+        switch(currentCursorMode)
+        {
+            case NavigationMode.Neutral:
+                if (Item == null) return;
+                TryDragOrSell();
+                break;
 
-        if (Item == null) return;
-            
-        Item.GamepadStartDrag(this);
-        inputHandler.OnNo.AddListener(CancelGamepadDrag);            
+            case NavigationMode.ItemDrag:
+                if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
+                {
+                    TryDrop(itemOnGamepad);
+                }
+                break;
+
+            case NavigationMode.Upgrade:
+                if (Item == null) return;
+                Item.TryUpgrade();                
+                break;
+
+            case NavigationMode.Enhance:
+                if (Item == null) return;
+                Item.TryEnhance();
+                break;
+
+            case NavigationMode.Sell:
+                if (Item == null) return;
+                break;
+        }         
     }
 
     private void CancelGamepadDrag()
@@ -174,6 +246,31 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     }
 
     private bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
+
+    private void TryDrop(DragItem itemOnGamepad)
+    {
+        if (itemOnGamepad == Item)
+        {
+            itemOnGamepad.GamepadFinishDrag();
+            return;
+        }
+
+        InitiateDroppingItem(itemOnGamepad);
+        return;
+    }
+
+    private void TryDragOrSell()
+    {
+        if (Slot == Equipment.Slot.Sold)
+        {
+            Debug.LogError($"Try buying item from shop");
+            TryBuyItem(Item);
+            return;
+        }
+
+        Item.GamepadStartDrag(this);
+        inputHandler.OnNo.AddListener(CancelGamepadDrag);
+    }
 
     private bool CanItemBeDroppedHere(DragItem itemToDrop)
     {
@@ -284,7 +381,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             return true;
         }
 
-        //handle cannot buy item, popup message? sound?
+        Debug.LogError($"Inventory is full!");
         return false;
     }
 

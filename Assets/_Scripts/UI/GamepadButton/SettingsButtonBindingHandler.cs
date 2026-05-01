@@ -30,6 +30,8 @@ public class SettingsButtonBindingHandler : ButtonBindingHandler
 
     protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         UnbindGamepadFromButton();
         stateMonitor.OnScreenChanged -= ToggleButtonInteractability;
     }

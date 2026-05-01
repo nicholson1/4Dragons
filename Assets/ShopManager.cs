@@ -102,6 +102,7 @@ public class ShopManager : UIInventorySubPanel
         sellSlotNavi.selectOnRight = RerollButton.interactable ? RerollButton : leaveButton;
         sellSlotButton.navigation = sellSlotNavi;
 
+        BindLeaveAndRollButton();
     }
 
     public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
@@ -160,6 +161,8 @@ public class ShopManager : UIInventorySubPanel
 
     private void BindLeaveAndRollButton()
     {
+        UnbindLeaveAndRerollButtons();
+
         leaveButton.onClick.AddListener(Leave);
         RerollButton.onClick.AddListener(ReRollShop);
     }

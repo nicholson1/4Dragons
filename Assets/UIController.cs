@@ -216,11 +216,12 @@ public class UIController : MonoBehaviour
                 StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
             case InventoryState.Forge:
-                Debug.LogError($"Opening forge menu!");
+                inventoryScreen.ChangeInventoryState(InventoryState.Forge);
+                StartCoroutine(MovePanel(inventoryScreen.ForgePanel, PanelMoveDirection.Horizontal, toOpen));
                 break;
         }
 
-        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen,  InventoryScreenToggleMoveFinishedCallback));
     }
 
     private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
@@ -260,14 +261,16 @@ public class UIController : MonoBehaviour
         switch (lastInventoryState)
         {
             case InventoryState.Loot:
-                inventoryScreen.ChangeInventoryState(InventoryState.Loot);
+                //inventoryScreen.ChangeInventoryState(InventoryState.Loot);
                 StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false));
                 break;
             case InventoryState.Merchant:
-                inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                //inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
                 StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, false));
                 break;
             case InventoryState.Forge:
+                //inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                StartCoroutine(MovePanel(inventoryScreen.ForgePanel, PanelMoveDirection.Horizontal, false));
                 break;
         }
 

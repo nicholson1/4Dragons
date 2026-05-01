@@ -545,8 +545,9 @@ public class EquipmentManager : MonoBehaviour
         di.gameObject.SetActive(false);
     }
     
-    public DragItem UpgradeEquipment(DragItem item)
+    public void UpgradeEquipment(DragItem item)
     {
+        //Moved the eligibility business to ItemDrag - Zak
         //check if we are at the forge(ie paying for it or free) 
         //check for money
         //if no money play sound
@@ -555,9 +556,9 @@ public class EquipmentManager : MonoBehaviour
         //if not at the store set upgrade to false (so you can only do 1) maybe check int value
         //int Upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod);
 
-        Equipment e = item.e;
-        
-        if (ForgeManager._instance.amountOfClicks == 0)
+        Equipment upgradedEquipment = item.e;
+
+        /*if (ForgeManager._instance.amountOfClicks == 0)
         {
             Debug.LogError("YOU SHOULD NOT BE ABLE TO BE ENHANCING NOW");
             return item;
@@ -586,25 +587,20 @@ public class EquipmentManager : MonoBehaviour
         {
             ForgeManager._instance.AdjustAmountOfClicks(-1);
         }
+        */
         
         item._toolTip.CloseTip();
 
         //e.PrettyPrintStats();
-        e.Upgrade();
+        upgradedEquipment.Upgrade();
         //e.PrettyPrintStats();
 
-        item._toolTip.e = e;
+        item._toolTip.e = upgradedEquipment;       
         
-        UIController._instance.PlayUpgradeSound();
-
-        item.InitializeDragItem(e, item.currentLocation);
-
-        ForgeManager._instance.ShowIcon();
-        ForgeManager._instance.ShowPrice(e);
-
-        return item;
+        item.InitializeDragItem(upgradedEquipment, item.currentLocation);
     }
-    public DragItem EnhanceEquipment(DragItem item)
+
+    public void EnhanceEquipment(DragItem item)
     {
         //check if we are at the forge(ie paying for it or free) 
         //check for money
@@ -613,14 +609,9 @@ public class EquipmentManager : MonoBehaviour
         // do the thing
         //if not at the store set upgrade to false (so you can only do 1) maybe check int value
 
-        Equipment e = item.e;
+        Equipment enhancedEquipment = item.e;
 
-        if (e.stats[Stats.Rarity] >= 3)
-        {
-            UIController._instance.PlayUIError();
-            return item;
-        }
-
+        /*
         if (ForgeManager._instance.amountOfClicks == 0)
         {
             Debug.LogError("YOU SHOULD NOT BE ABLE TO BE ENHANCING NOW");
@@ -651,22 +642,17 @@ public class EquipmentManager : MonoBehaviour
         {
             ForgeManager._instance.AdjustAmountOfClicks(-1);
         }
+        */
         
-        UIController._instance.PlayEnhanceSound();
 
         item._toolTip.CloseTip();
-
         //e.PrettyPrintStats();
-        e.Enhance();
+        enhancedEquipment.Enhance();
         //e.PrettyPrintStats();
         
-        item._toolTip.e = e;
+        item._toolTip.e = enhancedEquipment;
 
-
-        item.InitializeDragItem(e, item.currentLocation);
-        ForgeManager._instance.ShowIcon();
-        ForgeManager._instance.ShowPrice(e);
-        return item;
+        item.InitializeDragItem(enhancedEquipment, item.currentLocation);
     }
 
     public void EnhanceRandom(Equipment.Slot slot = Equipment.Slot.All)

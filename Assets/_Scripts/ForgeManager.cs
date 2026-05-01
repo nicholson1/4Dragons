@@ -5,22 +5,28 @@ using System.Linq;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ForgeManager : UIInventorySubPanel
 {
     public static ForgeManager _instance;
-    public bool Upgrading = false;
-    public bool Enhancing = false;
-
-    [SerializeField] private RectTransform UpgradingFollow;
-    [SerializeField] private RectTransform EnhancingFollow;
-    private GameObject UpgradePrice;
-    private GameObject EnhancePrice;
-    private TextMeshProUGUI UpgradePriceText;
-    private TextMeshProUGUI EnhancePriceText;
+    //public bool Upgrading = false;
+    //public bool Enhancing = false;
+    public ForgeMode ForgeMode => forgeMode;
     
+    [SerializeField, FormerlySerializedAs("UpgradingFollow")] private RectTransform forgeLabel;
+    //[SerializeField] private RectTransform EnhancingFollow;
+    [SerializeField] private Image followLabelImage;
+    private GameObject forgePriceObject;
+    private GameObject EnhancePrice;
+    private TextMeshProUGUI forgePriceText;
+    private TextMeshProUGUI EnhancePriceText;
+
+    [SerializeField] private Sprite upgradeSprite;
+    [SerializeField] private Sprite enhanceSprite;
+        
     public Canvas canvas;
     public Vector2 UpgradingFollowOffset;
     public Vector2 EnhancingFollowOffset;
@@ -31,13 +37,15 @@ public class ForgeManager : UIInventorySubPanel
     [SerializeField] private Toggle upgradeToggle;
     [SerializeField] private Toggle enhanceToggle;
     [SerializeField] private Button leaveButton;
-    [SerializeField] private Button smeltButton;
+    [SerializeField] private Button sellButton;
 
     [SerializeField] private List<Selectable> leftmostSelectables = new List<Selectable>();
 
-    private List<Selectable> cachedRightMostInventoryButtons = new List<Selectable>();
+    private List<InventorySlot> inventorySlots = new List<InventorySlot>();
 
     private ForgeMode forgeMode = ForgeMode.None;
+
+    private InputHandler inputHandler;
 
     public override Selectable GetFirstInteractableSelectable()
     {
@@ -54,6 +62,8 @@ public class ForgeManager : UIInventorySubPanel
             navi.selectOnLeft = closestInventoryButton;
             selectable.navigation = navi;
         }
+
+        EventSystem.current.SetSelectedGameObject(GetFirstInteractableSelectable().gameObject);
     }
 
     public override void SetLeaveButtonInteractable(bool isInteractable)
@@ -65,52 +75,105 @@ public class ForgeManager : UIInventorySubPanel
     {
         if (!toOn)
         {
-            Debug.LogError($"Upgrade Toggled OFF");
+            if(forgeMode == ForgeMode.Upgrade)
+            {
+                forgeMode = ForgeMode.None;
+                HandleHighlighterOnToggle(false);
+            }
             return;
         }
 
-        Debug.LogError($"Upgrade Toggled ON");
         forgeMode = ForgeMode.Upgrade;
+        UIController._instance.StateMonitor.SetCursorMode(NavigationMode.Upgrade);
+        followLabelImage.sprite = upgradeSprite;
+        forgeLabel.SetParent(canvas.transform);
+        HidePrice();
+        amountOfClicks = -1;
+
+        HandleHighlighterOnToggle(toOn);
+
         ToggleOff(enhanceToggle);
+
+        inputHandler.OnNo.RemoveListener(CleanupToggle);
+        inputHandler.OnNo.AddListener(CleanupToggle);
+    }
+
+    public void CacheInventorySlots(List<InventorySlot> slots)
+    {
+        inventorySlots = slots;
+    }
+
+    private void HandleHighlighterOnToggle(bool toOn)
+    {
+        if (inventorySlots.Count <= 0) return;
+
+        foreach(var slot in inventorySlots)
+        {
+            if(slot.Item != null && slot.Item.IsGear())
+            {
+                slot.Item.ForgeableHighlighter.ToggleHighlighter(toOn);
+            }
+        }
     }
 
     private void OnEnhanceToggled(bool toOn)
     {
         if (!toOn)
         {
-            Debug.LogError($"Enhance Toggled OFF");
+            if (forgeMode == ForgeMode.Enhance)
+            {
+                forgeMode = ForgeMode.None;
+                HandleHighlighterOnToggle(false);
+            }    
             return;
         }
 
-        Debug.LogError($"Enhance Toggled ON");
         forgeMode = ForgeMode.Enhance;
+        UIController._instance.StateMonitor.SetCursorMode(NavigationMode.Enhance);
+        followLabelImage.sprite = enhanceSprite;
+        forgeLabel.SetParent(canvas.transform);
+        HidePrice();
+        amountOfClicks = -1;
+
+        HandleHighlighterOnToggle(toOn);
+
         ToggleOff(upgradeToggle);
+
+        inputHandler.OnNo.RemoveListener(CleanupToggle);
+        inputHandler.OnNo.AddListener(CleanupToggle);
     }
 
     private void ToggleOff(Toggle toggle, bool setModeNone = false)
     {
-        toggle.isOn = false;
-
         if (setModeNone)
             forgeMode = ForgeMode.None;
+
+        if (!toggle.isOn) return;
+
+        toggle.isOn = false;
     }
 
     private void CleanupToggle()
     {
+        inputHandler.OnNo.RemoveListener(CleanupToggle);
+
+        if (upgradeToggle.isOn)
+            upgradeToggle.isOn = false;
+        if (enhanceToggle.isOn)
+            enhanceToggle.isOn = false;
+
+        forgeLabel.gameObject.SetActive(false);
+
         if (forgeMode != ForgeMode.None)
             forgeMode = ForgeMode.None;
     }
 
     public void ShowIcon()
     {
-        if(Upgrading)
-        {
-            UpgradePrice.SetActive(true);
-        }
-        if(Enhancing)
-        {
-            EnhancePrice.SetActive(true);
-        }
+        if (forgeMode == ForgeMode.None) return;
+
+        forgePriceObject.SetActive(true);
+
     }
 
     public void AdjustAmountOfClicks(int clicks)
@@ -122,46 +185,46 @@ public class ForgeManager : UIInventorySubPanel
             amountOfClicks += clicks;
             if (amountOfClicks == 0)
             {
-                Upgrading = false;
-                Enhancing = false;
-                UpgradingFollow.gameObject.SetActive(false);
-                EnhancingFollow.gameObject.SetActive(false);
+                forgeLabel.gameObject.SetActive(false);
             }
         }
     }
     
-
-    public void ShowPrice(Equipment e)
+    public int GetUpgradePrice(ForgeMode mode, Equipment equipment)
     {
-        int Upgrade = Mathf.RoundToInt((e.stats[Stats.ItemLevel] * (e.stats[Stats.Rarity] + 1)) * priceMod) * 4;
-        int Enchance = Mathf.RoundToInt((e.stats[Stats.ItemLevel] + 5)* (e.stats[Stats.Rarity] + 1) * priceMod) * 4;
+        int upgradePrice = 0;
+        if(mode == ForgeMode.Upgrade)
+            upgradePrice = Mathf.RoundToInt((equipment.stats[Stats.ItemLevel] * (equipment.stats[Stats.Rarity] + 1)) * priceMod) * 4;
+        else if(mode == ForgeMode.Enhance)
+            upgradePrice = Mathf.RoundToInt((equipment.stats[Stats.ItemLevel] + 5) * (equipment.stats[Stats.Rarity] + 1) * priceMod) * 4;
         
-        if(Upgrading)
-        {
-            UpgradePriceText.gameObject.SetActive(true);
-            UpgradePriceText.text = Upgrade.ToString();
-        }
-        if(Enhancing)
-        {
-            EnhancePriceText.gameObject.SetActive(true);
-            EnhancePriceText.text = Enchance.ToString();
-        }
+        forgePriceText.text = upgradePrice.ToString();
+        return upgradePrice;
     }
+
+    public void ShowForgePrice(Equipment e)
+    {
+        GetUpgradePrice(forgeMode, e);           
+
+        forgePriceObject.SetActive(true);
+        forgePriceText.gameObject.SetActive(true);
+    }
+
     public void HidePrice()
     {
-        EnhancePriceText.gameObject.SetActive(false);
-        UpgradePriceText.gameObject.SetActive(false);
+        //EnhancePriceText.gameObject.SetActive(false);
+        forgePriceText.gameObject.SetActive(false);
     }
 
 
     public void ClickUpgradeButtonFromForge()
     {
-        Upgrading = true;
-        Enhancing = false;
-        UpgradingFollow.gameObject.SetActive(true);
-        EnhancingFollow.gameObject.SetActive(false);
+        forgeMode = ForgeMode.Upgrade;
 
-        UpgradingFollow.SetParent(canvas.transform);
+        forgeLabel.gameObject.SetActive(true);
+        //EnhancingFollow.gameObject.SetActive(false);
+
+        forgeLabel.SetParent(canvas.transform);
         //add icon to the mouse
         //when mouse over item display the gold it costs
         // text red if too expensive
@@ -173,12 +236,13 @@ public class ForgeManager : UIInventorySubPanel
     }
     public void ClickEnhanceButtonFromForge()
     {
-        Upgrading = false;
-        Enhancing = true;
-        UpgradingFollow.gameObject.SetActive(false);
-        EnhancingFollow.gameObject.SetActive(true);
-        
-        EnhancingFollow.SetParent(canvas.transform);
+        forgeMode = ForgeMode.Enhance;
+
+        forgeLabel.gameObject.SetActive(true);
+        //EnhancingFollow.gameObject.SetActive(true);
+
+        //EnhancingFollow.SetParent(canvas.transform);
+        forgeLabel.SetParent(canvas.transform);
 
         //add icon to the mouse
         //when mouse over item display the gold it costs
@@ -190,17 +254,19 @@ public class ForgeManager : UIInventorySubPanel
         amountOfClicks = -1;
 
     }
+
+    public void SetForgeLabelPosition(RectTransform itemRt)
+    {
+        Vector2 offset = new Vector2(50f, 50f);
+        forgeLabel.anchoredPosition = itemRt.anchoredPosition + offset; 
+    }
        
     public void Leave()
     {
-        Upgrading = false;
-        Enhancing = false;
-        UpgradingFollow.gameObject.SetActive(false);
-        EnhancingFollow.gameObject.SetActive(false);
-        UIController._instance.ToggleForgeUI(0);
-        UIController._instance.ToggleInventoryUI(0);
-        UIController._instance.ToggleMapUI(1);
-        CombatController._instance.SetMapCanBeClicked(true);
+        CleanupToggle();
+
+        UIController._instance.CloseInventoryWithExtraPanel(InventoryState.Forge);
+        UIController._instance.ToggleMapNew(true, true);
 
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {
@@ -212,45 +278,47 @@ public class ForgeManager : UIInventorySubPanel
         //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
     }
 
-    private void LateUpdate()
-    {
-        if (Enhancing || Upgrading)
-        {
-            // Convert the screen position to canvas space (UI space)
-            Vector3 mouseScreenPosition = Input.mousePosition;
+    //private void LateUpdate()
+    //{
+    //    if (forgeMode != ForgeMode.None)
+    //    {
+    //        // Convert the screen position to canvas space (UI space)
+    //        Vector3 mouseScreenPosition = Input.mousePosition;
 
-            // Convert the screen space position to local space of the RectTransform
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform,
-                mouseScreenPosition,
-                null, // No camera needed for Screen Space - Overlay
-                out Vector2 localPoint
-            );
+    //        // Convert the screen space position to local space of the RectTransform
+    //        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+    //            canvas.transform as RectTransform,
+    //            mouseScreenPosition,
+    //            null, // No camera needed for Screen Space - Overlay
+    //            out Vector2 localPoint
+    //        );
 
-            // Set the UI element's position to the local point
-            if (Enhancing)
-                EnhancingFollow.localPosition = localPoint + EnhancingFollowOffset;
-            if (Upgrading)
-                UpgradingFollow.localPosition = localPoint + UpgradingFollowOffset;
-        }
+    //        // Set the UI element's position to the local point
+    //        UpgradingFollow.localPosition = localPoint + UpgradingFollowOffset;
 
-    }
+    //        //if (forgeMode == ForgeMode.Enhance)
+    //        //    EnhancingFollow.localPosition = localPoint + EnhancingFollowOffset;
+    //        //else if (forgeMode == ForgeMode.Upgrade)
+    //        //    UpgradingFollow.localPosition = localPoint + UpgradingFollowOffset;
+    //    }
+
+    //}
 
     private void Start()
     {
-        UpgradePriceText = UpgradingFollow.GetComponentInChildren<TextMeshProUGUI>();
-        UpgradePrice = UpgradePriceText.transform.parent.gameObject;
-        EnhancePriceText = EnhancingFollow.GetComponentInChildren<TextMeshProUGUI>();
-        EnhancePrice = EnhancePriceText.transform.parent.gameObject;
+        inputHandler ??= EventSystem.current.GetComponentInChildren<InputHandler>();
 
-        UpgradePrice.SetActive(false);
-        EnhancePrice.SetActive(false);
-        UpgradingFollow.gameObject.SetActive(false);
-        EnhancingFollow.gameObject.SetActive(false);
+        forgePriceText = forgeLabel.GetComponentInChildren<TextMeshProUGUI>();
+        forgePriceObject = forgePriceText.transform.parent.gameObject;
+
+        forgePriceObject.SetActive(false);
+
+        forgeLabel.gameObject.SetActive(false);
 
         upgradeToggle.onValueChanged.AddListener(OnUpgradeToggled);
         enhanceToggle.onValueChanged.AddListener(OnEnhanceToggled);
         leaveButton.onClick.AddListener(CleanupToggle);
+        sellButton.onClick.AddListener(CleanupToggle);
        
 
     }

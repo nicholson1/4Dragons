@@ -28,18 +28,19 @@ public class UIStateMonitor : MonoBehaviour
     private DragItem itemOnGamepad;
     private Transform itemOnGamepadPreviousParent;
     private Vector3 itemOnGamepadPreviousLocalPos;
-      
-    private ForgeMode forgeMode = ForgeMode.None;
 
-    public void SetForging(ForgeMode mode) => forgeMode = mode;
+    private NavigationMode cursorMode = NavigationMode.Neutral;
 
-    public ForgeMode GetForgeMode() => forgeMode;
+    public void SetCursorMode(NavigationMode mode) => cursorMode = mode;
+
+    public NavigationMode GetCursorMode() => cursorMode;
     
 
     public void SetItemOnGamepad(DragItem item)
     {
         if(item == null && itemOnGamepad != null)
         {
+            SetCursorMode(NavigationMode.Neutral);
             itemOnGamepad.transform.parent = itemOnGamepadPreviousParent;
             itemOnGamepad.transform.localPosition = itemOnGamepadPreviousLocalPos;
         }
@@ -48,6 +49,7 @@ public class UIStateMonitor : MonoBehaviour
 
         if(itemOnGamepad != null)
         {
+            SetCursorMode(NavigationMode.ItemDrag);
             itemOnGamepadPreviousParent = itemOnGamepad.transform.parent;
             itemOnGamepadPreviousLocalPos = itemOnGamepad.transform.localPosition;
             itemOnGamepad.transform.parent = itemOnGamepadParent;
@@ -140,3 +142,11 @@ public class UIStateMonitor : MonoBehaviour
     }
 }
 
+public enum NavigationMode
+{
+    Neutral,
+    ItemDrag,
+    Upgrade,
+    Enhance,
+    Sell
+}

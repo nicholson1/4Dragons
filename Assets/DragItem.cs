@@ -1,15 +1,16 @@
+using ImportantStuff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using ImportantStuff;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
-public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
     public bool IsBeingDragged => isBeingDragged;
 
@@ -20,6 +21,7 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
     public Image Background;
     public Image Glow;
     public Image GamepadHighlighter;
+    public SlotHighlighter ForgeableHighlighter;
 
     [SerializeField] private Sprite[] BackgroundSprites;
     [SerializeField] private Sprite[] GlowSprites;
@@ -84,6 +86,92 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         }
     }
 
+    public void HandleForgeHighlight(bool isOn)
+    {
+        ForgeableHighlighter.ToggleHighlighter(isOn);
+    }
+
+    public bool IsGear()
+    {
+        return slotType >= Equipment.Slot.Head && slotType <= Equipment.Slot.Scroll;
+    }
+
+    public bool IsForgeable()
+    {
+        return e.IsGear();       
+    }
+
+    public bool HasFundsForForge(ForgeMode mode, out int forgeCost)
+    {
+        float priceMod = ForgeManager._instance.priceMod;
+
+        if (priceMod <= 0)
+        {
+            forgeCost = 0;
+            return true;
+        }
+
+        forgeCost = ForgeManager._instance.GetUpgradePrice(mode, e);
+
+        if (CombatController._instance.Player._gold <= forgeCost)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool TryUpgrade()
+    {
+        if(IsGear() && HasFundsForForge(ForgeMode.Upgrade, out int forgeCost))
+        {
+            EquipmentManager._instance.UpgradeEquipment(this);
+            CombatController._instance.Player.GetGold(-forgeCost);
+            UIController._instance.PlayUpgradeSound();
+            ForgeManager._instance.ShowIcon();
+            ForgeManager._instance.ShowForgePrice(e);            
+            return true;
+        }
+
+        currentLocation.NotEnoughGoldEvent();
+        UIController._instance.PlayUIError();
+        return false;
+    }
+
+    public bool TryEnhance()
+    {
+        if (e.stats[Stats.Rarity] >= 3)
+        {
+            UIController._instance.PlayUIError();
+            return false;
+        }
+        if(IsGear() && HasFundsForForge(ForgeMode.Enhance, out int forgeCost))
+        {
+            EquipmentManager._instance.EnhanceEquipment(this);
+            CombatController._instance.Player.GetGold(-forgeCost);
+            UIController._instance.PlayEnhanceSound();
+            ForgeManager._instance.ShowIcon();
+            ForgeManager._instance.ShowForgePrice(e);
+            return true;
+        }
+
+        currentLocation.NotEnoughGoldEvent();
+        UIController._instance.PlayUIError();
+        return false;
+    }
+
+    public void ShowForgePrice(bool value)
+    {
+        if (!value)
+        {
+            ForgeManager._instance.HidePrice();
+            return;
+        }
+
+        ForgeManager._instance.SetForgeLabelPosition(_rectTransform);
+        ForgeManager._instance.ShowForgePrice(e);
+    }
+
     public void GamepadStartDrag(InventorySlot origin)
     {
         if (e.isRelic)
@@ -91,14 +179,14 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
 
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
 
-        if (ForgeManager._instance.Upgrading)
-        {
-            EquipmentManager._instance.UpgradeEquipment(this);
-        }
-        if (ForgeManager._instance.Enhancing)
-        {
-            EquipmentManager._instance.EnhanceEquipment(this);
-        }
+        //if (ForgeManager._instance.Upgrading)
+        //{
+        //    EquipmentManager._instance.UpgradeEquipment(this);
+        //}
+        //if (ForgeManager._instance.Enhancing)
+        //{
+        //    EquipmentManager._instance.EnhanceEquipment(this);
+        //}
 
         isBeingDragged = true;
         canvasGroup.blocksRaycasts = false;
@@ -165,6 +253,36 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         _rectTransform.localScale = slotRT.localScale;
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if(e.IsGear())
+        {
+            ForgeManager._instance.SetForgeLabelPosition(_rectTransform);
+            if (ForgeManager._instance.ForgeMode == ForgeMode.Upgrade)
+            {
+                ForgeManager._instance.ShowForgePrice(e);
+            }
+
+            else if (ForgeManager._instance.ForgeMode == ForgeMode.Enhance)
+            {
+                if (e.stats[Stats.Rarity] < 3)
+                {
+                    ForgeManager._instance.ShowForgePrice(e);
+                }
+            }
+        }
+
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (!e.IsGear()) return;
+
+        if (ForgeManager._instance.ForgeMode != ForgeMode.None)
+        {
+            ForgeManager._instance.HidePrice();
+        }
+    }
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
@@ -267,13 +385,13 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             return;
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
         
-        if (ForgeManager._instance.Upgrading)
+        if (ForgeManager._instance.ForgeMode == ForgeMode.Upgrade)
         {
-            EquipmentManager._instance.UpgradeEquipment(this);
+            TryUpgrade();
         }
-        if (ForgeManager._instance.Enhancing)
+        if (ForgeManager._instance.ForgeMode == ForgeMode.Enhance)
         {
-            EquipmentManager._instance.EnhanceEquipment(this);
+            TryEnhance();
         }
     }
 
@@ -389,6 +507,9 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
             SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
         }
     }
+
+
+
     private string GetWeaponType(SpellTypes spell)
     {
         string name = "";
@@ -556,4 +677,6 @@ public class DragItem : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         //CombatController.EndCombatEvent -= EndCombat;
 
     }
+
+
 }

@@ -6,13 +6,9 @@ using UnityEngine.UI;
 using InputIcons;
 using System;
 
-public class ButtonBindingHandler : MonoBehaviour
+public class ButtonBindingHandler : SelectableBindingHandler
 {
-    private bool isPointerEvent = false; //a guard to prevent pointer event triggering on gamepad select
-    protected UIScreen buttonOwnerUIScreen = null;
-
     protected Button button = null;
-    protected InputHandler inputHandler = null;
 
     [SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
     [SerializeField] protected bool clickableWithYes = true;
@@ -143,7 +139,7 @@ public class ButtonBindingHandler : MonoBehaviour
             glyphImage.enabled = false;
     }
 
-    protected void BindInput(UIScreen screen, bool navigatable)
+    protected override void BindInput(UIScreen screen, bool navigatable)
     {
 
         UnbindGamepadFromButton();
@@ -152,7 +148,7 @@ public class ButtonBindingHandler : MonoBehaviour
             BindGamepadToButton();
     }
 
-    protected void UnbindInput(UIScreen _)
+    protected override void UnbindInput(UIScreen _)
     {
         UnbindGamepadFromButton();        
     }
@@ -167,12 +163,7 @@ public class ButtonBindingHandler : MonoBehaviour
             BindGamepadToButton();
     }
 
-    public virtual void SetUIScreen(UIScreen screen)
-    {
-        buttonOwnerUIScreen = screen;
-        buttonOwnerUIScreen.OnNewScreenActive += BindInput;
-        buttonOwnerUIScreen.OnScreenDeactivated += UnbindInput;
-    }
+
 
     private void HandleButtonSound()
     {
@@ -188,9 +179,17 @@ public class ButtonBindingHandler : MonoBehaviour
         button.onClick.AddListener(HandleButtonSound);
     }
 
-    protected virtual void Awake()
+    public override void SetUIScreen(UIScreen screen)
     {
-        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        selectableOwnerUIScreen = screen;
+        selectableOwnerUIScreen.OnNewScreenActive += BindInput;
+        selectableOwnerUIScreen.OnScreenDeactivated += UnbindInput;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
         var imagePrompt = GetComponentInChildren<II_ImagePrompt>();
         if(imagePrompt)
             glyphImage = imagePrompt.GetComponent<Image>();
@@ -201,10 +200,10 @@ public class ButtonBindingHandler : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        if (buttonOwnerUIScreen != null)
+        if (selectableOwnerUIScreen != null)
         {
-            buttonOwnerUIScreen.OnNewScreenActive -= BindInput;
-            buttonOwnerUIScreen.OnScreenDeactivated -= UnbindInput;
+            selectableOwnerUIScreen.OnNewScreenActive -= BindInput;
+            selectableOwnerUIScreen.OnScreenDeactivated -= UnbindInput;
         }
 
     }

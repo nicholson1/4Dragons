@@ -58,22 +58,22 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         //count1 = true;
 
-        if (is_item)
-        {
-            if (ForgeManager._instance.Upgrading)
-            {
-                ForgeManager._instance.ShowPrice(e);
-            }
+        //if (is_item)
+        //{
+        //    if (ForgeManager._instance.ForgeMode == ForgeMode.Upgrade)
+        //    {
+        //        ForgeManager._instance.ShowPrice(e);
+        //    }
 
-            if (ForgeManager._instance.Enhancing)
-            {
-                if (e.stats[Stats.Rarity] < 3)
-                {
-                    ForgeManager._instance.ShowPrice(e);
-                }
-            }
-            
-        }
+        //    else if (ForgeManager._instance.ForgeMode == ForgeMode.Enhance)
+        //    {
+        //        if (e.stats[Stats.Rarity] < 3)
+        //        {
+        //            ForgeManager._instance.ShowPrice(e);
+        //        }
+        //    }
+        //}
+
         StartCoroutine(ShowTooltipRoutine(Input.mousePosition));
     }
 
@@ -86,13 +86,13 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             
         }
 
-        if (is_item)
-        {
-            if (ForgeManager._instance.Upgrading || ForgeManager._instance.Enhancing)
-            {
-                ForgeManager._instance.HidePrice();
-            }
-        }
+        //if (is_item)
+        //{
+        //    if (ForgeManager._instance.ForgeMode != ForgeMode.None)
+        //    {
+        //        ForgeManager._instance.HidePrice();
+        //    }
+        //}
 
         
 
@@ -102,22 +102,22 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void ShowTipFromGamepadNavi(RectTransform referenceRT)
     {
         ToolTipManager._instance.HideToolTipAll();
-        if (is_item)
-        {
-            if (ForgeManager._instance.Upgrading)
-            {
-                ForgeManager._instance.ShowPrice(e);
-            }
+        //if (is_item)
+        //{
+        //    if (ForgeManager._instance.ForgeMode == ForgeMode.Upgrade)
+        //    {
+        //        ForgeManager._instance.ShowPrice(e);
+        //    }
+        //    else if (ForgeManager._instance.ForgeMode == ForgeMode.Enhance)
+        //    {
+        //        if (e.stats[Stats.Rarity] < 3)
+        //        {
+        //            ForgeManager._instance.ShowPrice(e);
+        //        }
+        //    }
 
-            if (ForgeManager._instance.Enhancing)
-            {
-                if (e.stats[Stats.Rarity] < 3)
-                {
-                    ForgeManager._instance.ShowPrice(e);
-                }
-            }
-
-        }
+            
+        //}
 
         ToolTipManager._instance.SetAndShowToolTip(rectTransform, referenceRT.position, Title, Message, Cost, iLvl, rarity, icon, IconColor, is_spell, is_item, e, is_relic);
         //StartCoroutine(ShowTooltipRoutine(referenceRT.position));
@@ -142,13 +142,13 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         ToolTipManager._instance.HideToolTipAll();
 
-        if (is_item)
-        {
-            if (ForgeManager._instance.Upgrading || ForgeManager._instance.Enhancing)
-            {
-                ForgeManager._instance.HidePrice();
-            }
-        }
+        //if (is_item)
+        //{
+        //    if (ForgeManager._instance.ForgeMode != ForgeMode.None)
+        //    {
+        //        ForgeManager._instance.HidePrice();
+        //    }
+        //}
     }
 
 
