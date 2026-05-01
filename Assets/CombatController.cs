@@ -113,6 +113,9 @@ public class CombatController : MonoBehaviour
 
     public Elite Blacksmith;
     public GameObject BlacksmithDeco;
+    
+    public BossPhase1 BossPhase1;
+
    
 
     [SerializeField] private AudioClip _beginAdventure;
@@ -925,6 +928,7 @@ public class CombatController : MonoBehaviour
         {
             enemy.GetComponent<Elite>().InitializeElite((EliteType)node.specialNodeType);
         }
+        
 
         turnCounter = 0;
         
@@ -933,6 +937,24 @@ public class CombatController : MonoBehaviour
 
         previousDragonSchool = nextDragonSchool;
             
+
+        StartCoroutine(waitTheStartCombat(Player, enemy));
+    }
+    
+    public void StartCombatBossPhase1()
+    {
+        for (int i = 1; i < entitiesInCombat.Count; i++)
+        {
+            GameObject.Destroy(entitiesInCombat[i].gameObject);
+            entitiesInCombat.RemoveAt(i);
+        }
+        UIController._instance.ToggleInventoryUI(0);
+
+        NextCombatButton.gameObject.SetActive(false);
+
+        Character enemy = Blacksmith.GetComponent<Character>();
+        enemy.transform.LookAt(Player.transform.position);
+        Player.transform.LookAt(enemy.transform.position);
 
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
