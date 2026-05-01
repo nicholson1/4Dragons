@@ -30,7 +30,7 @@ public enum EOption
     Dodge = 5,
     Feint = 6,
     Bluff = 7,
-    Intemidate = 8,
+    Intimidate = 8,
     Fight = 9,
     Spar = 10,
     Search = 11,

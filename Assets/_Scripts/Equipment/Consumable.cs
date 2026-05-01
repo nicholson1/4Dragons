@@ -61,10 +61,10 @@ public class Consumable : Equipment
         
         "Heal 50% of your max health",
         "Reduce the damage your target deals by 50% for 3 turns",
-        "Target gains 2 Energy",
+        "You gains 2 Energy",
         "Increase damage dealt by 50% for 3 turns",
         
-        "Target becomes Invulnerable for 1 turn",
+        "You become Invulnerable for 1 turn",
         "Heal 75% of your max health",
         
         "Heal 100% of your max health",

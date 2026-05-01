@@ -57,7 +57,7 @@ public class LoginController : MonoBehaviour
         }
         else
         {
-            StartCoroutine(FadeIn(_canvasGroup , 1));
+            //StartCoroutine(FadeIn(_canvasGroup , 1));
         }
         
 

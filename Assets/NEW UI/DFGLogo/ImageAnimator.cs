@@ -25,6 +25,7 @@ public class ImageAnimatior : MonoBehaviour {
     [SerializeField] private float logoVol;
     void Awake() {
         image = GetComponent<Image> ();
+        ForceValidAspectRatio();
     }
 
     private void Start()
@@ -109,6 +110,34 @@ public class ImageAnimatior : MonoBehaviour {
             canvasGroup.gameObject.SetActive(false);
         
 
+    }
+    
+    private void ForceValidAspectRatio()
+    {
+        Resolution[] resolutions = Screen.resolutions;
+        float tolerance = 0.005f;
+        float targetAspectRatio = 16f / 9f;
+
+        float currentAspect = (float)Screen.width / Screen.height;
+
+        if(Mathf.Abs(currentAspect - targetAspectRatio) < tolerance)
+            return;
+
+        int targetHeight = Screen.height;
+        int targetWidth = Mathf.RoundToInt(targetHeight * targetAspectRatio);
+
+        foreach(Resolution res in resolutions)
+        {
+            if (res.width == targetWidth && res.height == targetHeight)
+            {
+                Debug.Log($"Setting resolution to 16 : 9 - {res.width}x{res.height}");
+                Screen.SetResolution(res.width, res.height, Screen.fullScreenMode);
+                return;
+            }
+
+            Debug.LogError("Cannot find screen resolution with 16:9 aspect ratio!");
+        }
+        
     }
     
     public void PlayLogoSound()
