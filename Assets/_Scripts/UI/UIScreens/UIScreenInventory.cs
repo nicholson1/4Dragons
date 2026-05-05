@@ -54,7 +54,6 @@ public class UIScreenInventory : UIScreen
     //Who handle this change?
 
 
-
     public override Selectable GetSelectableToSelectOnActivated()
     {
         switch(currentInventoryState)
@@ -105,7 +104,7 @@ public class UIScreenInventory : UIScreen
 
     public void ChangeInventoryState(InventoryState state)
     {
-        lootButtonManager.SetLeaveButtonInteractable(state == InventoryState.Loot);
+        lootButtonManager.SetSkipButtonInteractable(state == InventoryState.Loot);
         closableWithToggleOrButtonBackButton = state == InventoryState.Base;
         switch (state)
         {
@@ -334,5 +333,6 @@ public enum InventoryState
     Forge,
     Selection,
     Blacksmith,
-    ItemDrag
+    ItemDrag,
+    MysteryRelic
 }

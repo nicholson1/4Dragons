@@ -21,6 +21,6 @@ public class InspectableElementHandler : MonoBehaviour, ISelectHandler, IDeselec
     {
         inspectableElement = GetComponentInParent<IInspectableElement>();
         button = inspectableElement.GetGamepadButton();
-    }
 
+    }
 }

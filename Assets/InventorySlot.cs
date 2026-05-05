@@ -38,7 +38,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     //[SerializeField] private float placePitch;
 
     private InputHandler inputHandler;
-
+    private UIStateMonitor stateMonitor;
 
     public void LabelCheck()
     {
@@ -46,7 +46,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         {
             SlotLable = GetComponentInChildren<TextMeshProUGUI>();
             background = GetComponent<Image>();
-            baseColor = background.color;
+            if(background != null)
+                baseColor = background.color;
         }
 
         if (Slot == Equipment.Slot.Drop)
@@ -88,7 +89,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             }
             SlotLable.gameObject.SetActive(true);
 
-            background.color = baseColor;
+            if(background != null)
+                background.color = baseColor;
         }
 
         timer = 2f;
@@ -98,23 +100,30 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     public bool IsDiscardSlot() => Slot == Equipment.Slot.Drop;
     public bool IsSellSlot() => Slot == Equipment.Slot.Sell;
     public bool IsUpgradeSlot() => Slot == Equipment.Slot.Upgrade;
-    public bool IsShopSlot() => Slot == Equipment.Slot.Sold;
+    public bool IsShopSlot() => Slot == Equipment.Slot.Merchant;
     public bool IsRelicSlot() => Slot == Equipment.Slot.Relic;
     public bool IsAllSlot() => Slot == Equipment.Slot.All;
     public bool IsAllKindSlot() => IsDiscardSlot() || IsSellSlot() || IsUpgradeSlot() || IsShopSlot() || IsRelicSlot() || IsAllSlot();
+    private bool IsCharacterEquipmentSlot()
+    {
+        bool isEqSlot = Slot is Equipment.Slot.Boots or
+                                Equipment.Slot.Chest or
+                                Equipment.Slot.Legs or
+                                Equipment.Slot.Head or
+                                Equipment.Slot.Gloves or
+                                Equipment.Slot.Shoulders or
+                                Equipment.Slot.OneHander or
+                                Equipment.Slot.TwoHander or
+                                Equipment.Slot.Scroll;
 
+        return isEqSlot;
+    }
 
     public void HandleGamepadButtonSelected(Selectable selectable)
     {
         OnGamepadButtonSelected?.Invoke();
         //if(Item != null && !UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem item))
         //    Item.HighlightItem(true);
-
-        //this should open tooltip if it's available
-        if(Item != null && Item.e.isWeapon)
-        {
-            Debug.LogError($"Item {Item.name} isWeapon!");
-        }
 
         NavigationMode currentCursorMode = UIController._instance.StateMonitor.GetCursorMode();
 
@@ -148,6 +157,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
                 break;
 
             case NavigationMode.Sell:
+                
                 break;
         }
     }
@@ -220,6 +230,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
             case NavigationMode.Sell:
                 if (Item == null) return;
+                Debug.LogError($"Should add popup notification for selling");
+                SellItem(Item);
                 break;
         }         
     }
@@ -261,7 +273,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     private void TryDragOrSell()
     {
-        if (Slot == Equipment.Slot.Sold)
+        if (Slot == Equipment.Slot.Merchant)
         {
             Debug.LogError($"Try buying item from shop");
             TryBuyItem(Item);
@@ -276,7 +288,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
     {
         if(IsInCombat() && !itemToDrop.canBeDragged)
         {
-            Debug.LogError($"Item can't be dropped: combat related");
             OnCannotDragItemOnCombat(ErrorMessageManager.Errors.CombatMove); //consider invoke
             return false;
         }
@@ -397,7 +408,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
 
     private void SellItem(DragItem itemToSell)
     {
-        if (itemToSell.currentLocation.Slot == Equipment.Slot.Sold)
+        if (itemToSell.currentLocation.Slot == Equipment.Slot.Merchant)
             return;
 
         int gold = CalculateGold(itemToSell.e, this);
@@ -445,20 +456,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         }
     }
 
-    private bool IsCharacterEquipmentSlot()
-    {
-        bool isEqSlot = Slot is Equipment.Slot.Boots or 
-                                Equipment.Slot.Chest or 
-                                Equipment.Slot.Legs or 
-                                Equipment.Slot.Head or 
-                                Equipment.Slot.Gloves or
-                                Equipment.Slot.Shoulders or
-                                Equipment.Slot.OneHander or
-                                Equipment.Slot.TwoHander or
-                                Equipment.Slot.Scroll;
 
-        return isEqSlot;
-    }
 
     private void RemoveItemFromSlot()
     {
@@ -487,8 +485,33 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         di.GamepadFinishDrag();
     }
 
+    public void HandleMouseDropOnOccupiedSlot()
+    {
+        if (stateMonitor.GetCursorMode() != NavigationMode.ItemDrag)
+            return;
+
+        if (stateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
+        {
+            InitiateDroppingItem(itemOnGamepad);
+            return;
+        }
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
+        NavigationMode currentCursorMode = stateMonitor.GetCursorMode();
+
+        switch (currentCursorMode)
+        {
+            case NavigationMode.ItemDrag:
+                if (stateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
+                {
+                    TryDrop(itemOnGamepad);
+                }
+                break;
+        }
+
+        return;
         //AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy, 1,1);
         DragItem item = eventData.pointerDrag.GetComponent<DragItem>();
 
@@ -518,8 +541,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
             }
             if (Slot == Equipment.Slot.Sell)
             {
-                if(item.currentLocation.Slot == Equipment.Slot.Sold)
+                if(item.currentLocation.Slot == Equipment.Slot.Merchant)
                     return;
+
+                Debug.LogError($"Should add popup notification for selling!");
                 // calculate gold
                 int gold = CalculateGold(di.e, this);
                 //character add gold
@@ -529,6 +554,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
                 di.currentLocation.LabelCheck();
                 EquipmentManager._instance.PoolItem(di);
                 UIController._instance.PlaySellItem();
+                
 
                 return;
             }
@@ -540,7 +566,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
                 return;
             }
 
-            if (di.currentLocation.Slot == Equipment.Slot.Sold)
+            if (di.currentLocation.Slot == Equipment.Slot.Merchant)
             {
                 // if item is coming from shop
                 // check if we have enough gold if we dont return
@@ -648,7 +674,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IGamepadButtonListener
         //Character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         LabelCheck();
         //CombatController.EndCombatEvent += EndCombat;
-        
+        stateMonitor = UIController._instance.StateMonitor;
     }
     private void OnDestroy()
     {

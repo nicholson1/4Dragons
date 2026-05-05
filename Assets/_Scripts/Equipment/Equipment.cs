@@ -346,7 +346,7 @@ namespace ImportantStuff
             Sell,
             Upgrade,
             Relic,
-            Sold,
+            Merchant,
         }
     }
     public enum Stats

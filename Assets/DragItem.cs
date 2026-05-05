@@ -53,6 +53,7 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private DragItemHoverEffect hoverEffect;
 
     private Vector2 offsetWhenDragged = new Vector2(-50f, 50f);
+    private UIStateMonitor stateMonitor;
     
     public bool IsItemFromInventory()
     {
@@ -61,13 +62,12 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public bool HasSameSlotType(Equipment.Slot otherSlotType)
     {
-        Debug.Log($"Item A = {this.slotType} | Item B = { otherSlotType}");
         return this.slotType == otherSlotType;
     }
 
     public bool IsShopItem()
     {
-        return currentLocation.Slot == Equipment.Slot.Sold;
+        return currentLocation.Slot == Equipment.Slot.Merchant;
     }
 
     public void HighlightItem(bool toHighlight)
@@ -179,14 +179,6 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
 
-        //if (ForgeManager._instance.Upgrading)
-        //{
-        //    EquipmentManager._instance.UpgradeEquipment(this);
-        //}
-        //if (ForgeManager._instance.Enhancing)
-        //{
-        //    EquipmentManager._instance.EnhanceEquipment(this);
-        //}
 
         isBeingDragged = true;
         canvasGroup.blocksRaycasts = false;
@@ -255,6 +247,8 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        HighlightItem(true);
+
         if(e.IsGear())
         {
             ForgeManager._instance.SetForgeLabelPosition(_rectTransform);
@@ -276,6 +270,8 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        HighlightItem(false);
+
         if (!e.IsGear()) return;
 
         if (ForgeManager._instance.ForgeMode != ForgeMode.None)
@@ -286,6 +282,8 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void InitializeDragItem(Equipment equip, InventorySlot location)
     {
+        stateMonitor ??= UIController._instance.StateMonitor;
+
         // we have to clear the previous equipment
         //remove slot, remove stats
         _toolTip.ResetTooltip();
@@ -313,7 +311,7 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         slotType = e.slot;
 
-        if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All && currentLocation.Slot != Equipment.Slot.Sold)
+        if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All && currentLocation.Slot != Equipment.Slot.Merchant)
         {
             //Debug.Log(slotType + " "+ currentLocation.Slot);
             Debug.Log("I think we fudged this one up bud");
@@ -373,7 +371,8 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             _toolTip.Message = "Weapon: " + GetWeaponType(x.spellType1) + "\n" + _toolTip.Message;
         }
-        
+
+        this.gameObject.name = $"DragItem-{e.name}";
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
     }
@@ -399,10 +398,13 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if(e.isRelic)
             return;
+        AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
 
         isBeingDragged = true;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = .6f;
+        _rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+
         SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
         UIController._instance.StateMonitor.SetItemOnGamepad(this);
         //Debug.Log("pickup");
@@ -411,11 +413,25 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        //Debug.LogError($"Mouse end drag here!");
+        //canvasGroup.blocksRaycasts = true;
+        //canvasGroup.alpha = 1f;
+        //_rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
+        //UIController._instance.StateMonitor.SetItemOnGamepad(null);
+
+        if (draggingRoutine != null)
+        {
+            StopCoroutine(draggingRoutine);
+            draggingRoutine = null;
+        }
+
+        UIController._instance.StateMonitor.SetItemOnGamepad(null);
+        isBeingDragged = false;
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
-        UIController._instance.StateMonitor.SetItemOnGamepad(null);
-
+        _rectTransform.localScale = currentLocation._rt.localScale;
+        HighlightItem(false);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -440,8 +456,21 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     }
 
+    
     public void OnDrop(PointerEventData eventData)
     {
+        HighlightItem(false);
+        //another DragItem being drop to this one, notify the slot
+        if(currentLocation == null)
+        {
+            Debug.LogError($"Error! this item doesn't occupy an inventory slot!");
+            return;
+        }
+
+        currentLocation.HandleMouseDropOnOccupiedSlot();
+
+        return;
+
         isBeingDragged = false;
         if (canBeDragged == false)
         {
@@ -464,8 +493,10 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 return;
             }
             
-            if(di.currentLocation.Slot == Equipment.Slot.Sold)
+            if(di.currentLocation.Slot == Equipment.Slot.Merchant)
                 return;
+
+            //might need to handle sell item here
             
             if (slotType == di.slotType || currentLocation.Slot == di.currentLocation.Slot)
             {

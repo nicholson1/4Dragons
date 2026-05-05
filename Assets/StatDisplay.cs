@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ImportantStuff;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,6 +49,9 @@ public class StatDisplay : MonoBehaviour, IInspectableElement
         // {
         //     UpdateValues(stat, value);
         // }
+
+        gamepadButton = GetComponentInChildren<Button>();
+
     }
 
     public void UpdateValues(Stats s, int v, int LossOrGain = 0)

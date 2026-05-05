@@ -43,7 +43,7 @@ public class ShopManager : UIInventorySubPanel
     private List<Selectable> cachedInventoryButtons = new List<Selectable>();
     private List<InventorySlot> currentShopItems = new List<InventorySlot>();
 
-    public override void SetLeaveButtonInteractable(bool isInteractable)
+    public override void SetSkipButtonInteractable(bool isInteractable)
     {
         leaveButton.interactable = isInteractable;
     }

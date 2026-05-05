@@ -66,7 +66,7 @@ public class ForgeManager : UIInventorySubPanel
         EventSystem.current.SetSelectedGameObject(GetFirstInteractableSelectable().gameObject);
     }
 
-    public override void SetLeaveButtonInteractable(bool isInteractable)
+    public override void SetSkipButtonInteractable(bool isInteractable)
     {
         leaveButton.interactable = isInteractable;
     }

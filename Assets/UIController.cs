@@ -25,6 +25,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private UIScreenMap mapScreen;
     [SerializeField] private UIScreenCombat combatScreen;
     [SerializeField] private BlacksmithController blacksmithScreen;
+    [SerializeField] private EventUI eventUI;
+    [SerializeField] private UIScreenDefeated defeatedScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -140,11 +142,74 @@ public class UIController : MonoBehaviour
     {
         combatScreen.Deactivate();
     }
-
     
     public void ActivateTreasureScreen()
     {
         startingTreasureScreen.Activate();
+    }
+
+    public void ActivateDeathScreen()
+    {
+        ToolTipManager._instance.HideToolTipAll();
+        StartCoroutine(MovePanel(defeatedScreen.DefaultMainPanel, PanelMoveDirection.Vertical, true, DeathScreenPanelOpenedCallback));
+        defeatedScreen.DefaultRaycastBlocker.SetActive(true);
+    }
+
+    public void DeactivateDeathScreen()
+    {
+        StartCoroutine(MovePanel(defeatedScreen.DefaultMainPanel, PanelMoveDirection.Vertical, false, DeathScreenPanelOpenedCallback));
+    }
+
+    private void DeathScreenPanelOpenedCallback(bool toOpen)
+    {
+        if (toOpen)
+            defeatedScreen.Activate();
+        else
+            defeatedScreen.Deactivate();
+    }
+
+    public void InitiateAndActivateMysteryScreen()
+    {
+        eventUI.RandomEvent();
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, true, EventUIFinishedMoveCallback));
+    }
+
+    public void CloseMysteryScreenAndOpenMap()
+    {
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, false, EventUIFinishedMoveCallback));
+    }
+
+    public void CloseMysteryScreenAndOpenLoot()
+    {
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, false, OpenLootOnEventUIMoveFinished));
+    }
+
+    public void CloseMysteryAndOpenRelicSelection()
+    {
+        inventoryScreen.ChangeInventoryState(InventoryState.MysteryRelic);
+        inventoryScreen.Activate();
+
+        SelectionManager._instance.OnSelectionFinished += RelicSelectionFinishedCallback;
+        SelectionManager._instance.OpenMysteryRelicSelection();
+    }
+
+    private void EventUIFinishedMoveCallback(bool toOpen)
+    {
+        if (toOpen)
+            eventUI.Activate();
+        else
+            ToggleMapNew(true, true);
+    }
+
+    private void RelicSelectionFinishedCallback()
+    {
+        SelectionManager._instance.OnSelectionFinished -= RelicSelectionFinishedCallback;
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, false, (_) => ToggleMapNew(true, true)));
+    }
+
+    private void OpenLootOnEventUIMoveFinished(bool _)
+    {
+        ToggleInventoryUINew(true, InventoryState.Loot);
     }
 
     public IEnumerator AwaitScreenTransition(UIScreen oldScreen, UIScreen newScreen, Action<UIScreen, UIScreen> onFinishTransition = null)
@@ -1071,20 +1136,7 @@ public class UIController : MonoBehaviour
         //blackSmithMoving = false;
     }
 
-    public void ActivateDeathScreen()
-    {
-        EndOfGameScreen.SetActive(true);
 
-        if (CombatController._instance.retryAvailable >= 1)
-        {
-            retryCombatButton.SetActive(true);
-            TutorialManager.Instance.QueueTip(TutorialNames.Retry);
-        }
-        else
-        {
-            retryCombatButton.SetActive(false);
-        }
-    }
 
     public void ToggleKeyBindVisual()
     {
@@ -1125,14 +1177,15 @@ public class UIController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.R))
-        {
-            RelicTester.gameObject.SetActive(true);
-        }
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
-        {
-            ModTester.gameObject.SetActive(true);
-        }
+        //old input system cheats
+        //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.R))
+        //{
+        //    RelicTester.gameObject.SetActive(true);
+        //}
+        //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
+        //{
+        //    ModTester.gameObject.SetActive(true);
+        //}
     }
     public static string CamelCaseToSpaced(string camelCaseString)
     {

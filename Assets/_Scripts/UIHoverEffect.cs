@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
 
 public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
@@ -20,8 +21,6 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private bool isPointerEvent = false; //a guard to prevent pointer event triggering on gamepad select
     protected InputHandler inputHandler = null;
-
-    //protected UIScreen buttonOwnerUIScreen = null;
 
     private Selectable selectable = null;
 
@@ -50,9 +49,10 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     public void OnPointerEnter(PointerEventData eventData)
-    {        
+    {
         isPointerEvent = true;
-                
+
+
 
         //if(!setOnce)
         //{
@@ -110,6 +110,8 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnDeselect(BaseEventData eventData)
     {
+        
+        Debug.LogError($"OnDeselect on UIHoverEffect for {gameObject.name}, selected object = {eventData.selectedObject.name}!");
         if (isPointerEvent)
         {
             isPointerEvent = false;
@@ -183,11 +185,13 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         initialScale = transform.localScale;
         initialRotation = transform.localRotation;
 
+
     }
 
     private void OnDestroy()
     {
         inputHandler.OnInputTypeChange -= HandleInputChange;
     }
-   
+
+
 }

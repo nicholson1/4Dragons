@@ -14,7 +14,7 @@ public abstract class UIInventorySubPanel : MonoBehaviour
 
     public abstract void SetupLeftNavigationToMainPanel(List<Selectable> selectables);
 
-    public abstract void SetLeaveButtonInteractable(bool isInteractable);
+    public abstract void SetSkipButtonInteractable(bool isInteractable);
 
     protected void BroadcastPanelOpen()
     {

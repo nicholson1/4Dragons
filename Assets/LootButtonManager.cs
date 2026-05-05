@@ -38,7 +38,7 @@ public class LootButtonManager : UIInventorySubPanel
 
     private List<Selectable> cachedRightMostInventoryButtons = new List<Selectable>();
 
-    public override void SetLeaveButtonInteractable(bool shouldInteractable) => leaveButton.interactable = shouldInteractable;
+    public override void SetSkipButtonInteractable(bool shouldInteractable) => leaveButton.interactable = shouldInteractable;
 
     public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
     {

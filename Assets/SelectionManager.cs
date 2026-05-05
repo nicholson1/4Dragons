@@ -40,8 +40,9 @@ public class SelectionManager : UIInventorySubPanel
     private List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
     private SelectionItem currentSelectedItem = null;
     private List<Selectable> cachedInventoryButtons = new List<Selectable>();
+    private List<List<Equipment>> cachedRelics = new List<List<Equipment>>();
 
-    public override void SetLeaveButtonInteractable(bool isInteractable)
+    public override void SetSkipButtonInteractable(bool isInteractable)
     {
         SkipButton.gameObject.SetActive(isInteractable);
     }
@@ -121,39 +122,8 @@ public class SelectionManager : UIInventorySubPanel
         SetupGamepadHorizontalNavigationForCurrentSelections();
         SetupLeftNavigationToMainPanel();
     }
+      
 
-    
-    private SelectionItem GetClosestAvailableLeftSelectionItem(int currentIndex)
-    {      
-        for (int i = currentIndex; i >= 0 ; i--) //(indexToFind >= 0 && indexToFind < currentActiveSelectionItems.Count)
-        {
-            int nextIndex = i - 1;
-            if (nextIndex < 0)
-                return null;
-
-            SelectionItem item = currentActiveSelectionItems[nextIndex];
-            if (item.isAvailable)
-                return item;            
-        }
-
-        return null;
-    }
-
-    private SelectionItem GetClosestAvailableRightSelectionItem(int currentIndex)
-    {
-        for (int i = currentIndex; i < currentActiveSelectionItems.Count; i++)
-        {
-            int nextIndex = i + 1;
-            if (nextIndex >= currentActiveSelectionItems.Count)
-                return null;
-
-            SelectionItem item = currentActiveSelectionItems[nextIndex];
-            if (item.isAvailable)
-                return item;
-        }
-
-        return null;
-    }
 
     private void SetIndividualSelectionItemHorizontalNavigation(SelectionItem item, Selectable targetLeft, Selectable targetRight)
     {
@@ -387,11 +357,36 @@ public class SelectionManager : UIInventorySubPanel
         StartCoroutine(FadeImage(0.8f,.75f, SelectionItemsCreatedCallback));
     }
 
+    private void RelicSelectionForMysteryUI(Equipment relic)
+    {
+        currentActiveSelectionItems.Clear();
+
+        SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
+        item.SetSkipButton(SkipButton); //should be set before initializing the SelectionItem
+        item.InitializeSelectionItem(relic);
+        currentActiveSelectionItems.Add(item);
+        item.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
+        item.OnSelectionItemPanelSelected += SelectionItemPanelSelectedCallback;
+
+        StartCoroutine(FadeImage(0.8f, .75f, MysteryRelicItemCreatedCallback));
+    }
+
     private void SelectionItemsCreatedCallback()
     {
         BroadcastPanelOpen();
         SetupGamepadHorizontalNavigationForCurrentSelections();
-        SetLeaveButtonInteractable(true);
+        SetSkipButtonInteractable(true);
+        SetupSkipButtonNavigation();
+    }
+
+    private void MysteryRelicItemCreatedCallback()
+    {
+        BroadcastPanelOpen();
+
+        var firstTargetSelected = GetLeftMostAvailableSelectionItem();
+        EventSystem.current.SetSelectedGameObject(firstTargetSelected.MainButton.gameObject);
+
+        SetSkipButtonInteractable(true);
         SetupSkipButtonNavigation();
     }
 
@@ -402,7 +397,7 @@ public class SelectionManager : UIInventorySubPanel
             selectionItem.DisableButtons();
         }
 
-        SetLeaveButtonInteractable(false);
+        SetSkipButtonInteractable(false);
         ClearSelections();
     }
 
@@ -475,10 +470,11 @@ public class SelectionManager : UIInventorySubPanel
         TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);        
     }
 
-    public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random,  ChestType type2 = ChestType.Random)
+    public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random, ChestType type2 = ChestType.Random, bool forMystery = false)
     {
-        List<List<ImportantStuff.Equipment>> relics = new List<List<ImportantStuff.Equipment>>();
-        List<List<ImportantStuff.Equipment>> equipments = new List<List<ImportantStuff.Equipment>>();
+        cachedRelics.Clear();
+        List<List<Equipment>> relics = new List<List<Equipment>>();
+        List<List<Equipment>> equipments = new List<List<Equipment>>();
         List<int> golds = new List<int>();
 
         
@@ -502,12 +498,13 @@ public class SelectionManager : UIInventorySubPanel
 
         int level = CombatController._instance.Player._level;
 
-        List<ImportantStuff.Equipment> selection = new List<ImportantStuff.Equipment>();
+        List<Equipment> selection = new List<Equipment>();
 
         switch (selectionType.Item1)
         {
             case ChestType.Relic:
-                relics.Add(new List<ImportantStuff.Equipment> { RelicManager._instance.GetCommonRelic()});
+                relics.Add(new List<Equipment> { RelicManager._instance.GetCommonRelic()});
+                cachedRelics = relics;
                 break;
             case ChestType.Gold:
                 int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;
@@ -623,13 +620,14 @@ public class SelectionManager : UIInventorySubPanel
                 gold1 = Mathf.RoundToInt(gold1 * .5f);
             golds.Add(gold1);
         }
-
-        
+              
 
         if (relics.Count == 0)
             relics = null;
 
-        LootButtonManager._instance.SetLootButtons(equipments, golds, relics);
+        if(!forMystery)
+            LootButtonManager._instance.SetLootButtons(equipments, golds, relics);
+
     }
 
     public void CreateEquipmentListsStart()
@@ -785,7 +783,19 @@ public class SelectionManager : UIInventorySubPanel
         LootButtonManager._instance.SetLootButtons(equipments, new List<int>() { gold }, new List<List<ImportantStuff.Equipment>>() { relics });
     }
 
-    
+    public void OpenMysteryRelicSelection()
+    {
+        if (cachedRelics.Count <= 0)
+        {
+            Debug.LogError($"Error: no relic on the cache!");
+            return;
+        }
+
+        var mysteryRelic = cachedRelics[0][0]; //there's only 1 anyway
+        RelicSelectionForMysteryUI(mysteryRelic);
+    }
+
+
     public void RandomSelectionBegging()
     {
         //get level from character
@@ -1016,7 +1026,7 @@ public class SelectionManager : UIInventorySubPanel
 
     private void Start()
     {
-        SetLeaveButtonInteractable(false);
+        SetSkipButtonInteractable(false);
     }
 
     private (ChestType, ChestType) SelectChestType()

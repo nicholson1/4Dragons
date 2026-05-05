@@ -62,11 +62,6 @@ public class ToggleBindingHandler : SelectableBindingHandler
         toggle = GetComponent<Toggle>();
     }
 
-    private void Start()
-    {
-
-    }
-
     private void OnDestroy()
     {
         if(selectableOwnerUIScreen != null)
