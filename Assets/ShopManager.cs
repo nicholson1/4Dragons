@@ -176,6 +176,11 @@ public class ShopManager : UIInventorySubPanel
 
     public void InitializeShop(int i)
     {
+        //DEBUG always relic shop
+        InitializeShop(InventorySlot.SellShopType.Relics);
+        Debug.LogError($"Debug always initialize relic here");
+        return;
+
         InitializeShop((InventorySlot.SellShopType) i);
     }
 
@@ -233,7 +238,10 @@ public class ShopManager : UIInventorySubPanel
 
         
         ShopType = type;
+
         SellButton.SellType = type;
+
+
 
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {

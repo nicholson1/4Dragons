@@ -16,14 +16,14 @@ public class SellHandlingOnGamepad : MonoBehaviour
             stateMonitor.SetCursorMode(NavigationMode.Sell);
         else
         {
-            if(stateMonitor.GetCursorMode() == NavigationMode.Sell)
+            if(stateMonitor.GetUINavigationMode() == NavigationMode.Sell)
                 stateMonitor.SetCursorMode(NavigationMode.Neutral);
         }            
     }
 
     private void ButtonPressToToggle()
     {
-        if (stateMonitor.GetCursorMode() == NavigationMode.ItemDrag)
+        if (stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
             return;
 
         SellToggled(!toggle.isOn);

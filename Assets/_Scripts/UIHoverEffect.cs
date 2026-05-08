@@ -111,7 +111,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnDeselect(BaseEventData eventData)
     {
         
-        Debug.LogError($"OnDeselect on UIHoverEffect for {gameObject.name}, selected object = {eventData.selectedObject.name}!");
+        //Debug.LogError($"OnDeselect on UIHoverEffect for {gameObject.name}, selected object = {eventData.selectedObject.name}!");
         if (isPointerEvent)
         {
             isPointerEvent = false;
@@ -166,7 +166,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     }
 
-    private void HandleInputChange(InputType inputType)
+    private void HandleInputChange(InputSource inputType)
     {
 
     }

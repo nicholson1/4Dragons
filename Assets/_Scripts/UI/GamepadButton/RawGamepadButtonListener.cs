@@ -24,7 +24,7 @@ public class RawGamepadButtonListener : MonoBehaviour, IGamepadButtonListener
             tooltip.CloseTip();
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable)
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
     {
         
     }
@@ -35,6 +35,11 @@ public class RawGamepadButtonListener : MonoBehaviour, IGamepadButtonListener
 
         if (tooltip != null)
             tooltip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
+    }
+
+    public void HandleCancelPerformed()
+    {
+
     }
 
     private void Awake()

@@ -24,7 +24,7 @@ public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener
         TargetImage.enabled = false;
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable)
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
     {
         potionDrag.UsePotion(combatEntity);
     }
@@ -40,6 +40,11 @@ public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener
 
         potionDrag = potion;
         targetImage.sprite = potion.PotionImage.sprite;
+    }
+
+    public void HandleCancelPerformed()
+    {
+
     }
 
     private void Awake()

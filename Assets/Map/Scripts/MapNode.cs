@@ -229,8 +229,11 @@ namespace Map
 
         public void OnPointerUp(PointerEventData data)
         {
+            //DEBUG MAP CLICKABLE ANYWHERE - uncomment these
             //if (!mapScreen.AreNodesClickable) return;
             //if (Node.State != NodeStates.Attainable) return;
+            Debug.LogError($"DEBUG MAP CAN BE CLICKED HERE");
+
             if (Time.time - mouseDownTime < MaxClickDuration)
             {
                 // user clicked on this node:
@@ -272,12 +275,17 @@ namespace Map
                 toolTip.CloseTip();
         }
 
-        public void HandleGamepadButtonPressed(Selectable selectable)
+        public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
         {
             if (!mapScreen.AreNodesClickable) return;
             if (Node.State != NodeStates.Attainable) return;
 
             SelectNode();            
+        }
+
+        public void HandleCancelPerformed()
+        {
+
         }
 
         public void SelectNode()

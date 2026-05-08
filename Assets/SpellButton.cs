@@ -54,11 +54,16 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
         CancelCastingSpell();
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable)
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
     {
         if (!isSpellReady) return;
             
         InitiateCastSpell();
+    }
+
+    public void HandleCancelPerformed()
+    {
+
     }
 
     private void ReadyCastingSpell()

@@ -153,7 +153,7 @@ public class DragItemHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointer
 
     }
 
-    private void HandleInputChange(InputType inputType)
+    private void HandleInputChange(InputSource inputType)
     {
 
     }

@@ -5,16 +5,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using System.Collections;
 
 
+/// <summary>
+/// Add this component along with the respective PlayerInput.
+/// Set all needed DeviceType on each control scheme in the InputAction, or this component won't detect anything
+/// </summary>
+[RequireComponent(typeof(PlayerInput))]
 public class InputSourceHandler : MonoBehaviour
 {
-    
+    public static InputSourceHandler Instance { get; private set; }   
     public event Action<bool> OnDeviceLost;
     public event Action<bool> OnDeviceRegained;
     public event Action<InputSource> OnDeviceChanged;
 
-    public bool IsInitialized { get; private set; } = false;
+    public bool IsInitialized => isInitialized;
     public bool GlobalInputDisabled => playerInput != null && !playerInput.enabled;
     public GameObject CachedLastSelectable => cachedLastSelectable;
     public InputSource CurrentInputSource => GetInputSource(currentControlScheme);
@@ -28,7 +34,8 @@ public class InputSourceHandler : MonoBehaviour
     private string currentControlScheme = string.Empty;
 
     private const string gamepadString = "Gamepad";
-    private const string mouseKeyString = "Keyboard&Mouse";
+    private const string mouseKeyString = "KeyboardMouse";
+    private bool isInitialized = false;
 
     [SerializeField] private List<int> pairedDevices = new List<int>();
 
@@ -85,10 +92,9 @@ public class InputSourceHandler : MonoBehaviour
             playerInput = input;
 
         cachedLastSelectable = EventSystem.current.currentSelectedGameObject;
-        currentControlScheme = playerInput.currentControlScheme;
-        OnDeviceChanged?.Invoke(CurrentInputSource);
+        currentControlScheme = input.currentControlScheme;
 
-        Debug.Log($"Current input: {CurrentInputSource}");
+        OnDeviceChanged?.Invoke(CurrentInputSource);
     }
 
     private void DeviceLostHandling(PlayerInput input)
@@ -106,18 +112,19 @@ public class InputSourceHandler : MonoBehaviour
         return controlScheme switch
         {
             "Gamepad" => InputSource.Gamepad,
-            "Keyboard&Mouse" => InputSource.MouseKeyboard,
-            "Touch" => InputSource.Touch,
+            "KeyboardMouse" => InputSource.MouseKeyboard,
             _ => InputSource.Undefined
         };
     }
 
 
-    private void InitializeUIInput()
+
+    public void InitializeInputSourceHandler()
     {
         inputModule = EventSystem.current.currentInputModule as InputSystemUIInputModule;
         playerInput = GetComponent<PlayerInput>();
         playerInput.uiInputModule = inputModule;
+
 
         playerInput.onControlsChanged += CurrentDeviceChangeHandling;
         playerInput.onDeviceLost += DeviceLostHandling;
@@ -126,36 +133,32 @@ public class InputSourceHandler : MonoBehaviour
         UpdatePairedDevices(playerInput);
 
         currentControlScheme = playerInput.currentControlScheme;//Application.isConsolePlatform ? gamepadString : playerInput.currentControlScheme;
-
         if (Application.isConsolePlatform && playerInput.currentControlScheme != gamepadString)
         {
             playerInput.SwitchCurrentControlScheme(currentControlScheme);
         }
 
-        IsInitialized = true;
+        isInitialized = true;
     }
 
-    private void Start()
+    private void Awake()
     {
-        //InitializeUIInput();
+        InitializeInputSourceHandler();
     }
 
     private void OnDestroy()
     {
-        //if (playerInput != null)
-        //{
-        //    playerInput.onControlsChanged -= CurrentDeviceChangeHandling;
-        //    playerInput.onDeviceLost -= DeviceLostHandling;
-        //    playerInput.onDeviceRegained -= DeviceRegainedHandling;
-        //}
+        if (playerInput != null)
+        {
+            playerInput.onControlsChanged -= CurrentDeviceChangeHandling;
+            playerInput.onDeviceLost -= DeviceLostHandling;
+            playerInput.onDeviceRegained -= DeviceRegainedHandling;
+        }
     }
 }
 
 public enum InputSource
 {
-    MouseKeyboard,
-    Gamepad,
-    Touch,
-    Undefined
+    Gamepad, MouseKeyboard, Undefined
 }
 

@@ -44,11 +44,27 @@ public class UIScreen : MonoBehaviour
 
     [SerializeField] protected bool startDisabled = false;
 
+    protected GameObject lastGamepadSelectedObject = null;
 
-
-    protected virtual void HandleInputTypeChange(InputType inputType)
+    protected virtual void HandleInputTypeChange(InputSource inputType)
     {
+        if (!isScreenActive)
+            return;
 
+        if(inputType == InputSource.MouseKeyboard)
+        {
+            if(EventSystem.current.currentSelectedGameObject != null)
+                lastGamepadSelectedObject = EventSystem.current.currentSelectedGameObject;
+
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+        else if(inputType == InputSource.Gamepad)
+        {
+            if (lastGamepadSelectedObject != null)
+                EventSystem.current.SetSelectedGameObject(lastGamepadSelectedObject);
+            else
+                EventSystem.current.SetSelectedGameObject(defaultSelectable.gameObject);
+        }
     }
 
     /// <summary>

@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using InputIcons;
 using System;
+using DFG.UIHandling;
 
 public class ButtonBindingHandler : SelectableBindingHandler
 {
+    public bool ignoreButtonSound = false;
     protected Button button = null;
 
     [SerializeField] protected ExtraButton extraButtonToUse = ExtraButton.None;
@@ -16,6 +18,13 @@ public class ButtonBindingHandler : SelectableBindingHandler
     [SerializeField] protected bool shouldHaveClickableButton = true;
 
     private Image glyphImage = null;
+
+
+    [ContextMenu("Debug Manual Bind")]
+    public void DebugManualBind()
+    {
+        ManualBindInput(true);
+    }
 
     public virtual void ButtonClickCallback()
     {
@@ -34,7 +43,20 @@ public class ButtonBindingHandler : SelectableBindingHandler
         if (!button.interactable) return;
 
         if (EventSystem.current.currentSelectedGameObject == this.gameObject)
-            button.onClick.Invoke();
+        {
+
+            //FINALIZE THIS!!
+            Debug.Log($"Finalize This!!");
+            if (button.TryGetComponent(out ButtonExtender extender))
+            {
+                extender.ClickButton(InputSource.Gamepad);
+            }
+            else
+                Debug.LogError($"ButtonExtender not available!");
+                
+                //button.onClick.Invoke();
+        }
+            
     }
 
     protected virtual void ClickThroughInput()
@@ -48,7 +70,16 @@ public class ButtonBindingHandler : SelectableBindingHandler
 
         if (!button.interactable) return;
 
-        button.onClick.Invoke();
+        //FINALIZE THIS!!
+        Debug.Log($"Finalize This!!");
+        if (button.TryGetComponent(out ButtonExtender extender))
+        {
+            extender.ClickButton(InputSource.Gamepad);
+        }
+        else
+            Debug.LogError($"ButtonExtender not available!");
+
+         //button.onClick.Invoke();
     }
 
 
@@ -154,7 +185,8 @@ public class ButtonBindingHandler : SelectableBindingHandler
     }
 
     /// <summary>
-    /// for non UIScreen panel buttons that requires runtime binding/unbinding    /// </summary>
+    /// for non UIScreen panel buttons that requires runtime binding/unbinding    
+    /// </summary>
     public void ManualBindInput(bool toBind)
     {
         UnbindGamepadFromButton();
@@ -167,6 +199,8 @@ public class ButtonBindingHandler : SelectableBindingHandler
 
     private void HandleButtonSound()
     {
+        if (ignoreButtonSound) return;
+
         UIController._instance.PlayUIClick();
     }
 

@@ -13,6 +13,7 @@ public class UIStateMonitor : MonoBehaviour
     public UIScreen CurrentActiveScreen => currentActiveScreen;
     public UIScreen PreviousActiveScreen => previousActiveScreen;
     public bool PanelCurrentlyMove => panelCurrentlyMove;
+    public Transform ItemOnDragParent => itemOnGamepadParent;
 
     [SerializeField] private Transform itemOnGamepadParent;
 
@@ -33,29 +34,41 @@ public class UIStateMonitor : MonoBehaviour
 
     public void SetCursorMode(NavigationMode mode) => cursorMode = mode;
 
-    public NavigationMode GetCursorMode() => cursorMode;
+    public NavigationMode GetUINavigationMode() => cursorMode;
     
 
     public void SetItemOnGamepad(DragItem item)
     {
-        if(item == null && itemOnGamepad != null)
+        if(item == null)
         {
-            SetCursorMode(NavigationMode.Neutral);
-            itemOnGamepad.transform.parent = itemOnGamepadPreviousParent;
-            itemOnGamepad.transform.localPosition = itemOnGamepadPreviousLocalPos;
+            Debug.LogError($"Error: Null item argument! should not happen!");
+            return;
         }
 
         itemOnGamepad = item;
+        itemOnGamepadPreviousParent = itemOnGamepad.transform.parent;
+        itemOnGamepadPreviousLocalPos = itemOnGamepad.transform.localPosition;
+        itemOnGamepad.transform.parent = ItemOnDragParent;
 
-        if(itemOnGamepad != null)
+        SetCursorMode(NavigationMode.MoveItem);
+
+        OnDragItem?.Invoke(true);
+    }
+
+    public void ClearItemOnGamepad()
+    {
+        if(itemOnGamepad == null)
         {
-            SetCursorMode(NavigationMode.ItemDrag);
-            itemOnGamepadPreviousParent = itemOnGamepad.transform.parent;
-            itemOnGamepadPreviousLocalPos = itemOnGamepad.transform.localPosition;
-            itemOnGamepad.transform.parent = itemOnGamepadParent;
+            Debug.LogError($"Error: item on gamepad was already null! check the trace!");
         }
 
-        OnDragItem?.Invoke(itemOnGamepad != null);
+        itemOnGamepad = null;
+        itemOnGamepadPreviousParent = null;
+        itemOnGamepadPreviousLocalPos = Vector3.zero;
+
+        SetCursorMode(NavigationMode.Neutral);
+
+        OnDragItem?.Invoke(false);
     }
 
     public bool TryGetItemOnGamepad(out DragItem item)
@@ -145,7 +158,7 @@ public class UIStateMonitor : MonoBehaviour
 public enum NavigationMode
 {
     Neutral,
-    ItemDrag,
+    MoveItem,
     Upgrade,
     Enhance,
     Sell

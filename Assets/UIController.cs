@@ -125,9 +125,16 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private AudioClip UpgradeSound;
     [SerializeField] private float UpgradeSoundVol;
+
+    [SerializeField] private AudioClip pickUp;
+    [SerializeField] private float pickUpVol;
+    [SerializeField] private float pickUpPitch;
+
+    [SerializeField] private AudioClip discardItem;
+    [SerializeField] private float discardItemVol;
     #endregion
 
-        
+
     public void ActivateTitleScreen()
     {
         TitleScreen.GetComponent<UIScreen>().Activate();
@@ -1253,6 +1260,14 @@ public class UIController : MonoBehaviour
     public void PlayPlaceItem()
     {
         SoundManager.Instance.Play2DSFX(placeItem, placeItemVol, 1, .05f);
+    }
+    public void PlayStartDragItem()
+    {
+        SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
+    }
+    public void PlayDiscardItem()
+    {
+        SoundManager.Instance.Play2DSFX(discardItem, discardItemVol, 1, .05f);
     }
     public void PlayGetRelic()
     {

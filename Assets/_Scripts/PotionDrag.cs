@@ -79,6 +79,11 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
 
     }
 
+    public void HandleCancelPerformed()
+    {
+
+    }
+
     public void OnEndDrag(PointerEventData eventData)
     {
         int layer_mask = LayerMask.GetMask("Characters");
@@ -120,7 +125,7 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
 
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable)
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
     {        
         Debug.LogError($"Potion button pressed, initiatePotionTargetting!");
         combatScreen.InitiatePotionTargetting(this);
@@ -135,4 +140,6 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
         combatScreen.RemoveActivePotionDrag(this);
         SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, .05f);
     }
+
+
 }

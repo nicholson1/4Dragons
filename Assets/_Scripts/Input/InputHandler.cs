@@ -1,10 +1,12 @@
 using InputIcons;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 
 /// <summary>
@@ -14,7 +16,7 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class InputHandler : MonoBehaviour
 {
-    public event Action<InputType> OnInputTypeChange;
+    public event Action<InputSource> OnInputTypeChange;
 
     public UnityEvent<int> OnAttackButtonPressed;
     public UnityEvent<bool> OnInspectTogglePressed;
@@ -30,9 +32,11 @@ public class InputHandler : MonoBehaviour
     public UnityEvent OnR1;
     public UnityEvent OnR2;
 
+    public Vector2 MousePosition => Mouse.current.position.ReadValue();
+
     public ActionMaps CurrentActionMap => currentActionMap;
     public InputSourceHandler InputSourceHandler => inputSourceHandler;
-    public InputType CurrentInputType => currentInputType;
+    public InputSource CurrentInputType => currentInputType;
 
     [SerializeField] private InputActionAsset inputActions;
 
@@ -46,13 +50,36 @@ public class InputHandler : MonoBehaviour
 
     private InputSourceHandler inputSourceHandler = null;
 
-    private InputType currentInputType = InputType.Gamepad;
+    private InputSource currentInputType = InputSource.Gamepad;
 
     [SerializeField] private Texture2D mouseCursor = null;
 
     //Debug fields
     [SerializeField] ActionMaps debugTargetActionMap = ActionMaps.Combat;
 
+    private GameObject lastSelected;
+
+    #region Selection Handling
+    private void HandleSelectionOnInputChange(InputSource source)
+    {
+        if(source == InputSource.MouseKeyboard)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            return;
+        }
+
+        if(lastSelected != null)
+        {
+            EventSystem.current.SetSelectedGameObject(lastSelected);
+            Debug.LogError($"InputHandler: lastSelected = {lastSelected.name}");            
+        }
+        else
+        {
+            Debug.LogError($"lastSelected is not available, find one according to each menu");
+        }
+    }
+
+    #endregion
 
     #region Button Events
     private void Weapon1Pressed(InputAction.CallbackContext context) => OnAttackButtonPressed?.Invoke(0);
@@ -234,38 +261,40 @@ public class InputHandler : MonoBehaviour
         }          
     }
 
-    private InputType GetInputType(InputDevice device)
-    {
-        if (device is Gamepad)
-        {
-            return InputType.Gamepad;
-        }
-
-        else if (device is Keyboard or Mouse)
-            return InputType.MouseKeyboard;
-
-        else
-            return InputType.Undefined;
-    } 
 
     private void HandleCursorVisibility()
     {
-        bool showCursor = currentInputType == InputType.MouseKeyboard;
+        bool showCursor = currentInputType == InputSource.MouseKeyboard;
 
         Cursor.visible = showCursor;
-        Cursor.lockState = showCursor ? CursorLockMode.None : CursorLockMode.Locked;
+
+        //Cursor.lockState = showCursor ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
-    private void HandleInputChange(InputDevice device)
+    private void HandleInputChange(InputSource source)
     {
-        var deviceType = GetInputType(device);
-        if (deviceType == currentInputType) return;
+        if(EventSystem.current.currentSelectedGameObject != null)
+        {
+            lastSelected = EventSystem.current.currentSelectedGameObject;
+            Debug.LogError($"lastSelected on inputChange = {lastSelected.name}");
+        }
 
-        currentInputType = deviceType;
+        currentInputType = source;
 
         HandleCursorVisibility();
 
+        HandleSelectionOnInputChange(source);
         OnInputTypeChange?.Invoke(currentInputType);
+    }
+
+
+    private void DeviceLostCallback(PlayerInput pi) 
+    { 
+    }
+
+    private void DeviceRegainedCallback(PlayerInput pi)
+    {
+
     }
 
     private IEnumerator InputChangeHandlerSetupRoutine()
@@ -278,9 +307,11 @@ public class InputHandler : MonoBehaviour
             yield return null;
         }
 
-        HandleInputChange(InputIconsManagerSO.GetCurrentInputDevice());
 
-        InputIconsManagerSO.onControlsChanged += HandleInputChange;        
+        //currentInputType = GetInputType(InputIconsManagerSO.GetCurrentInputDevice());
+        //HandleInputChange(InputIconsManagerSO.GetCurrentInputDevice());
+
+        //InputIconsManagerSO.onControlsChanged += HandleInputChange;        
     }
 
     private void SetupMouseCursor()
@@ -302,33 +333,32 @@ public class InputHandler : MonoBehaviour
     //        Debug.Log($"UI HIT: {r.gameObject.name}", r.gameObject);
     //}
 
-    private void Awake()
+    private void Start()
     {
         SetupMouseCursor();
         EnableAllInputActions();
         BindInputEvents();
 
         SwitchActionMap(defaultActionMap);
+    }
 
-        StartCoroutine(InputChangeHandlerSetupRoutine());
-
+    private void Awake()
+    {
         inputSourceHandler ??= GetComponent<InputSourceHandler>();
+        inputSourceHandler.OnDeviceChanged += HandleInputChange;
     }
 
     private void OnDestroy()
     {
         UnbindInputEvents();
 
-        InputIconsManagerSO.onControlsChanged -= HandleInputChange;
+        inputSourceHandler.OnDeviceChanged -= HandleInputChange;
 
     }
     #endregion
 
-}
 
-public enum InputType
-{
-    Gamepad, MouseKeyboard, Undefined
+
 }
 
 public enum ActionMaps

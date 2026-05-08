@@ -70,7 +70,14 @@ public class EquipmentManager : MonoBehaviour
 
     private void EquipItem(Equipment equipment)
     {
+        if (c._equipment.Contains(equipment))
+        {
+            Debug.LogError($" Abort EquipItem: character's equipments already contains {equipment.name} this should break the current equipment data!");
+            return;
+        }
+
         c._equipment.Add(equipment);
+
         if (equipment.isWeapon)
         {
             Weapon weapon = equipment as Weapon;
@@ -99,6 +106,23 @@ public class EquipmentManager : MonoBehaviour
         }
         c.EqMM.UpdateSlot(equipment);
         c.UpdateStats();
+
+        // if incombat
+        if (CombatController._instance.entitiesInCombat.Count > 1 && !equipment.isPotion)
+        {
+
+            //Debug.Log("three times?");
+            if (equipment.slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
+            {
+                return;
+            }
+            if (equipment.slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
+            {
+                return;
+            }
+            c.UpdateEnergyCount(-1);
+
+        }
     }
 
     public void UnEquipItem(Equipment e)
@@ -148,6 +172,9 @@ public class EquipmentManager : MonoBehaviour
 
     public bool TryEquipItem(Equipment equipmentToEquip)
     {
+        if (equipmentToEquip.isPotion)
+            return false;
+
         for (int invSloti = 0; invSloti < InventorySlots.Length; invSloti++)
         {
             //find the slot that has the item
@@ -245,61 +272,15 @@ public class EquipmentManager : MonoBehaviour
         return true;
     }       
 
+
     public void EquipFromInventory(Equipment e)
     {
-        //Debug.Log("i only ran once" + e.name) ;
         c._inventory.Remove(e);
-        if (!c._equipment.Contains(e))
-        {
-            c._equipment.Add(e);
-            if (e.isWeapon)
-            {
-                Weapon x = (Weapon) e;
-                if (x.slot == Equipment.Slot.Scroll)
-                {
-                    c._spellScrolls.Add(x);
-                }
-                else
-                {
-                    c._weapons.Add(x);
-                }
-                if (c._weapons.Count > 1)
-                {
-                    c.EqMM.UpdateWeapon(c._weapons[0], c._weapons[1]);
-                }
-                else if (c._weapons.Count == 1)
-                {
-                    c.EqMM.UpdateWeapon(c._weapons[0], null);
-                }
-                else
-                {
-                    c.EqMM.UpdateWeapon(null, null);
 
-                }
-            }
-
-        }
-        c.UpdateStats();
-        c.EqMM.UpdateSlot(e);
-
-        // if incombat
-        if (CombatController._instance.entitiesInCombat.Count > 1 && !e.isPotion)
-        {
-            
-            //Debug.Log("three times?");
-            if (e.slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
-            {
-                return;
-            }
-            if (e.slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
-            {
-                return;
-            }
-            c.UpdateEnergyCount(-1);
-            
-        }
+        EquipItem(e);
 
     }
+
     public void DropItem(Equipment e)
     {
         if (c._equipment.Contains(e))
@@ -367,6 +348,7 @@ public class EquipmentManager : MonoBehaviour
 
     public bool TryPutItemToInventory(Equipment e)
     {
+        Debug.LogError($"TryPutItemToInventory");
         InventorySlot slot = null;
 
         // check if we have an empty, if we do save that one

@@ -2,15 +2,16 @@ using ImportantStuff;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
-public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
     public bool IsBeingDragged => isBeingDragged;
 
@@ -84,6 +85,26 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             hoverEffect.GamepadDeselect();
             _toolTip.CloseTip();
         }
+    }
+
+    public bool CanBeDraggedInCombat()
+    {
+        if (e.isRelic) return false;
+
+        var currentEnergy = character._currentEnergy;
+
+        if (!character.isPlayerCharacter) return false;
+
+        if (e.slot == Equipment.Slot.Scroll && RelicManager._instance.CheckRelic(RelicType.Relic1))
+        {
+            currentEnergy = 1;
+        }
+        if (e.slot == Equipment.Slot.OneHander && RelicManager._instance.CheckRelic(RelicType.Relic2))
+        {
+            currentEnergy = 1;
+        }
+
+        return currentEnergy >= 0;
     }
 
     public void HandleForgeHighlight(bool isOn)
@@ -172,10 +193,11 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         ForgeManager._instance.ShowForgePrice(e);
     }
 
-    public void GamepadStartDrag(InventorySlot origin)
+    public void GamepadStartDrag(InventorySlot origin, InputSource source)
     {
-        if (e.isRelic)
-            return;
+        Debug.LogError($"DragItem.GamepadStartDrag() should not execute!");
+        return;
+        if (e.isRelic) return;
 
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
 
@@ -193,11 +215,16 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             StopCoroutine(draggingRoutine);
             draggingRoutine = null;
         }
-        draggingRoutine = StartCoroutine(GamepadDragRoutine());
+
+        if (source == InputSource.Gamepad)
+            draggingRoutine = StartCoroutine(GamepadDragRoutine());
+        else if (source == InputSource.MouseKeyboard)
+            draggingRoutine = StartCoroutine(MouseDragRoutine());
     }
 
     public void GamepadFinishDrag(bool shouldHighlight = true)
     {
+        Debug.LogError($"DragItem.GamepadFinishDrag() executed (should not!)");
         if(draggingRoutine != null)
         {
             StopCoroutine(draggingRoutine);
@@ -230,6 +257,24 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 //currentRectTransform = currentSelected.GetComponent<RectTransform>();
                 //_rectTransform.anchoredPosition = currentRectTransform.anchoredPosition;
             }
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator MouseDragRoutine()
+    {
+        transform.SetAsLastSibling();
+        //_rectTransform.anchoredPosition += offsetWhenDragged;
+
+        var inputHandler = EventSystem.current.GetComponent<InputHandler>();
+
+        while (isBeingDragged)
+        {
+            //TODO: handle if during this process, mouse detected
+            var position = inputHandler.MousePosition;
+
+            _rectTransform.position = position;
 
             yield return null;
         }
@@ -280,108 +325,12 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void InitializeDragItem(Equipment equip, InventorySlot location)
-    {
-        stateMonitor ??= UIController._instance.StateMonitor;
-
-        // we have to clear the previous equipment
-        //remove slot, remove stats
-        _toolTip.ResetTooltip();
-        _toolTip.is_item = true;
-
-        canvas = UIController._instance.GetComponent<Canvas>();//location.transform.parent.parent.GetComponent<Canvas>();
-
-        e = equip;
-        currentLocation = location;
-        currentLocation.Item = this;
-        _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
-
-        _rectTransform.localScale = currentLocation._rt.localScale;
-        currentLocation.LabelCheck();
-        icon.sprite = e.icon;
-        Background.sprite = BackgroundSprites[e.stats[Stats.Rarity]];
-        Glow.sprite = GlowSprites[e.stats[Stats.Rarity]];
-        if (e.stats[Stats.Rarity] == 0)
-        {
-            Glow.gameObject.SetActive(false);
-        }
-        else
-        {
-            Glow.gameObject.SetActive(true);
-        }
-        slotType = e.slot;
-
-        if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All && currentLocation.Slot != Equipment.Slot.Merchant)
-        {
-            //Debug.Log(slotType + " "+ currentLocation.Slot);
-            Debug.Log("I think we fudged this one up bud");
-        }
-        if(e.slot != Equipment.Slot.Relic && e.slot != Equipment.Slot.Consumable)
-        {
-            _toolTip.iLvl = e.stats[Stats.ItemLevel].ToString();
-            LvlText.text = "Lvl: " + e.stats[Stats.ItemLevel];
-            
-
-            _toolTip.rarity = e.stats[Stats.Rarity];
-            _toolTip.Cost = "";
-            _toolTip.Title = e.name;
-            _toolTip.e = e;
-
-        }
-        else
-        {
-            if(e.slot == Equipment.Slot.Relic)
-                _toolTip.is_relic = true;
-            _toolTip.rarity = e.stats[Stats.Rarity];
-            _toolTip.Title = e.name;
-            _toolTip.e = e;
-            canBeDragged = false;
-            _toolTip.is_item = false;
-        }
-        //LvlText.color = ToolTipManager._instance.rarityColors[e.stats[Stats.Rarity]];
-        if (!e.isWeapon)
-        {
-            _toolTip.Message += "Slot: " + e.slot + "\n";
-        }
-        foreach (var stat in e.stats)
-        {
-            if (stat.Key != Stats.Rarity && stat.Key != Stats.ItemLevel )
-            {
-                _toolTip.Message += stat.Key +": "+ stat.Value + "\n";
-            }
-        }
-        
-        if (e.isWeapon)
-        {
-            Weapon x = (Weapon) e;
-            if (x.spellType1 != SpellTypes.None)
-            {
-                _toolTip.Cost = x.scalingInfo1[2].ToString();
-                _toolTip.Message += x.scalingInfo1[0]+ "\n";
-            }
-            if (x.spellType2 != SpellTypes.None)
-            {
-                _toolTip.Cost += ", " + x.scalingInfo2[2].ToString();
-                _toolTip.Message += x.scalingInfo2[0]+ "\n";
-
-                
-            }
-
-            _toolTip.is_spell = true;
-
-            _toolTip.Message = "Weapon: " + GetWeaponType(x.spellType1) + "\n" + _toolTip.Message;
-        }
-
-        this.gameObject.name = $"DragItem-{e.name}";
-        canvasGroup.blocksRaycasts = true;
-        canvasGroup.alpha = 1f;
-    }
     
     public void OnPointerDown(PointerEventData eventData)
     {
         //Debug.Log("OnPointerDown");
-        if(e.isRelic)
-            return;
+        if(e.isRelic) return;
+
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
         
         if (ForgeManager._instance.ForgeMode == ForgeMode.Upgrade)
@@ -394,10 +343,39 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    public void PrepItemForDrag()
+    {
+        canvasGroup.alpha = .6f;
+        //transform.SetAsLastSibling();
+    }
+
+    public void PrepItemForReturn()
+    {
+        Debug.LogError($"on return, currentLocation = {currentLocation.name}");
+        canvasGroup.alpha = 1f;
+        transform.SetParent(currentLocation.transform.parent);
+        _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
+        _rectTransform.localScale = currentLocation._rt.localScale;
+    }
+
+
+    public void PrepItemForDrop(InventorySlot destinationSlot)
+    {
+        // see GamepadFinishDrag(bool shouldHighlight = true) for the working version
+        Debug.LogError($"DragItem.PrepItemForDrop at {destinationSlot.name}");
+        canvasGroup.alpha = 1f;
+        currentLocation = destinationSlot;
+        transform.SetParent(destinationSlot._rt.parent);
+        _rectTransform.anchoredPosition = destinationSlot._rt.anchoredPosition;
+        _rectTransform.localScale = destinationSlot._rt.localScale;
+        HighlightItem(true);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if(e.isRelic)
-            return;
+        Debug.LogError($"DragItem.OnBeginDrag should not execute!");
+        if(e.isRelic) return;
+
         AdjustDragabilityBasedOnEnergy(CombatController._instance.Player, CombatController._instance.Player._currentEnergy);  //, 1,1); looks like these last 2 argument isn't being used in the function
 
         isBeingDragged = true;
@@ -418,6 +396,7 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //canvasGroup.alpha = 1f;
         //_rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
         //UIController._instance.StateMonitor.SetItemOnGamepad(null);
+        Debug.LogError($"DragItem.OnEndDrag should not execute!");
 
         if (draggingRoutine != null)
         {
@@ -437,6 +416,7 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnDrag(PointerEventData eventData)
     {
         //Debug.Log("dragging");
+        if (e.isRelic) return;
         
         _rectTransform.anchoredPosition += eventData.delta/ canvas.scaleFactor;
         
@@ -459,6 +439,7 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     public void OnDrop(PointerEventData eventData)
     {
+        return;
         HighlightItem(false);
         //another DragItem being drop to this one, notify the slot
         if(currentLocation == null)
@@ -689,6 +670,105 @@ public class DragItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         sellPrice.gameObject.SetActive(false);
     }
+
+
+    public void InitializeDragItem(Equipment equip, InventorySlot location)
+    {
+        stateMonitor ??= UIController._instance.StateMonitor;
+
+        // we have to clear the previous equipment
+        //remove slot, remove stats
+        _toolTip.ResetTooltip();
+        _toolTip.is_item = true;
+
+        canvas = UIController._instance.GetComponent<Canvas>();//location.transform.parent.parent.GetComponent<Canvas>();
+
+        e = equip;
+        currentLocation = location;
+        currentLocation.Item = this;
+        _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
+
+        _rectTransform.localScale = currentLocation._rt.localScale;
+        currentLocation.LabelCheck();
+        icon.sprite = e.icon;
+        Background.sprite = BackgroundSprites[e.stats[Stats.Rarity]];
+        Glow.sprite = GlowSprites[e.stats[Stats.Rarity]];
+        if (e.stats[Stats.Rarity] == 0)
+        {
+            Glow.gameObject.SetActive(false);
+        }
+        else
+        {
+            Glow.gameObject.SetActive(true);
+        }
+        slotType = e.slot;
+
+        if (slotType != currentLocation.Slot && currentLocation.Slot != Equipment.Slot.All && currentLocation.Slot != Equipment.Slot.Merchant)
+        {
+            //Debug.Log(slotType + " "+ currentLocation.Slot);
+            Debug.Log("I think we fudged this one up bud");
+        }
+        if (e.slot != Equipment.Slot.Relic && e.slot != Equipment.Slot.Consumable)
+        {
+            _toolTip.iLvl = e.stats[Stats.ItemLevel].ToString();
+            LvlText.text = "Lvl: " + e.stats[Stats.ItemLevel];
+
+
+            _toolTip.rarity = e.stats[Stats.Rarity];
+            _toolTip.Cost = "";
+            _toolTip.Title = e.name;
+            _toolTip.e = e;
+
+        }
+        else
+        {
+            if (e.slot == Equipment.Slot.Relic)
+                _toolTip.is_relic = true;
+            _toolTip.rarity = e.stats[Stats.Rarity];
+            _toolTip.Title = e.name;
+            _toolTip.e = e;
+            canBeDragged = false;
+            _toolTip.is_item = false;
+        }
+        //LvlText.color = ToolTipManager._instance.rarityColors[e.stats[Stats.Rarity]];
+        if (!e.isWeapon)
+        {
+            _toolTip.Message += "Slot: " + e.slot + "\n";
+        }
+        foreach (var stat in e.stats)
+        {
+            if (stat.Key != Stats.Rarity && stat.Key != Stats.ItemLevel)
+            {
+                _toolTip.Message += stat.Key + ": " + stat.Value + "\n";
+            }
+        }
+
+        if (e.isWeapon)
+        {
+            Weapon x = (Weapon)e;
+            if (x.spellType1 != SpellTypes.None)
+            {
+                _toolTip.Cost = x.scalingInfo1[2].ToString();
+                _toolTip.Message += x.scalingInfo1[0] + "\n";
+            }
+            if (x.spellType2 != SpellTypes.None)
+            {
+                _toolTip.Cost += ", " + x.scalingInfo2[2].ToString();
+                _toolTip.Message += x.scalingInfo2[0] + "\n";
+
+
+            }
+
+            _toolTip.is_spell = true;
+
+            _toolTip.Message = "Weapon: " + GetWeaponType(x.spellType1) + "\n" + _toolTip.Message;
+        }
+
+        this.gameObject.name = $"DragItem-{e.name}";
+        //canvasGroup.blocksRaycasts = true;
+        canvasGroup.alpha = 1f;
+    }
+
     private void Start()
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();

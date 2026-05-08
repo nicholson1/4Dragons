@@ -10,7 +10,9 @@ public interface IGamepadButtonListener
 
     public void HandleGamepadButtonSelected(Selectable selectable);
     public void HandleGamepadButtonDeselected(Selectable selectable);
-    public void HandleGamepadButtonPressed(Selectable selectable);
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source);
+
+    public void HandleCancelPerformed();
 }
 
 

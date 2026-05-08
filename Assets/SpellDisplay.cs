@@ -83,8 +83,13 @@ public class SpellDisplay : MonoBehaviour, IGamepadButtonListener
         toolTip.CloseTip();
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable)
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
     {
         throw new NotImplementedException();
+    }
+
+    public void HandleCancelPerformed()
+    {
+
     }
 }
