@@ -358,6 +358,10 @@ public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandl
         _rectTransform.localScale = currentLocation._rt.localScale;
     }
 
+    public void PrepForRemove()
+    {
+        canvasGroup.alpha = 1f;
+    }
 
     public void PrepItemForDrop(InventorySlot destinationSlot)
     {
@@ -436,7 +440,7 @@ public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    
+    /* old version OnDrop
     public void OnDrop(PointerEventData eventData)
     {
         return;
@@ -519,7 +523,7 @@ public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandl
             SoundManager.Instance.Play2DSFX(UIController._instance.errorSFX, UIController._instance.errorVol, 1, .05f);
         }
     }
-
+    */
 
 
     private string GetWeaponType(SpellTypes spell)

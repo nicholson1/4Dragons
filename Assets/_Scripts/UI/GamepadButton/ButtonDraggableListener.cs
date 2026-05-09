@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,8 +10,8 @@ namespace DFG.UIHandling
 {
     public class ButtonDraggableListener : ButtonListener, IButtonDraggableListener, IDroppableListener
     {
-        protected bool wasDropSuccess = false;
-        protected GameObject destination = null;
+        protected bool wasDropSuccessCache = false;
+        protected GameObject destinationCache = null;
         [SerializeField] protected bool shouldWaitForConfirmation = false;
 
 
@@ -20,10 +21,23 @@ namespace DFG.UIHandling
         }
 
         #region Interface Implementations
+        public bool WasDraggingValid { get; private set; } = false;
+
+        public void SetDraggingValid(bool isValid)
+        {
+            WasDraggingValid = isValid;
+        }
+
+
         public virtual bool CanBeginDrag() 
         {
             throw new NotImplementedException("Define drag eligibility or else the drag won't be valid!");
+        }
 
+        public void CleanupDragDropCache()
+        {
+            wasDropSuccessCache = false;
+            destinationCache = null;
         }
 
         public virtual void BeginDrag(Button button, InputSource source)
@@ -31,18 +45,12 @@ namespace DFG.UIHandling
             throw new NotImplementedException("Consider regular button listener if you're not implementing OnDropSucess!");
         }
 
-        public void EndDrag(GameObject origin, GameObject destination, bool wasDropSuccess)
+        public virtual void EndDrag(GameObject origin, GameObject destination, bool dropSuccess)
         {
             string originName = origin != null ? origin.name : "origin NULL";
             string destinationName = destination != null ? destination.name : "destionation NULL"; 
-            Debug.LogError($"at end drag before Finalize: wasDropSuccess? {wasDropSuccess}. from origin: {originName} to destination: {destinationName}");
-            FinalizeDragDrop(wasDropSuccess, origin, destination);
-            //if (shouldWaitForConfirmation)
-            //{
-
-            //}
-            //else
-                
+            Debug.LogError($"at end drag before Finalize: wasDropSuccess? {dropSuccess}. from origin: {originName} to destination: {destinationName}");
+            FinalizeDragDrop(dropSuccess, origin, destination);                          
         }
 
         public virtual void OnDrag(Vector2 dragPosition)
@@ -50,16 +58,28 @@ namespace DFG.UIHandling
             throw new NotImplementedException();
         }
          
+
         //IDropHandler part of IDroppableListener
         public void OnDrop(PointerEventData eventData)
         {
-            var dragOriginObj = eventData.pointerDrag;
-            if(dragOriginObj.TryGetComponent(out DraggableButtonExtender buttonExtender) && buttonExtender.IsDraggingValid())
+            wasDropSuccessCache = false;
+            destinationCache = null;
+            Debug.LogError($"OnDrop at {this.gameObject.name}");
+            var dragEventDataObj = eventData.pointerDrag;
+            Debug.LogError($"OnDrop: obj from eventData.pointerDrag: {dragEventDataObj.name}");
+            IButtonDraggableListener originDragListener = dragEventDataObj.GetComponentInParent<IButtonDraggableListener>();
+            string originDragListenerName = originDragListener != null ? (originDragListener as Component).gameObject.name : "NONE";
+            Debug.LogError($"OnDrop: originDragListenerName = {originDragListenerName}");
+
+            if(originDragListener != null && originDragListener.WasDraggingValid)
             {
-                Debug.LogError($"OnDrop draggedObj: {dragOriginObj.gameObject}");
-                ProcessDrop(eventData.position, dragOriginObj);
+                GameObject originDragListenerObj = (originDragListener as Component).gameObject;
+
+                Debug.LogError($"OnDrop - this: {this.gameObject} || objfromEventData: {originDragListenerObj.name}");
+                ProcessDrop(eventData.position, originDragListenerObj);
             }
 
+            Debug.LogError($"OnDrop - couldnt find the originDragListener");
             var selectable = GetComponentInChildren<Selectable>();
             if (selectable != null)
                 EventSystem.current.SetSelectedGameObject(selectable.gameObject);
@@ -70,38 +90,31 @@ namespace DFG.UIHandling
             throw new NotImplementedException("Consider regular button listener if you're not implementing OnDropSucess!");
         }
 
-        public bool WasDropSuccessOnDestination() => wasDropSuccess;
+        public bool WasDropSuccessOnDestination() => wasDropSuccessCache;
         #endregion
 
         public void ProcessDrop(Vector2 dropPosition, GameObject origin)
         {
-            Debug.LogError($"ProcessDrop() start!!");
-            destination = null;
-            Debug.LogError($"Process Drop ButtonDraggableListener");
-            wasDropSuccess = false;
-            if (origin == null || origin == this.gameObject)
-            {
-                Debug.LogError($"Process Drop: origin is null or this!");
-                return;
-            }
+            destinationCache = null;
+
+            if (origin == null) return;
+
+            //if (origin == this.gameObject) return;
 
             //do the implementation to determine if the drop is success on this IDroppableListener
-            wasDropSuccess = GetDropResult(origin);
-
-            Debug.LogError($"wasDropSuccess at the end of ProcessDrop? {wasDropSuccess}");
+            wasDropSuccessCache = GetDropResult(origin);
             SetDestinationAtOrigin(origin);
         }
 
         private void SetDestinationAtOrigin(GameObject origin)
         {
-            ButtonDraggableListener originDroppableListener = origin.GetComponentInParent<ButtonDraggableListener>();
+            ButtonDraggableListener originDroppableListener = origin.GetComponent<ButtonDraggableListener>();
             if(originDroppableListener == null)
             {
-                Debug.LogError($"Error - IDroppableListener can't be found at the origin!");
                 return;
             }
 
-            originDroppableListener.destination = wasDropSuccess ? this.gameObject : origin;
+            originDroppableListener.destinationCache = wasDropSuccessCache ? this.gameObject : origin;
         }
     }
 }

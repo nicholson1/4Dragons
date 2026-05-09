@@ -12,9 +12,9 @@ namespace DFG.UIHandling
         protected Button button;
         protected IButtonListener buttonListener;
 
-        private bool hadPointerDownEvent = false;
-        private bool wasPointerUpEvent = false;
-        private bool wasPointerInside = false;
+        protected bool hadPointerDownEvent = false;
+        protected bool wasPointerUpEvent = false;
+        protected bool wasPointerInside = false;
         private const float moveDeltaTreshold = 0.1f;
 
         public virtual void OnSelect(BaseEventData eventData)

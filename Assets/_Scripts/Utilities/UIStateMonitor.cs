@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -36,6 +37,8 @@ public class UIStateMonitor : MonoBehaviour
 
     public NavigationMode GetUINavigationMode() => cursorMode;
     
+
+    public bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
 
     public void SetItemOnGamepad(DragItem item)
     {
@@ -161,5 +164,5 @@ public enum NavigationMode
     MoveItem,
     Upgrade,
     Enhance,
-    Sell
+    Sell,
 }

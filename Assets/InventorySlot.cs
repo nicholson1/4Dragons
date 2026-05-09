@@ -150,7 +150,6 @@ public class InventorySlot : ButtonDraggableListener
 
     public override void BeginDrag(Button button, InputSource source)
     {
-        Debug.LogError($"Can begin drag, therefore {this.gameObject.name} begin drag");
         UIController._instance.PlayStartDragItem();
         stateMonitor.SetItemOnGamepad(Item);
         Item.PrepItemForDrag();
@@ -177,7 +176,6 @@ public class InventorySlot : ButtonDraggableListener
     {
         if(draggingRoutine != null)
         {
-        Debug.LogError($"Stopping drag coroutine");
             StopCoroutine(draggingRoutine);
             draggingRoutine = null;
         }
@@ -216,11 +214,17 @@ public class InventorySlot : ButtonDraggableListener
 
     public override void FinalizeDragDrop(bool wasDropSuccess, GameObject origin, GameObject destination)
     {
-        Debug.LogError($"FinalizeDragDrop from {origin.name} with result success = {wasDropSuccess} =========");
+        string destinationName = destination != null ? destination.name : "NONE";
+        Debug.LogError($"FinalizeDragDrop from {origin.name} to {destinationName} with result success = {wasDropSuccess} =========");
         if (draggingRoutine != null)
             EndGamepadDrag();
+
         if(!wasDropSuccess)
         {
+            if(destination == origin)
+            {
+                Debug.LogError($"DROPPED AT THE ORIGIN HANDLING");
+            }
             OnCancelPerformed();
         }
         else
@@ -233,13 +237,14 @@ public class InventorySlot : ButtonDraggableListener
 
     protected override bool GetDropResult(GameObject originSlotObj)
     {
-        Debug.LogError($"{gameObject.name} - GetDropResult originSlotObj = {originSlotObj.name}");
+        Debug.LogError($"GetDropResult for {originSlotObj.name} at this: {this.gameObject.name}");
         InventorySlot originSlot = null;
         originSlot = originSlotObj.GetComponentInParent<InventorySlot>();
-        Debug.LogError($"{gameObject.name} - originSlot null? {originSlot == null}");
+
+        if (originSlot == null || originSlot == this) return false;
 
         if(originSlot != null)
-        {
+        {           
             var itemToDrop = originSlot.Item;
             if (itemToDrop != null)
             {
@@ -343,7 +348,13 @@ public class InventorySlot : ButtonDraggableListener
             case NavigationMode.Neutral:
                 if (Item == null) return;
                 if(source == InputSource.Gamepad && CanBeginDrag())
+                {
+                    if(Slot == Equipment.Slot.Merchant)
+                    {
+                        TryBuyItem(Item);
+                    }
                     BeginDrag(selectable as Button, source);
+                }
                 break;
 
             case NavigationMode.MoveItem:
@@ -587,8 +598,8 @@ public class InventorySlot : ButtonDraggableListener
 
         itemToSell.currentLocation.Item = null;
         itemToSell.currentLocation.LabelCheck();
+        itemToSell.PrepForRemove();
         EquipmentManager._instance.PoolItem(itemToSell);
-        itemToSell.GamepadFinishDrag();
         UIController._instance.PlaySellItem();
     }
 
@@ -597,8 +608,8 @@ public class InventorySlot : ButtonDraggableListener
         Debug.LogError($"Discarding item: {itemToDrop.name}");
         itemToDrop.currentLocation.Item = null;
         itemToDrop.currentLocation.LabelCheck();
+        itemToDrop.PrepForRemove();
         EquipmentManager._instance.PoolItem(itemToDrop);
-        itemToDrop.GamepadFinishDrag();
         UIController._instance.PlayDiscardItem();
         
     }
@@ -652,10 +663,8 @@ public class InventorySlot : ButtonDraggableListener
             di.currentLocation.LabelCheck();
         }
 
-
         di.PrepItemForDrop(destinationSlot);
-
-        
+                
         if (Slot != Equipment.Slot.All) //slot is equipment
         {
             EquipmentManager._instance.EquipFromInventory(Item.e);
@@ -668,23 +677,11 @@ public class InventorySlot : ButtonDraggableListener
         }
 
         LabelCheck();
-
         UIController._instance.PlayPlaceItem();
     }
 
-    public void HandleMouseDropOnOccupiedSlot()
-    {
-        if (stateMonitor.GetUINavigationMode() != NavigationMode.MoveItem)
-            return;
 
-        if (stateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
-        {
-            InitiateDroppingItem(itemOnGamepad);
-            return;
-        }
-    }
-
-    /*
+    /* Old version OnDrop 
     //public void OnDrop(PointerEventData eventData)
     //{
     //    NavigationMode currentCursorMode = stateMonitor.GetUINavigationMode();

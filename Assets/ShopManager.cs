@@ -178,7 +178,7 @@ public class ShopManager : UIInventorySubPanel
     {
         //DEBUG always relic shop
         InitializeShop(InventorySlot.SellShopType.Relics);
-        Debug.LogError($"Debug always initialize relic here");
+        Debug.LogError($"DEBUG!!! always initialize relic here!!!");
         return;
 
         InitializeShop((InventorySlot.SellShopType) i);

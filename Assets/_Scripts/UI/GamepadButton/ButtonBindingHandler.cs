@@ -51,10 +51,8 @@ public class ButtonBindingHandler : SelectableBindingHandler
             {
                 extender.ClickButton(InputSource.Gamepad);
             }
-            else
-                Debug.LogError($"ButtonExtender not available!");
-                
-                //button.onClick.Invoke();
+            else                
+                button.onClick.Invoke();
         }
             
     }
@@ -77,9 +75,7 @@ public class ButtonBindingHandler : SelectableBindingHandler
             extender.ClickButton(InputSource.Gamepad);
         }
         else
-            Debug.LogError($"ButtonExtender not available!");
-
-         //button.onClick.Invoke();
+            button.onClick.Invoke();
     }
 
 

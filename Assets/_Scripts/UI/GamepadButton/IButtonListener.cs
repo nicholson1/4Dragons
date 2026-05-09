@@ -16,6 +16,9 @@ namespace DFG.UIHandling
     public interface IButtonDraggableListener : IButtonListener
     {
         public bool CanBeginDrag();
+        public bool WasDraggingValid { get; }
+        public void SetDraggingValid(bool isValid);
+        public void CleanupDragDropCache();
 
         /// <summary>
         /// Start of a drag
@@ -28,7 +31,7 @@ namespace DFG.UIHandling
         /// Handle drag/drop ending on the dropper side, based on the wasDropSuccess
         /// </summary>
         /// <param name="origin">Owner of the component that implements IButtonDraggableListener</param>
-        /// <param name="destination">Owner of the component that implement IDraggableListener if the drop was success</param>
+        /// <param name="destination">Owner of the component that implement IDroppableListener if the drop was success</param>
         /// <param name="wasDropSuccess"></param>
         public void EndDrag(GameObject origin, GameObject destination, bool wasDropSuccess);
 
@@ -38,6 +41,13 @@ namespace DFG.UIHandling
         /// <param name="dragPosition"></param>
         public void OnDrag(Vector2 dragPosition);
 
+        /// <summary>
+        /// The final outcome of the drag and drop process.
+        /// </summary>
+        /// <param name="result">The evaluated drop result</param>
+        /// <param name="origin">IButtonDraggableListener GameObject</param>
+        /// <param name="destination">IDroppableListener GameObject</param>
+        public void FinalizeDragDrop(bool result, GameObject origin, GameObject destination);
 
     }
 
