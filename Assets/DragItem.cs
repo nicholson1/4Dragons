@@ -10,10 +10,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Zak.UISystem;
 
-public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
     public bool IsBeingDragged => isBeingDragged;
+
+    public GameObject sourceObject => this.gameObject;
 
     public Equipment e;
     public InventorySlot currentLocation;
@@ -86,6 +89,8 @@ public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandl
             _toolTip.CloseTip();
         }
     }
+
+
 
     public bool CanBeDraggedInCombat()
     {
@@ -349,13 +354,14 @@ public class DragItem : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandl
         //transform.SetAsLastSibling();
     }
 
-    public void PrepItemForReturn()
+    public void PrepItemForReturn(bool shouldHighlight = false)
     {
         Debug.LogError($"on return, currentLocation = {currentLocation.name}");
         canvasGroup.alpha = 1f;
         transform.SetParent(currentLocation.transform.parent);
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
         _rectTransform.localScale = currentLocation._rt.localScale;
+        HighlightItem(shouldHighlight);
     }
 
     public void PrepForRemove()

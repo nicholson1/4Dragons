@@ -1254,8 +1254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   subPanelType: 4
-  UpgradingFollow: {fileID: 2958224421048937255}
-  EnhancingFollow: {fileID: 0}
+  forgeLabel: {fileID: 2958224421048937255}
   followLabelImage: {fileID: 7010265405201593146}
   upgradeSprite: {fileID: 21300000, guid: 53ecfb09808d68c4fad8b0671b8eab0e, type: 3}
   enhanceSprite: {fileID: 21300000, guid: 787a48d4e58cf6547bd4d1ace54b1f6c, type: 3}
@@ -1888,8 +1887,9 @@ GameObject:
   - component: {fileID: 2380396317689422524}
   - component: {fileID: 1386828178060256093}
   - component: {fileID: 3623465170021643752}
-  - component: {fileID: 2337610535919571325}
   - component: {fileID: 5445633625482258113}
+  - component: {fileID: 320853803889285004}
+  - component: {fileID: 9062116620109711338}
   m_Layer: 5
   m_Name: ButtonSellItem
   m_TagString: Untagged
@@ -1998,18 +1998,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2337610535919571325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5406237220868816979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 962b32e870c2cac4181f6e6885716af8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5445633625482258113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2022,9 +2010,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreButtonSound: 0
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
+--- !u!114 &320853803889285004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406237220868816979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9062116620109711338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406237220868816979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &5501875424997230655
 GameObject:
   m_ObjectHideFlags: 0
@@ -3264,7 +3278,6 @@ MonoBehaviour:
   CanAcceptItem: 1
   dropItem: {fileID: 0}
   dropItemVol: 0
-  slotHighlighter: {fileID: 0}
 --- !u!114 &9110804418200420813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3891,6 +3904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreButtonSound: 0
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1

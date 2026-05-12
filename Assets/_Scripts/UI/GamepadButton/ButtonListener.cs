@@ -11,10 +11,10 @@ namespace DFG.UIHandling
         public virtual event Action OnGamepadButtonSelected;
         public virtual event Action OnGamepadButtonDeselected;
 
-        public virtual void OnCancelPerformed()
-        {
-            throw new NotImplementedException();
-        }
+        //public virtual void OnCancelPerformed()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public virtual void OnButtonDeselected(Selectable selectable)
         {

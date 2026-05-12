@@ -6,7 +6,7 @@ namespace DFG.UIHandling
 {
     public interface IButtonListener
     {
-        public void OnCancelPerformed();
+        //public void OnCancelPerformed();
         public void OnButtonPressed(Selectable selectable, InputSource source);
         public void OnButtonSelected(Selectable selectable);
         public void OnButtonDeselected(Selectable selectable);

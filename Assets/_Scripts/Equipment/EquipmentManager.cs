@@ -68,15 +68,16 @@ public class EquipmentManager : MonoBehaviour
         return emptySlot != null;
     }
 
-    private void EquipItem(Equipment equipment)
+    public void EquipItem(Equipment equipment)
     {
-        if (c._equipment.Contains(equipment))
-        {
-            Debug.LogError($" Abort EquipItem: character's equipments already contains {equipment.name} this should break the current equipment data!");
-            return;
-        }
+        //if (c._equipment.Contains(equipment))
+        //{
+        //    Debug.LogError($" Abort EquipItem: character's equipments already contains {equipment.name} this should break the current equipment data!");
+        //    return;
+        //}
 
-        c._equipment.Add(equipment);
+        if(!c._equipment.Contains(equipment))
+            c._equipment.Add(equipment);
 
         if (equipment.isWeapon)
         {
@@ -127,13 +128,11 @@ public class EquipmentManager : MonoBehaviour
 
     public void UnEquipItem(Equipment e)
     {
-        if (!c._equipment.Contains(e))
-        {
-            Debug.LogWarning($"Attempting to unequp item not in the equipment list! probably double called!");
-            return;
-        }
 
-        c._equipment.Remove(e);
+
+        if(c._equipment.Contains(e))
+            c._equipment.Remove(e);
+
         if (!c._inventory.Contains(e))
         {
             c._inventory.Add(e);
@@ -270,12 +269,13 @@ public class EquipmentManager : MonoBehaviour
 
         Debug.Log($"Return true case 5: from inventory to equip?");
         return true;
-    }       
+    }
 
 
     public void EquipFromInventory(Equipment e)
     {
-        c._inventory.Remove(e);
+        if (c._inventory.Contains(e))
+            c._inventory.Remove(e);
 
         EquipItem(e);
 
@@ -346,14 +346,24 @@ public class EquipmentManager : MonoBehaviour
         di.transform.position = slot.transform.position;
     }
 
-    public bool TryPutItemToInventory(Equipment e)
+    public void AddItemToInventory(Equipment e)
     {
-        Debug.LogError($"TryPutItemToInventory");
+        if (!c._inventory.Contains(e))           
+            c._inventory.Add(e);
+
+        if(e.isPotion)
+            AddPotionToPotionBar((Consumable)e);
+    }
+
+    public bool TryCreateItemInInventory(Equipment e)
+    {
+        Debug.LogError($"TryCreateItemToInventory");
         InventorySlot slot = null;
 
-        // check if we have an empty, if we do save that one
+        // check if we have an empty, if we do save that one - Inventory start from 10
         for (int i = 10; i < InventorySlots.Length; i++)
         {
+            Debug.LogError($"index: {i} - {InventorySlots[i].gameObject.name} - item = null? {InventorySlots[i].Item == null}");
             if (InventorySlots[i].Item == null)
             {
                 slot = InventorySlots[i];
@@ -456,8 +466,12 @@ public class EquipmentManager : MonoBehaviour
     public void AddPotionToPotionBar(Consumable consume)
     {
         PotionDrag p = GetPotionDrag();
-        ActivePotions.Add(p);
-        p.InitializePotion(consume);
+
+        if(!ActivePotions.Contains(p))
+        {
+            ActivePotions.Add(p);
+            p.InitializePotion(consume);
+        }
     }
 
     private PotionDrag GetPotionDrag()

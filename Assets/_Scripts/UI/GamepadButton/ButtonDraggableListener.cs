@@ -5,10 +5,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zak.UISystem;
 
 namespace DFG.UIHandling
 {
-    public class ButtonDraggableListener : ButtonListener, IButtonDraggableListener, IDroppableListener
+    public class ButtonDraggableListener : ButtonListener, IButtonDraggableListener, IDragListener, IDropListener
     {
         protected bool wasDropSuccessCache = false;
         protected GameObject destinationCache = null;
@@ -115,6 +116,31 @@ namespace DFG.UIHandling
             }
 
             originDroppableListener.destinationCache = wasDropSuccessCache ? this.gameObject : origin;
+        }
+
+        public bool CanBeginDrag(out IDraggablePayload payload)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnDragCompleted(DragResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanAcceptDrop(IDraggablePayload payload)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnDropReceived(IDraggablePayload payload)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnHandleInterruption()
+        {
+            throw new NotImplementedException();
         }
     }
 }

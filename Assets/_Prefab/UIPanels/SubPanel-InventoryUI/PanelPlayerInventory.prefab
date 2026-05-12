@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 7255455504168559896}
   - component: {fileID: 56438726137094276}
   - component: {fileID: 6153756863363502540}
-  - component: {fileID: 5203565093093205302}
+  - component: {fileID: 4354705179584680026}
+  - component: {fileID: 3846780718316850745}
+  - component: {fileID: 459170694511535850}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -138,7 +140,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &5203565093093205302
+--- !u!114 &4354705179584680026
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,10 +149,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 280365713597972802}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &3846780718316850745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280365713597972802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &459170694511535850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280365713597972802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &376692636857071160
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,7 +191,9 @@ GameObject:
   - component: {fileID: 4841370150159219311}
   - component: {fileID: 3501006658069557362}
   - component: {fileID: 2668224740821915357}
-  - component: {fileID: 4790503655019707598}
+  - component: {fileID: 7689947706477654453}
+  - component: {fileID: 3783395232576314647}
+  - component: {fileID: 3867591624264960025}
   m_Layer: 5
   m_Name: Button (1)
   m_TagString: Untagged
@@ -289,7 +318,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &4790503655019707598
+--- !u!114 &7689947706477654453
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -298,10 +327,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 376692636857071160}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &3783395232576314647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 376692636857071160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &3867591624264960025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 376692636857071160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &661665948038992035
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,7 +369,9 @@ GameObject:
   - component: {fileID: 1343827122050426340}
   - component: {fileID: 2851376337862357427}
   - component: {fileID: 8232729088364805451}
-  - component: {fileID: 7658567486390234769}
+  - component: {fileID: 2811802386504716206}
+  - component: {fileID: 3206579139452304099}
+  - component: {fileID: 8452412692718331569}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -440,7 +496,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &7658567486390234769
+--- !u!114 &2811802386504716206
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -449,10 +505,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 661665948038992035}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &3206579139452304099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661665948038992035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &8452412692718331569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661665948038992035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &752609529340691677
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,7 +624,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 4
   Item: {fileID: 0}
   _rt: {fileID: 5312546011073869454}
@@ -642,7 +722,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 10
   Item: {fileID: 0}
   _rt: {fileID: 1040428824543344659}
@@ -1046,7 +1125,9 @@ GameObject:
   - component: {fileID: 4495593869846955628}
   - component: {fileID: 3387431349112432969}
   - component: {fileID: 8027989784296566679}
-  - component: {fileID: 5107532794881053035}
+  - component: {fileID: 1262576961880641211}
+  - component: {fileID: 479778535878003103}
+  - component: {fileID: 210854379846938314}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1171,7 +1252,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &5107532794881053035
+--- !u!114 &1262576961880641211
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1180,10 +1261,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1826899472461088592}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &479778535878003103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826899472461088592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &210854379846938314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826899472461088592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &1838065096670526567
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,7 +1571,9 @@ GameObject:
   - component: {fileID: 7906618688261538210}
   - component: {fileID: 6188507954253263307}
   - component: {fileID: 8410904153374659087}
-  - component: {fileID: 6532859549753682441}
+  - component: {fileID: 7688398469176737623}
+  - component: {fileID: 2191098579773602735}
+  - component: {fileID: 4791860482186512348}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1590,7 +1698,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &6532859549753682441
+--- !u!114 &7688398469176737623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1599,10 +1707,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 2042347474688413473}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &2191098579773602735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042347474688413473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &4791860482186512348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042347474688413473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &2065684743220858416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1827,7 +1960,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 10
   Item: {fileID: 0}
   _rt: {fileID: 938848665380754062}
@@ -2116,7 +2248,6 @@ GameObject:
   - component: {fileID: 7247121013073662474}
   - component: {fileID: 2785367198438093284}
   - component: {fileID: 4936952884001604030}
-  - component: {fileID: 5046008398649855181}
   - component: {fileID: 1803860952809547532}
   m_Layer: 5
   m_Name: LookStatGamepadButton
@@ -2226,20 +2357,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5046008398649855181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2854554574894119435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96f50db497a7c2246bc94469defcf2a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverScale: 1.1
-  shakeUI: 0
 --- !u!114 &1803860952809547532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2693,7 +2810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 10
   Item: {fileID: 0}
   _rt: {fileID: 6766675105958910199}
@@ -2715,7 +2831,9 @@ GameObject:
   - component: {fileID: 4325429626703999392}
   - component: {fileID: 2257326063636710483}
   - component: {fileID: 8644069227137116733}
-  - component: {fileID: 5087652090233905149}
+  - component: {fileID: 7528127557569777761}
+  - component: {fileID: 1976331144688875224}
+  - component: {fileID: 6916006039610822750}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2840,7 +2958,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &5087652090233905149
+--- !u!114 &7528127557569777761
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2849,10 +2967,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 3095234972507782009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &1976331144688875224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3095234972507782009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &6916006039610822750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3095234972507782009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &3128704386184881697
 GameObject:
   m_ObjectHideFlags: 0
@@ -3219,7 +3362,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 6
   Item: {fileID: 0}
   _rt: {fileID: 726110178016664414}
@@ -3318,7 +3460,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 8
   Item: {fileID: 0}
   _rt: {fileID: 6194024117043844387}
@@ -3340,7 +3481,9 @@ GameObject:
   - component: {fileID: 8113019226954767441}
   - component: {fileID: 2140172608805348792}
   - component: {fileID: 4225800560029428706}
-  - component: {fileID: 32466077886857090}
+  - component: {fileID: 9418308933186327}
+  - component: {fileID: 710114369597661092}
+  - component: {fileID: 7688472200487448072}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -3465,7 +3608,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &32466077886857090
+--- !u!114 &9418308933186327
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3474,10 +3617,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 4083298413399964795}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &710114369597661092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083298413399964795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &7688472200487448072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083298413399964795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &4176331008906822834
 GameObject:
   m_ObjectHideFlags: 0
@@ -3836,7 +4004,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 10
   Item: {fileID: 0}
   _rt: {fileID: 46201840096455121}
@@ -3935,7 +4102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 6
   Item: {fileID: 0}
   _rt: {fileID: 7717206356960806591}
@@ -4034,7 +4200,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 2
   Item: {fileID: 0}
   _rt: {fileID: 8726658341901764481}
@@ -4384,7 +4549,9 @@ GameObject:
   - component: {fileID: 7401898436041851956}
   - component: {fileID: 5190228969474886146}
   - component: {fileID: 5143408562209263106}
-  - component: {fileID: 7717731619448365694}
+  - component: {fileID: 1702629993585773613}
+  - component: {fileID: 4830320113183651166}
+  - component: {fileID: 7034464758908299847}
   m_Layer: 5
   m_Name: Button (1)
   m_TagString: Untagged
@@ -4509,7 +4676,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &7717731619448365694
+--- !u!114 &1702629993585773613
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4518,10 +4685,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 4955295783702832984}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &4830320113183651166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4955295783702832984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &7034464758908299847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4955295783702832984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &5123630062189699685
 GameObject:
   m_ObjectHideFlags: 0
@@ -4656,7 +4848,9 @@ GameObject:
   - component: {fileID: 759442813907662076}
   - component: {fileID: 6492924700870572707}
   - component: {fileID: 4663997121112727127}
-  - component: {fileID: 7488562974879447115}
+  - component: {fileID: 5801263602536558176}
+  - component: {fileID: 2639583717432088657}
+  - component: {fileID: 6501009782104910466}
   m_Layer: 5
   m_Name: Button (1)
   m_TagString: Untagged
@@ -4781,7 +4975,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &7488562974879447115
+--- !u!114 &5801263602536558176
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4790,10 +4984,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 5197141159371215400}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &2639583717432088657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197141159371215400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &6501009782104910466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197141159371215400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &5527643559795855611
 GameObject:
   m_ObjectHideFlags: 0
@@ -4886,7 +5105,9 @@ GameObject:
   - component: {fileID: 5874379778507631427}
   - component: {fileID: 8805794095683900844}
   - component: {fileID: 4484865914085953038}
-  - component: {fileID: 5578697448660707950}
+  - component: {fileID: 3804214616856349091}
+  - component: {fileID: 2662879460925245389}
+  - component: {fileID: 3437671406128643784}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -5011,7 +5232,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &5578697448660707950
+--- !u!114 &3804214616856349091
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5020,10 +5241,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 5556967656376754062}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &2662879460925245389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5556967656376754062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &3437671406128643784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5556967656376754062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &5614639590399235684
 GameObject:
   m_ObjectHideFlags: 0
@@ -5037,7 +5283,9 @@ GameObject:
   - component: {fileID: 341417741745820457}
   - component: {fileID: 7343655215872227726}
   - component: {fileID: 7864896616417643085}
-  - component: {fileID: 4058925395766042431}
+  - component: {fileID: 7890717450521323007}
+  - component: {fileID: 8076461750366711175}
+  - component: {fileID: 1800501656195968662}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -5162,7 +5410,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &4058925395766042431
+--- !u!114 &7890717450521323007
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5171,10 +5419,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 5614639590399235684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &8076461750366711175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5614639590399235684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &1800501656195968662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5614639590399235684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &5626145926047136998
 GameObject:
   m_ObjectHideFlags: 0
@@ -5263,7 +5536,9 @@ GameObject:
   - component: {fileID: 4656803438772092082}
   - component: {fileID: 2531521290097613421}
   - component: {fileID: 5602046000285136224}
-  - component: {fileID: 6414364772263789754}
+  - component: {fileID: 7778336222255526372}
+  - component: {fileID: 4154842148621080959}
+  - component: {fileID: 5071068336472770892}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -5388,7 +5663,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &6414364772263789754
+--- !u!114 &7778336222255526372
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5397,10 +5672,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 5778228689229815032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &4154842148621080959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778228689229815032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &5071068336472770892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778228689229815032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &5981581515979192592
 GameObject:
   m_ObjectHideFlags: 0
@@ -5625,7 +5925,9 @@ GameObject:
   - component: {fileID: 343109506645286815}
   - component: {fileID: 3150486500531203477}
   - component: {fileID: 4015383783399786572}
-  - component: {fileID: 223509927727493135}
+  - component: {fileID: 4477688897029521726}
+  - component: {fileID: 6394470841089314519}
+  - component: {fileID: 2111230806479587785}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -5750,7 +6052,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &223509927727493135
+--- !u!114 &4477688897029521726
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5759,10 +6061,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 6434551094991926320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &6394470841089314519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434551094991926320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &2111230806479587785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434551094991926320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &6743717085949769281
 GameObject:
   m_ObjectHideFlags: 0
@@ -5899,7 +6226,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 5
   Item: {fileID: 0}
   _rt: {fileID: 3592895403607425376}
@@ -5921,7 +6247,8 @@ GameObject:
   - component: {fileID: 4680035000787639361}
   - component: {fileID: 6884142900782040760}
   - component: {fileID: 5187356720363056388}
-  - component: {fileID: 7271897352001960311}
+  - component: {fileID: 8456602311810507293}
+  - component: {fileID: 1843725424642835046}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -6046,7 +6373,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &7271897352001960311
+--- !u!114 &8456602311810507293
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6055,10 +6382,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6920351703931311865}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &1843725424642835046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6920351703931311865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &6963434957916252272
 GameObject:
   m_ObjectHideFlags: 0
@@ -6072,7 +6411,9 @@ GameObject:
   - component: {fileID: 6894256773064933367}
   - component: {fileID: 63133296785665757}
   - component: {fileID: 521146244818545406}
-  - component: {fileID: 259487437684438712}
+  - component: {fileID: 4478502719516242400}
+  - component: {fileID: 6948583342206546254}
+  - component: {fileID: 8023764404163894849}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -6197,7 +6538,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &259487437684438712
+--- !u!114 &4478502719516242400
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6206,10 +6547,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 6963434957916252272}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &6948583342206546254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6963434957916252272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &8023764404163894849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6963434957916252272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &7058667192310838568
 GameObject:
   m_ObjectHideFlags: 0
@@ -6300,7 +6666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 3
   Item: {fileID: 0}
   _rt: {fileID: 6379007994067811655}
@@ -6399,7 +6764,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 1
   Item: {fileID: 0}
   _rt: {fileID: 8051590751275499703}
@@ -6498,7 +6862,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 10
   Item: {fileID: 0}
   _rt: {fileID: 5898078058195004930}
@@ -6830,7 +7193,9 @@ GameObject:
   - component: {fileID: 7504316817512023902}
   - component: {fileID: 3145418461794308967}
   - component: {fileID: 4782159767626359409}
-  - component: {fileID: 4811911704506869917}
+  - component: {fileID: 4104970439319508127}
+  - component: {fileID: 7130031414343380942}
+  - component: {fileID: 4516382709279815318}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -6955,7 +7320,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &4811911704506869917
+--- !u!114 &4104970439319508127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6964,10 +7329,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 7417366197157305494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &7130031414343380942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7417366197157305494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &4516382709279815318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7417366197157305494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &7441754678124029546
 GameObject:
   m_ObjectHideFlags: 0
@@ -7135,7 +7525,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 8
   Item: {fileID: 0}
   _rt: {fileID: 5602204863129464154}
@@ -7235,7 +7624,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 11
   Item: {fileID: 0}
   _rt: {fileID: 284633982657463575}
@@ -7760,7 +8148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 10
   Item: {fileID: 0}
   _rt: {fileID: 7864721512833547112}
@@ -7859,7 +8246,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01473d5ecd7d9d4b8c272db942b2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldWaitForConfirmation: 0
   Slot: 0
   Item: {fileID: 0}
   _rt: {fileID: 8084892792159440748}
@@ -7881,7 +8267,9 @@ GameObject:
   - component: {fileID: 5570410197273458338}
   - component: {fileID: 4620023611498782848}
   - component: {fileID: 441400128248348642}
-  - component: {fileID: 5215018628496048360}
+  - component: {fileID: 7344437492700026128}
+  - component: {fileID: 1269403002978787324}
+  - component: {fileID: 4202169681830178266}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -8006,7 +8394,7 @@ MonoBehaviour:
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
---- !u!114 &5215018628496048360
+--- !u!114 &7344437492700026128
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8015,10 +8403,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 8693962856195590448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4c61f0bcca5b48895798e4944610e, type: 3}
+  m_Script: {fileID: 11500000, guid: a71e0ac2ad7ab3f45bc4cbe9e92b98ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldClickAfterDrag: 1
+--- !u!114 &1269403002978787324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8693962856195590448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6754959c2939a954c9346c9d4d2cd1cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dragListenerSource: {fileID: 0}
+--- !u!114 &4202169681830178266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8693962856195590448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35773dc7ba94654f9978e01384173d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropListenerSource: {fileID: 0}
 --- !u!1 &8972248531980209808
 GameObject:
   m_ObjectHideFlags: 0

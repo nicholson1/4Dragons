@@ -276,7 +276,6 @@ public class InputHandler : MonoBehaviour
         if(EventSystem.current.currentSelectedGameObject != null)
         {
             lastSelected = EventSystem.current.currentSelectedGameObject;
-            Debug.LogError($"lastSelected on inputChange = {lastSelected.name}");
         }
 
         currentInputType = source;

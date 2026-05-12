@@ -5,16 +5,18 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEditor.XR;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Zak.UISystem;
 using static ImportantStuff.Equipment;
-using static Unity.VisualScripting.Member;
-//using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
-public class InventorySlot : ButtonDraggableListener
+public class InventorySlot : ButtonListener, IDragListener, IDropListener
 {
     public override event Action OnGamepadButtonSelected;
     public override event Action OnGamepadButtonDeselected;
@@ -112,10 +114,10 @@ public class InventorySlot : ButtonDraggableListener
     public bool IsDiscardSlot() => Slot == Equipment.Slot.Drop;
     public bool IsSellSlot() => Slot == Equipment.Slot.Sell;
     public bool IsUpgradeSlot() => Slot == Equipment.Slot.Upgrade;
-    public bool IsShopSlot() => Slot == Equipment.Slot.Merchant;
+    public bool IsMerchantSlot() => Slot == Equipment.Slot.Merchant;
     public bool IsRelicSlot() => Slot == Equipment.Slot.Relic;
     public bool IsAllSlot() => Slot == Equipment.Slot.All;
-    public bool IsAllKindSlot() => IsDiscardSlot() || IsSellSlot() || IsUpgradeSlot() || IsShopSlot() || IsRelicSlot() || IsAllSlot();
+    public bool IsAllKindSlot() => IsDiscardSlot() || IsSellSlot() || IsUpgradeSlot() || IsMerchantSlot() || IsRelicSlot() || IsAllSlot();
     private bool IsCharacterEquipmentSlot()
     {
         bool isEqSlot = Slot is Equipment.Slot.Boots or
@@ -132,34 +134,7 @@ public class InventorySlot : ButtonDraggableListener
     }
     private bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
 
-    public override bool CanBeginDrag()
-    {
-        NavigationMode currentUINavigationMode = stateMonitor.GetUINavigationMode();
-
-        if (currentUINavigationMode != NavigationMode.Neutral)
-        {
-            Debug.LogError($"ERROR: Drag should begin only from NavigationMode.Neutral");
-            return false;
-        }
-
-        if (Item == null || (IsInCombat() && !Item.CanBeDraggedInCombat()))
-            return false;
-
-        return true;
-    }
-
-    public override void BeginDrag(Button button, InputSource source)
-    {
-        UIController._instance.PlayStartDragItem();
-        stateMonitor.SetItemOnGamepad(Item);
-        Item.PrepItemForDrag();
-
-        if(source == InputSource.Gamepad)
-        {
-            StartGamepadDrag(Item);
-        }
-    }
-
+  
     private void StartGamepadDrag(DragItem itemToDrag)
     {
         if (draggingRoutine != null)
@@ -168,16 +143,25 @@ public class InventorySlot : ButtonDraggableListener
             draggingRoutine = null;
         }
 
-        Debug.LogError($"{gameObject.name} starting gamepad drag routine");
+        stateMonitor.SetItemOnGamepad(itemToDrag);
+        inputHandler.OnNo.AddListener(OnCancelPerformed);
         draggingRoutine = StartCoroutine(GamepadDragRoutine(itemToDrag));
     }
 
-    private void EndGamepadDrag()
+    private void EndGamepadDragRoutine()
     {
         if(draggingRoutine != null)
         {
             StopCoroutine(draggingRoutine);
             draggingRoutine = null;
+        }
+    }
+
+    public void OnHandleInterruption()
+    {
+        if(stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
+        {
+            OnCancelPerformed();
         }
     }
 
@@ -195,67 +179,16 @@ public class InventorySlot : ButtonDraggableListener
             if (currentSelected != EventSystem.current.currentSelectedGameObject)
             {
                 currentSelected = EventSystem.current.currentSelectedGameObject;
+
                 itemToDrag.transform.position = currentSelected.transform.position;
                 itemToDrag._rectTransform.anchoredPosition += gamepadDragOffset;
             }
 
             yield return null;
         }
+
+        EndGamepadDragRoutine();
     }
-
-    public override void OnDrag(Vector2 dragPosition)
-    {
-        if (stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
-        {
-            Item._rectTransform.position = dragPosition;
-            return;
-        }        
-    }
-
-    public override void FinalizeDragDrop(bool wasDropSuccess, GameObject origin, GameObject destination)
-    {
-        string destinationName = destination != null ? destination.name : "NONE";
-        Debug.LogError($"FinalizeDragDrop from {origin.name} to {destinationName} with result success = {wasDropSuccess} =========");
-        if (draggingRoutine != null)
-            EndGamepadDrag();
-
-        if(!wasDropSuccess)
-        {
-            if(destination == origin)
-            {
-                Debug.LogError($"DROPPED AT THE ORIGIN HANDLING");
-            }
-            OnCancelPerformed();
-        }
-        else
-        {
-            var buttonToSelect = destination.GetComponentInChildren<Button>();
-            EventSystem.current.SetSelectedGameObject(buttonToSelect.gameObject);
-            stateMonitor.ClearItemOnGamepad();
-        }
-    }
-
-    protected override bool GetDropResult(GameObject originSlotObj)
-    {
-        Debug.LogError($"GetDropResult for {originSlotObj.name} at this: {this.gameObject.name}");
-        InventorySlot originSlot = null;
-        originSlot = originSlotObj.GetComponentInParent<InventorySlot>();
-
-        if (originSlot == null || originSlot == this) return false;
-
-        if(originSlot != null)
-        {           
-            var itemToDrop = originSlot.Item;
-            if (itemToDrop != null)
-            {
-                bool canDrop = TryDrop(itemToDrop);
-                return canDrop;
-            }            
-        }
-
-        return false;
-    }
-
 
     public override void OnButtonSelected(Selectable selectable)
     {
@@ -347,14 +280,18 @@ public class InventorySlot : ButtonDraggableListener
         {
             case NavigationMode.Neutral:
                 if (Item == null) return;
-                if(source == InputSource.Gamepad && CanBeginDrag())
+                if(source == InputSource.Gamepad && CanBeginDrag(out IDraggablePayload payload))
                 {
-                    if(Slot == Equipment.Slot.Merchant)
+                    DragItem item = payload as DragItem;
+
+                    if(IsMerchantSlot())
                     {
-                        TryBuyItem(Item);
+                        TryBuyItem(item);
                     }
-                    BeginDrag(selectable as Button, source);
+
+                    StartGamepadDrag(item);
                 }
+
                 break;
 
             case NavigationMode.MoveItem:
@@ -362,7 +299,7 @@ public class InventorySlot : ButtonDraggableListener
                 {
                     if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
                     {
-                        InitiateGamepadProcessDrop(itemOnGamepad);
+                        InitiateGamepadProcessDrop(itemOnGamepad, itemOnGamepad.currentLocation);
                     }
                 }
                 break;
@@ -386,46 +323,43 @@ public class InventorySlot : ButtonDraggableListener
         }         
     }
 
-    private void InitiateGamepadProcessDrop(DragItem itemToDrop)
+    //Called by the recipient
+    private void InitiateGamepadProcessDrop(IDraggablePayload payload, InventorySlot originSlot)
     {
+        originSlot.EndGamepadDragRoutine();
+
         var selected = EventSystem.current.currentSelectedGameObject;
 
         var targetDrop = selected.GetComponentInParent<InventorySlot>();
-        Debug.LogError($"initiate process gamepad drop on {targetDrop.name}");
-        var originSlot = itemToDrop.currentLocation;
-        var origin = originSlot.GetComponentInChildren<DraggableButtonExtender>();
-        Debug.LogError($"origin = {itemToDrop.currentLocation.gameObject.name}");
 
-        bool canProcessDrop = targetDrop != null && origin != null;
-        Debug.LogError($"canProcessDrop? {canProcessDrop}");
-
-        if (canProcessDrop)
+        if(targetDrop.CanAcceptDrop(payload))
         {
-            targetDrop.ProcessDrop(targetDrop.transform.position, origin.gameObject);
-
-            originSlot.FinalizeDragDrop(origin.WasDropSuccess(targetDrop), originSlot.gameObject, targetDrop.gameObject);
-            
+            var dragResult = new DragResult(true, payload, targetDrop as IDropListener);
+            originSlot.OnDragCompleted(dragResult);
         }
-
         else
         {
-            EndGamepadDrag();
-            OnCancelPerformed();
+            var dragResult = new DragResult(false, payload, targetDrop as IDropListener);
+            originSlot.OnDragCompleted(dragResult);
         }
-        //else cancel
+
     }
 
-    public override void OnCancelPerformed()
-    {
-        if (stateMonitor.GetUINavigationMode() != NavigationMode.MoveItem) return;
 
+    public void OnCancelPerformed()
+    {
         inputHandler.OnNo.RemoveListener(OnCancelPerformed);
 
-        if (!stateMonitor.TryGetItemOnGamepad(out var item))
-            return;
+        var navigationMode = stateMonitor.GetUINavigationMode();
 
-        item.PrepItemForReturn();
-        stateMonitor.ClearItemOnGamepad();
+        if (stateMonitor.GetUINavigationMode() != NavigationMode.MoveItem) return;
+
+        if (!stateMonitor.TryGetItemOnGamepad(out var item)) return;
+
+        var result = new DragResult(false, item as IDraggablePayload, null);
+        OnDragCompleted(result);
+        //item.PrepItemForReturn();
+        //stateMonitor.ClearItemOnGamepad();
         UIController._instance.PlayUIClick();
     }
 
@@ -460,7 +394,7 @@ public class InventorySlot : ButtonDraggableListener
         }
 
         Item.GamepadStartDrag(this, source);
-        inputHandler.OnNo.AddListener(OnCancelPerformed);
+        //inputHandler.OnNo.AddListener(OnCancelPerformed);
     }
 
     private bool CanItemBeDroppedHere(DragItem itemToDrop)
@@ -483,7 +417,7 @@ public class InventorySlot : ButtonDraggableListener
             if (Item != null)
                 return false;
 
-            // 3. we have enough gold
+            // 3. we don't have enough gold
             int currentGold = CombatController._instance.Player._gold;
             if (currentGold < GetItemCost(itemToDrop))
             {
@@ -506,7 +440,7 @@ public class InventorySlot : ButtonDraggableListener
         return CanAcceptItem;
     }
        
-
+    //check if this is still  in use
     private bool InitiateDroppingItem(DragItem itemToDrop)
     {
         if (!CanItemBeDroppedHere(itemToDrop))
@@ -515,7 +449,7 @@ public class InventorySlot : ButtonDraggableListener
             return false;
         }
 
-        inputHandler.OnNo.RemoveListener(OnCancelPerformed);
+        //inputHandler.OnNo.RemoveListener(OnCancelPerformed);
 
         if (Slot == Equipment.Slot.Drop)
         {
@@ -566,7 +500,7 @@ public class InventorySlot : ButtonDraggableListener
         }
         
 
-        if (equipmentManager.TryEquipItem(itemToBuy.e) || equipmentManager.TryPutItemToInventory(itemToBuy.e))
+        if (equipmentManager.TryEquipItem(itemToBuy.e) || equipmentManager.TryCreateItemInInventory(itemToBuy.e))
         {
             BuyItem(itemToBuy);
             return true;
@@ -576,11 +510,34 @@ public class InventorySlot : ButtonDraggableListener
         return false;
     }
 
+    private void BuyDroppedItem(DragItem itemToBuy, InventorySlot destinationSlot)
+    {
+        //at this point we validate the buy eligibility
+        Debug.LogError($"BuyDroppedItem() should be called once!");
+
+        itemToBuy.currentLocation.RemoveItemFromSlot();
+        itemToBuy.currentLocation.LabelCheck();
+
+        itemToBuy.PrepItemForDrop(destinationSlot);
+
+        if (destinationSlot.IsCharacterEquipmentSlot()) //slot is equipment
+        {
+            EquipmentManager._instance.EquipItem(itemToBuy.e);
+        }
+        else if (destinationSlot.IsAllSlot())
+        {
+            EquipmentManager._instance.AddItemToInventory(itemToBuy.e);
+        }
+
+        BuyItem(itemToBuy);
+    }
+
 
     //for gamepad version, we shouldn't drag/drop the item to buy it, or should we?
     private void BuyItem(DragItem itemToDrop)
     {
         // if we do - gold
+        Debug.LogError($"BuyItem - should be called once!");
         CombatController._instance.Player._gold -= GetItemCost(itemToDrop);
         OnItemBought?.Invoke(this);
         BuyItemEvent(-GetItemCost(itemToDrop));
@@ -647,15 +604,23 @@ public class InventorySlot : ButtonDraggableListener
         {
             EquipmentManager._instance.UnEquipItem(Item.e);
         }
+        //if(IsAllSlot())
+        //{
+        //    EquipmentManager._instance.PoolItem(Item);
+        //}
 
         Item = null;
     }
 
     private void AssignDroppedItemToSlot(DragItem di, InventorySlot destinationSlot)
     {
-        Debug.LogError($"Assign dropped {di.e.name} to slot {destinationSlot.name}");
+        Debug.LogError($"{gameObject.name} - Assign dropped {di.e.name} to slot {destinationSlot.name}");
 
-        Item = di;
+        destinationSlot.Item = di;
+
+        string itemName = Item != null ? Item.name : "NULL";
+        Debug.LogError($"{gameObject.name} - Item = {itemName}");
+
 
         if (di.currentLocation.Item == di) //if not swapping with other item
         {
@@ -663,18 +628,25 @@ public class InventorySlot : ButtonDraggableListener
             di.currentLocation.LabelCheck();
         }
 
-        di.PrepItemForDrop(destinationSlot);
-                
-        if (Slot != Equipment.Slot.All) //slot is equipment
+        di.currentLocation = destinationSlot;
+
+        if (destinationSlot.IsCharacterEquipmentSlot()) //slot is equipment
+        {            
+            EquipmentManager._instance.EquipItem(di.e);
+        }
+        else if(destinationSlot.IsAllSlot())
         {
-            EquipmentManager._instance.EquipFromInventory(Item.e);
+            EquipmentManager._instance.AddItemToInventory(di.e);
         }
 
-        if (di.slotType == Equipment.Slot.Consumable)
-        {
-            //Debug.Log("from inventory slot potion");
-            EquipmentManager._instance.AddPotionToPotionBar((Consumable)di.e);
-        }
+        di.PrepItemForDrop(destinationSlot);
+        EventSystem.current.SetSelectedGameObject(destinationSlot.GetComponentInChildren<Selectable>().gameObject);
+
+        //if (di.slotType == Equipment.Slot.Consumable)
+        //{
+        //    //Debug.Log("from inventory slot potion");
+        //    EquipmentManager._instance.AddPotionToPotionBar((Consumable)di.e);
+        //}
 
         LabelCheck();
         UIController._instance.PlayPlaceItem();
@@ -957,32 +929,173 @@ public class InventorySlot : ButtonDraggableListener
     }
 
 
+    //INTERFACE IMPLEMENTATION
+    public bool CanBeginDrag(out IDraggablePayload payload)
+    {
+        NavigationMode currentUINavigationMode = stateMonitor.GetUINavigationMode();
+        payload = null;
+
+        if (currentUINavigationMode != NavigationMode.Neutral)
+        {
+            Debug.LogError($"ERROR: Drag should begin only from NavigationMode.Neutral");
+            return false;
+        }
+
+        if (Item == null || (IsInCombat() && !Item.CanBeDraggedInCombat()))
+            return false;
+
+        if (Item.e.isRelic) return false;
+
+        payload = Item.GetComponent<IDraggablePayload>();
+        
+        stateMonitor.SetItemOnGamepad(Item);
+        return true;
+    }
+
+    //handle the finalization of the drag/drop
+    public void OnDragCompleted(DragResult result)
+    {
+        stateMonitor.ClearItemOnGamepad();
+
+        var droppedItem = result.Payload as DragItem;
+
+        if (!result.Success)
+        {            
+            droppedItem.PrepItemForReturn();
+            EventSystem.current.SetSelectedGameObject(GetComponentInChildren<Selectable>().gameObject);
+            return;
+        }
+
+        var destinationSlot = result.DropDestination as InventorySlot;
+
+        //here the swap is already eligible, so we just need to know if destination has item
+        if(destinationSlot.Item == null) 
+        {
+            // callback to a popup here!
+            if(IsMerchantSlot())
+            {
+                Debug.LogError($"ITEM BOUGHT!");
+                destinationSlot.BuyDroppedItem(droppedItem, destinationSlot);
+                return;
+            }
+
+            //just drop, sell, or discard
+            if(destinationSlot.IsSellSlot())
+            {
+                Debug.LogError($"ITEM SOLD");
+                destinationSlot.SellItem(droppedItem);
+            }
+            else if(destinationSlot.IsDiscardSlot())
+            {
+                Debug.LogError($"ITEM DUMPED!");
+                destinationSlot.DiscardItem(droppedItem);
+            }
+            else if(destinationSlot.IsAllSlot() || droppedItem.slotType == destinationSlot.Slot)
+            {
+                Debug.LogError($"ITEM EQUIPPED OR PUT IN INVENTORY!");
+                AssignDroppedItemToSlot(droppedItem, destinationSlot);
+            }
+        }
+        else 
+        {
+            Debug.LogError($"{gameObject.name} successfully SWAPPING item with {destinationSlot.name}");
+
+            var cachedOriginSlot = this;
+            var cachedDroppedItem = droppedItem;
+            destinationSlot.MoveItemOnThisSlotToItemToDropOriginSlot(destinationSlot.Item, cachedOriginSlot);
+            destinationSlot.AssignDroppedItemToSlot(cachedDroppedItem, destinationSlot);
+
+        }
+    }
+
+
+    //DROP FUNCTIONALITIES
+    public bool CanAcceptDrop(IDraggablePayload payload)
+    {
+        if (payload is not DragItem droppedItem)
+        {
+            Debug.LogError($"FALSE: Payload is not DragItem!");
+            return false;
+        }
+
+        if (droppedItem == Item)
+        {
+            Debug.LogError($"FALSE: droppedItem is itself!");
+            return false; // Cannot drop to self
+        }
+
+        if (IsRelicSlot())
+        {
+            Debug.LogError($"FALSE: destination is relic slot!");
+            return false;
+        }
+        if (IsMerchantSlot())
+        {
+            Debug.LogError($"FALSE: destination is merchant slot");
+            return false;
+        }
+
+        if (droppedItem.currentLocation.IsMerchantSlot())
+            return CanBuyDropCandidate(droppedItem);
+
+        if (IsInCombat() && !droppedItem.CanBeDraggedInCombat())
+        {
+            OnCannotDragItemOnCombat(ErrorMessageManager.Errors.CombatMove);
+            Debug.LogError($"FALSE: CanItemBeDropped false - is in combat");
+            return false;
+        }
+
+        bool slotMatches = IsAllSlot() || IsDiscardSlot() || IsSellSlot() || Slot == droppedItem.slotType;
+        if (!slotMatches)
+        {
+            Debug.LogError($"FALSE: destination slot is not ALL or droppedItem slottype");
+            return false;
+        }
+
+        return Item == null || CanSwap(droppedItem, Item);
+    }
 
 
 
+    private bool CanSwap(DragItem droppedItem, DragItem currentItem)
+    {
+        InventorySlot droppedItemOrigin = droppedItem.currentLocation;
+                   
+        return CanHoldItem(currentItem);
+    }
 
-    // private void StartCombat()
-    // {
-    //     canBeDragged = false;
-    //     //.Log("can no longer drag");
-    // }
-    // private void EndCombat()
-    // {
-    //     canBeDragged = true;
-    // }
-    // private void Start()
-    // {
-    //     LabelCheck();
-    //
-    //     CombatController.StartCombatEvent += StartCombat;
-    //     CombatController.EndCombatEvent += EndCombat;
-    // }
-    // private void OnDestroy()
-    // {
-    //     CombatController.StartCombatEvent -= StartCombat;
-    //     CombatController.EndCombatEvent -= EndCombat;
-    //
-    // }
+    private bool CanHoldItem(DragItem item)
+    {
+        return Slot == Slot.All || Slot == item.slotType;
+    }
+
+    private bool CanBuyDropCandidate(DragItem itemToBuy)
+    {
+        Debug.LogError($"CanBuyDropCandidate is being called!");
+        //Can buy?
+
+        //1. Target slot (this dropListener) is not merchant, sell, or discard?
+        if (IsMerchantSlot() || IsSellSlot() || IsDiscardSlot()) return false;
+
+        //2. Target slot is empty?
+        if (Item != null) return false;
+
+        //3. Target slot is inventory slot (All) or same slot type?
+        if (!IsAllSlot() && !itemToBuy.HasSameSlotType(this.Slot))
+            return false;
+
+        //4. Have enough gold?
+        var equipmentManager = EquipmentManager._instance;
+
+        int currentGold = CombatController._instance.Player._gold;
+        if (currentGold < GetItemCost(itemToBuy))
+        {
+            NotEnoughGoldEvent();
+            return false;
+        }
+
+        return true;
+    }
 }
 
 

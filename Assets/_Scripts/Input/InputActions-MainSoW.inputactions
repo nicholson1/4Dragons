@@ -697,6 +697,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Cancel",
+                    "type": "PassThrough",
+                    "id": "0b0edf37-3d1e-41fc-bc50-c4100000d966",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "ScrollWheel",
                     "type": "PassThrough",
                     "id": "6324ea72-5c32-4387-bfa7-23266f8d800a",
@@ -1048,6 +1057,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse;KeyboardMouse",
                     "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "da9bbcd2-5679-4102-849b-0c579ffe8f86",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;KeyboardMouse",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a7fde49a-d5d1-4652-b2b7-fcf091130da4",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Gamepad",
+                    "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

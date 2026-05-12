@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zak.UISystem;
 
-public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener
+public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener, IDropListener
 {
     public Button GamepadButton => button;
     public event Action OnGamepadButtonSelected;
@@ -53,5 +54,14 @@ public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener
         targetImage = GetComponent<Image>();
         targetImage.enabled = false;
     }
-        
+
+    public bool CanAcceptDrop(IDraggablePayload payload)
+    {
+        var potionDrag = payload as PotionDrag;
+
+        if (potionDrag == null)
+            return false;
+
+        return true;
+    }
 }

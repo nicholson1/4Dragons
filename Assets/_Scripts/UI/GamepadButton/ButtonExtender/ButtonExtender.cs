@@ -9,6 +9,8 @@ namespace DFG.UIHandling
                                                 IPointerEnterHandler, IPointerExitHandler
 
     {
+
+
         protected Button button;
         protected IButtonListener buttonListener;
 
@@ -33,7 +35,7 @@ namespace DFG.UIHandling
         {
             if (eventData.button == PointerEventData.InputButton.Right)
             {
-                OnCancel(eventData);
+                //OnCancel(eventData);
                 return;
             }
 
@@ -100,11 +102,11 @@ namespace DFG.UIHandling
             EventSystem.current.SetSelectedGameObject(button.gameObject);
         }
 
-        public virtual void OnCancel(BaseEventData eventData)
-        {
-            Debug.LogError($"Mouse cancel performed");
-            buttonListener.OnCancelPerformed();
-        }
+        //public virtual void OnCancel(BaseEventData eventData)
+        //{
+        //    Debug.LogError($"Mouse cancel performed");
+        //    buttonListener.OnCancelPerformed();
+        //}
 
 
         protected virtual void Start()

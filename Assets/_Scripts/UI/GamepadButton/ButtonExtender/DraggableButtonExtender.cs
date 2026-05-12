@@ -59,7 +59,7 @@ namespace DFG.UIHandling
                 }
             }
 
-            draggableListener.OnCancelPerformed();
+            //draggableListener.OnCancelPerformed();
 
             if (eventData.pointerCurrentRaycast.gameObject == this.gameObject)
             {
