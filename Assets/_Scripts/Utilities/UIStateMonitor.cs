@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zak.UISystem;
 
 public class UIStateMonitor : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class UIStateMonitor : MonoBehaviour
     private UIScreen currentActiveScreen = null;
     private UIScreen previousActiveScreen = null;
 
-    private DragItem itemOnGamepad;
+    private IDraggablePayload itemOnGamepad;
     private Transform itemOnGamepadPreviousParent;
     private Vector3 itemOnGamepadPreviousLocalPos;
 
@@ -40,7 +41,7 @@ public class UIStateMonitor : MonoBehaviour
 
     public bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
 
-    public void SetItemOnGamepad(DragItem item)
+    public void SetItemOnGamepad(IDraggablePayload item)
     {
         if(item == null)
         {
@@ -49,9 +50,11 @@ public class UIStateMonitor : MonoBehaviour
         }
 
         itemOnGamepad = item;
-        itemOnGamepadPreviousParent = itemOnGamepad.transform.parent;
-        itemOnGamepadPreviousLocalPos = itemOnGamepad.transform.localPosition;
-        itemOnGamepad.transform.parent = ItemOnDragParent;
+        var itemObject = itemOnGamepad.sourceObject;
+
+        itemOnGamepadPreviousParent = itemObject.transform.parent;
+        itemOnGamepadPreviousLocalPos = itemObject.transform.localPosition;
+        itemObject.transform.parent = ItemOnDragParent;
 
         SetCursorMode(NavigationMode.MoveItem);
 
@@ -74,7 +77,7 @@ public class UIStateMonitor : MonoBehaviour
         OnDragItem?.Invoke(false);
     }
 
-    public bool TryGetItemOnGamepad(out DragItem item)
+    public bool TryGetItemOnGamepad(out IDraggablePayload item)
     {
         item = itemOnGamepad;
         return itemOnGamepad != null;

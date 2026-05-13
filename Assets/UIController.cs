@@ -132,6 +132,9 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private AudioClip discardItem;
     [SerializeField] private float discardItemVol;
+
+    [SerializeField] private AudioClip usePotion;
+    [SerializeField] private float usePotionVol;
     #endregion
 
 
@@ -1302,7 +1305,13 @@ public class UIController : MonoBehaviour
     {
         SoundManager.Instance.Play2DSFX(UpgradeSound,UpgradeSoundVol, 1, .05f);
     }
+
+    public void PlayPotionSound()
+    {
+        SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, 0.05f);
+    }
     
+    #endregion
     public void OpenDiscordLink()
     {
         Application.OpenURL("https://discord.gg/8rNMwuhpkp");
@@ -1311,7 +1320,6 @@ public class UIController : MonoBehaviour
     {
         Application.OpenURL("https://store.steampowered.com/app/3327710/For_Dragons/");
     }
-    #endregion
 }
 
 public enum PanelMoveDirection

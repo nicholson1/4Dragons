@@ -135,7 +135,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
     private bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
 
   
-    private void StartGamepadDrag(DragItem itemToDrag)
+    private void StartGamepadDrag(IDraggablePayload itemToDrag)
     {
         if (draggingRoutine != null)
         {
@@ -165,12 +165,13 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
         }
     }
 
-    private IEnumerator GamepadDragRoutine(DragItem itemToDrag)
+    private IEnumerator GamepadDragRoutine(IDraggablePayload payload)
     {
+        var itemToDrag = payload as DragItem;
         itemToDrag._rectTransform.anchoredPosition += gamepadDragOffset;
 
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
-        RectTransform currentRectTransform = currentSelected.GetComponent<RectTransform>();
+        //RectTransform currentRectTransform = currentSelected.transform as RectTransform;
         while (stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
         {
             
@@ -297,9 +298,10 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
             case NavigationMode.MoveItem:
                 if(source == InputSource.Gamepad)
                 {
-                    if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out DragItem itemOnGamepad))
+                    if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out IDraggablePayload itemOnGamepad) && itemOnGamepad is DragItem)
                     {
-                        InitiateGamepadProcessDrop(itemOnGamepad, itemOnGamepad.currentLocation);
+                        var item = itemOnGamepad as DragItem;
+                        InitiateGamepadProcessDrop(itemOnGamepad, item.currentLocation);
                     }
                 }
                 break;
@@ -324,8 +326,9 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
     }
 
     //Called by the recipient
-    private void InitiateGamepadProcessDrop(IDraggablePayload payload, InventorySlot originSlot)
+    private void InitiateGamepadProcessDrop(IDraggablePayload payload, IButtonListener origin)
     {
+        var originSlot = origin as InventorySlot;
         originSlot.EndGamepadDragRoutine();
 
         var selected = EventSystem.current.currentSelectedGameObject;
@@ -634,7 +637,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
         {            
             EquipmentManager._instance.EquipItem(di.e);
         }
-        else if(destinationSlot.IsAllSlot())
+        else if(destinationSlot.IsAllSlot() && !this.IsAllSlot())
         {
             EquipmentManager._instance.AddItemToInventory(di.e);
         }

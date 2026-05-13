@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DFG.UIHandling;
 using Zak.UISystem;
+using UnityEngine.EventSystems;
 
-public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener, IDropListener
+public class TargettingButtonListener : ButtonListener, IDropListener
 {
     public Button GamepadButton => button;
-    public event Action OnGamepadButtonSelected;
-    public event Action OnGamepadButtonDeselected;
+
+    public CombatEntity Entity => combatEntity;
+
 
     //public Button GamepadButton => button;
     public Image TargetImage => targetImage;
@@ -18,28 +21,53 @@ public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener, I
     private Image targetImage;
     private CombatEntity combatEntity;
 
-    private PotionDrag potionDrag;
 
-    public void HandleGamepadButtonDeselected(Selectable selectable)
+
+    private void InitiateGamepadProcessDrop(IDraggablePayload payload, IButtonListener origin)
     {
-        TargetImage.enabled = false;
+        var originSlot = origin as PotionHolder;
+        originSlot.EndGamepadDragRoutine();
+
+        var selected = EventSystem.current.currentSelectedGameObject;
+        
+        if(CanAcceptDrop(payload))
+        {
+            var dragResult = new DragResult(true, payload, this as IDropListener);
+            originSlot.OnDragCompleted(dragResult);
+        }
+        else
+        {
+            var dragResult = new DragResult(false, payload, this as IDropListener);
+            originSlot.OnDragCompleted(dragResult);
+        }
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
+    public override void OnButtonDeselected(Selectable selectable)
     {
-        potionDrag.UsePotion(combatEntity);
+        
     }
 
-    public void HandleGamepadButtonSelected(Selectable selectable)
+    public override void OnButtonPressed(Selectable selectable, InputSource source)
     {
-        TargetImage.enabled = true;
+        if (source == InputSource.Gamepad)
+        {
+            if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out IDraggablePayload itemOnGamepad) && itemOnGamepad is PotionDrag)
+            {
+                var item = itemOnGamepad as PotionDrag;
+                InitiateGamepadProcessDrop(itemOnGamepad, item.currentLocation);
+            }
+        }
+    }
+
+    public override void OnButtonSelected(Selectable selectable)
+    {
+        Debug.Log($"targetting button selected");
     }
 
     public void InitializeButton(PotionDrag potion)
     {
         combatEntity = GetComponentInParent<HealthBar>().displayCharacter._combatEntity;
 
-        potionDrag = potion;
         targetImage.sprite = potion.PotionImage.sprite;
     }
 
@@ -62,6 +90,9 @@ public class TargettingButtonListener : MonoBehaviour, IGamepadButtonListener, I
         if (potionDrag == null)
             return false;
 
+        Debug.LogError($"can Accept Drop!");
         return true;
     }
+
+
 }

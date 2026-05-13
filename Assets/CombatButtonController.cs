@@ -62,6 +62,7 @@ public class CombatButtonController : MonoBehaviour
         character.UpdateEnergy -= UpdateEnergy;
     }
 
+    /*
     //private void Update()
     //{
         
@@ -107,6 +108,7 @@ public class CombatButtonController : MonoBehaviour
     //        }
     //    }
     //}
+    */
 
     private void UpdateEnergy(Character c, int current)
     {

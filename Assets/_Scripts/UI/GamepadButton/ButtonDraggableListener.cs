@@ -142,6 +142,21 @@ namespace DFG.UIHandling
         {
             throw new NotImplementedException();
         }
+
+        public override void OnButtonDeselected(Selectable selectable)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnButtonPressed(Selectable selectable, InputSource source)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnButtonSelected(Selectable selectable)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

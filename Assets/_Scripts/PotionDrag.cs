@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zak.UISystem;
 
-public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler, IGamepadButtonListener
+public class PotionDrag : MonoBehaviour, IDraggablePayload//IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler, IGamepadButtonListener
 {
-    public Button GamepadButton => gamepadButton;
     public Image PotionImage => image;
+    public RectTransform RT => transform as RectTransform;
+    public GameObject sourceObject => this.gameObject;
+    public PotionHolder currentLocation = null; 
 
     [SerializeField] private ToolTip _toolTip;
     public Consumable potion;
@@ -27,13 +30,12 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
     public event Action OnGamepadButtonDeselected;
 
     private UIScreenCombat combatScreen;
-    private Button gamepadButton;
 
     public void InitializePotion(Consumable p)
     {
         if (_rectTransform == null)
         {
-            _rectTransform = GetComponent<RectTransform>();
+            _rectTransform = transform as RectTransform;
             canvas = transform.parent.parent.GetComponent<Canvas>();
             holder = transform.parent;
         }
@@ -47,9 +49,9 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
             SteamAchievementManager.Unlock("bag_potions");
         }
 
-        gamepadButton ??= GetComponentInChildren<Button>();
+        //gamepadButton ??= GetComponentInChildren<Button>();
         combatScreen = GetComponentInParent<UIScreenCombat>(true);
-        combatScreen.RegisterActivePotionDrag(this);
+        combatScreen.RegisterActivePotion(this);
 
         TutorialManager.Instance.QueueTip(TutorialNames.Potions);
     }
@@ -125,20 +127,19 @@ public class PotionDrag : MonoBehaviour, IPointerDownHandler, IBeginDragHandler,
 
     }
 
-    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
-    {        
-        Debug.LogError($"Potion button pressed, initiatePotionTargetting!");
-        combatScreen.InitiatePotionTargetting(this);
+    //public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
+    //{        
+    //    Debug.LogError($"Potion button pressed, initiatePotionTargetting!");
+    //    combatScreen.InitiatePotionTargetting(this);
 
 
-    }
+    //}
 
     public void UsePotion(CombatEntity target)
     {
         target.HitWithPotion(potion.ConsumableType);
-        EquipmentManager._instance.PoolPotion(this);
-        combatScreen.RemoveActivePotionDrag(this);
-        SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, .05f);
+
+
     }
 
 

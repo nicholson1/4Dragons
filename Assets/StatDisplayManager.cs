@@ -7,12 +7,29 @@ public class StatDisplayManager : MonoBehaviour
 {
     public static StatDisplayManager _instance;
 
-    [SerializeField] private Sprite[] statIcons;
-    [SerializeField] private string[] statNames;
-    [SerializeField] private Color[] statColors;
-    [SerializeField] private string[] statDesc;
+    //[SerializeField] private Sprite[] statIcons;
+    //[SerializeField] private string[] statNames;
+    //[SerializeField] private Color[] statColors;
+    //[SerializeField] private string[] statDesc;
 
+    //easier individual stats modification
+    [SerializeField] private List<CharacterStats> stats = new List<CharacterStats>();
 
+    //[ContextMenu("Populate Consolidated Stat Elements")]
+    //public void GenerateStats()
+    //{
+    //    stats.Clear();
+    //    for (int i = 0; i < statNames.Length; i++)
+    //    {
+    //        string name = statNames[i];
+    //        Sprite icon = statIcons[i];
+    //        Color color = statColors[i];
+    //        string desc = statDesc[i];
+
+    //        CharacterStats s = new CharacterStats(name, icon, color, desc);
+    //        stats.Add(s);
+    //    }
+    //}
 
     private void Awake()
     {
@@ -29,14 +46,18 @@ public class StatDisplayManager : MonoBehaviour
     public (string, Sprite, Color, string) GetValues(Stats stat)
     {
         //Debug.Log(stat);
-        return (statNames[(int)stat-2], statIcons[(int)stat-2], statColors[(int)stat-2], statDesc [(int)stat-2]);
+        var cs = stats[(int)stat - 2];
+        return (cs.Name, cs.Icon, cs.StatColor, cs.Description);
+        //return (statNames[(int)stat-2], statIcons[(int)stat-2], statColors[(int)stat-2], statDesc [(int)stat-2]);
     }
     
     public (string, Sprite, Color, string) GetValuesFromSpell(SpellTypes s)
     {
         int stat = GetStatIntFromSpell(s);
         //Debug.Log(stat);
-        return (statNames[(int)stat-2], statIcons[(int)stat-2], statColors[(int)stat-2], statDesc [(int)stat-2]);
+        var cs = stats[(int)stat - 2];
+        return (cs.Name, cs.Icon, cs.StatColor, cs.Description);
+        //return (statNames[(int)stat-2], statIcons[(int)stat-2], statColors[(int)stat-2], statDesc [(int)stat-2]);
     }
     private int GetStatIntFromSpell(SpellTypes s)
     {
@@ -170,4 +191,21 @@ public class StatDisplayManager : MonoBehaviour
     }
     
     
+}
+
+[System.Serializable]
+public class CharacterStats
+{
+    public string Name;
+    public Sprite Icon;
+    public Color StatColor;
+    public string Description;
+
+    public CharacterStats(string name, Sprite icon, Color statColor, string description)
+    {
+        Name = name;
+        Icon = icon;
+        StatColor = statColor;
+        Description = description;
+    }
 }

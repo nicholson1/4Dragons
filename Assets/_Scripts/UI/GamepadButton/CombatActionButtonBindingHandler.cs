@@ -1,3 +1,4 @@
+using DFG.UIHandling;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,29 +8,33 @@ using UnityEngine.UI;
 public class CombatActionButtonBindingHandler : MonoBehaviour
 {   
     private UIScreenCombat combatScreen;
-    private Button button;
+    private ButtonExtender buttonExtender;
     private ToolTip toolTip;
     private RectTransform rt;
     [SerializeField] private int actionIndex = 0;
-  
+    
 
     private InputHandler inputHandler;
 
-    private bool pressedOnce = false;
     
     private void HandleAttackPressed(int index)
     {
-        if(actionIndex == index)
-        {
-            if(EventSystem.current.currentSelectedGameObject == button.gameObject)
-            {
-                button.onClick.Invoke();
-                return;
-            }
+        if(index == actionIndex)
+            buttonExtender.ClickButton(InputSource.Gamepad);
 
-            button.Select();
-            return;
-        }
+        //if(actionIndex == index)
+        //{
+        //    if(EventSystem.current.currentSelectedGameObject == button.gameObject)
+        //    {
+        //        Debug.LogError($"Attack pressed!");
+        //        button.onClick.Invoke();
+        //        return;
+        //    }
+
+        //    Debug.LogError($"Attack selected!");
+        //    EventSystem.current.SetSelectedGameObject(this.gameObject);
+        //    return;
+        //}
     }
 
     private void BindInput()
@@ -56,7 +61,7 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
 
     private void Awake()
     {
-        button = GetComponent<Button>();
+        buttonExtender = GetComponent<ButtonExtender>();
         toolTip = GetComponent<ToolTip>();
         rt = GetComponent<RectTransform>();
         inputHandler = EventSystem.current.GetComponent<InputHandler>();

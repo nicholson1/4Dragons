@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace DFG.UIHandling
 {
-    public class ButtonListener : MonoBehaviour, IButtonListener
+    public abstract class ButtonListener : MonoBehaviour, IButtonListener
     {
         public virtual event Action OnGamepadButtonSelected;
         public virtual event Action OnGamepadButtonDeselected;
@@ -16,20 +16,12 @@ namespace DFG.UIHandling
         //    throw new NotImplementedException();
         //}
 
-        public virtual void OnButtonDeselected(Selectable selectable)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void OnButtonDeselected(Selectable selectable);
 
-        public virtual void OnButtonPressed(Selectable selectable, InputSource source)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void OnButtonPressed(Selectable selectable, InputSource source);
 
-        public virtual void OnButtonSelected(Selectable selectable)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void OnButtonSelected(Selectable selectable);
+
 
     }
 }

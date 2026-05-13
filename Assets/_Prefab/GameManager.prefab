@@ -733,77 +733,74 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c44dfa2369ffeb4c9c5478a60c83c2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statIcons:
-  - {fileID: 21300000, guid: 6645b327088c4f6408d9561791c57b84, type: 3}
-  - {fileID: 21300000, guid: c4ae72d45cbf98e449555998e979c0a5, type: 3}
-  - {fileID: 21300000, guid: d2f7f020a5affef40958faade309bd96, type: 3}
-  - {fileID: 21300000, guid: a4eeb9c26c3c16e469eb5b1039512d80, type: 3}
-  - {fileID: 21300000, guid: 2d6c18889d4c4034d9740940e69ccf7f, type: 3}
-  - {fileID: 21300000, guid: bf2010de92566d9458a9be8ef5007de3, type: 3}
-  - {fileID: 21300000, guid: 8c013fbd1dde7bc4db457cfd3b7b7ffa, type: 3}
-  - {fileID: 21300000, guid: b7a9eb8f6c1eb2647972fa935e6520d1, type: 3}
-  - {fileID: 21300000, guid: 92d9ad9d6ac62254eb8701eca49a6f55, type: 3}
-  - {fileID: 21300000, guid: 8e035503cd4dd5a44913f53cecf2f905, type: 3}
-  - {fileID: 21300000, guid: 588ac5b533407b74ab8b59d1f45e90db, type: 3}
-  - {fileID: 21300000, guid: 1d831cc6f772c4549a5249de23a03c97, type: 3}
-  - {fileID: 21300000, guid: 74494454d478aaa469e5def843519050, type: 3}
-  - {fileID: 21300000, guid: 41c6f94d80f9e034a9c63dcf97d30f5c, type: 3}
-  - {fileID: 21300000, guid: fa0c219867d3b7b48bdefe7bc0498b20, type: 3}
-  - {fileID: 21300000, guid: dd5f969b183ff134cab371e3d2148d59, type: 3}
-  statNames:
-  - Arm
-  - MR
-  - Str
-  - Swd
-  - Axe
-  - Dgr
-  - Shd
-  - Hmr
-  - SP
-  - Nat
-  - Fr
-  - Ice
-  - LiFo
-  - Shw
-  - HP
-  - Crt
-  statColors:
-  - {r: 0.35875756, g: 0.50548905, b: 0.5471698, a: 1}
-  - {r: 0.5576489, g: 0.28324133, b: 0.6320754, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0.36076003, g: 0.42600685, b: 0.6320754, a: 1}
-  - {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
-  - {r: 0.745283, g: 0.6159992, b: 0, a: 1}
-  - {r: 0.71868366, g: 0.5582948, b: 0.9622642, a: 1}
-  - {r: 0.36862746, g: 0.2354517, b: 0, a: 1}
-  - {r: 0.9528302, g: 0, b: 0.5977565, a: 1}
-  - {r: 0, g: 0.5019608, b: 0, a: 1}
-  - {r: 1, g: 0.5019608, b: 0, a: 1}
-  - {r: 0, g: 1, b: 1, a: 1}
-  - {r: 0.5019608, g: 0, b: 0, a: 1}
-  - {r: 0.5019608, g: 0, b: 0.5019608, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: 1, b: 0, a: 1}
-  statDesc:
-  - Armor reduces physical damage taken. Your current physical damage reduction is
-    $%
-  - Magic Resistance reduces spell damage taken. Your current spell damage reduction
-    is $%
-  - Strength increses the effectiveness of all physical abilities
-  - Swords increases the effectiveness of Sword abilities
-  - Axes increases the effectiveness of Axe abilities
-  - Daggers increases the effectiveness of Dagger abilities
-  - Shields increases the effectiveness of Shield abilities
-  - Hammers increases the effectiveness of Hammer abilities
-  - Spell Power increses the effectiveness of all spell abilities
-  - Nature Power Increases the effectiveness of all Nature abilities
-  - Fire Power Increases the effectiveness of all Fire abilities
-  - Ice Power Increases the effectiveness of all Ice abilities
-  - Life Force Increases the effectiveness of all Life abilities
-  - Shadow Power Increases the effectiveness of all Shadow abilities
-  - Health increases your maximum health
-  - 'Crit Chance increases the likelyhood that you critically hit with an ability.
-    Your current Crit Chance is $% '
+  stats:
+  - Name: Arm
+    Icon: {fileID: 21300000, guid: 6645b327088c4f6408d9561791c57b84, type: 3}
+    StatColor: {r: 0.35875756, g: 0.50548905, b: 0.5471698, a: 1}
+    Description: Armor reduces physical damage taken. Your current physical damage
+      reduction is $%
+  - Name: MR
+    Icon: {fileID: 21300000, guid: 50a48e81e20235b45a2dd7ba7554a24f, type: 3}
+    StatColor: {r: 0.5576489, g: 0.28324133, b: 0.6320754, a: 1}
+    Description: Magic Resistance reduces spell damage taken. Your current spell
+      damage reduction is $%
+  - Name: Str
+    Icon: {fileID: 21300000, guid: d2f7f020a5affef40958faade309bd96, type: 3}
+    StatColor: {r: 1, g: 1, b: 1, a: 1}
+    Description: Strength increses the effectiveness of all physical abilities
+  - Name: Swd
+    Icon: {fileID: 21300000, guid: a4eeb9c26c3c16e469eb5b1039512d80, type: 3}
+    StatColor: {r: 0.36076003, g: 0.42600685, b: 0.6320754, a: 1}
+    Description: Swords increases the effectiveness of Sword abilities
+  - Name: Axe
+    Icon: {fileID: 21300000, guid: 1d41aa8f27dd9204f93b71dbe2d07981, type: 3}
+    StatColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
+    Description: Axes increases the effectiveness of Axe abilities
+  - Name: Dgr
+    Icon: {fileID: 21300000, guid: bf2010de92566d9458a9be8ef5007de3, type: 3}
+    StatColor: {r: 0.745283, g: 0.6159992, b: 0, a: 1}
+    Description: Daggers increases the effectiveness of Dagger abilities
+  - Name: Shd
+    Icon: {fileID: 21300000, guid: 8c013fbd1dde7bc4db457cfd3b7b7ffa, type: 3}
+    StatColor: {r: 0.71868366, g: 0.5582948, b: 0.9622642, a: 1}
+    Description: Shields increases the effectiveness of Shield abilities
+  - Name: Hmr
+    Icon: {fileID: 21300000, guid: 31846208bb11dd147b78b881519d963c, type: 3}
+    StatColor: {r: 0.36862746, g: 0.2354517, b: 0, a: 1}
+    Description: Hammers increases the effectiveness of Hammer abilities
+  - Name: SP
+    Icon: {fileID: 21300000, guid: 5982e38073f517d4aba1bc5b3e852cef, type: 3}
+    StatColor: {r: 0.9528302, g: 0, b: 0.5977565, a: 1}
+    Description: Spell Power increses the effectiveness of all spell abilities
+  - Name: Nat
+    Icon: {fileID: 21300000, guid: 8e035503cd4dd5a44913f53cecf2f905, type: 3}
+    StatColor: {r: 0, g: 0.5019608, b: 0, a: 1}
+    Description: Nature Power Increases the effectiveness of all Nature abilities
+  - Name: Fr
+    Icon: {fileID: 21300000, guid: 588ac5b533407b74ab8b59d1f45e90db, type: 3}
+    StatColor: {r: 1, g: 0.5019608, b: 0, a: 1}
+    Description: Fire Power Increases the effectiveness of all Fire abilities
+  - Name: Ice
+    Icon: {fileID: 21300000, guid: 1d831cc6f772c4549a5249de23a03c97, type: 3}
+    StatColor: {r: 0, g: 1, b: 1, a: 1}
+    Description: Ice Power Increases the effectiveness of all Ice abilities
+  - Name: LiFo
+    Icon: {fileID: 21300000, guid: 74494454d478aaa469e5def843519050, type: 3}
+    StatColor: {r: 0.5019608, g: 0, b: 0, a: 1}
+    Description: Life Force Increases the effectiveness of all Life abilities
+  - Name: Shw
+    Icon: {fileID: 21300000, guid: 41c6f94d80f9e034a9c63dcf97d30f5c, type: 3}
+    StatColor: {r: 0.5019608, g: 0, b: 0.5019608, a: 1}
+    Description: Shadow Power Increases the effectiveness of all Shadow abilities
+  - Name: HP
+    Icon: {fileID: 21300000, guid: fa0c219867d3b7b48bdefe7bc0498b20, type: 3}
+    StatColor: {r: 1, g: 0, b: 0, a: 1}
+    Description: Health increases your maximum health
+  - Name: Crt
+    Icon: {fileID: 21300000, guid: 8712448e76fa5f34189cdc7844a99bd7, type: 3}
+    StatColor: {r: 1, g: 1, b: 0, a: 1}
+    Description: 'Crit Chance increases the likelyhood that you critically hit with
+      an ability. Your current Crit Chance is $% '
 --- !u!114 &7127878889884681920
 MonoBehaviour:
   m_ObjectHideFlags: 0

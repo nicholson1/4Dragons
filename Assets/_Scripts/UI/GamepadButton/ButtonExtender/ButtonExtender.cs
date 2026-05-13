@@ -23,12 +23,12 @@ namespace DFG.UIHandling
         {
             if (hadPointerDownEvent) return;
 
-            buttonListener.OnButtonSelected(button);
+            buttonListener?.OnButtonSelected(button);
         }
 
         public virtual void OnDeselect(BaseEventData eventData)
         {
-            buttonListener.OnButtonDeselected(button);
+            buttonListener?.OnButtonDeselected(button);
         }
 
         public virtual void OnPointerDown(PointerEventData eventData)
@@ -77,7 +77,7 @@ namespace DFG.UIHandling
                 button.onClick.Invoke();
 
             wasPointerUpEvent = false;
-            buttonListener.OnButtonPressed(button, InputSource.Gamepad);
+            buttonListener?.OnButtonPressed(button, source);
         }
 
         public virtual void OnPointerExit(PointerEventData eventData)

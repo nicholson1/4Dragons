@@ -7,8 +7,8 @@ using UnityEngine;
 using ImportantStuff;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
-public class SpellButton : MonoBehaviour, IGamepadButtonListener
+using DFG.UIHandling;
+public class SpellButton : MonoBehaviour, IButtonListener
 {    
     public SpellTypes spell;
     public Weapon weapon;
@@ -36,6 +36,34 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
     public void SetDataTable(List<List<object>> WeaponScalingTable )
     {        
        DataTable = WeaponScalingTable;
+    }
+
+    public void OnButtonPressed(Selectable selectable, InputSource source)
+    {
+        if (!isSpellUsable)
+        {
+            Debug.LogError($"Spell not usable");
+            return;
+        }
+
+        if (source == InputSource.Gamepad && !isSpellReady)
+        {
+            EventSystem.current.SetSelectedGameObject(this.gameObject);
+
+            return;
+        }           
+
+        InitiateCastSpell();
+    }
+
+    public void OnButtonSelected(Selectable selectable)
+    {
+        ReadyCastingSpell();
+    }
+
+    public void OnButtonDeselected(Selectable selectable)
+    {
+        CancelCastingSpell();
     }
 
     public void HandleGamepadButtonSelected(Selectable selectable)
@@ -77,7 +105,7 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
     private void CancelCastingSpell()
     {
         if (!isSpellReady) return;
-
+                
         _toolTip.CloseTip();
         isSpellReady = false;
     }
@@ -87,8 +115,8 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
         //close tip
         if (!isSpellReady)
         {
-            //handle spell not usable effects?
-            
+            Debug.LogError($"Spell not ready!");
+            isSpellReady = true;
             return;
         }
 
@@ -96,6 +124,7 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
         character._combatEntity.CastTheAbility(spell, weapon);
         buttonGlow.TriggerEffect(_toolTip.IconColor);
         EventSystem.current.SetSelectedGameObject(null);
+        isSpellReady = false;
     }
 
 
@@ -296,6 +325,8 @@ public class SpellButton : MonoBehaviour, IGamepadButtonListener
     {
         character.UpdateEnergy -= SetUsability;
     }
+
+
 
     //private void OnEnable()
     //{

@@ -13,6 +13,7 @@ public class UIScreenCombat : UIScreen
     //this screen should be considered !navigatable during CombatUINavigationMoce.Combat
     public event Action<CombatEntity> OnTargetSelected;
     public event Action<CombatUINavigationMode> OnCombatUINavigationChanged;
+    public CombatUINavigationMode CurrentCombatNavigation => currentCombatNavigationMode;
 
     private CombatController combatController;
     private CombatUINavigationMode currentCombatNavigationMode = CombatUINavigationMode.Combat;
@@ -20,8 +21,9 @@ public class UIScreenCombat : UIScreen
     private Character player;
     private Character currentEnemy;
 
+    public PotionHolder[] potionHolders = new PotionHolder[6];
+    private List<PotionHolder> activePotionHolders = new List<PotionHolder>();
     private List<HealthBar> currentHealthbars = new List<HealthBar>();
-    private List<PotionDrag> activePotions = new List<PotionDrag>();
     private List<TargettingButtonListener> targettingButtonListeners = new List<TargettingButtonListener>();
 
     [SerializeField] private Button endTurn;
@@ -218,7 +220,9 @@ public class UIScreenCombat : UIScreen
 
     #region Potion Mode Related
 
-    public void TogglePotionMode()
+
+
+    private void TogglePotionMode()
     {
         if (player == null)
         {
@@ -238,47 +242,52 @@ public class UIScreenCombat : UIScreen
             BindPotionButtons();
             inputHandler.OnNo.AddListener(HandleCancelPressed);
         }
-        else
-        {
-            Debug.Log($"CombatUINavigationMode is not in Potion or Combat, this function won't do anything!");
-        }        
+      
     }
 
-    public void RegisterActivePotionDrag(PotionDrag potion)
+    private void StorePotionInEmptyHolder(PotionDrag potion)
     {
-        if(activePotions.Contains(potion))
+        foreach(var holder in potionHolders)
         {
-            Debug.LogError($"Error: PotionDrag to register was already registered!");
+            if (holder.IsOccupied) continue;
+
+            holder.StorePotion(potion);
+            
             return;
         }
 
-        activePotions.Add(potion);
+        Debug.LogError($"POTION ERROR: something wrong, there should be only maximum 6 potions in inventory. probably we haven't remove used or sold potions");
+
+    }
+
+    public void RegisterActivePotion(PotionDrag potion)
+    {
+        if (potionHolders.Any(ph => ph.Potion == potion))
+            return;
+       
+        StorePotionInEmptyHolder(potion);
+        activePotionHolders = potionHolders.Where(ph => ph.Potion != null).ToList();
 
         HandlePotionSelectionNavigation();
     }
     
 
-    public void RemoveActivePotionDrag(PotionDrag potion)
+    public void RemoveActivePotion(PotionDrag potion)
     {
-        if(!activePotions.Contains(potion))
-        {
-            Debug.LogError($"Error: PotionDrag to remove doesn't exist in the activePotionDrag list!");
-            return;
-        }
+        activePotionHolders.RemoveAll(ph => ph.Potion == potion);               
 
-        activePotions.Remove(potion);
         HandlePotionSelectionNavigation();
         HandleCancelPressed();
     }
 
     private bool PlayerHasPotion()
     {
-        return activePotions.Count > 0;
+        return activePotionHolders.Count > 0;
     }
 
     private void BindPotionButtons()
     {
-        foreach(var potion in activePotions)
+        foreach(var potion in activePotionHolders)
         {
             Debug.LogError($"binding button for {potion.name}");
             var bindingHandler = potion.GetComponentInChildren<ButtonBindingHandler>();
@@ -289,38 +298,70 @@ public class UIScreenCombat : UIScreen
 
     private void HandlePotionSelectionNavigation()
     {
-        if(activePotions.Count < 1)
+        if(activePotionHolders.Count < 1)
         {
             return;
         }
 
-        for(int i = 0; i<activePotions.Count; i++)
+        for(int i = 0; i < activePotionHolders.Count; i++)
         {
-            var potion = activePotions[i];
-            var button = potion.GamepadButton;
+            var potionHolder = activePotionHolders[i];
+            var selectable = potionHolder.GetComponentInChildren<Selectable>();
                         
-            var navi = button.navigation;
+            var navi = selectable.navigation;
             if (navi.mode != Navigation.Mode.Explicit)
                 navi.mode = Navigation.Mode.Explicit;
 
-            navi.selectOnLeft = i - 1 >= 0 ? activePotions[i - 1].GamepadButton : null;
-            navi.selectOnRight = i + 1 < activePotions.Count ? activePotions[i + 1].GamepadButton : null;
+            int prevIndex = i - 1;
+            int nextIndex = i + 1;
+            var prevSelectable = prevIndex >= 0 ? activePotionHolders[prevIndex].GetComponentInChildren<Selectable>() : null;
+            var nextSelectable = i + 1 < activePotionHolders.Count ? activePotionHolders[nextIndex].GetComponentInChildren<Selectable>() : null;
+            navi.selectOnLeft = prevSelectable;
+            navi.selectOnRight = nextSelectable;
 
-            button.navigation = navi;
+            selectable.navigation = navi;
         }
 
-        EventSystem.current.SetSelectedGameObject(activePotions[0].GamepadButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(activePotionHolders[0].GetComponentInChildren<Selectable>().gameObject);
     }
-       
 
-    public void InitiatePotionTargetting(PotionDrag potion)
+           
+
+    public void InitiateGamepadPotionTargetting(PotionDrag potion)
     {
         Debug.LogError($"UIScreenCombat: InitiatePotionTargetting for {potion.potion.name}");
         RegisterTargettingListeners();
         SetCombatUINavigationMode(CombatUINavigationMode.Targetting);
         HandleTargetSelectionNavigation(potion);
 
-        inputHandler.OnNo.AddListener(HandleCancelPressed);        
+
+
+        //inputHandler.OnNo.AddListener(HandleCancelPressed);        
+    }
+
+    public void SetMousePotionTargettingMode(bool toOn, PotionDrag potion = null)
+    {
+        if (player == null)
+        {
+            Debug.LogError($"Error Toggling to PotionMode: Player NOT found!");
+            return;
+        }
+
+        if (toOn)
+        {
+            if (currentCombatNavigationMode != CombatUINavigationMode.Combat) return;
+
+            RegisterTargettingListeners();
+            SetCombatUINavigationMode(CombatUINavigationMode.Targetting);
+            HandleTargetSelectionNavigation(potion);
+            //inputHandler.OnNo.AddListener(HandleCancelPressed);
+        }
+        else
+        {
+            if (currentCombatNavigationMode != CombatUINavigationMode.Targetting) return;
+
+            HandleCancelPressed();
+        }
     }
 
     private void HandleTargetSelectionNavigation(PotionDrag potion)

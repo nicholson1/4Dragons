@@ -387,6 +387,7 @@ public class CombatController : MonoBehaviour
         }
 
         //DEBUG always mystery
+        Debug.LogError($"DEBUG [?] ALWAYS MYSTERY HERE");
         nt = NodeType.Mystery;
         //END DEBUG
 

@@ -40,7 +40,20 @@ public class EquipmentManager : MonoBehaviour
     private List<DragItem> ItemPool = new List<DragItem>();
     private List<DragItem> ActiveItems = new List<DragItem>();
 
+    [ContextMenu("Debug Create Potion")]
+    public void DebugCreatePotionInInventory()
+    {
+        DebugCreatePot();
+        DebugCreatePot();
+        DebugCreatePot();
 
+    }
+
+    private void DebugCreatePot()
+    {
+        var pot = EquipmentCreator._instance.CreateRandomPotion(2);
+        TryCreateItemInInventory(pot);
+    }
 
     private void UpdateStats(Character c)
     {
@@ -346,14 +359,18 @@ public class EquipmentManager : MonoBehaviour
         di.transform.position = slot.transform.position;
     }
 
+
+
     public void AddItemToInventory(Equipment e)
     {
         if (!c._inventory.Contains(e))           
             c._inventory.Add(e);
 
-        if(e.isPotion)
+        if (e.isPotion)
             AddPotionToPotionBar((Consumable)e);
     }
+
+
 
     public bool TryCreateItemInInventory(Equipment e)
     {
