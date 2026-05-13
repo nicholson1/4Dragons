@@ -192,6 +192,5 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         inputHandler.OnInputTypeChange -= HandleInputChange;
     }
-
-
+        
 }

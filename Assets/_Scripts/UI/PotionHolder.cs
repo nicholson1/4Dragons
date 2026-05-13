@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zak.UISystem;
-using static Unity.VisualScripting.Member;
 
 public class PotionHolder : ButtonListener, IDragListener
 {

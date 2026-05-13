@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class UIScreen : MonoBehaviour
@@ -218,6 +217,8 @@ public class UIScreen : MonoBehaviour
             tutorialManager.CloseTutorial += HandleTutorialClosed;
         }
     }
+
+
 }
 
 public enum GlobalButton

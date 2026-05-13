@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,6 +26,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private BlacksmithController blacksmithScreen;
     [SerializeField] private EventUI eventUI;
     [SerializeField] private UIScreenDefeated defeatedScreen;
+    [SerializeField] private UIScreenDailyChallenge dailyChallengeScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -143,6 +143,11 @@ public class UIController : MonoBehaviour
         TitleScreen.GetComponent<UIScreen>().Activate();
     }
 
+    public void HideTitleScreen()
+    {
+        TitleScreen.SetActive(false);
+    }
+
     public void ActivateCombatScreen()
     {
         combatScreen.Activate();
@@ -156,6 +161,16 @@ public class UIController : MonoBehaviour
     public void ActivateTreasureScreen()
     {
         startingTreasureScreen.Activate();
+    }
+
+    public void OpenDailyChallenge()
+    {
+        dailyChallengeScreen.Activate();
+    }
+
+    public void CloseDailyChallenge()
+    {
+        dailyChallengeScreen.Deactivate();
     }
 
     public void ActivateDeathScreen()
@@ -486,7 +501,7 @@ public class UIController : MonoBehaviour
         {
             TextMeshProUGUI mod = Instantiate(ModDisplay, ModScroll.transform);
             mod.gameObject.SetActive(true);
-            mod.text = CamelCaseToSpaced(((Descriptors)i).ToString());
+            //mod.text = ParseHelper.CamelCaseToSpaced(((Descriptors)i).ToString());
         }
         // load name
         DailyChallengeTitle.text = (string)dailyChallenges[challengeID][1];
@@ -495,6 +510,7 @@ public class UIController : MonoBehaviour
         DailyChallengeDescription.text = (string)dailyChallenges[challengeID][2];
 
     }
+
     public void CloseDailyChallengeUI()
     {
         DailyChallengeUI.gameObject.SetActive(false);
@@ -1197,11 +1213,11 @@ public class UIController : MonoBehaviour
         //    ModTester.gameObject.SetActive(true);
         //}
     }
-    public static string CamelCaseToSpaced(string camelCaseString)
-    {
-        // Add spaces before each uppercase letter and capitalize the first letter
-        return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
-    }
+    //public static string CamelCaseToSpaced(string camelCaseString)
+    //{
+    //    // Add spaces before each uppercase letter and capitalize the first letter
+    //    return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
+    //}
     public void CloseApplication()
     {
 #if UNITY_EDITOR

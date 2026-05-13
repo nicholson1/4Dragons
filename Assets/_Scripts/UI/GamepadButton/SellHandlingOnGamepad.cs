@@ -13,11 +13,11 @@ public class SellHandlingOnGamepad : MonoBehaviour
     private void SellToggled(bool toOn)
     {
         if (toOn)
-            stateMonitor.SetCursorMode(NavigationMode.Sell);
+            stateMonitor.SetUINavigationMode(NavigationMode.Sell);
         else
         {
             if(stateMonitor.GetUINavigationMode() == NavigationMode.Sell)
-                stateMonitor.SetCursorMode(NavigationMode.Neutral);
+                stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
         }            
     }
 

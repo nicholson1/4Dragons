@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -176,6 +175,7 @@ public class UIScreenInventory : UIScreen
                 break;
             case InventoryState.Merchant:
                 shopManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
+                shopManager.CacheInventorySlots(inventorySlots);
                 break;
             case InventoryState.Forge:
                 forgeManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);

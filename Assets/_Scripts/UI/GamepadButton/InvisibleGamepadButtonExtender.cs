@@ -38,13 +38,11 @@ public class InvisibleGamepadButtonExtender : MonoBehaviour, ISelectHandler, IDe
     public void OnPointerDown(PointerEventData eventData)
     {
         isPointerDownEventHappening = true;
-        Debug.LogError($"PointerDown!");
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         isPointerDownEventHappening = false;
-        Debug.LogError($"PointerUp!");
 
         if (isPointerInside)
             buttonListener.HandleGamepadButtonPressed(button, InputSource.MouseKeyboard);

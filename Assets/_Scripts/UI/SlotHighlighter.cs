@@ -15,16 +15,24 @@ public class SlotHighlighter : MonoBehaviour
 
     private Coroutine blinkRoutine = null;
 
-    public void ToggleHighlighter(bool toOn)
+    [SerializeField] private Color neutral;
+    [SerializeField] private Color forge;
+    [SerializeField] private Color upgrade;
+    [SerializeField] private Color sell;
+    [SerializeField] private Color pulseTarget;
+
+    public void TurnOnHighlighter(NavigationMode mode)
     {
-        if (!toOn)
-        {
-            StartHide();
-            return;
-        }
+
 
         StartBlink();
         //pingpong alpha between peak and stable for a few moments, then lerp to stable
+    }
+
+    public void TurnOffHigglighter()
+    {
+        StartHide();
+
     }
 
     private void StartBlink()

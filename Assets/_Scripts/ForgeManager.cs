@@ -14,7 +14,6 @@ public class ForgeManager : UIInventorySubPanel
     public static ForgeManager _instance;
     //public bool Upgrading = false;
     //public bool Enhancing = false;
-    public ForgeMode ForgeMode => forgeMode;
     
     [SerializeField, FormerlySerializedAs("UpgradingFollow")] private RectTransform forgeLabel;
     //[SerializeField] private RectTransform EnhancingFollow;
@@ -34,18 +33,18 @@ public class ForgeManager : UIInventorySubPanel
     public float priceMod = 1;
     public int amountOfClicks = 0;
 
+    [SerializeField] private ToggleGroup toggleGroup;
     [SerializeField] private Toggle upgradeToggle;
     [SerializeField] private Toggle enhanceToggle;
+    [SerializeField] private Toggle smeltToggle;
     [SerializeField] private Button leaveButton;
-    [SerializeField] private Button sellButton;
 
     [SerializeField] private List<Selectable> leftmostSelectables = new List<Selectable>();
 
     private List<InventorySlot> inventorySlots = new List<InventorySlot>();
 
-    private ForgeMode forgeMode = ForgeMode.None;
-
     private InputHandler inputHandler;
+    private UIStateMonitor stateMonitor;
 
     public override Selectable GetFirstInteractableSelectable()
     {
@@ -75,16 +74,15 @@ public class ForgeManager : UIInventorySubPanel
     {
         if (!toOn)
         {
-            if(forgeMode == ForgeMode.Upgrade)
+            if(stateMonitor.GetUINavigationMode() == NavigationMode.Upgrade)
             {
-                forgeMode = ForgeMode.None;
+                stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
                 HandleHighlighterOnToggle(false);
             }
             return;
         }
-
-        forgeMode = ForgeMode.Upgrade;
-        UIController._instance.StateMonitor.SetCursorMode(NavigationMode.Upgrade);
+                
+        stateMonitor.SetUINavigationMode(NavigationMode.Upgrade);
         followLabelImage.sprite = upgradeSprite;
         forgeLabel.SetParent(canvas.transform);
         HidePrice();
@@ -92,7 +90,7 @@ public class ForgeManager : UIInventorySubPanel
 
         HandleHighlighterOnToggle(toOn);
 
-        ToggleOff(enhanceToggle);
+        //ToggleOff(enhanceToggle);
 
         inputHandler.OnNo.RemoveListener(CleanupToggle);
         inputHandler.OnNo.AddListener(CleanupToggle);
@@ -111,7 +109,7 @@ public class ForgeManager : UIInventorySubPanel
         {
             if(slot.Item != null && slot.Item.IsGear())
             {
-                slot.Item.ForgeableHighlighter.ToggleHighlighter(toOn);
+                slot.Item.HandleItemHighlight(toOn);
             }
         }
     }
@@ -120,16 +118,15 @@ public class ForgeManager : UIInventorySubPanel
     {
         if (!toOn)
         {
-            if (forgeMode == ForgeMode.Enhance)
+            if (stateMonitor.GetUINavigationMode() == NavigationMode.Enhance)
             {
-                forgeMode = ForgeMode.None;
+                stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
                 HandleHighlighterOnToggle(false);
             }    
             return;
         }
 
-        forgeMode = ForgeMode.Enhance;
-        UIController._instance.StateMonitor.SetCursorMode(NavigationMode.Enhance);
+        stateMonitor.SetUINavigationMode(NavigationMode.Enhance);
         followLabelImage.sprite = enhanceSprite;
         forgeLabel.SetParent(canvas.transform);
         HidePrice();
@@ -137,40 +134,58 @@ public class ForgeManager : UIInventorySubPanel
 
         HandleHighlighterOnToggle(toOn);
 
-        ToggleOff(upgradeToggle);
+        //ToggleOff(upgradeToggle);
 
         inputHandler.OnNo.RemoveListener(CleanupToggle);
         inputHandler.OnNo.AddListener(CleanupToggle);
     }
 
-    private void ToggleOff(Toggle toggle, bool setModeNone = false)
+    private void OnSmeltToggled(bool toOn)
     {
-        if (setModeNone)
-            forgeMode = ForgeMode.None;
+        if (!toOn)
+        {
+            if (stateMonitor.GetUINavigationMode() == NavigationMode.Sell)
+            {
+                stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
+                HandleHighlighterOnToggle(false);
+            }
+            return;
+        }
 
-        if (!toggle.isOn) return;
+        stateMonitor.SetUINavigationMode(NavigationMode.Sell);
+        followLabelImage.sprite = enhanceSprite;
+        forgeLabel.SetParent(canvas.transform);
+        
+        amountOfClicks = -1;
 
-        toggle.isOn = false;
+        HandleHighlighterOnToggle(toOn);
+
+        //ToggleOff(upgradeToggle);
+
+        inputHandler.OnNo.RemoveListener(CleanupToggle);
+        inputHandler.OnNo.AddListener(CleanupToggle);
     }
+
+
 
     private void CleanupToggle()
     {
         inputHandler.OnNo.RemoveListener(CleanupToggle);
 
-        if (upgradeToggle.isOn)
-            upgradeToggle.isOn = false;
-        if (enhanceToggle.isOn)
-            enhanceToggle.isOn = false;
+        toggleGroup.SetAllTogglesOff();
 
         forgeLabel.gameObject.SetActive(false);
 
-        if (forgeMode != ForgeMode.None)
-            forgeMode = ForgeMode.None;
+
+        if(stateMonitor.GetUINavigationMode() != NavigationMode.Neutral)
+        {
+            stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
+        }
     }
 
     public void ShowIcon()
     {
-        if (forgeMode == ForgeMode.None) return;
+        if (stateMonitor.GetUINavigationMode() == NavigationMode.Neutral) return;
 
         forgePriceObject.SetActive(true);
 
@@ -190,21 +205,21 @@ public class ForgeManager : UIInventorySubPanel
         }
     }
     
-    public int GetUpgradePrice(ForgeMode mode, Equipment equipment)
+    public int GetUpgradePrice(NavigationMode mode, Equipment equipment)
     {
         int upgradePrice = 0;
-        if(mode == ForgeMode.Upgrade)
+        if(mode == NavigationMode.Upgrade)
             upgradePrice = Mathf.RoundToInt((equipment.stats[Stats.ItemLevel] * (equipment.stats[Stats.Rarity] + 1)) * priceMod) * 4;
-        else if(mode == ForgeMode.Enhance)
+        else if(mode == NavigationMode.Enhance)
             upgradePrice = Mathf.RoundToInt((equipment.stats[Stats.ItemLevel] + 5) * (equipment.stats[Stats.Rarity] + 1) * priceMod) * 4;
         
         forgePriceText.text = upgradePrice.ToString();
         return upgradePrice;
     }
 
-    public void ShowForgePrice(Equipment e)
+    public void ShowForgePrice(NavigationMode mode, Equipment e)
     {
-        GetUpgradePrice(forgeMode, e);           
+        GetUpgradePrice(mode, e);           
 
         forgePriceObject.SetActive(true);
         forgePriceText.gameObject.SetActive(true);
@@ -219,8 +234,6 @@ public class ForgeManager : UIInventorySubPanel
 
     public void ClickUpgradeButtonFromForge()
     {
-        forgeMode = ForgeMode.Upgrade;
-
         forgeLabel.gameObject.SetActive(true);
         //EnhancingFollow.gameObject.SetActive(false);
 
@@ -236,8 +249,6 @@ public class ForgeManager : UIInventorySubPanel
     }
     public void ClickEnhanceButtonFromForge()
     {
-        forgeMode = ForgeMode.Enhance;
-
         forgeLabel.gameObject.SetActive(true);
         //EnhancingFollow.gameObject.SetActive(true);
 
@@ -307,7 +318,7 @@ public class ForgeManager : UIInventorySubPanel
     private void Start()
     {
         inputHandler ??= EventSystem.current.GetComponentInChildren<InputHandler>();
-
+        stateMonitor = UIController._instance.StateMonitor;
         forgePriceText = forgeLabel.GetComponentInChildren<TextMeshProUGUI>();
         forgePriceObject = forgePriceText.transform.parent.gameObject;
 
@@ -317,10 +328,19 @@ public class ForgeManager : UIInventorySubPanel
 
         upgradeToggle.onValueChanged.AddListener(OnUpgradeToggled);
         enhanceToggle.onValueChanged.AddListener(OnEnhanceToggled);
-        leaveButton.onClick.AddListener(CleanupToggle);
-        sellButton.onClick.AddListener(CleanupToggle);
-       
+        smeltToggle.onValueChanged.AddListener(OnSmeltToggled);
+        
+        leaveButton.onClick.AddListener(CleanupToggle);      
 
+    }
+
+    private void OnDestroy()
+    {
+        upgradeToggle.onValueChanged.RemoveListener(OnUpgradeToggled);
+        enhanceToggle.onValueChanged.RemoveListener(OnEnhanceToggled);
+        smeltToggle.onValueChanged.RemoveListener(OnSmeltToggled);
+
+        leaveButton.onClick.RemoveListener(CleanupToggle);
     }
 
     private void Awake()
@@ -338,9 +358,10 @@ public class ForgeManager : UIInventorySubPanel
 
 }
 
-public enum ForgeMode
-{
-    Upgrade,
-    Enhance,
-    None
-}
+//public enum ForgeMode
+//{
+//    Upgrade,
+//    Enhance,
+//    Sell,
+//    None
+//}

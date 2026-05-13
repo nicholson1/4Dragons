@@ -1,9 +1,7 @@
-using System;
+using ImportantStuff;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ImportantStuff;
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,7 +15,7 @@ public class ShopManager : UIInventorySubPanel
     public InventorySlot Item3;
     public InventorySlot Item4;
 
-    public InventorySlot SellButton;
+    
     public Button RerollButton;
     public TextMeshProUGUI ShopTitle;
 
@@ -39,9 +37,15 @@ public class ShopManager : UIInventorySubPanel
     [SerializeField] private AudioClip openShop;
     [SerializeField] private float openShopVol;
 
-    private Selectable firstSelectable = null;
-    private List<Selectable> cachedInventoryButtons = new List<Selectable>();
+    [SerializeField] private InventorySlot sellSlot; 
+    private Toggle sellToggle;
+
+    private List<Selectable> cachedNavigationLeftTargets = new List<Selectable>();
     private List<InventorySlot> currentShopItems = new List<InventorySlot>();
+    private List<InventorySlot> cachedInventorySlots = new List<InventorySlot>();
+
+    private UIStateMonitor stateMonitor;
+    private InputHandler inputHandler;
 
     public override void SetSkipButtonInteractable(bool isInteractable)
     {
@@ -63,16 +67,16 @@ public class ShopManager : UIInventorySubPanel
         var buySlot = GetFirstInteractableSelectable();
         var buySlotNavi = buySlot.navigation;
 
-        var targetLeft = cachedInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buySlot.transform.position.y)).FirstOrDefault();
-        var sellSlot = SellButton.GetComponentInChildren<Selectable>();
-        var sellSlotNavi = sellSlot.navigation;
+        var targetLeft = cachedNavigationLeftTargets.OrderBy(b => Mathf.Abs(b.transform.position.y - buySlot.transform.position.y)).FirstOrDefault();
+        //var sellToggle = sellSlot.GetComponentInChildren<Selectable>();
+        var sellSlotNavi = sellToggle.navigation;
 
         if (targetLeft != null)
         {
             buySlotNavi.selectOnLeft = targetLeft;
             sellSlotNavi.selectOnLeft = targetLeft;
             buySlot.navigation = buySlotNavi;
-            sellSlot.navigation = sellSlotNavi;
+            sellToggle.navigation = sellSlotNavi;
         }
 
         EventSystem.current.SetSelectedGameObject(GetFirstInteractableSelectable().gameObject);
@@ -80,39 +84,86 @@ public class ShopManager : UIInventorySubPanel
 
     private void SetupRerollButtonRelatedNavigation()
     {
-        if (currentShopItems.Count > 2)
-        {
-            for (int i = currentShopItems.Count - 1; i >= 2; i--)
-            {
-                if (currentShopItems[i].Item == null) continue;
-
-                var button = currentShopItems[i].GetComponentInChildren<Selectable>();
-                var navi = button.navigation;
-                navi.selectOnDown = RerollButton.interactable ? RerollButton : leaveButton;
-                button.navigation = navi;
-            }
-        }
-
         var leaveButtonNavi = leaveButton.navigation;
         leaveButtonNavi.selectOnUp = RerollButton.interactable ? RerollButton : Item4.GetComponentInChildren<Selectable>();
         leaveButton.navigation = leaveButtonNavi;
 
-        var sellSlotButton = SellButton.GetComponentInChildren<Selectable>();
-        var sellSlotNavi = sellSlotButton.navigation;
+        //var sellSlotSelectable = sellSlot.GetComponentInChildren<Selectable>();
+        var sellSlotNavi = sellToggle.navigation;
         sellSlotNavi.selectOnRight = RerollButton.interactable ? RerollButton : leaveButton;
-        sellSlotButton.navigation = sellSlotNavi;
+        sellToggle.navigation = sellSlotNavi;
+
+        var item4Button = Item4.GetComponentInChildren<Selectable>();
+        var item4Nav = item4Button.navigation;
+        item4Nav.selectOnDown = RerollButton.interactable ? RerollButton : leaveButton;
+        item4Button.navigation = item4Nav;
+
+        var item3Button = Item3.GetComponentInChildren<Selectable>();
+        var item3Nav = item3Button.navigation;
+        item3Nav.selectOnDown = RerollButton.interactable ? RerollButton : leaveButton;
+        item3Button.navigation = item3Nav;
 
         BindLeaveAndRollButton();
     }
 
     public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
     {
-        cachedInventoryButtons ??= selectables;
+        cachedNavigationLeftTargets ??= selectables;
 
         SetupLeftNavigationToMainPanel();
     }
 
+    private void OnSellToggled(bool toOn)
+    {
+        if (!toOn)
+        {
+            if (stateMonitor.GetUINavigationMode() == NavigationMode.Sell)
+            {
+                stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
+                HandleHighlighterOnToggle(false);
+                inputHandler.OnNo.RemoveListener(CleanupToggle);
+            }
+            return;
+        }
 
+        stateMonitor.SetUINavigationMode(NavigationMode.Sell);
+
+
+
+        HandleHighlighterOnToggle(toOn);
+
+        inputHandler.OnNo.RemoveListener(CleanupToggle);
+        inputHandler.OnNo.AddListener(CleanupToggle);
+    }
+
+    private void CleanupToggle()
+    {
+        if (sellToggle.isOn)
+            sellToggle.isOn = false;
+
+        if (stateMonitor.GetUINavigationMode() != NavigationMode.Neutral)
+        {
+            stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
+        }
+    }
+
+    public void CacheInventorySlots(List<InventorySlot> slots)
+    {
+        cachedInventorySlots = slots;
+    }
+
+    private void HandleHighlighterOnToggle(bool toOn)
+    {
+        if (cachedInventorySlots.Count <= 0) return;
+
+        foreach (var slot in cachedInventorySlots)
+        {
+            if (slot.Item != null && slot.Item.IsGear())
+            {
+                slot.Item.HandleItemHighlight(toOn);
+            }
+        }
+    }
 
     public void RandomShop()
     {
@@ -239,14 +290,14 @@ public class ShopManager : UIInventorySubPanel
         
         ShopType = type;
 
-        SellButton.SellType = type;
+        sellSlot.SellType = type;
 
 
 
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {
             if(slot.Item != null)
-                slot.Item.TurnOnSellPrice(slot.CalculateGold(slot.Item.e, SellButton));
+                slot.Item.TurnOnSellPrice(slot.CalculateGold(slot.Item.e, sellSlot));
         }
         
         int level = CombatController._instance.Player._level;
@@ -443,6 +494,7 @@ public class ShopManager : UIInventorySubPanel
         if (!leaveButton.interactable)
             return;
 
+        CleanupToggle();
         Debug.LogError($"ShopManager Leave was triggered!");
         UIController._instance.CloseInventoryWithExtraPanel(InventoryState.Merchant);
         //UIController._instance.ToggleMapUI(1);
@@ -526,11 +578,20 @@ public class ShopManager : UIInventorySubPanel
 
     private void Start()
     {
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();
+        stateMonitor = UIController._instance.StateMonitor;
+        sellToggle = sellSlot.GetComponentInChildren<Toggle>();
+        sellToggle.onValueChanged.AddListener(OnSellToggled);
+
+        leaveButton.onClick.AddListener(Leave);
+
         Character.UpdateStatsEvent += UpdateRerollButton;
     }
 
     private void OnDestroy()
     {
+        sellToggle.onValueChanged.RemoveListener(OnSellToggled);
+        leaveButton.onClick.AddListener(Leave);
         Character.UpdateStatsEvent -= UpdateRerollButton;
 
     }

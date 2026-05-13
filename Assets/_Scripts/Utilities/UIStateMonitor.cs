@@ -34,7 +34,7 @@ public class UIStateMonitor : MonoBehaviour
 
     private NavigationMode cursorMode = NavigationMode.Neutral;
 
-    public void SetCursorMode(NavigationMode mode) => cursorMode = mode;
+    public void SetUINavigationMode(NavigationMode mode) => cursorMode = mode;
 
     public NavigationMode GetUINavigationMode() => cursorMode;
     
@@ -56,7 +56,7 @@ public class UIStateMonitor : MonoBehaviour
         itemOnGamepadPreviousLocalPos = itemObject.transform.localPosition;
         itemObject.transform.parent = ItemOnDragParent;
 
-        SetCursorMode(NavigationMode.MoveItem);
+        SetUINavigationMode(NavigationMode.MoveItem);
 
         OnDragItem?.Invoke(true);
     }
@@ -72,7 +72,7 @@ public class UIStateMonitor : MonoBehaviour
         itemOnGamepadPreviousParent = null;
         itemOnGamepadPreviousLocalPos = Vector3.zero;
 
-        SetCursorMode(NavigationMode.Neutral);
+        SetUINavigationMode(NavigationMode.Neutral);
 
         OnDragItem?.Invoke(false);
     }

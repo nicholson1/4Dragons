@@ -16,12 +16,12 @@ public class ToggleThroughButtonBindingHandler : ButtonBindingHandler
 
     private void ToggleOnHandling()
     {
-        UIController._instance.StateMonitor.SetCursorMode(navigationToToggle);
+        UIController._instance.StateMonitor.SetUINavigationMode(navigationToToggle);
     }
 
     private void ToggleOffHandling()
     {
-        UIController._instance.StateMonitor.SetCursorMode(NavigationMode.Neutral);
+        UIController._instance.StateMonitor.SetUINavigationMode(NavigationMode.Neutral);
     }
 
     protected override void ClickThroughInput()

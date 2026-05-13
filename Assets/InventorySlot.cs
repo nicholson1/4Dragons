@@ -2,19 +2,12 @@ using DFG.UIHandling;
 using ImportantStuff;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.ShaderGraph.Internal;
-using UnityEditor.XR;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zak.UISystem;
 using static ImportantStuff.Equipment;
-using static UnityEditor.Progress;
 
 public class InventorySlot : ButtonListener, IDragListener, IDropListener
 {
@@ -215,7 +208,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
                 if(Item != null)
                 {
                     Item.HighlightItem(true);
-                    Item.ShowForgePrice(true);
+                    Item.ShowForgePrice(true, NavigationMode.Upgrade);
                 }
                 break;
             case NavigationMode.Enhance:
@@ -224,7 +217,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
                     Item.HighlightItem(true);
 
                     if (Item.e.stats[Stats.Rarity] < 3)
-                        Item.ShowForgePrice(true);
+                        Item.ShowForgePrice(true, NavigationMode.Enhance);
                 }
                 break;
 
@@ -257,14 +250,14 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
                 if(Item != null)
                 {
                     Item.HighlightItem(false);
-                    Item.ShowForgePrice(false);
+                    Item.ShowForgePrice(false, NavigationMode.Neutral);
                 }
                 break;
             case NavigationMode.Enhance:
                 if(Item != null)
                 {
                     Item.HighlightItem(false);
-                    Item.ShowForgePrice(false);
+                    Item.ShowForgePrice(false, NavigationMode.Neutral);
                 }
                 break;
             case NavigationMode.Sell:
@@ -277,6 +270,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
         NavigationMode currentCursorMode = stateMonitor.GetUINavigationMode();
 
+        Debug.LogError($"Button pressed from {source} during {currentCursorMode}");
         switch(currentCursorMode)
         {
             case NavigationMode.Neutral:
@@ -288,6 +282,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
                     if(IsMerchantSlot())
                     {
                         TryBuyItem(item);
+                        return;
                     }
 
                     StartGamepadDrag(item);

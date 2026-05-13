@@ -25,7 +25,8 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
     public Image Background;
     public Image Glow;
     public Image GamepadHighlighter;
-    public SlotHighlighter ForgeableHighlighter;
+
+    [SerializeField] private SlotHighlighter ForgeableHighlighter;
 
     [SerializeField] private Sprite[] BackgroundSprites;
     [SerializeField] private Sprite[] GlowSprites;
@@ -112,9 +113,14 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         return currentEnergy >= 0;
     }
 
-    public void HandleForgeHighlight(bool isOn)
+    public void HandleItemHighlight(bool isOn,  NavigationMode navigationMode = NavigationMode.Neutral)
     {
-        ForgeableHighlighter.ToggleHighlighter(isOn);
+        if(!isOn)
+        {
+            ForgeableHighlighter.TurnOffHigglighter();
+        }
+
+        ForgeableHighlighter.TurnOnHighlighter(navigationMode);
     }
 
     public bool IsGear()
@@ -127,7 +133,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         return e.IsGear();       
     }
 
-    public bool HasFundsForForge(ForgeMode mode, out int forgeCost)
+    public bool HasFundsForForge(NavigationMode mode, out int forgeCost)
     {
         float priceMod = ForgeManager._instance.priceMod;
 
@@ -149,13 +155,13 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
 
     public bool TryUpgrade()
     {
-        if(IsGear() && HasFundsForForge(ForgeMode.Upgrade, out int forgeCost))
+        if(IsGear() && HasFundsForForge(NavigationMode.Upgrade, out int forgeCost))
         {
             EquipmentManager._instance.UpgradeEquipment(this);
             CombatController._instance.Player.GetGold(-forgeCost);
             UIController._instance.PlayUpgradeSound();
             ForgeManager._instance.ShowIcon();
-            ForgeManager._instance.ShowForgePrice(e);            
+            ForgeManager._instance.ShowForgePrice(NavigationMode.Upgrade, e);            
             return true;
         }
 
@@ -171,13 +177,13 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
             UIController._instance.PlayUIError();
             return false;
         }
-        if(IsGear() && HasFundsForForge(ForgeMode.Enhance, out int forgeCost))
+        if(IsGear() && HasFundsForForge(NavigationMode.Enhance, out int forgeCost))
         {
             EquipmentManager._instance.EnhanceEquipment(this);
             CombatController._instance.Player.GetGold(-forgeCost);
             UIController._instance.PlayEnhanceSound();
             ForgeManager._instance.ShowIcon();
-            ForgeManager._instance.ShowForgePrice(e);
+            ForgeManager._instance.ShowForgePrice(NavigationMode.Enhance, e);
             return true;
         }
 
@@ -186,7 +192,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         return false;
     }
 
-    public void ShowForgePrice(bool value)
+    public void ShowForgePrice(bool value, NavigationMode mode)
     {
         if (!value)
         {
@@ -195,7 +201,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         }
 
         ForgeManager._instance.SetForgeLabelPosition(_rectTransform);
-        ForgeManager._instance.ShowForgePrice(e);
+        ForgeManager._instance.ShowForgePrice(mode, e);
     }
 
     public void GamepadStartDrag(InventorySlot origin, InputSource source)
@@ -295,6 +301,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         _rectTransform.localScale = slotRT.localScale;
     }
 
+    /* Old EventSystem interface implementation
     public void OnPointerEnter(PointerEventData eventData)
     {
         HighlightItem(true);
@@ -347,7 +354,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
             TryEnhance();
         }
     }
-
+    */
     public void PrepItemForDrag()
     {
         canvasGroup.alpha = .6f;
@@ -381,6 +388,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         HighlightItem(true);
     }
 
+    /* Old EventSystem interface implementation
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.LogError($"DragItem.OnBeginDrag should not execute!");
@@ -445,6 +453,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         // }
 
     }
+    */
 
     /* old version OnDrop
     public void OnDrop(PointerEventData eventData)
@@ -783,6 +792,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
     {
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
         hoverEffect = GetComponent<DragItemHoverEffect>();
+        ForgeableHighlighter ??= GetComponentInChildren<SlotHighlighter>();
 
         if (GamepadHighlighter.enabled)
             GamepadHighlighter.enabled = false;
@@ -791,6 +801,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         character.UpdateEnergy += AdjustDragabilityBasedOnEnergy;
         //CombatController.EndCombatEvent += EndCombat;
     }
+
     private void OnDestroy()
     {
         character.UpdateEnergy -= AdjustDragabilityBasedOnEnergy;

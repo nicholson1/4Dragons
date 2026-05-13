@@ -3,6 +3,7 @@ using ImportantStuff;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DFG.UIHandling;
 
 namespace Map
 {
@@ -16,7 +17,7 @@ namespace Map
 
 namespace Map
 {
-    public class MapNode : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IGamepadButtonListener
+    public class MapNode : ButtonListener
     {
         public SpriteRenderer sr;
         public Image image;
@@ -51,10 +52,7 @@ namespace Map
         private UIScreenMap mapScreen;
         private Button gamepadButton;
 
-        public event Action OnGamepadButtonSelected;
-        public event Action OnGamepadButtonDeselected;
 
-        //Bind the IGamepadListener events!!!
 
         void Start()
         {
@@ -186,6 +184,52 @@ namespace Map
             }
         }
 
+        public override void OnButtonDeselected(Selectable selectable)
+        {
+            if (sr != null)
+            {
+                //sr.transform.DOKill();
+                //sr.transform.DOScale(initialScale, 0.3f);
+            }
+
+            if (image != null)
+            {
+                if (Node.State == NodeStates.Visited)
+                    image.color = MapView.Instance.visitedColor;
+                if (Node.State == NodeStates.Locked)
+                    image.color = MapView.Instance.lockedColor;
+
+                //image.transform.DOKill();
+                //image.transform.DOScale(initialScale, 0.3f);
+            }
+
+            if (toolTip != null)
+                toolTip.CloseTip();
+        }
+
+        public override void OnButtonSelected(Selectable selectable)
+        {
+            if (image != null)
+            {
+                image.color = MapView.Instance.visitedColor;
+            }
+
+            if (toolTip != null)
+            {
+                toolTip.ShowTipFromGamepadNavi(nodeRt);
+            }
+        }
+
+        public override void OnButtonPressed(Selectable selectable, InputSource source)
+        {
+            //DEBUG MAP CLICKABLE ANYWHERE - uncomment these
+            //if (!mapScreen.AreNodesClickable) return;
+            //if (Node.State != NodeStates.Attainable) return;
+            Debug.LogError($"DEBUG MAP CAN BE CLICKED HERE");
+
+            SelectNode();
+        }
+        // OLD INTERFACE
         public void OnPointerEnter(PointerEventData data)
         {
             if (sr != null)
@@ -267,8 +311,9 @@ namespace Map
             {
                 if (Node.State == NodeStates.Visited)
                     image.color = MapView.Instance.visitedColor;
-                if (Node.State == NodeStates.Locked)
+                else if (Node.State == NodeStates.Locked)
                     image.color = MapView.Instance.lockedColor;
+
             }
 
             if (toolTip != null)
@@ -287,6 +332,8 @@ namespace Map
         {
 
         }
+
+        //END OLD INTERFACE
 
         public void SelectNode()
         {

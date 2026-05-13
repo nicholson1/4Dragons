@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ToolTip : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandler
 {
     public string Title;
     public string Message;
@@ -54,6 +54,7 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     //     ToolTipManager._instance.HideToolTipAll();
     // }
     
+    //OLD INTERFACE
     public void OnPointerEnter(PointerEventData pointer)
     {
         //count1 = true;
@@ -98,6 +99,8 @@ public class ToolTip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         ToolTipManager._instance.HideToolTipAll();
     }
+    //END OLD INTERFACE
+
 
     public void ShowTipFromGamepadNavi(RectTransform referenceRT)
     {
