@@ -11,9 +11,44 @@ public class UIScreenDailyChallenge : UIScreen
     [SerializeField] private TextMeshProUGUI challengeDescription;
     [SerializeField] private GameObject modDisplayPrefab;
 
-    private TextMeshProUGUI TEMPOBJ;
+    [SerializeField] private TextMeshProUGUI TempText;
 
-    public void ActivateDailyChallenge()
+    //adv btn
+    public void StartDailyChallengeAdventure()
+    {
+        UIController._instance.StartAdventure();
+        UIController._instance.CloseDailyChallenge();
+    }
+
+    //back btn
+    public void CancelDailyChallenge()
+    {
+        ClearDailyChallenge();
+    }
+
+    public override void Activate(bool navigatableOnActivated = true)
+    {
+        Debug.LogError($"Activate DailyChallenge screen!!");
+        UIController._instance.HideTitleScreen();
+        ActivateDailyChallenge();
+        base.Activate(navigatableOnActivated);
+    }
+
+    public override void Deactivate()
+    {
+        base.Deactivate();
+        gameObject.SetActive(false);
+    }
+
+    public void ClearDailyChallenge()
+    {
+
+        Modifiers._instance.ClearMods();
+
+        UIController._instance.ActivateTitleScreen();
+    }
+
+    private void ActivateDailyChallenge()
     {
         List<List<object>> dailyChallenges = DataReader._instance.GetDailyChallengesTable();
         DateTime currentDateTime = DateTime.Now;
@@ -23,10 +58,10 @@ public class UIScreenDailyChallenge : UIScreen
         List<int> mods = (List<int>)dailyChallenges[challengeID][3];
         List<int> descriptors = (List<int>)dailyChallenges[challengeID][4];
 
-        foreach (Transform child in modScroll)
-        {
-            child.gameObject.SetActive(false);
-        }
+        //foreach (Transform child in modScroll)
+        //{
+        //    child.gameObject.SetActive(false);
+        //}
         // load modifiers
         foreach (int i in mods)
         {
@@ -42,41 +77,15 @@ public class UIScreenDailyChallenge : UIScreen
         challengeDescription.text = (string)dailyChallenges[challengeID][2];
     }
 
-    public void ClearDailyChallenge()
-    {
-
-        Modifiers._instance.ClearMods();
-
-        //GoBack to title screen
-    }
-
-    public override void Activate(bool navigatableOnActivated = true)
-    {
-        UIController._instance.HideTitleScreen();
-        ActivateDailyChallenge();
-        base.Activate(navigatableOnActivated);
-    }
-
-    public override void Deactivate()
-    {
-        base.Deactivate();
-        gameObject.SetActive(false);
-        UIController._instance.ActivateTitleScreen();
-        ClearDailyChallenge();
-    }
-
-    public void StartDailyChallengeAdventure()
-    {
-        UIController._instance.StartAdventure();
-    }
-
     private void PopulateDescriptors(List<int> descriptors)
     {
         foreach (int i in descriptors)
         {
-            TextMeshProUGUI mod = Instantiate(TEMPOBJ, modScroll);
+            Debug.LogError($"descriptor int: {i}");
+            TextMeshProUGUI mod = Instantiate(TempText, modScroll);
             mod.gameObject.SetActive(true);
-            //mod.text = ParseHelper.CamelCaseToSpaced(((Descriptors)i).ToString());
+            mod.text = ParseHelper.CamelCaseToSpaced(((Descriptors)i).ToString());
+            Debug.LogError($"mod text: {mod.text}");
         }
     }
 }

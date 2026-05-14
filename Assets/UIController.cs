@@ -141,6 +141,7 @@ public class UIController : MonoBehaviour
     public void ActivateTitleScreen()
     {
         TitleScreen.GetComponent<UIScreen>().Activate();
+        TitleScreen.SetActive(true);
     }
 
     public void HideTitleScreen()
@@ -456,8 +457,6 @@ public class UIController : MonoBehaviour
         TitleScreen.SetActive(false);
         //InventoryButton.SetActive(true);
         MapButton.SetActive(true);
-        DailyChallengeUI.gameObject.SetActive(false);
-
 
     }
 
@@ -501,7 +500,7 @@ public class UIController : MonoBehaviour
         {
             TextMeshProUGUI mod = Instantiate(ModDisplay, ModScroll.transform);
             mod.gameObject.SetActive(true);
-            //mod.text = ParseHelper.CamelCaseToSpaced(((Descriptors)i).ToString());
+            mod.text = ParseHelper.CamelCaseToSpaced(((Descriptors)i).ToString());
         }
         // load name
         DailyChallengeTitle.text = (string)dailyChallenges[challengeID][1];
