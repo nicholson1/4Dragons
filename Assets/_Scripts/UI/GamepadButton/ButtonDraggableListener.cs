@@ -9,7 +9,7 @@ using Zak.UISystem;
 
 namespace DFG.UIHandling
 {
-    public class ButtonDraggableListener : ButtonListener, IButtonDraggableListener, IDragListener, IDropListener
+    public class ButtonDraggableListener : ButtonListener, IDragListener, IDropListener
     {
         protected bool wasDropSuccessCache = false;
         protected GameObject destinationCache = null;
@@ -63,27 +63,27 @@ namespace DFG.UIHandling
         //IDropHandler part of IDroppableListener
         public void OnDrop(PointerEventData eventData)
         {
-            wasDropSuccessCache = false;
-            destinationCache = null;
-            Debug.LogError($"OnDrop at {this.gameObject.name}");
-            var dragEventDataObj = eventData.pointerDrag;
-            Debug.LogError($"OnDrop: obj from eventData.pointerDrag: {dragEventDataObj.name}");
-            IButtonDraggableListener originDragListener = dragEventDataObj.GetComponentInParent<IButtonDraggableListener>();
-            string originDragListenerName = originDragListener != null ? (originDragListener as Component).gameObject.name : "NONE";
-            Debug.LogError($"OnDrop: originDragListenerName = {originDragListenerName}");
+            //wasDropSuccessCache = false;
+            //destinationCache = null;
+            //Debug.LogError($"OnDrop at {this.gameObject.name}");
+            //var dragEventDataObj = eventData.pointerDrag;
+            //Debug.LogError($"OnDrop: obj from eventData.pointerDrag: {dragEventDataObj.name}");
+            //IButtonDraggableListener originDragListener = dragEventDataObj.GetComponentInParent<IButtonDraggableListener>();
+            //string originDragListenerName = originDragListener != null ? (originDragListener as Component).gameObject.name : "NONE";
+            //Debug.LogError($"OnDrop: originDragListenerName = {originDragListenerName}");
 
-            if(originDragListener != null && originDragListener.WasDraggingValid)
-            {
-                GameObject originDragListenerObj = (originDragListener as Component).gameObject;
+            //if(originDragListener != null && originDragListener.WasDraggingValid)
+            //{
+            //    GameObject originDragListenerObj = (originDragListener as Component).gameObject;
 
-                Debug.LogError($"OnDrop - this: {this.gameObject} || objfromEventData: {originDragListenerObj.name}");
-                ProcessDrop(eventData.position, originDragListenerObj);
-            }
+            //    Debug.LogError($"OnDrop - this: {this.gameObject} || objfromEventData: {originDragListenerObj.name}");
+            //    ProcessDrop(eventData.position, originDragListenerObj);
+            //}
 
-            Debug.LogError($"OnDrop - couldnt find the originDragListener");
-            var selectable = GetComponentInChildren<Selectable>();
-            if (selectable != null)
-                EventSystem.current.SetSelectedGameObject(selectable.gameObject);
+            //Debug.LogError($"OnDrop - couldnt find the originDragListener");
+            //var selectable = GetComponentInChildren<Selectable>();
+            //if (selectable != null)
+            //    EventSystem.current.SetSelectedGameObject(selectable.gameObject);
         }
 
         protected virtual bool GetDropResult(GameObject origin)

@@ -4,9 +4,10 @@ using UnityEngine;
 
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DFG.UIHandling;
 
 
-public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+public class UIHoverEffect : MonoBehaviour, IButtonListener
 {
     public float hoverScale = 1.1f; // Scale factor when hovered
     private float shakeAmount = 1f; // Amount to shake when hovered (in degrees)
@@ -28,6 +29,47 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private bool shouldShake = true;
 
 
+    public void OnButtonDeselected(Selectable selectable)
+    {
+        Debug.LogError($"Hover effect deselected");
+        //if (!selectable.interactable) return;
+
+        // Scale up and start shaking when mouse enters the UI element
+        if (shouldTween)
+        {
+            ScaleUIElement(initialScale * hoverScale, 0.2f);
+        }
+
+        if (shakeUI)
+            ShakeUIElement();
+        //LeanTween.rotateZ(gameObject, shakeAmount, shakeSpeed).setLoopPingPong().setEaseInOutQuad();
+
+        UIController._instance.PlayUIHover();
+    }
+
+    public void OnButtonPressed(Selectable selectable, InputSource source)
+    {
+        //probably we want a specific SelectableListener instead of ButtonListener
+    }
+
+    public void OnButtonSelected(Selectable selectable)
+    {
+        Debug.LogError($"Hover effect selected");
+        //if (!selectable.interactable) return;
+
+        // Scale up and start shaking when mouse enters the UI element
+        if (shouldTween)
+        {
+            ScaleUIElement(initialScale * hoverScale, 0.2f);
+        }
+
+        if (shakeUI)
+            ShakeUIElement();
+        //LeanTween.rotateZ(gameObject, shakeAmount, shakeSpeed).setLoopPingPong().setEaseInOutQuad();
+
+        UIController._instance.PlayUIHover();
+    }
+
     public void SetTweening(bool canTween)
     {
         shouldTween = canTween;
@@ -48,6 +90,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         initialRotation = transform.localRotation;
     }
 
+    /* OLD EventSystem interface
     public void OnPointerEnter(PointerEventData eventData)
     {
         isPointerEvent = true;
@@ -122,6 +165,7 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         
         gameObject.transform.localRotation = initialRotation;
     }
+    */
 
     private void ScaleUIElement(Vector3 targetScale, float duration)
     {
@@ -192,5 +236,6 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         inputHandler.OnInputTypeChange -= HandleInputChange;
     }
-        
+
+
 }

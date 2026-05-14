@@ -3,16 +3,25 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace DFG.UIHandling
-{
+{   
+
+    public interface ISelectableListener
+    {
+        public void OnSelectableSelected(Selectable selectable);
+        public void OnSelectableDeselected(Selectable selectable);
+    }
+
     public interface IButtonListener
     {
         //public void OnCancelPerformed();
-        public void OnButtonPressed(Selectable selectable, InputSource source);
         public void OnButtonSelected(Selectable selectable);
         public void OnButtonDeselected(Selectable selectable);
+        public void OnButtonPressed(Selectable selectable, InputSource source);
+
 
     }
 
+    /* OLD DraggableListener
     public interface IButtonDraggableListener : IButtonListener
     {
         public bool CanBeginDrag();
@@ -61,5 +70,6 @@ namespace DFG.UIHandling
         public bool WasDropSuccessOnDestination();
 
     }
+    */
 }
 

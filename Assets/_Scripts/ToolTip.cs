@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using ImportantStuff;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using DFG.UIHandling;
+using UnityEngine.UI;
 
-public class ToolTip : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandler
+public class ToolTip : MonoBehaviour, IButtonListener//, IPointerEnterHandler, IPointerExitHandler
 {
     public string Title;
     public string Message;
@@ -29,6 +30,23 @@ public class ToolTip : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandle
     private bool count1;
 
     private float timer = .25f;
+
+
+    public void OnButtonDeselected(Selectable selectable)
+    {
+        CloseTip();
+    }
+
+    public void OnButtonSelected(Selectable selectable)
+    {
+        ShowTipFromGamepadNavi(selectable.transform as RectTransform);
+    }
+
+    public void OnButtonPressed(Selectable selectable, InputSource source)
+    {
+        return;
+    }
+
 
     public void ResetTooltip()
     {
@@ -199,4 +217,5 @@ public class ToolTip : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandle
         //ToolTipManager._instance.HideToolTipAll();
 
     }
+
 }

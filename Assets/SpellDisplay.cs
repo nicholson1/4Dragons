@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DFG.UIHandling;
 using ImportantStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpellDisplay : MonoBehaviour, IGamepadButtonListener
+public class SpellDisplay : MonoBehaviour
 {
     [SerializeField]private Image icon;
     [SerializeField] private TextMeshProUGUI text;
@@ -15,9 +16,6 @@ public class SpellDisplay : MonoBehaviour, IGamepadButtonListener
     public SpellTypes spell;
     public int value;
     [SerializeField] private ToolTip toolTip;
-
-    public event Action OnGamepadButtonSelected;
-    public event Action OnGamepadButtonDeselected;
 
     private void Awake()
     {
@@ -69,27 +67,4 @@ public class SpellDisplay : MonoBehaviour, IGamepadButtonListener
 
     }
 
-    public void HandleGamepadButtonSelected(Selectable selectable)
-    {
-        OnGamepadButtonSelected?.Invoke();
-
-        toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
-    }
-
-    public void HandleGamepadButtonDeselected(Selectable selectable)
-    {
-        OnGamepadButtonDeselected?.Invoke();
-
-        toolTip.CloseTip();
-    }
-
-    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void HandleCancelPerformed()
-    {
-
-    }
 }

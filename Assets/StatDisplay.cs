@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatDisplay : MonoBehaviour, IInspectableElement
+public class StatDisplay : MonoBehaviour
 {
     [SerializeField]private Image icon;
     [SerializeField] private TextMeshProUGUI text;
@@ -18,25 +18,17 @@ public class StatDisplay : MonoBehaviour, IInspectableElement
     [SerializeField] private ToolTip toolTip;
     public bool charStats = false;
 
-    private Button gamepadButton;
+    //public void HandleGamepadButtonSelected(Selectable selectable)
+    //{
+    //    //OnGamepadButtonSelected?.Invoke();
+    //    toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
+    //}
 
-    public Button GetGamepadButton()
-    {
-        gamepadButton ??= GetComponentInChildren<Button>();
-        return gamepadButton;
-    }
- 
-    public void HandleGamepadButtonSelected(Selectable selectable)
-    {
-        //OnGamepadButtonSelected?.Invoke();
-        toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
-    }
-
-    public void HandleGamepadButtonDeselected(Selectable selectable)
-    {
-        //OnGamepadButtonDeselected?.Invoke();
-        toolTip.CloseTip();
-    }
+    //public void HandleGamepadButtonDeselected(Selectable selectable)
+    //{
+    //    //OnGamepadButtonDeselected?.Invoke();
+    //    toolTip.CloseTip();
+    //}
 
 
     private void Awake()
@@ -49,9 +41,6 @@ public class StatDisplay : MonoBehaviour, IInspectableElement
         // {
         //     UpdateValues(stat, value);
         // }
-
-        gamepadButton = GetComponentInChildren<Button>();
-
     }
 
     public void UpdateValues(Stats s, int v, int LossOrGain = 0)
@@ -92,7 +81,7 @@ public class StatDisplay : MonoBehaviour, IInspectableElement
             //Debug.Log("update crit: " + text.text + " :" +v);
         }
         //Debug.Log(toolTip);
-        toolTip.Title = CamelCaseToSpaced(stat.ToString());
+        toolTip.Title = ParseHelper.CamelCaseToSpaced(stat.ToString());
         toolTip.icon = icon.sprite;
         toolTip.IconColor = icon.color;
 
@@ -142,12 +131,14 @@ public class StatDisplay : MonoBehaviour, IInspectableElement
 
         return message;
     }
-    
-    public static string CamelCaseToSpaced(string camelCaseString)
-    {
-        // Add spaces before each uppercase letter and capitalize the first letter
-        return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
-    }
+
+
+
+    //public static string CamelCaseToSpaced(string camelCaseString)
+    //{
+    //    // Add spaces before each uppercase letter and capitalize the first letter
+    //    return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
+    //}
 
 
 }
