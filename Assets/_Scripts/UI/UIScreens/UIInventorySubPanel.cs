@@ -9,12 +9,19 @@ public abstract class UIInventorySubPanel : MonoBehaviour
     public event Action<UIInventorySubPanel> OnPanelClosed;
 
     public InventoryState subPanelType = InventoryState.Base;
+    protected List<Selectable> cachedRightmostInventoryButtons = new List<Selectable>();
 
     public abstract Selectable GetFirstInteractableSelectable();
 
     public abstract void SetupLeftNavigationToMainPanel(List<Selectable> selectables);
 
     public abstract void SetSkipButtonInteractable(bool isInteractable);
+
+    //public abstract void SetInventoryButtonsCache(List<Selectable> inventoryButtons);
+    //public virtual void SetInventoryButtonsCache(List<Selectable> inventoryButtons)
+    //{
+    //    cachedInventoryButtons = inventoryButtons;
+    //}
 
     protected void BroadcastPanelOpen()
     {

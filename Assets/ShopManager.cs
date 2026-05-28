@@ -40,7 +40,7 @@ public class ShopManager : UIInventorySubPanel
     [SerializeField] private InventorySlot sellSlot; 
     private Toggle sellToggle;
 
-    private List<Selectable> cachedNavigationLeftTargets = new List<Selectable>();
+    //private List<Selectable> cachedNavigationLeftTargets = new List<Selectable>();
     private List<InventorySlot> currentShopItems = new List<InventorySlot>();
     private List<InventorySlot> cachedInventorySlots = new List<InventorySlot>();
 
@@ -67,7 +67,7 @@ public class ShopManager : UIInventorySubPanel
         var buySlot = GetFirstInteractableSelectable();
         var buySlotNavi = buySlot.navigation;
 
-        var targetLeft = cachedNavigationLeftTargets.OrderBy(b => Mathf.Abs(b.transform.position.y - buySlot.transform.position.y)).FirstOrDefault();
+        var targetLeft = cachedRightmostInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buySlot.transform.position.y)).FirstOrDefault();
         //var sellToggle = sellSlot.GetComponentInChildren<Selectable>();
         var sellSlotNavi = sellToggle.navigation;
 
@@ -108,7 +108,7 @@ public class ShopManager : UIInventorySubPanel
 
     public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
     {
-        cachedNavigationLeftTargets ??= selectables;
+        cachedRightmostInventoryButtons = selectables;
 
         SetupLeftNavigationToMainPanel();
     }

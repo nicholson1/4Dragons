@@ -34,6 +34,7 @@ public class UIScreenInventory : UIScreen
 
     private InventoryState currentInventoryState = InventoryState.Base;
     private InventoryState cachedLastInventoryState = InventoryState.Base;
+    private InventoryState endDragInventoryStateReturn = InventoryState.Base;
 
     [SerializeField] private Button backButton;
 
@@ -73,7 +74,6 @@ public class UIScreenInventory : UIScreen
         SetupRuntimeNavigation(currentInventoryState);
 
         UIController._instance.StateMonitor.OnDragItem += HandleDragItemCallback;
-        Debug.LogError($"UIInventoryScreen activated on {currentInventoryState}");
     }
 
     public override void Deactivate()
@@ -90,13 +90,14 @@ public class UIScreenInventory : UIScreen
     {
         if(isDraggingItem && !isOnDragModeNavigation)
         {
-            cachedLastInventoryState = currentInventoryState;
+            endDragInventoryStateReturn = currentInventoryState;
             currentInventoryState = InventoryState.ItemDrag;
             SetItemDragModeNavigation();
         }
         else if(!isDraggingItem && isOnDragModeNavigation)
         {
-            currentInventoryState = cachedLastInventoryState;
+            currentInventoryState = endDragInventoryStateReturn;
+
             RevertNavigationOnFinishItemDrag();
         }
     }
@@ -105,24 +106,6 @@ public class UIScreenInventory : UIScreen
     {
         lootButtonManager.SetSkipButtonInteractable(state == InventoryState.Loot);
         closableWithToggleOrButtonBackButton = state == InventoryState.Base;
-        switch (state)
-        {
-            case InventoryState.Base:
-                //Set slot gamepadButton navigation                
-                break;
-
-            case InventoryState.Loot:
-                break;
-
-            case InventoryState.Selection:
-                //selectionManager.SetInventoryButtonsCache(rightmostInventoryButtons);
-                break;
-            case InventoryState.Merchant:
-                
-                break;
-            case InventoryState.StatDisplay:
-                break;
-        }
 
         BackButtonSetup(closableWithToggleOrButtonBackButton);
 
@@ -162,11 +145,10 @@ public class UIScreenInventory : UIScreen
             selectable.navigation = navi;
         }
 
-        SetAttachedPanelLeftmostButtonNavigation(state);      
-        
+        SetupSubpanelLeftmostNavigation(state);            
     }
 
-    private void SetAttachedPanelLeftmostButtonNavigation(InventoryState state)
+    private void SetupSubpanelLeftmostNavigation(InventoryState state)
     {
         switch (state)
         {
@@ -183,6 +165,7 @@ public class UIScreenInventory : UIScreen
                 break;
             case InventoryState.Selection:
                 selectionManager.SetupLeftNavigationToMainPanel(rightmostInventoryButtons);
+                
                 break;
                 
             default:
@@ -192,6 +175,19 @@ public class UIScreenInventory : UIScreen
 
     private Dictionary<int, Navigation> cachedInventorySlotNavigation = new Dictionary<int, Navigation>();
     bool isOnDragModeNavigation = false;
+
+    private Navigation GetNavigationCopy(Navigation navi)
+    {
+        Navigation newNavi = new Navigation();
+        newNavi.mode = navi.mode;
+        newNavi.selectOnUp = navi.selectOnUp;
+        newNavi.selectOnRight = navi.selectOnRight;
+        newNavi.selectOnLeft = navi.selectOnLeft;
+        newNavi.selectOnDown = navi.selectOnDown;
+
+        return newNavi;
+    }
+
     /// <summary>
     /// We might need to include extra slots, like trash can, sell slot, and upgrade slot
     /// </summary>
@@ -203,7 +199,8 @@ public class UIScreenInventory : UIScreen
             var slot = inventorySlots[i];
             var selectable = slot.GetComponentInChildren<Selectable>();
             var navi = selectable.navigation;
-            cachedInventorySlotNavigation.Add(i, navi);
+            
+            cachedInventorySlotNavigation.Add(i, GetNavigationCopy(navi));
 
             if (navi.selectOnUp != null && !IsSelectableInventorySlotChild(navi.selectOnUp))
                 navi.selectOnUp = null;
@@ -233,7 +230,11 @@ public class UIScreenInventory : UIScreen
             var slot = inventorySlots[i];
             var selectable = slot.GetComponentInChildren<Selectable>();
             var targetNavigation = cachedInventorySlotNavigation[i];
-            selectable.navigation = targetNavigation;
+            
+            if(!selectable.navigation.Equals(targetNavigation))
+            {
+                selectable.navigation = targetNavigation;
+            }
         }
 
         cachedInventorySlotNavigation.Clear();
@@ -283,11 +284,13 @@ public class UIScreenInventory : UIScreen
             SetSelectableToSelectOnActivated(selectable);
 
         ChangeInventoryState(panel.subPanelType);
+        SetupRuntimeNavigation(CurrentInventoryState);
     }
 
     private void SelectionPanelClosedCallback(UIInventorySubPanel panel)
     {
-        RevertInventoryState();
+        ChangeInventoryState(cachedLastInventoryState);
+        SetupRuntimeNavigation(CurrentInventoryState);
     }
 
     private void BackButtonSetup(bool toActive)

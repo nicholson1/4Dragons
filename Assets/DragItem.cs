@@ -363,7 +363,6 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
 
     public void PrepItemForReturn(bool shouldHighlight = false)
     {
-        Debug.LogError($"on return, currentLocation = {currentLocation.name}");
         canvasGroup.alpha = 1f;
         transform.SetParent(currentLocation.transform.parent);
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
@@ -379,7 +378,6 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
     public void PrepItemForDrop(InventorySlot destinationSlot)
     {
         // see GamepadFinishDrag(bool shouldHighlight = true) for the working version
-        Debug.LogError($"DragItem.PrepItemForDrop at {destinationSlot.name}");
         canvasGroup.alpha = 1f;
         currentLocation = destinationSlot;
         transform.SetParent(destinationSlot._rt.parent);

@@ -612,12 +612,10 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
     private void AssignDroppedItemToSlot(DragItem di, InventorySlot destinationSlot)
     {
-        Debug.LogError($"{gameObject.name} - Assign dropped {di.e.name} to slot {destinationSlot.name}");
 
         destinationSlot.Item = di;
 
         string itemName = Item != null ? Item.name : "NULL";
-        Debug.LogError($"{gameObject.name} - Item = {itemName}");
 
 
         if (di.currentLocation.Item == di) //if not swapping with other item
@@ -972,7 +970,6 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
             // callback to a popup here!
             if(IsMerchantSlot())
             {
-                Debug.LogError($"ITEM BOUGHT!");
                 destinationSlot.BuyDroppedItem(droppedItem, destinationSlot);
                 return;
             }
@@ -980,23 +977,19 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
             //just drop, sell, or discard
             if(destinationSlot.IsSellSlot())
             {
-                Debug.LogError($"ITEM SOLD");
                 destinationSlot.SellItem(droppedItem);
             }
             else if(destinationSlot.IsDiscardSlot())
             {
-                Debug.LogError($"ITEM DUMPED!");
                 destinationSlot.DiscardItem(droppedItem);
             }
             else if(destinationSlot.IsAllSlot() || droppedItem.slotType == destinationSlot.Slot)
             {
-                Debug.LogError($"ITEM EQUIPPED OR PUT IN INVENTORY!");
                 AssignDroppedItemToSlot(droppedItem, destinationSlot);
             }
         }
         else 
         {
-            Debug.LogError($"{gameObject.name} successfully SWAPPING item with {destinationSlot.name}");
 
             var cachedOriginSlot = this;
             var cachedDroppedItem = droppedItem;
