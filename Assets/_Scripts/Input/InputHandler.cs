@@ -71,7 +71,6 @@ public class InputHandler : MonoBehaviour
         if(lastSelected != null)
         {
             EventSystem.current.SetSelectedGameObject(lastSelected);
-            Debug.LogError($"InputHandler: lastSelected = {lastSelected.name}");            
         }
         else
         {

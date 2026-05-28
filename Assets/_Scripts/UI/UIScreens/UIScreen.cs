@@ -62,7 +62,7 @@ public class UIScreen : MonoBehaviour
             if (lastGamepadSelectedObject != null)
                 EventSystem.current.SetSelectedGameObject(lastGamepadSelectedObject);
             else
-                EventSystem.current.SetSelectedGameObject(defaultSelectable.gameObject);
+                EventSystem.current.SetSelectedGameObject(GetSelectableToSelectOnActivated().gameObject);
         }
     }
 

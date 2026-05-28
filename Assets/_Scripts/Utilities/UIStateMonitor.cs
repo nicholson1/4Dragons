@@ -9,7 +9,7 @@ using Zak.UISystem;
 public class UIStateMonitor : MonoBehaviour
 {
     public event Action<UIScreen> OnScreenChanged;
-    public event Action<bool> OnDragItem;
+    public event Action<NavigationMode> OnNavigationModeChanged;
 
     public UIScreen CurrentNavigatableScreen => currentNavigatableScreen;
     public UIScreen CurrentActiveScreen => currentActiveScreen;
@@ -32,11 +32,11 @@ public class UIStateMonitor : MonoBehaviour
     private Transform itemOnGamepadPreviousParent;
     private Vector3 itemOnGamepadPreviousLocalPos;
 
-    private NavigationMode cursorMode = NavigationMode.Neutral;
+    private NavigationMode currentNavigationMode = NavigationMode.Neutral;
 
-    public void SetUINavigationMode(NavigationMode mode) => cursorMode = mode;
+    public void SetUINavigationMode(NavigationMode mode) => currentNavigationMode = mode;
 
-    public NavigationMode GetUINavigationMode() => cursorMode;
+    public NavigationMode GetUINavigationMode() => currentNavigationMode;
     
 
     public bool IsInCombat() => CombatController._instance.entitiesInCombat.Count > 1;
@@ -56,9 +56,9 @@ public class UIStateMonitor : MonoBehaviour
         itemOnGamepadPreviousLocalPos = itemObject.transform.localPosition;
         itemObject.transform.parent = ItemOnDragParent;
 
-        SetUINavigationMode(NavigationMode.MoveItem);
+        SetUINavigationMode(NavigationMode.ItemDrag);
 
-        OnDragItem?.Invoke(true);
+        OnNavigationModeChanged?.Invoke(GetUINavigationMode());
     }
 
     public void ClearItemOnGamepad()
@@ -74,7 +74,7 @@ public class UIStateMonitor : MonoBehaviour
 
         SetUINavigationMode(NavigationMode.Neutral);
 
-        OnDragItem?.Invoke(false);
+        OnNavigationModeChanged?.Invoke(GetUINavigationMode());
     }
 
     public bool TryGetItemOnGamepad(out IDraggablePayload item)
@@ -164,7 +164,7 @@ public class UIStateMonitor : MonoBehaviour
 public enum NavigationMode
 {
     Neutral,
-    MoveItem,
+    ItemDrag,
     Upgrade,
     Enhance,
     Sell,

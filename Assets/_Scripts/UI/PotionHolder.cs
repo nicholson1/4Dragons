@@ -88,7 +88,7 @@ public class PotionHolder : ButtonListener, IDragListener
 
     public void OnHandleInterruption()
     {
-        if (stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem &&
+        if (stateMonitor.GetUINavigationMode() == NavigationMode.ItemDrag &&
             combatScreen.CurrentCombatNavigation != CombatUINavigationMode.Targetting)
         {
             OnCancelPerformed();
@@ -99,7 +99,7 @@ public class PotionHolder : ButtonListener, IDragListener
     {
         inputHandler.OnNo.RemoveListener(OnCancelPerformed);
 
-        if (stateMonitor.GetUINavigationMode() != NavigationMode.MoveItem) return;
+        if (stateMonitor.GetUINavigationMode() != NavigationMode.ItemDrag) return;
 
         if (!stateMonitor.TryGetItemOnGamepad(out var item)) return;
 
@@ -154,7 +154,7 @@ public class PotionHolder : ButtonListener, IDragListener
 
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
         //RectTransform currentRectTransform = currentSelected.transform as RectTransform;
-        while(stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
+        while(stateMonitor.GetUINavigationMode() == NavigationMode.ItemDrag)
         {
             if (currentSelected != EventSystem.current.currentSelectedGameObject)
             {

@@ -34,14 +34,14 @@ public class UIScreenInventory : UIScreen
 
     private InventoryState currentInventoryState = InventoryState.Base;
     private InventoryState cachedLastInventoryState = InventoryState.Base;
-    private InventoryState endDragInventoryStateReturn = InventoryState.Base;
+    private InventoryState inventoryStateOnEndDrag = InventoryState.Base;
 
     [SerializeField] private Button backButton;
 
     private bool closableWithToggleOrButtonBackButton = true;
 
-
-
+    private Dictionary<int, Navigation> cachedInventorySlotNavigation = new Dictionary<int, Navigation>();
+    bool isOnTemporaryNavigationMode = false;
 
     //Handle when device change mouse >< gamepad
     //to mouse =>
@@ -73,7 +73,7 @@ public class UIScreenInventory : UIScreen
         base.Activate(navigatableOnActivated);
         SetupRuntimeNavigation(currentInventoryState);
 
-        UIController._instance.StateMonitor.OnDragItem += HandleDragItemCallback;
+        UIController._instance.StateMonitor.OnNavigationModeChanged += HandleDragItemCallback;
     }
 
     public override void Deactivate()
@@ -83,23 +83,42 @@ public class UIScreenInventory : UIScreen
         base.Deactivate();
         ChangeInventoryState(InventoryState.Base);
 
-        UIController._instance.StateMonitor.OnDragItem -= HandleDragItemCallback;
+        UIController._instance.StateMonitor.OnNavigationModeChanged -= HandleDragItemCallback;
     }
 
-    private void HandleDragItemCallback(bool isDraggingItem)
+    private void HandleDragItemCallback(NavigationMode navigationMode)
     {
-        if(isDraggingItem && !isOnDragModeNavigation)
+        switch(navigationMode)
         {
-            endDragInventoryStateReturn = currentInventoryState;
-            currentInventoryState = InventoryState.ItemDrag;
-            SetItemDragModeNavigation();
-        }
-        else if(!isDraggingItem && isOnDragModeNavigation)
-        {
-            currentInventoryState = endDragInventoryStateReturn;
+            case NavigationMode.ItemDrag:
+                if(!isOnTemporaryNavigationMode)
+                {
+                    inventoryStateOnEndDrag = currentInventoryState;
+                    currentInventoryState = InventoryState.ItemDrag;
+                    SetupItemDragModeNavigation();
+                }
+                break;
 
-            RevertNavigationOnFinishItemDrag();
+            default:
+                if(isOnTemporaryNavigationMode)
+                {
+                    currentInventoryState = inventoryStateOnEndDrag;
+                    RevertNavigationOnFinishItemDrag();
+                }
+                break;
         }
+        //if(isDraggingItem && !isOnDragModeNavigation)
+        //{
+        //    inventoryStateOnEndDrag = currentInventoryState;
+        //    currentInventoryState = InventoryState.ItemDrag;
+        //    SetupItemDragModeNavigation();
+        //}
+        //else if(!isDraggingItem && isOnDragModeNavigation)
+        //{
+        //    currentInventoryState = inventoryStateOnEndDrag;
+
+        //    RevertNavigationOnFinishItemDrag();
+        //}
     }
 
     public void ChangeInventoryState(InventoryState state)
@@ -173,8 +192,7 @@ public class UIScreenInventory : UIScreen
         }        
     }
 
-    private Dictionary<int, Navigation> cachedInventorySlotNavigation = new Dictionary<int, Navigation>();
-    bool isOnDragModeNavigation = false;
+
 
     private Navigation GetNavigationCopy(Navigation navi)
     {
@@ -191,7 +209,7 @@ public class UIScreenInventory : UIScreen
     /// <summary>
     /// We might need to include extra slots, like trash can, sell slot, and upgrade slot
     /// </summary>
-    private void SetItemDragModeNavigation()
+    private void SetupItemDragModeNavigation()
     {
         cachedInventorySlotNavigation.Clear();
         for (int i = 0; i < inventorySlots.Count; i++)
@@ -200,7 +218,7 @@ public class UIScreenInventory : UIScreen
             var selectable = slot.GetComponentInChildren<Selectable>();
             var navi = selectable.navigation;
             
-            cachedInventorySlotNavigation.Add(i, GetNavigationCopy(navi));
+            cachedInventorySlotNavigation.Add(i, navi);
 
             if (navi.selectOnUp != null && !IsSelectableInventorySlotChild(navi.selectOnUp))
                 navi.selectOnUp = null;
@@ -214,7 +232,7 @@ public class UIScreenInventory : UIScreen
             selectable.navigation = navi;
         }
 
-        isOnDragModeNavigation = true;
+        isOnTemporaryNavigationMode = true;
     }
 
     private void RevertNavigationOnFinishItemDrag()
@@ -238,7 +256,7 @@ public class UIScreenInventory : UIScreen
         }
 
         cachedInventorySlotNavigation.Clear();
-        isOnDragModeNavigation = false;
+        isOnTemporaryNavigationMode = false;
     }
 
     private bool IsSelectableInventorySlotChild(Selectable selectable)

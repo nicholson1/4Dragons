@@ -113,6 +113,41 @@ public class ShopManager : UIInventorySubPanel
         SetupLeftNavigationToMainPanel();
     }
 
+    private void SetupSellModeNavigation()
+    {
+        for(int i = 0; i < cachedRightmostInventoryButtons.Count; i++)
+        {
+            var selectable = cachedRightmostInventoryButtons[i];
+            var navi = selectable.navigation;
+
+            navi.selectOnRight = sellToggle;
+            selectable.navigation = navi;
+        }
+
+        var sellToggleNavi = sellToggle.navigation;
+        sellToggleNavi.selectOnUp = null;
+        sellToggleNavi.selectOnRight = null;
+
+        sellToggle.navigation = sellToggleNavi;
+    }
+
+    private void RevertFromSellModeNavigation()
+    {
+
+        for(int i = 0; i<cachedRightmostInventoryButtons.Count; i++)
+        {
+            var selectable = cachedRightmostInventoryButtons[i];
+            var navi = selectable.navigation;
+            navi.selectOnRight = GetFirstInteractableSelectable();
+            selectable.navigation = navi;
+        }
+
+        var sellToggleNavi = sellToggle.navigation;
+        sellToggleNavi.selectOnRight = leaveButton;
+        sellToggleNavi.selectOnUp = Item1.GetComponentInChildren<Selectable>();
+        sellToggle.navigation = sellToggleNavi;
+    }
+
     private void OnSellToggled(bool toOn)
     {
         if (!toOn)
@@ -120,6 +155,7 @@ public class ShopManager : UIInventorySubPanel
             if (stateMonitor.GetUINavigationMode() == NavigationMode.Sell)
             {
                 stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
+                RevertFromSellModeNavigation();
                 HandleHighlighterOnToggle(false);
                 inputHandler.OnNo.RemoveListener(CleanupToggle);
             }
@@ -128,8 +164,7 @@ public class ShopManager : UIInventorySubPanel
 
         stateMonitor.SetUINavigationMode(NavigationMode.Sell);
 
-
-
+        SetupSellModeNavigation();
         HandleHighlighterOnToggle(toOn);
 
         inputHandler.OnNo.RemoveListener(CleanupToggle);
@@ -228,9 +263,9 @@ public class ShopManager : UIInventorySubPanel
     public void InitializeShop(int i)
     {
         //DEBUG always relic shop
-        //InitializeShop(InventorySlot.SellShopType.Relics);
-        //Debug.LogError($"DEBUG!!! always initialize relic here!!!");
-        //return;
+        InitializeShop(InventorySlot.SellShopType.Relics);
+        Debug.LogError($"DEBUG!!! always initialize relic here!!!");
+        return;
 
         InitializeShop((InventorySlot.SellShopType) i);
     }
@@ -389,23 +424,23 @@ public class ShopManager : UIInventorySubPanel
                 
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
-                relicBuyButtons[3].gameObject.SetActive(true);
+                //relicBuyButtons[3].gameObject.SetActive(true);
                 break;
 
             case InventorySlot.SellShopType.Relics:
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item1);
-                relicBuyButtons[0].gameObject.SetActive(true);
+                //relicBuyButtons[0].gameObject.SetActive(true);
 
                 
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item2);
-                relicBuyButtons[1].gameObject.SetActive(true);
+                //relicBuyButtons[1].gameObject.SetActive(true);
 
                 
                 e = RelicManager._instance.GetCommonRelic();
                 EquipmentManager._instance.CreateDragItemInShop(e, Item3);
-                relicBuyButtons[2].gameObject.SetActive(true);
+                //relicBuyButtons[2].gameObject.SetActive(true);
                 
                 e = EC.CreateRandomPotion(level);
                 EquipmentManager._instance.CreateDragItemInShop(e, Item4);
@@ -447,10 +482,10 @@ public class ShopManager : UIInventorySubPanel
         goldText.text = (cost).ToString();
         goldText.gameObject.SetActive(true);
 
-        if (slot.Item.e.isRelic)
-        {
-            goldText.gameObject.SetActive(false);
-        }
+        //if (slot.Item.e.isRelic)
+        //{
+        //    goldText.gameObject.SetActive(false);
+        //}
     }
 
     void ClearItem(InventorySlot slot)

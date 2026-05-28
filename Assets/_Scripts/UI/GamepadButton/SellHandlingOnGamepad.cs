@@ -23,7 +23,7 @@ public class SellHandlingOnGamepad : MonoBehaviour
 
     private void ButtonPressToToggle()
     {
-        if (stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
+        if (stateMonitor.GetUINavigationMode() == NavigationMode.ItemDrag)
             return;
 
         SellToggled(!toggle.isOn);

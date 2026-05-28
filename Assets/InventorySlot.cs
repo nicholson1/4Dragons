@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zak.UISystem;
 using static ImportantStuff.Equipment;
+using static UnityEditor.Progress;
 
 public class InventorySlot : ButtonListener, IDragListener, IDropListener
 {
@@ -152,7 +153,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
     public void OnHandleInterruption()
     {
-        if(stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
+        if(stateMonitor.GetUINavigationMode() == NavigationMode.ItemDrag)
         {
             OnCancelPerformed();
         }
@@ -165,7 +166,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
         //RectTransform currentRectTransform = currentSelected.transform as RectTransform;
-        while (stateMonitor.GetUINavigationMode() == NavigationMode.MoveItem)
+        while (stateMonitor.GetUINavigationMode() == NavigationMode.ItemDrag)
         {
             
             //TODO: handle if during this process, mouse detected
@@ -200,7 +201,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
                 Item.HighlightItem(true);
                 break;
 
-            case NavigationMode.MoveItem:
+            case NavigationMode.ItemDrag:
 
                 break;
 
@@ -242,7 +243,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
                 Item.HighlightItem(false);
                 break;
 
-            case NavigationMode.MoveItem:
+            case NavigationMode.ItemDrag:
 
                 break;
 
@@ -270,27 +271,27 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
         NavigationMode currentCursorMode = stateMonitor.GetUINavigationMode();
 
-        Debug.LogError($"Button pressed from {source} during {currentCursorMode}");
         switch(currentCursorMode)
         {
             case NavigationMode.Neutral:
                 if (Item == null) return;
-                if(source == InputSource.Gamepad && CanBeginDrag(out IDraggablePayload payload))
+
+                if (IsMerchantSlot())
+                {
+                    TryBuyItem(Item);                   
+                    return;
+                }
+
+                if (source == InputSource.Gamepad && CanBeginDrag(out IDraggablePayload payload))
                 {
                     DragItem item = payload as DragItem;
-
-                    if(IsMerchantSlot())
-                    {
-                        TryBuyItem(item);
-                        return;
-                    }
 
                     StartGamepadDrag(item);
                 }
 
                 break;
 
-            case NavigationMode.MoveItem:
+            case NavigationMode.ItemDrag:
                 if(source == InputSource.Gamepad)
                 {
                     if (UIController._instance.StateMonitor.TryGetItemOnGamepad(out IDraggablePayload itemOnGamepad) && itemOnGamepad is DragItem)
@@ -350,7 +351,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
         var navigationMode = stateMonitor.GetUINavigationMode();
 
-        if (stateMonitor.GetUINavigationMode() != NavigationMode.MoveItem) return;
+        if (stateMonitor.GetUINavigationMode() != NavigationMode.ItemDrag) return;
 
         if (!stateMonitor.TryGetItemOnGamepad(out var item)) return;
 
@@ -534,11 +535,11 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
     //for gamepad version, we shouldn't drag/drop the item to buy it, or should we?
     private void BuyItem(DragItem itemToDrop)
     {
-        // if we do - gold
-        Debug.LogError($"BuyItem - should be called once!");
+        // if we do -gold
         CombatController._instance.Player._gold -= GetItemCost(itemToDrop);
         OnItemBought?.Invoke(this);
         BuyItemEvent(-GetItemCost(itemToDrop));
+        itemToDrop.HighlightItem(false);
         LabelCheck();        
         
     }    
@@ -970,7 +971,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
             // callback to a popup here!
             if(IsMerchantSlot())
             {
-                destinationSlot.BuyDroppedItem(droppedItem, destinationSlot);
+                destinationSlot.TryBuyItem(droppedItem);
                 return;
             }
 
