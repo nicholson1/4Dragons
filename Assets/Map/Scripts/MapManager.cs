@@ -15,6 +15,9 @@ namespace Map
         public static MapManager _instance;
 
         private int nextMapSeed = -1;
+
+        public int TotalLayer => config != null ? config.layers.Count : 0;
+
         private void Awake()
         {
             if (_instance != null && _instance != this)
@@ -92,24 +95,25 @@ namespace Map
         private float MapGenTimer = 0f;
         private void Update()
         {
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
-            {
-                foreach (var node in CurrentMap.nodes)
-                {
-                    node.SetState(NodeStates.Attainable);
-                }
+            //old input system cheats
+            //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
+            //{
+            //    foreach (var node in CurrentMap.nodes)
+            //    {
+            //        node.SetState(NodeStates.Attainable);
+            //    }
 
-                CombatController._instance.MapCanBeClicked = true;
-            }
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.J))
-            {
-                if(MapGenTimer <= 0)
-                {
-                    GenerateNewMap();
-                    CombatController._instance.MapCanBeClicked = true;
-                    MapGenTimer = .25f;
-                }
-            }
+            //    CombatController._instance.MapCanBeClicked = true;
+            //}
+            //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.J))
+            //{
+            //    if(MapGenTimer <= 0)
+            //    {
+            //        GenerateNewMap();
+            //        CombatController._instance.MapCanBeClicked = true;
+            //        MapGenTimer = .25f;
+            //    }
+            //}
 
             if (MapGenTimer > 0)
             {

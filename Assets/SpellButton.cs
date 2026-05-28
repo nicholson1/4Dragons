@@ -6,10 +6,10 @@ using TMPro;
 using UnityEngine;
 using ImportantStuff;
 using UnityEngine.UI;
-
-public class SpellButton : MonoBehaviour
-{
-    [SerializeField] private CombatEntity myCharacter;
+using UnityEngine.EventSystems;
+using DFG.UIHandling;
+public class SpellButton : MonoBehaviour, IButtonListener
+{    
     public SpellTypes spell;
     public Weapon weapon;
     public Image SpellIcon;
@@ -18,28 +18,119 @@ public class SpellButton : MonoBehaviour
     [SerializeField]private ToolTip _toolTip;
     //public static event Action<CombatEntity, SpellTypes, int, int> AttackWithSpell;
 
-    public bool interactable = true;
+    public bool isSpellUsable = true;
 
     //[SerializeField] private DataReader dataReader;
     List<List<object>> DataTable;
 
-    public ButtonGlow buttonGlow;
+    private Character character;
+    private Button button;
+    private ButtonGlow buttonGlow;
+    private RectTransform rt;
+
+    private bool isSpellReady = false;
+
+    public event Action OnGamepadButtonSelected;
+    public event Action OnGamepadButtonDeselected;
+
     public void SetDataTable(List<List<object>> WeaponScalingTable )
-    {
-        
+    {        
        DataTable = WeaponScalingTable;
     }
 
-    public void TriggerButtonGlow()
+    public void OnButtonPressed(Selectable selectable, InputSource source)
     {
-        buttonGlow.TriggerEffect(_toolTip.IconColor);
+        if (!isSpellUsable)
+        {
+            Debug.LogError($"Spell not usable");
+            return;
+        }
+
+        if (source == InputSource.Gamepad && !isSpellReady)
+        {
+            EventSystem.current.SetSelectedGameObject(this.gameObject);
+
+            return;
+        }           
+
+        InitiateCastSpell();
     }
-    
-    
+
+    public void OnButtonSelected(Selectable selectable)
+    {
+        ReadyCastingSpell();
+    }
+
+    public void OnButtonDeselected(Selectable selectable)
+    {
+        CancelCastingSpell();
+    }
+
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        if (!isSpellUsable)
+        {
+            //Handle spell cannot be used
+            return;
+        }
+
+        ReadyCastingSpell();
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        CancelCastingSpell();
+    }
+
+    public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
+    {
+        if (!isSpellReady) return;
+            
+        InitiateCastSpell();
+    }
+
+    public void HandleCancelPerformed()
+    {
+
+    }
+
+    private void ReadyCastingSpell()
+    {
+        if (isSpellReady) return;
+
+        _toolTip.ShowTipFromGamepadNavi(rt);
+        isSpellReady = true;
+    }
+
+    private void CancelCastingSpell()
+    {
+        if (!isSpellReady) return;
+                
+        _toolTip.CloseTip();
+        isSpellReady = false;
+    }
+
+    private void InitiateCastSpell()
+    {
+        //close tip
+        if (!isSpellReady)
+        {
+            Debug.LogError($"Spell not ready!");
+            isSpellReady = true;
+            return;
+        }
+
+        _toolTip.CloseTip();
+        character._combatEntity.CastTheAbility(spell, weapon);
+        buttonGlow.TriggerEffect(_toolTip.IconColor);
+        EventSystem.current.SetSelectedGameObject(null);
+        isSpellReady = false;
+    }
+
+
+            
     public void UpdateSpell(SpellTypes s, Weapon w)
     {
-
-
         spell = s;
         if (spell == SpellTypes.None)
         {
@@ -71,7 +162,7 @@ public class SpellButton : MonoBehaviour
             this.GetComponent<Button>().interactable = true;
             _toolTip.is_spell = true;
         }
-        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, myCharacter);
+        List<int> power = TheSpellBook._instance.GetPowerValues(s, w, character._combatEntity);
 
         SpellText.text = DataTable[(int)spell][0].ToString();
 
@@ -127,6 +218,7 @@ public class SpellButton : MonoBehaviour
 
 
     }
+
     public string AdjustDescriptionValues(string message, int turns, float amount)
     {
         //turns
@@ -164,6 +256,87 @@ public class SpellButton : MonoBehaviour
     }
 
 
+    private void ActivateButton()
+    {
+        isSpellUsable = true;
+        button.interactable = true;
+    }
+
+    private void DeactivateButton()
+    {
+        isSpellUsable = false;
+        button.interactable = false;
+    }
+
+
+    public void SetUsability(Character player, int currentEnergy)
+    {
+        if (spell == SpellTypes.None)
+        {
+            //Debug.Log(" spell is false");
+            DeactivateButton();
+            return;
+        }
+
+        int requiredEnergy = int.Parse(DataTable[(int)spell][2].ToString());
+
+        if (requiredEnergy > currentEnergy)
+        {
+            // if relic 24 is unsued and the spell is a buff
+            if (TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.Buff, spell) && !RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
+            {
+                ActivateButton();
+            }
+            else
+            {
+                DeactivateButton();
+            }
+        }
+
+        else
+        {
+            ActivateButton();
+        }
+
+        //what's this for?
+        if (isSpellUsable && requiredEnergy == 1)
+        {
+            if (RelicManager._instance.CheckRelic(RelicType.DragonRelic10))
+            {
+                DeactivateButton();
+            }
+        }
+    }
+
+    private void Awake()
+    {
+        button = GetComponent<Button>();
+        buttonGlow = GetComponentInChildren<ButtonGlow>();
+        rt = GetComponent<RectTransform>();
+
+        character = CombatController._instance.Player;
+        character.UpdateEnergy += SetUsability;
+    }
+
+    
+
+
+    private void OnDestroy()
+    {
+        character.UpdateEnergy -= SetUsability;
+    }
+
+
+
+    //private void OnEnable()
+    //{
+    //    button.onClick.AddListener(InitiateCastSpell);
+    //}
+
+    //private void OnDisable()
+    //{
+    //    button.onClick.RemoveListener(InitiateCastSpell);
+    //}
 
 
 }

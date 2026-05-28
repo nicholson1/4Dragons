@@ -21,6 +21,8 @@ namespace Map
 
         public int nodeSeed = -1;
 
+        public int layer = 0;
+
 
         public Node(NodeType nodeType, string blueprintName, Point point, int seed)
         {
@@ -28,6 +30,13 @@ namespace Map
             this.blueprintName = blueprintName;
             this.point = point;
             this.nodeSeed = seed;
+        }
+
+        public bool IsConnected(Node target)
+        {
+            bool connected = outgoing.Contains(target.point) || incoming.Contains(target.point);
+
+            return connected;
         }
 
         public void AddIncoming(Point p)

@@ -3,6 +3,7 @@ using ImportantStuff;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DFG.UIHandling;
 
 namespace Map
 {
@@ -16,7 +17,7 @@ namespace Map
 
 namespace Map
 {
-    public class MapNode : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+    public class MapNode : ButtonListener
     {
         public SpriteRenderer sr;
         public Image image;
@@ -28,6 +29,7 @@ namespace Map
 
         public Node Node { get; private set; }
         public NodeBlueprint Blueprint { get; private set; }
+        public Button GamepadButton => gamepadButton;
 
         private float initialScale;
         private const float HoverScaleFactor = 1.2f;
@@ -45,14 +47,22 @@ namespace Map
         private bool isPingPongingColor = false;
         
         private ToolTip toolTip;
-        
+
+        private RectTransform nodeRt;
+        private UIScreenMap mapScreen;
+        private Button gamepadButton;
+
+
+
         void Start()
         {
             iconTransform = this.transform;
             initialScaleIcon = iconTransform.localScale;
             BaseColor = image.color;
+            mapScreen = GetComponentInParent<UIScreenMap>();
+            gamepadButton = GetComponentInChildren<Button>();
+            nodeRt = GetComponent<RectTransform>();
         }
-        
 
         public void SetUp(Node node, NodeBlueprint blueprint)
         {
@@ -145,8 +155,8 @@ namespace Map
                         
                     }
                     
-                    if (visitedCircle != null) visitedCircle.gameObject.SetActive(true);
-                    if (circleImage != null) circleImage.gameObject.SetActive(true);
+                    //if (visitedCircle != null) visitedCircle.gameObject.SetActive(true);
+                    //if (circleImage != null) circleImage.gameObject.SetActive(true);
                     break;
                 case NodeStates.Attainable:
                     // start pulsating from visited to locked color:
@@ -174,6 +184,52 @@ namespace Map
             }
         }
 
+        public override void OnButtonDeselected(Selectable selectable)
+        {
+            if (sr != null)
+            {
+                //sr.transform.DOKill();
+                //sr.transform.DOScale(initialScale, 0.3f);
+            }
+
+            if (image != null)
+            {
+                if (Node.State == NodeStates.Visited)
+                    image.color = MapView.Instance.visitedColor;
+                if (Node.State == NodeStates.Locked)
+                    image.color = MapView.Instance.lockedColor;
+
+                //image.transform.DOKill();
+                //image.transform.DOScale(initialScale, 0.3f);
+            }
+
+            if (toolTip != null)
+                toolTip.CloseTip();
+        }
+
+        public override void OnButtonSelected(Selectable selectable)
+        {
+            if (image != null)
+            {
+                image.color = MapView.Instance.visitedColor;
+            }
+
+            if (toolTip != null)
+            {
+                toolTip.ShowTipFromGamepadNavi(nodeRt);
+            }
+        }
+
+        public override void OnButtonPressed(Selectable selectable, InputSource source)
+        {
+            //DEBUG MAP CLICKABLE ANYWHERE - uncomment these
+            //if (!mapScreen.AreNodesClickable) return;
+            //if (Node.State != NodeStates.Attainable) return;
+            Debug.LogError($"DEBUG MAP CAN BE CLICKED HERE");
+
+            SelectNode();
+        }
+        // OLD INTERFACE
         public void OnPointerEnter(PointerEventData data)
         {
             if (sr != null)
@@ -217,20 +273,73 @@ namespace Map
 
         public void OnPointerUp(PointerEventData data)
         {
-            if (!CombatController._instance.MapCanBeClicked || Node.State != NodeStates.Attainable)
-            {
-                return;
-            }
+            //DEBUG MAP CLICKABLE ANYWHERE - uncomment these
+            //if (!mapScreen.AreNodesClickable) return;
+            //if (Node.State != NodeStates.Attainable) return;
+            Debug.LogError($"DEBUG MAP CAN BE CLICKED HERE");
+
             if (Time.time - mouseDownTime < MaxClickDuration)
             {
                 // user clicked on this node:
-                MapPlayerTracker.Instance.SelectNode(this);
-                CombatController._instance.MapNodeClicked(this.Node);
-                UIController._instance.ToggleMapUI(0);
-                UIController._instance.ToggleInventoryUI(0);
-                UIController._instance.ToggleLootUI(0);
-                UIController._instance.ToggleShopUI(0);
+                //MapPlayerTracker.Instance.SelectNode(this);
+                //CombatController._instance.MapNodeClicked(this.Node);
+                //UIController._instance.ToggleMapUI(0);
+                ////UIController._instance.ToggleInventoryUI(0);
+                ////UIController._instance.ToggleLootUI(0);
+                //UIController._instance.ToggleShopUI(0);
+
+                SelectNode();
             }
+        }
+
+        public void HandleGamepadButtonSelected(Selectable selectable)
+        {
+            if (image != null)
+            {
+                image.color = MapView.Instance.visitedColor;
+            }
+
+            if(toolTip != null)
+            {
+                toolTip.ShowTipFromGamepadNavi(nodeRt);
+            }
+        }
+
+        public void HandleGamepadButtonDeselected(Selectable selectable)
+        {
+            if (image != null)
+            {
+                if (Node.State == NodeStates.Visited)
+                    image.color = MapView.Instance.visitedColor;
+                else if (Node.State == NodeStates.Locked)
+                    image.color = MapView.Instance.lockedColor;
+
+            }
+
+            if (toolTip != null)
+                toolTip.CloseTip();
+        }
+
+        public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
+        {
+            if (!mapScreen.AreNodesClickable) return;
+            if (Node.State != NodeStates.Attainable) return;
+
+            SelectNode();            
+        }
+
+        public void HandleCancelPerformed()
+        {
+
+        }
+
+        //END OLD INTERFACE
+
+        public void SelectNode()
+        {
+            MapPlayerTracker.Instance.SelectNode(this);
+            CombatController._instance.MapNodeClicked(this.Node); //Activate combat screen happen here
+            
         }
 
         public void ShowSwirlAnimation()
@@ -344,5 +453,7 @@ namespace Map
                     
             }
         }
+
+
     }
 }

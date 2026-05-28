@@ -5,6 +5,7 @@ using System.Linq;
 using Map;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -27,7 +28,7 @@ public class CombatController : MonoBehaviour
     [SerializeField] private TreasureChest TreausreChestPrefab;
 
 
-    [SerializeField] private GameObject StartChest;
+    [SerializeField] private TreasureChest StartChest;
     private GameObject rewardChest = null;
 
 
@@ -61,13 +62,18 @@ public class CombatController : MonoBehaviour
     public float EliteHealingMultiplier => _eliteHealingMultiplier;
     public float NormalHealingMultiplier => _normalHealingMultiplier;
 
-    public static event Action EndTurn;
+    public event Action EndTurn;
     // public static event Action EndCombatEvent;
     // public static event Action StartCombatEvent;
 
     public static event Action<Character, Character> UpdateUIButtons;
     public static event Action<Character, Character> ActivateCombatEntities;
     public static event Action<ErrorMessageManager.Errors> CombatNotifications;
+
+    public event Action<Character> OnEnemySpawned;
+    public event Action<Character> OnEnemyDies;
+    public event Action OnCombatEnd;
+
 
     public Character Player;
 
@@ -117,8 +123,8 @@ public class CombatController : MonoBehaviour
     public BossPhase1 BossPhase1;
 
    
-
     [SerializeField] private AudioClip _beginAdventure;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -239,14 +245,18 @@ public class CombatController : MonoBehaviour
     {
         started = true;
         EquipmentCreator._instance.ApplyModifiers();
+
+        //should clean this up later
         StartChest.gameObject.SetActive(true);
-        
+        UIController._instance.ActivateTreasureScreen();
+                        
         MusicManager.Instance.PlayAdventureMusic();
 
         RotateAroundMap._instance.SlowRotate = false;
         Player._am.SetBool("Walk", false);
         
         SoundManager.Instance.Play2DSFXOnDelay(_beginAdventure, 1, .5f);
+
         
         TutorialManager.Instance.QueueTip(TutorialNames.Start);
     }
@@ -257,7 +267,10 @@ public class CombatController : MonoBehaviour
         LastNodeClicked = node;
         currentSeed = node.nodeSeed;
         Random.InitState(currentSeed);
-        
+
+        if(!retry)
+            UIController._instance.ToggleMapNew(false, false);
+
         BlacksmithToggle(false);
         //Debug.Log("Current Node Seed: " + currentSeed);
         if(!retry)
@@ -275,6 +288,7 @@ public class CombatController : MonoBehaviour
             StartChest.gameObject.SetActive(false);
             ClickedFirstNode = true;
         }
+
         
         MapCanBeClicked = false;
         //clear current level remove shops, treasure chests, bodies
@@ -293,7 +307,7 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayDragonMusic();
                 break;
             case NodeType.Store:
-                ShopManager._instance.RandomShop();
+                StartRandomShop();
                 MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Treasure:
@@ -301,7 +315,7 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayAdventureMusic();
                 break;
             case NodeType.BlackSmith:
-                UIController._instance.ToggleBlackSmithUI();
+                UIController._instance.OpenBlacksmith();
                 MusicManager.Instance.PlayShopMusic();
                 BlacksmithToggle(true);
                 break;
@@ -312,6 +326,31 @@ public class CombatController : MonoBehaviour
         
         TutorialManager.Instance.CloseTip(TutorialNames.Cleanse);
         TutorialManager.Instance.CloseTip(TutorialNames.Start);
+    }
+
+    private void StartRandomShop()
+    {
+        StartCoroutine(WaitOpenShop());
+    }
+
+    private IEnumerator WaitOpenShop()
+    {        
+        while (UIController._instance.IsAnyPanelTransitioning())
+        {
+            yield return null;
+        }
+
+        ShopManager._instance.RandomShop();
+    }
+
+    private IEnumerator WaitOpenEvent()
+    {
+        while(UIController._instance.IsAnyPanelTransitioning())
+        {
+            yield return null;
+        }
+
+        UIController._instance.InitiateAndActivateMysteryScreen();
     }
 
     public void MysterySelect()
@@ -350,6 +389,11 @@ public class CombatController : MonoBehaviour
             nt = NodeType.MinorEnemy;
         }
 
+        //DEBUG always mystery
+        Debug.LogError($"DEBUG [?] ALWAYS MYSTERY HERE");
+        nt = NodeType.Mystery;
+        //END DEBUG
+
         if (nt == NodeType.MinorEnemy)
         {
             if (RelicManager._instance.CheckRelic(RelicType.Relic24))
@@ -373,11 +417,11 @@ public class CombatController : MonoBehaviour
                 MusicManager.Instance.PlayBattleMusic();
                 break;
             case NodeType.Store:
-                ShopManager._instance.RandomShop();
+                StartRandomShop();
                 MusicManager.Instance.PlayShopMusic();
                 break;
             case NodeType.Mystery:
-                EventUI.instance.RandomEvent();
+                StartCoroutine(WaitOpenEvent());
                 break;
             case NodeType.Treasure:
                 TreasureNodeClicked(false);
@@ -452,15 +496,15 @@ public class CombatController : MonoBehaviour
         //set transition camera to starting point
         //TransitionCamera.transform.position = CombatCamera.transform.position;
         //TransitionCamera.transform.rotation = CombatCamera.transform.rotation;
-        
+
         //set combat camera position to player offset + rotation
         //CombatCamParent.transform.position = Player.transform.position +  (Player.transform.rotation * Vector3.forward * 2.5f);
         //CombatCamParent.transform.position = Player.transform.position +  ((DirVect * 2.5f));
 
-        
+
         //CombatCamParent.transform.LookAt(new Vector3(Player.transform.position.x, CombatCamParent.transform.position.y, Player.transform.position.z));
         //CombatCamera.transform
-        
+        CombatUI.SetActive(false);
         StartCoroutine(TransitionFromCombatCamera(2, 2));
 
     }
@@ -480,7 +524,7 @@ public class CombatController : MonoBehaviour
             RelicManager._instance.HasRelic4Buff = false;
         }
         
-        CombatUI.SetActive(false);
+        
         CurrentTurnIndex = 0;
 
         //EndCombatEvent();
@@ -664,6 +708,8 @@ public class CombatController : MonoBehaviour
         PreCombatDeBuffs.Clear();
 
         UpdateUiButtons();
+
+        UIController._instance.ActivateCombatScreen();
     }
 
     public void UpdateUiButtons()
@@ -744,7 +790,7 @@ public class CombatController : MonoBehaviour
 
         turnCounter += 1;
         
-        EndTurn();
+        EndTurn?.Invoke();
         CurrentTurnIndex += 1;
         if (CurrentTurnIndex >= entitiesInCombat.Count)
         {
@@ -801,8 +847,6 @@ public class CombatController : MonoBehaviour
             hb.Initialize(c, CombatCamera);
             
         }
-
-
     }
 
 
@@ -867,17 +911,22 @@ public class CombatController : MonoBehaviour
         return Vector3.zero;
     }
 
+
+
     public void StartRandomCombat(Node node)
     {
-        if(StartChest!= null)
-            StartChest.SetActive(false);
+        if(StartChest != null)
+            StartChest.gameObject.SetActive(false);
+
         for (int i = 1; i < entitiesInCombat.Count; i++)
         {
             GameObject.Destroy(entitiesInCombat[i].gameObject);
             entitiesInCombat.RemoveAt(i);
             //Debug.Log("DESTRIYING GAME OBJECT");
         }
-        UIController._instance.ToggleInventoryUI(0);
+
+        //we already close it when we're done looting
+        //UIController._instance.ToggleInventoryUINew(false);
 
         NextCombatButton.gameObject.SetActive(false);
 
@@ -936,8 +985,8 @@ public class CombatController : MonoBehaviour
         WeatherManager._instance.UpdateWeather(node.point.y, nextDragonSchool);
 
         previousDragonSchool = nextDragonSchool;
-            
-
+              
+        
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
     
@@ -969,7 +1018,8 @@ public class CombatController : MonoBehaviour
             entitiesInCombat.RemoveAt(i);
             //Debug.Log("DESTRIYING GAME OBJECT");
         }
-        UIController._instance.ToggleInventoryUI(0);
+
+        Debug.LogError($"Starting Blacksmith Combat!");
 
         NextCombatButton.gameObject.SetActive(false);
 
@@ -982,8 +1032,17 @@ public class CombatController : MonoBehaviour
 
     private IEnumerator waitTheStartCombat(Character p, Character e)
     {
+        Debug.Log($"start waitStartCombat coroutine");
+
         CombatNotifications(ErrorMessageManager.Errors.NewFoe);
         yield return new WaitForSeconds(.5f);
+
+        while (UIController._instance.IsAnyPanelTransitioning())
+        {
+            Debug.Log($"waitStartCombat: anyPanelTransitioning = {UIController._instance.IsAnyPanelTransitioning()}");
+            yield return null;
+        }
+
         StartCombat(p, e);
         ToolTipManager._instance.HideToolTipAll();
         TutorialManager.Instance.QueueTip(TutorialNames.Energy);
@@ -1015,7 +1074,28 @@ public class CombatController : MonoBehaviour
         enemy.transform.LookAt(Player.transform.position);
         Player.transform.LookAt(enemy.transform.position);
 
+        OnEnemySpawned?.Invoke(enemy);
 
+        //
+
+    }
+
+    private IEnumerator WaitingForRestartCombat()
+    {
+        while(UIController._instance.IsAnyPanelTransitioning())
+        {
+            yield return null;
+        }
+
+        _instance.Player._currentEnergy = 0;
+
+
+        _instance.Player._currentHealth = CombatController._instance.Player._maxHealth;
+        _instance.Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
+        _instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
+
+        Player._am.SetTrigger("Reset");
+        MapNodeClicked(LastNodeClicked, true);
     }
 
     public void RestartCombat()
@@ -1023,21 +1103,12 @@ public class CombatController : MonoBehaviour
         retryAvailable -= 1;
         //deactivate death screen
         EndCombat();
-        UIController._instance.EndOfGameScreen.SetActive(false);
+
+        UIController._instance.DeactivateDeathScreen();
         //revive the player
         //clear buffs and debuffs and blessings
         // reset energy
-        _instance.Player._currentEnergy = 0;
-
-                    
-                    
-        _instance.Player._currentHealth = CombatController._instance.Player._maxHealth;
-        _instance.Player.Buffs = new List<(CombatEntity.BuffTypes, int, float)>();
-        _instance.Player.DeBuffs = new List<(CombatEntity.DeBuffTypes, int, float)>();
-        
-        
-        Player._am.SetTrigger("Reset");
-        MapNodeClicked(LastNodeClicked, true);
+        StartCoroutine(WaitingForRestartCombat());
     }
 
     private bool started = false;
@@ -1083,8 +1154,7 @@ public class CombatController : MonoBehaviour
         CombatTrigger.EndCombat += EndCombat;
         MusicManager.Instance.PlayMenuMusic();
         
-        Player._am.SetBool("Walk", true);
-
+        Player._am.SetBool("Walk", true);       
 
     }
     private void OnDestroy()

@@ -65,7 +65,7 @@ public class LoginController : MonoBehaviour
         switch (loginResult)
         {
             case PlayFabManager.AutoResult.NODATA:
-                SteamRegister();
+                await SteamRegister();
                 return;
             case PlayFabManager.AutoResult.ERROR:
                 ErrorLogin();

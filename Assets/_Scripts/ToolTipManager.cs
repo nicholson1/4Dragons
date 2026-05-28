@@ -37,6 +37,20 @@ public class ToolTipManager : MonoBehaviour
    [SerializeField] public Color[] rarityColors;
    private RectTransform _rt;
 
+    private float tooltipDisplayDelay = 0.35f;
+    private Coroutine tooltipDisplayRoutine;
+
+    private IEnumerator TooltipDisplayRoutine(Vector3 position)
+    {
+        float current = 0f;
+
+        while (current < tooltipDisplayDelay)
+        {
+            yield return null;
+        }
+
+
+    }
 
    //public HorizontalLayoutGroup LayoutGroup;
    private void Awake()
@@ -72,34 +86,65 @@ public class ToolTipManager : MonoBehaviour
       //Debug.Log((Screen.height - Input.mousePosition.y) + " Y");
       //Debug.Log((Screen.width - Input.mousePosition.x) + " X");
 
-      _rt.pivot = new Vector2(.5f, .5f);
-      if (Screen.height - Input.mousePosition.y < Screen.height/3.5f)
-      {
-         _rt.pivot += new Vector2(0, 3);
-      }
-      if (Screen.width - Input.mousePosition.x < Screen.width/5f)
-      {
-         _rt.pivot += new Vector2(5, 0);
-         //LayoutGroup.reverseArrangement = true;
-      }
+      //////_rt.pivot = new Vector2(.5f, .5f);
+      //////if (Screen.height - Input.mousePosition.y < Screen.height/3.5f)
+      //////{
+      //////   _rt.pivot += new Vector2(0, 3);
+      //////}
+      //////if (Screen.width - Input.mousePosition.x < Screen.width/5f)
+      //////{
+      //////   _rt.pivot += new Vector2(5, 0);
+      //////   //LayoutGroup.reverseArrangement = true;
+      //////}
       //LayoutGroup.reverseArrangement = false;
 
 
       
-      transform.position = Input.mousePosition;
-      
+      //transform.position = Input.mousePosition;     
 
    }
 
-   public void SetAndShowToolTip(string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
+    private Vector2 GetPivot(RectTransform referenceRT)
+    {
+        Vector2 pivot = _rt.pivot;
+
+        if (Screen.height - referenceRT.anchoredPosition.y < Screen.height / 3.5f)
+        {
+            pivot += new Vector2(0, 3);
+        }
+        if (Screen.width - referenceRT.anchoredPosition.x < Screen.width / 5f)
+        {
+            pivot += new Vector2(5, 0);
+            //LayoutGroup.reverseArrangement = true;
+        }
+
+        return pivot;
+    }
+
+    private Vector2 GetOffset(Vector2 position)
+    {        
+
+        float offsetX = position.x > Screen.width * 0.5f ? -300f : 300f;
+        float offsetY = position.y > Screen.height * 0.5f ? -50f : 50f;
+
+        return new Vector2(offsetX, offsetY);
+    }
+
+
+   public void SetAndShowToolTip(RectTransform toolTipRT, Vector2 position, string title, string message, string cost , string itemLvl, int itemRarity, Sprite i, Color c, bool is_Spell, bool is_item, Equipment equip, bool is_relic)
    {
-      transform.position = Input.mousePosition;
-
-
       if (activated)
       {
          return;
       }
+        //transform.position = Input.mousePosition;
+        //transform.position = toolTipRT.position;
+        //transform.position = toolTipRT.transform.position;
+
+        //_rt.pivot = GetPivot(toolTipRT);
+        _rt.position = position;
+        _rt.position = position + GetOffset(_rt.position);
+
       
       Comparison1tip.gameObject.SetActive(false);
       Comparison2tip.gameObject.SetActive(false);
@@ -154,8 +199,6 @@ public class ToolTipManager : MonoBehaviour
 
       //Debug.Log("hello");
       uiHoverEffect.FlashScale(.25f);
-
-
    }
 
    private void UpdateComparisonTip( Equipment newItem)
@@ -279,7 +322,7 @@ public class ToolTipManager : MonoBehaviour
       //current.gameObject.SetActive(true);
       
       
-      transform.position = Input.mousePosition;
+      //transform.position = Input.mousePosition;
       gameObject.SetActive(true);
       
       int count = 0;
@@ -391,7 +434,7 @@ public class ToolTipManager : MonoBehaviour
          // figure out the color
       }
       
-      transform.position = Input.mousePosition;
+      //transform.position = Input.mousePosition;
       SetRarityText(itemRarity, current);
       gameObject.SetActive(true);
       current.tiptext.text = message;
@@ -413,7 +456,8 @@ public class ToolTipManager : MonoBehaviour
 
       }
    }
-   private void UpdateItemTipDisplay(ToolTipDisplay current, string title, string itemLvl, int itemRarity, Equipment e)
+   
+    private void UpdateItemTipDisplay(ToolTipDisplay current, string title, string itemLvl, int itemRarity, Equipment e)
    {
       //Debug.Log("hellllo");
      
@@ -427,7 +471,7 @@ public class ToolTipManager : MonoBehaviour
       current.gameObject.SetActive(true);
       
       
-      transform.position = Input.mousePosition;
+      //transform.position = Input.mousePosition;
       SetRarityText(itemRarity, current);
       gameObject.SetActive(true);
       current.tiptitle.text = title;
@@ -514,9 +558,10 @@ public class ToolTipManager : MonoBehaviour
       {
          return;
       }
-      //Debug.Log("Hide Tool Tip");
+        //Debug.Log("Hide Tool Tip");
 
-      //Debug.Log("Hide tool tip");
+        //Debug.Log("Hide tool tip");
+        _rt.anchoredPosition = Vector2.zero;
       HideToolTip(MainTip);
       HideToolTip(ItemTip);
       HideToolTip(SpellTip);
@@ -525,7 +570,8 @@ public class ToolTipManager : MonoBehaviour
       gameObject.SetActive(false);
 
    }
-   public void HideToolTip(ToolTipDisplay current)
+
+   private void HideToolTip(ToolTipDisplay current)
    {
       //Debug.Log("Hide tool tip");
       current.gameObject.SetActive(false);
@@ -537,7 +583,8 @@ public class ToolTipManager : MonoBehaviour
 
       
    }
-   public string AdjustDescriptionValues(string message, int turns, float amount)
+
+   private string AdjustDescriptionValues(string message, int turns, float amount)
    {
       message = message.Replace("$", turns.ToString());
       message = message.Replace("@", amount.ToString());

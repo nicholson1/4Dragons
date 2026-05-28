@@ -3,28 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using PlayFab.MultiplayerModels;
-using Unity.VisualScripting;
-using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;  // Singleton instance
+
+    public event Action<TutorialNames> TriggerTutorial;
+    public event Action<TutorialNames> CloseTutorial;
+    
     public List<TutorialTip> TutorialTips;   // List of all tutorial tips
     public bool TutorialsEnabled = true;    // Toggle for tutorials
 
     private Dictionary<TutorialNames, TutorialTip> tipDictionary;
 
     private Queue<TutorialNames> _tutorialNamesQueue = new Queue<TutorialNames>();
-    public static event Action<TutorialNames> TriggerTutorial;
-    public static event Action<TutorialNames> CloseTutorial;
-
 
     public bool showingTip = false;
 
     [SerializeField] private MoveAndSpin guide;
+
+    private bool isTutorialCurrentlyActive = false;
+
+    private InputHandler inputHandler;
     
 
     private void Awake()
@@ -33,6 +33,8 @@ public class TutorialManager : MonoBehaviour
         else Destroy(gameObject);
 
         //DontDestroyOnLoad(this);
+
+        //inputHandler = EventSystem.current.GetComponent<InputHandler>();
 
         // Initialize the tip dictionary
         tipDictionary = new Dictionary<TutorialNames, TutorialTip>();
@@ -112,7 +114,8 @@ public class TutorialManager : MonoBehaviour
         if (tipID == TutorialNames.SkipSelection)
         {
             tipDictionary[tipID].IsShown = true;
-            if (TriggerTutorial != null) TriggerTutorial(tipID);
+
+            TriggerTutorial?.Invoke(tipID);
             return;
         }
 
@@ -145,21 +148,32 @@ public class TutorialManager : MonoBehaviour
         if(_tutorialNamesQueue.Count == 0)
         {
             showingTip = false;
+            //Debug.Log($"No more tutorial to trigger, this should trigger CloseTutorial?");
             return;
         }
+
         TutorialNames tipID  =_tutorialNamesQueue.Peek();
         var tip = tipDictionary[tipID];
         //Debug.Log($"Tutorial Tip: {tip.Message}");
         tip.IsShown = true;
         tipDictionary[tipID] = tip;
 
-        if (TriggerTutorial != null) TriggerTutorial(tipID);
+        if(!isTutorialCurrentlyActive)
+        {
+            isTutorialCurrentlyActive = true;
+            TriggerTutorial?.Invoke(tipID);
+        }
+
+        Debug.Log($"Trigger opening tutorial {tip.ID}");
     }
     
     
     public void CloseTip(TutorialNames tipID)
     {
-        if (CloseTutorial != null) CloseTutorial(tipID);
+        if (!isTutorialCurrentlyActive) return;
+
+        isTutorialCurrentlyActive = false;
+        CloseTutorial?.Invoke(tipID);        
     }
 
     public string GetText(TutorialNames id)

@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using ImportantStuff;
 using Map;
 using PlayFab.Internal;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.UI;
 using UnityEngine.UI;
@@ -57,11 +57,10 @@ public class Character : MonoBehaviour
     public static event Action<Character,int, int> UpdateBlock; 
     public static event Action<Character> UsePrep; 
 
-    public static event Action<Character,int, int, int> UpdateEnergy; 
+    public event Action<Character,int> UpdateEnergy; 
     public static event Action<Character> UpdateStatsEvent;
     public static event Action<ErrorMessageManager.Errors> Notification;
     public static event Action<ErrorMessageManager.Errors, int> NotificationGold;
-
 
     public EquipmentModelManager EqMM;
     
@@ -69,6 +68,12 @@ public class Character : MonoBehaviour
     [SerializeField] private float getGoldVol;
     [SerializeField] private float getGoldpitch;
     [SerializeField] private ButtonGlow EnergyGlow;
+
+    [ContextMenu("DebugKillMe")]
+    public void DebugKillCharacter()
+    {
+        GetHitWithAttack(this, CombatEntity.AbilityTypes.PhysicalAttack, (9999, 0), true);
+    }
 
     public void ToggleShowHelm()
     {
@@ -320,7 +325,7 @@ public class Character : MonoBehaviour
         if (_currentEnergy < 0)
             _currentEnergy = 0;
 
-        UpdateEnergy(this, _currentEnergy, _maxEnergy, amount);
+        UpdateEnergy?.Invoke(this, _currentEnergy);
 
         if (amount > 0 && isPlayerCharacter && EnergyGlow != null)
         {
@@ -786,7 +791,7 @@ public class Character : MonoBehaviour
         if (_currentHealth <= 0)
         {
             // die
-            
+
             _currentHealth = 0;
             if (!isPlayerCharacter &&  CombatController._instance.Player._currentHealth > 0)
             {
@@ -952,10 +957,11 @@ public class Character : MonoBehaviour
     public IEnumerator WaitThenEndCombat(float time = 1.5f)
     {
         yield return new WaitForSeconds(time);
-        UIController._instance.ToggleInventoryUI(1);
-        SelectionManager._instance.RandomSelectionFromEquipment(this);
-        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
+        //UIController._instance.ToggleInventoryUI(1);
+
+        EndCombat();
     }
+
     public IEnumerator WaitThenEndCombatBlacksmith(float time = 1.5f)
     {
         yield return new WaitForSeconds(time);
@@ -965,6 +971,15 @@ public class Character : MonoBehaviour
         LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
     }
     
+    private void EndCombat()
+    {
+        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
+
+        SelectionManager._instance.RandomSelectionFromEquipment(this);
+        UIController._instance.DeactivateCombatScreen();
+        UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
+    }
+
 
     private Coroutine WaitEndCombat;
     public void SkipWaitEndCombat()
@@ -973,11 +988,10 @@ public class Character : MonoBehaviour
         {
             StopCoroutine(WaitEndCombat);
         }
-        UIController._instance.ToggleInventoryUI(1);
-        SelectionManager._instance.RandomSelectionFromEquipment(this);
-        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
-        StartCoroutine(WaitThenDestroy(1.5f));
 
+        EndCombat();
+
+        StartCoroutine(WaitThenDestroy(1.5f));
     }
 
     private void ActivateCombatEntity(Character player, Character enemy)
