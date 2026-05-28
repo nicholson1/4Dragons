@@ -55,7 +55,6 @@ namespace Zak.UISystem
         {
             if (!isDragging || dragPayload == null)
             {
-                Debug.LogError($"Was NOT dragging or payload was null!");
                 return;
             }
 

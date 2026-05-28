@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zak.UISystem;
 using static ImportantStuff.Equipment;
-using static UnityEditor.Progress;
 
 public class InventorySlot : ButtonListener, IDragListener, IDropListener
 {
@@ -1063,7 +1062,6 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
     private bool CanBuyDropCandidate(DragItem itemToBuy)
     {
-        Debug.LogError($"CanBuyDropCandidate is being called!");
         //Can buy?
 
         //1. Target slot (this dropListener) is not merchant, sell, or discard?
