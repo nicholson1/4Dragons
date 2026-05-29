@@ -68,6 +68,8 @@ public class UIStateMonitor : MonoBehaviour
             Debug.LogError($"Error: item on gamepad was already null! check the trace!");
         }
 
+        itemOnGamepad.sourceObject.transform.parent = itemOnGamepadPreviousParent;
+
         itemOnGamepad = null;
         itemOnGamepadPreviousParent = null;
         itemOnGamepadPreviousLocalPos = Vector3.zero;

@@ -27,6 +27,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private EventUI eventUI;
     [SerializeField] private UIScreenDefeated defeatedScreen;
     [SerializeField] private UIScreenDailyChallenge dailyChallengeScreen;
+    [SerializeField] private UIScreen creditScreen;
+    [SerializeField] private UIScreen customizeScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -140,13 +142,18 @@ public class UIController : MonoBehaviour
 
     public void ActivateTitleScreen()
     {
-        TitleScreen.GetComponent<UIScreen>().Activate();
-        TitleScreen.SetActive(true);
+        titleScreen.Activate();
+        //TitleScreen.SetActive(true);
     }
 
     public void HideTitleScreen()
     {
         TitleScreen.SetActive(false);
+    }
+
+    public void ActivateCreditScreen()
+    {
+        creditScreen.Activate();
     }
 
     public void ActivateCombatScreen()
@@ -520,9 +527,31 @@ public class UIController : MonoBehaviour
 
     public void ActivateCustomizeUI()
     {
-        StartCoroutine(TransitionToUiCamera(1, 1));
+        Action onFinished = () => TransitionToCustomizeMenuFinishedCallback();
+        StartCoroutine(TransitionToUiCamera(1, 1, onFinished));
+
+        titleScreen.gameObject.SetActive(false);
     }
-    
+
+    private void TransitionToCustomizeMenuFinishedCallback()
+    {
+        customizeScreen.Activate();
+    }
+
+    public void ReturnToTitleScreen()
+    {
+        Action onFinished = () => TransitionToTitleScreenFinishedCallback();
+
+        StartCoroutine(TransitionToMainCamera(1, 1, onFinished));
+        customizeScreen.gameObject.SetActive(false);
+    }
+
+    private void TransitionToTitleScreenFinishedCallback()
+    {
+        ActivateTitleScreen();
+    }
+
+
     public void ActivateGemStoreUI()
     {
         GemStoreUI.gameObject.SetActive(true);
@@ -547,13 +576,12 @@ public class UIController : MonoBehaviour
 
     public void ActivateMainMenu()
     {
-        StartCoroutine(TransitionToMainCamera(1, 1));
+        Action onFinished = () => Debug.Log("Do nothing");
+        StartCoroutine(TransitionToMainCamera(1, 1, onFinished));
     }
 
-    private IEnumerator TransitionToUiCamera(float moveTime, float rotateTime)
-    {
-        TitleScreen.SetActive(false);
-            
+    private IEnumerator TransitionToUiCamera(float moveTime, float rotateTime, Action onFinishedTransition)
+    {           
 
         //deactivate main camera
         MainCamera.gameObject.SetActive(false);
@@ -575,15 +603,16 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         UiCamera.gameObject.SetActive(true);
-        CustomizeUI.SetActive(true);
+        //CustomizeUI.SetActive(true);
         
         //stop walking, stop spinning
         CombatController._instance.Player._am.SetBool("Walk", false);
         RotateAroundMap._instance.ToggleRotate(false);
 
 
-
+        onFinishedTransition?.Invoke();
     }
+
     private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
@@ -613,6 +642,7 @@ public class UIController : MonoBehaviour
         CombatController._instance.Player._am.SetTrigger("Victory");
 
     }
+
     private IEnumerator TransitionToMainCameraFromVictory(float moveTime, float rotateTime)
     {
         VictoryUI.SetActive(false);
@@ -644,7 +674,7 @@ public class UIController : MonoBehaviour
 
 
     }
-    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime)
+    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime, Action onFinished)
     {
         CustomizeUI.SetActive(false);
 
@@ -669,11 +699,13 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         MainCamera.gameObject.SetActive(true);
-        TitleScreen.SetActive(true);
+        //TitleScreen.SetActive(true);
         
         //stop walking, stop spinning
         CombatController._instance.Player._am.SetBool("Walk", true);
         RotateAroundMap._instance.ToggleRotate(true);
+
+        onFinished?.Invoke();
     }
 
 

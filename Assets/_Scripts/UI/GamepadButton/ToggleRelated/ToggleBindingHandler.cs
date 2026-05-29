@@ -8,18 +8,18 @@ public class ToggleBindingHandler : SelectableBindingHandler
 {
     protected Toggle toggle = null;
 
+
     private void HandleToggleClicked()
     {
-        if (!toggle.interactable) return;
+        if (!toggle.interactable || !IsSelected()) return;
 
-        if(EventSystem.current.currentSelectedGameObject == this.gameObject)
-        {
-            toggle.isOn = !toggle.isOn;
-        }
+        toggle.isOn = !toggle.isOn;
     }
 
     private void HandleCancelToggle()
     {
+        if (!toggle.interactable || !IsSelected()) return;
+
         if (toggle.isOn)
             toggle.isOn = false;
     }
@@ -29,13 +29,19 @@ public class ToggleBindingHandler : SelectableBindingHandler
         if (toggle == null) return;
 
         inputHandler.OnYes.AddListener(HandleToggleClicked);
-        inputHandler.OnNo.AddListener(HandleCancelToggle);
     }
 
     private void UnbindGamepadFromToggle()
     {
         inputHandler.OnYes.RemoveListener(HandleToggleClicked);
-        inputHandler.OnNo.RemoveListener(HandleCancelToggle);
+    }
+
+    public override void ManualBindInput(bool toBind)
+    {
+        UnbindGamepadFromToggle();
+
+        if (toBind)
+            BindGamepadToToggle();
     }
 
     protected override void BindInput(UIScreen screen, bool navigatable)
@@ -59,7 +65,7 @@ public class ToggleBindingHandler : SelectableBindingHandler
     protected override void Awake()
     {
         base.Awake();
-        toggle = GetComponent<Toggle>();
+        toggle = selectable as Toggle;
     }
 
     private void OnDestroy()

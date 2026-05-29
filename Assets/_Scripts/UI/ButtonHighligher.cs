@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DFG.UIHandling;
 
-public class ButtonHighligher : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler
+public class ButtonHighligher : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     [SerializeField] private Image highlighter = null;
+    [SerializeField] private Color higlightedColor = Color.white;
     private Selectable selectable = null;
     private float fadeDuration = 0.3f;
 
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (selectable.interactable)
-            StartCoroutine(FadeColor(false));
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -36,8 +38,8 @@ public class ButtonHighligher : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     private IEnumerator FadeColor(bool toInvisible)
     {
-        var startColor = toInvisible ? Color.white : Color.clear;
-        var endColor = toInvisible ? Color.clear : Color.white;
+        var startColor = toInvisible ? higlightedColor : Color.clear;
+        var endColor = toInvisible ? Color.clear : higlightedColor;
         float t = 0f;
 
         while (t < 1)
@@ -53,9 +55,8 @@ public class ButtonHighligher : MonoBehaviour, ISelectHandler, IDeselectHandler,
     private void Awake()
     {
         selectable = GetComponentInParent<Selectable>();
-                
+
         highlighter.color = Color.clear;        
     }
-
 
 }

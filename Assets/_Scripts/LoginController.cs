@@ -12,8 +12,8 @@ using UnityEngine.UI;
 
 public class LoginController : MonoBehaviour
 {
-    [SerializeField] private GameObject login;
-    [SerializeField] private GameObject register;
+    //[SerializeField] private GameObject login;
+    //[SerializeField] private GameObject register;
 
     [SerializeField] private TMP_InputField EmailReg;
     [SerializeField] private TMP_InputField PasswordReg;
@@ -339,13 +339,13 @@ public class LoginController : MonoBehaviour
     }
     public void LoadLogin()
     {
-        login.SetActive(true);
-        register.SetActive(false);
+        //login.SetActive(true);
+        //register.SetActive(false);
     }
     public void LoadRegister()
     {
-        login.SetActive(false);
-        register.SetActive(true);
+        //login.SetActive(false);
+        //register.SetActive(true);
     }
 
     public void SignOut()

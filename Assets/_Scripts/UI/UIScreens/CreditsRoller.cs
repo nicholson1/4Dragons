@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class CreditsRoller : MonoBehaviour
+public class CreditsRoller : UIScreen
 {
     public RectTransform creditsText; // The RectTransform of the credits text
     public float scrollSpeed = 200f;   // Speed at which the credits roll
@@ -13,17 +14,28 @@ public class CreditsRoller : MonoBehaviour
     private Vector3 startPosition;
     public bool scroll = false;
 
-    void Start()
+    [SerializeField] private Button backButton = null;
+
+    public override void Activate(bool navigatableOnActivated = true)
     {
-        // Save the initial position of the credits
-        startPosition = creditsText.localPosition;
+        base.Activate(navigatableOnActivated);
+
+        StartScroll();
     }
 
-    public void StartScroll()
+    private void StartScroll()
     {
         creditsText.localPosition = startPosition;
         StartCoroutine(FadeIn(_canvasGroup, 2));
         scroll = true;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        // Save the initial position of the credits
+        startPosition = creditsText.localPosition;
     }
 
     void Update()

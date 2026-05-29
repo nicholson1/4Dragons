@@ -13,7 +13,7 @@ public class VictorySequence : MonoBehaviour
     [SerializeField] private TextMeshProUGUI victoryText;
     [SerializeField] private CanvasGroup darkness;
     [SerializeField] private TextMeshProUGUI darknessText;
-    [SerializeField] private CreditsRoller credits ;
+    //[SerializeField] private CreditsRoller credits ;
 
 
     public void StartStringAnimation()
@@ -54,7 +54,7 @@ public class VictorySequence : MonoBehaviour
         StartCoroutine(AnimateString("", "The Shadows Still Loom in Wyrmwood....", 5, UpdateDarknessText));
         yield return new WaitForSeconds(7);
         StartCoroutine(FadeCanvasGroup(darkness, 0, 2));
-        credits.StartScroll();
+        UIController._instance.ActivateTitleScreen();
 
     }
 

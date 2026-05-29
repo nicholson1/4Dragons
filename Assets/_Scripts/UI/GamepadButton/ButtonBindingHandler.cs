@@ -40,21 +40,16 @@ public class ButtonBindingHandler : SelectableBindingHandler
             return;
         }
 
-        if (!button.interactable) return;
+        if (!button.interactable || !IsSelected()) return;
 
-        if (EventSystem.current.currentSelectedGameObject == this.gameObject)
+        //FINALIZE THIS!!
+        Debug.Log($"Finalize This!!");
+        if (button.TryGetComponent(out ButtonExtender extender))
         {
-
-            //FINALIZE THIS!!
-            Debug.Log($"Finalize This!!");
-            if (button.TryGetComponent(out ButtonExtender extender))
-            {
-                extender.ClickButton(InputSource.Gamepad);
-            }
-            else                
-                button.onClick.Invoke();
+            extender.ClickButton(InputSource.Gamepad);
         }
-            
+        else                
+            button.onClick.Invoke();            
     }
 
     protected virtual void ClickThroughInput()
@@ -183,7 +178,7 @@ public class ButtonBindingHandler : SelectableBindingHandler
     /// <summary>
     /// for non UIScreen panel buttons that requires runtime binding/unbinding    
     /// </summary>
-    public void ManualBindInput(bool toBind)
+    public override void ManualBindInput(bool toBind)
     {
         UnbindGamepadFromButton();
 

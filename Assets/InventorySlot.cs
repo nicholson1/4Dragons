@@ -451,6 +451,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
         if (Slot == Equipment.Slot.Drop)
         {
+            Debug.LogError($"Attempt to discard item");
             DiscardItem(itemToDrop);            
             return true;
         }
@@ -560,7 +561,6 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
 
     private void DiscardItem(DragItem itemToDrop)
     {
-        Debug.LogError($"Discarding item: {itemToDrop.name}");
         itemToDrop.currentLocation.Item = null;
         itemToDrop.currentLocation.LabelCheck();
         itemToDrop.PrepForRemove();
@@ -981,7 +981,7 @@ public class InventorySlot : ButtonListener, IDragListener, IDropListener
             }
             else if(destinationSlot.IsDiscardSlot())
             {
-                destinationSlot.DiscardItem(droppedItem);
+                DiscardItem(droppedItem);
             }
             else if(destinationSlot.IsAllSlot() || droppedItem.slotType == destinationSlot.Slot)
             {

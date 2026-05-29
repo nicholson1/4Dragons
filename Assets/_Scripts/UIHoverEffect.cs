@@ -142,7 +142,9 @@ public class UIHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         LeanTween.rotateLocal(gameObject, new Vector3(0f, 0f, -shakeAmount), shakeTime)
             .setEaseInOutQuad()
             .setDelay(shakeTime / 2)
-            .setLoopPingPong(1);        
+            .setLoopPingPong(1);
+
+        LeanTween.rotateLocal(gameObject, Vector3.zero, shakeTime).setEaseLinear();
     }
 
     public void FlashScale(float time = .5f)

@@ -31,6 +31,7 @@ public class WorkInProgress : MonoBehaviour
         if(hasDisplayed)
         {
             //_canvasGroup.gameObject.SetActive(false);
+            UIController._instance.ActivateTitleScreen();
             return;
         }
 

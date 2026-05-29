@@ -372,6 +372,8 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
 
     public void PrepForRemove()
     {
+        HighlightItem(false);
+
         canvasGroup.alpha = 1f;
     }
 
@@ -693,6 +695,8 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
     {
         stateMonitor ??= UIController._instance.StateMonitor;
 
+
+
         // we have to clear the previous equipment
         //remove slot, remove stats
         _toolTip.ResetTooltip();
@@ -703,6 +707,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         e = equip;
         currentLocation = location;
         currentLocation.Item = this;
+        transform.SetParent(currentLocation.transform.parent);
         _rectTransform.anchoredPosition = currentLocation._rt.anchoredPosition;
 
         _rectTransform.localScale = currentLocation._rt.localScale;
@@ -784,6 +789,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
         this.gameObject.name = $"DragItem-{e.name}";
         //canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
+
     }
 
     private void Start()

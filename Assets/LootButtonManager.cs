@@ -348,12 +348,15 @@ public class LootButtonManager : UIInventorySubPanel
 
         RefreshLootButtonNavigation();
         SetLeaveButtonUpNavigation();
+
+        leaveButton.interactable = true;
     }
 
-public void EquipmentSelect(int i)
+    public void EquipmentSelect(int i)
     {
         SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
 
+        leaveButton.interactable = false;
         var equipmentButton = EquipmentButtons[i];
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
         equipmentButton.DeactivateButton();
@@ -367,6 +370,7 @@ public void EquipmentSelect(int i)
     {
         SelectionManager._instance.OnSelectionFinished += SelectionFinishedCallback;
 
+        leaveButton.interactable = false;
         SelectionManager._instance.SelectionsFromList(RelicLists[i]);
         RelicButtons[i].DeactivateButton();
     }

@@ -31,6 +31,7 @@ public class InputHandler : MonoBehaviour
     public UnityEvent OnL2;
     public UnityEvent OnR1;
     public UnityEvent OnR2;
+    public UnityEvent OnYesCanceled;
 
     public Vector2 MousePosition => Mouse.current.position.ReadValue();
 
@@ -89,7 +90,18 @@ public class InputHandler : MonoBehaviour
     private void InspectToggleOnPressed(InputAction.CallbackContext context) => OnInspectTogglePressed?.Invoke(true);
     private void InspectToggleOffPressed(InputAction.CallbackContext context) => OnInspectTogglePressed?.Invoke(false);
 
-    private void YesPressed(InputAction.CallbackContext context) => OnYes?.Invoke();
+    private void YesPressed(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            OnYes?.Invoke();
+        }
+        else if(context.canceled)
+        {
+            OnYesCanceled?.Invoke();
+        }
+    }
+
     private void NoPressed(InputAction.CallbackContext context) => OnNo?.Invoke();
     private void MenuExtra1Pressed(InputAction.CallbackContext context) => OnMenuExtra1?.Invoke();
     private void MenuExtra2Pressed(InputAction.CallbackContext context) => OnMenuExtra2?.Invoke();
@@ -215,6 +227,7 @@ public class InputHandler : MonoBehaviour
         action3.action.started += Scroll2Pressed;
 
         yes.action.started += YesPressed;
+        yes.action.canceled += YesPressed;
         no.action.started += NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
         menuExtra2.action.started += MenuExtra2Pressed;
@@ -237,6 +250,7 @@ public class InputHandler : MonoBehaviour
         action3.action.started -= Scroll2Pressed;
 
         yes.action.started -= YesPressed;
+        yes.action.canceled -= YesPressed;
         no.action.started -= NoPressed;
         menuExtra1.action.started += MenuExtra1Pressed;
         menuExtra2.action.started += MenuExtra2Pressed;
