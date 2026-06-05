@@ -95,8 +95,6 @@ public class ToolTip : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandle
         //    }
         //}
 
-        
-
         ToolTipManager._instance.HideToolTipAll();
     }
     //END OLD INTERFACE

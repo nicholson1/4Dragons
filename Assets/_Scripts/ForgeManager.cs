@@ -46,6 +46,9 @@ public class ForgeManager : UIInventorySubPanel
     private InputHandler inputHandler;
     private UIStateMonitor stateMonitor;
 
+    [SerializeField] private Color smeltTextOn, smeltTextOff;
+    private TextMeshProUGUI smeltToggleText;
+
     public override Selectable GetFirstInteractableSelectable()
     {
         return upgradeToggle;
@@ -78,6 +81,7 @@ public class ForgeManager : UIInventorySubPanel
             {
                 stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
                 HandleHighlighterOnToggle(false);
+                smeltToggleText.color = smeltTextOff;
             }
             return;
         }
@@ -89,7 +93,7 @@ public class ForgeManager : UIInventorySubPanel
         amountOfClicks = -1;
 
         HandleHighlighterOnToggle(toOn);
-
+        smeltToggleText.color = smeltTextOn;
         //ToggleOff(enhanceToggle);
 
         inputHandler.OnNo.RemoveListener(CleanupToggle);
@@ -148,6 +152,7 @@ public class ForgeManager : UIInventorySubPanel
             {
                 stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
                 HandleHighlighterOnToggle(false);
+
             }
             return;
         }
@@ -213,7 +218,7 @@ public class ForgeManager : UIInventorySubPanel
         else if(mode == NavigationMode.Enhance)
             upgradePrice = Mathf.RoundToInt((equipment.stats[Stats.ItemLevel] + 5) * (equipment.stats[Stats.Rarity] + 1) * priceMod) * 4;
         
-        forgePriceText.text = upgradePrice.ToString();
+        forgePriceText.text = $"<sprite=\"iconfont_gold\" index=0> { upgradePrice.ToString()}";
         return upgradePrice;
     }
 
@@ -321,6 +326,7 @@ public class ForgeManager : UIInventorySubPanel
         stateMonitor = UIController._instance.StateMonitor;
         forgePriceText = forgeLabel.GetComponentInChildren<TextMeshProUGUI>();
         forgePriceObject = forgePriceText.transform.parent.gameObject;
+        smeltToggleText = smeltToggle.GetComponentInChildren<TextMeshProUGUI>();
 
         forgePriceObject.SetActive(false);
 

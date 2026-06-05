@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InspectableElementHandler : MonoBehaviour, ISelectHandler, IDeselectHandler
+public class InspectableElementHandler : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Button button;
     private IInspectableElement inspectableElement;
@@ -15,6 +15,19 @@ public class InspectableElementHandler : MonoBehaviour, ISelectHandler, IDeselec
     public void OnSelect(BaseEventData eventData)
     {
         inspectableElement.HandleGamepadButtonSelected(button);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        ((IPointerEnterHandler)button).OnPointerEnter(eventData);
+        OnSelect(eventData);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        ((IPointerExitHandler)button).OnPointerExit(eventData);
+
+        OnDeselect(eventData);
     }
 
     void Start()

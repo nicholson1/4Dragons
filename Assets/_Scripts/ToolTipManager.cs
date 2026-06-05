@@ -401,6 +401,7 @@ public class ToolTipManager : MonoBehaviour
       current.tiptitle.text = r.name;
       current.tiptitle.color = rarityColors[4];
       current.icon.sprite = r.getIcon;
+      current.slot.text = "Relic";
       gameObject.SetActive(true);
    }
    private void UpdateConsumableTip(ToolTipDisplay current, Equipment e)

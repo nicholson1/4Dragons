@@ -681,7 +681,7 @@ public class DragItem : MonoBehaviour, IDraggablePayload//, IPointerEnterHandler
 
     public void TurnOnSellPrice(int price)
     {
-        sellPrice.text = price.ToString();
+        sellPrice.text = $"<sprite=\"iconfont_gold\" index=0> {price.ToString()}";
         sellPrice.gameObject.SetActive(true);
     }
    

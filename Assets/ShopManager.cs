@@ -1,4 +1,5 @@
 using ImportantStuff;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,7 @@ public class ShopManager : UIInventorySubPanel
 
     [SerializeField] private InventorySlot sellSlot; 
     private Toggle sellToggle;
+    private TextMeshProUGUI sellFont;
 
     //private List<Selectable> cachedNavigationLeftTargets = new List<Selectable>();
     private List<InventorySlot> currentShopItems = new List<InventorySlot>();
@@ -46,6 +48,8 @@ public class ShopManager : UIInventorySubPanel
 
     private UIStateMonitor stateMonitor;
     private InputHandler inputHandler;
+
+    [SerializeField] private Color sellFontOn, sellFontOff;
 
     public override void SetSkipButtonInteractable(bool isInteractable)
     {
@@ -157,6 +161,7 @@ public class ShopManager : UIInventorySubPanel
                 stateMonitor.SetUINavigationMode(NavigationMode.Neutral);
                 RevertFromSellModeNavigation();
                 HandleHighlighterOnToggle(false);
+                sellFont.color = sellFontOff;
                 inputHandler.OnNo.RemoveListener(CleanupToggle);
             }
             return;
@@ -166,6 +171,7 @@ public class ShopManager : UIInventorySubPanel
 
         SetupSellModeNavigation();
         HandleHighlighterOnToggle(toOn);
+        sellFont.color = sellFontOn;
 
         inputHandler.OnNo.RemoveListener(CleanupToggle);
         inputHandler.OnNo.AddListener(CleanupToggle);
@@ -339,7 +345,7 @@ public class ShopManager : UIInventorySubPanel
         Equipment e;
         // create drag items
 
-        rerollPrice.text = shopPrice.ToString();
+        rerollPrice.text = $"Reroll - <sprite=\"iconfont_gold\" index=0> {shopPrice.ToString()}";
 
         UnregisterItem(Item1);
         UnregisterItem(Item2);
@@ -479,7 +485,7 @@ public class ShopManager : UIInventorySubPanel
         int cost = (slot.Item.e.stats[Stats.Rarity] + 1) * 60;
         if (CombatController._instance.Difficulty >= 7)
             cost += Mathf.RoundToInt(cost * .2f);  
-        goldText.text = (cost).ToString();
+        goldText.text = $"<sprite=\"iconfont_gold\" index=0> {(cost).ToString()}";
         goldText.gameObject.SetActive(true);
 
         //if (slot.Item.e.isRelic)
@@ -616,6 +622,7 @@ public class ShopManager : UIInventorySubPanel
         inputHandler = EventSystem.current.GetComponent<InputHandler>();
         stateMonitor = UIController._instance.StateMonitor;
         sellToggle = sellSlot.GetComponentInChildren<Toggle>();
+        sellFont = sellToggle.GetComponentInChildren<TextMeshProUGUI>();
         sellToggle.onValueChanged.AddListener(OnSellToggled);
 
         leaveButton.onClick.AddListener(Leave);
