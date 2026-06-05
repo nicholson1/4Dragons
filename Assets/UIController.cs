@@ -29,6 +29,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private UIScreenDailyChallenge dailyChallengeScreen;
     [SerializeField] private UIScreen creditScreen;
     [SerializeField] private UIScreen customizeScreen;
+    [SerializeField] private UIScreen victoryScreen;
 
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
@@ -186,7 +187,7 @@ public class UIController : MonoBehaviour
         ToolTipManager._instance.HideToolTipAll();
         StartCoroutine(MovePanel(defeatedScreen.DefaultMainPanel, PanelMoveDirection.Vertical, true, DeathScreenPanelOpenedCallback));
         defeatedScreen.DefaultRaycastBlocker.SetActive(true);
-    }
+    }    
 
     public void DeactivateDeathScreen()
     {
@@ -200,6 +201,7 @@ public class UIController : MonoBehaviour
         else
             defeatedScreen.Deactivate();
     }
+
 
     public void InitiateAndActivateMysteryScreen()
     {
@@ -448,7 +450,8 @@ public class UIController : MonoBehaviour
 
     public void RestartGame(bool victory = false)
     {
-        PlayFabManager._instance.SubmitRunData(victory);
+        //we submitted run ddata in Character.GetHitWithAttack(), so do we need to call it again here?
+        //PlayFabManager._instance.SubmitRunData(victory);
         SceneManager.LoadScene(0);
     }
     public void RestartGameAfterDeath()
@@ -567,10 +570,12 @@ public class UIController : MonoBehaviour
     {
         StartCoroutine(TransitionToMainCameraFromVictory(1, 1));
     }
+
     public void ActivateVictoryScreen()
     {
-        StartCoroutine(TransitionToVictoryUiCamera(1, 1));
-        VictorySequence.StartVictorySequence();
+        Action onFinishTransition = () => victoryScreen.Activate();
+        StartCoroutine(TransitionToVictoryUiCamera(1, 1, onFinishTransition));
+        //VictorySequence.StartVictorySequence();
     }
     
 
@@ -613,7 +618,7 @@ public class UIController : MonoBehaviour
         onFinishedTransition?.Invoke();
     }
 
-    private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime)
+    private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime, Action onFinishTransition)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
               
@@ -638,9 +643,10 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         UiCamera.gameObject.SetActive(true);
-        VictoryUI.SetActive(true);
+        //VictoryUI.SetActive(true);
         CombatController._instance.Player._am.SetTrigger("Victory");
 
+        onFinishTransition?.Invoke();
     }
 
     private IEnumerator TransitionToMainCameraFromVictory(float moveTime, float rotateTime)

@@ -810,8 +810,11 @@ public class Character : MonoBehaviour
                     {
                         //finish the game, roll credits
                         UIController._instance.ActivateVictoryScreen();
-                        UIController._instance.ToggleInventoryUI(0); 
+                        //UIController._instance.ToggleInventoryUI(0); 
                         PlayFabManager._instance.SubmitRunData(true);
+                        UIController._instance.PlayVictorySound();
+                        CombatController._instance.EndCombat();
+                        return;
                     }
                     else if (CombatController._instance.Player._level == 30)
                     {
@@ -819,10 +822,13 @@ public class Character : MonoBehaviour
                         
                         //todo spawn boss p1
                         // victory
+                        
                         UIController._instance.ActivateVictoryScreen();
-                        UIController._instance.ToggleInventoryUI(0); 
+                        //UIController._instance.ToggleInventoryUI(0); 
                         PlayFabManager._instance.SubmitRunData(true);
-
+                        UIController._instance.PlayVictorySound();
+                        CombatController._instance.EndCombat();
+                        return;
                     }
                     else
                     {
