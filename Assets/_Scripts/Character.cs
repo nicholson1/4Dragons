@@ -813,10 +813,11 @@ public class Character : MonoBehaviour
                         //todo This is where we start a new combat with the final boss?
                         
                         //todo spawn boss p1
+                        CombatController._instance.StartCombatBossPhase1();
                         // victory
-                        UIController._instance.ActivateVictoryScreen();
-                        UIController._instance.ToggleInventoryUI(0); 
-                        PlayFabManager._instance.SubmitRunData(true);
+                        // UIController._instance.ActivateVictoryScreen();
+                        // UIController._instance.ToggleInventoryUI(0); 
+                        // PlayFabManager._instance.SubmitRunData(true);
 
                     }
                     else

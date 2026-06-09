@@ -951,8 +951,10 @@ public class CombatController : MonoBehaviour
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);
+        
+        BossPhase1.gameObject.SetActive(true);
 
-        Character enemy = Blacksmith.GetComponent<Character>();
+        Character enemy = BossPhase1.GetComponent<Character>();
         enemy.transform.LookAt(Player.transform.position);
         Player.transform.LookAt(enemy.transform.position);
 
