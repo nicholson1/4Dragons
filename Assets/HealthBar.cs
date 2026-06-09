@@ -10,6 +10,10 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
+    public Button GamepadTargettingButton => gamepadTargettingButton;
+    public Transform IntentDisplay => intentDisplay;
+    public Transform BuffDebuffDisplay => buffDebuffLayoutGroup;
+
     [SerializeField] private Slider bar;
     [SerializeField] private Slider tempBar;
     [SerializeField] private TextMeshProUGUI text;
@@ -37,6 +41,8 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private GameObject eliteFrame;
     [SerializeField] private GameObject dragonFrame;
 
+    [SerializeField] private Button gamepadTargettingButton;
+
     public int YValueStatusText = 550;
 
     public int displayMax;
@@ -62,7 +68,7 @@ public class HealthBar : MonoBehaviour
         CombatEntity.ReduceDebuffCount += ReduceDebuffCount;
         CombatEntity.ReduceBuffCount += ReduceBuffCount;
 
-        CombatController.EndTurn += FixBars;
+        CombatController._instance.EndTurn += FixBars;
 
 
     }
@@ -87,11 +93,7 @@ public class HealthBar : MonoBehaviour
         CombatEntity.ReduceDebuffCount -= ReduceDebuffCount;
         CombatEntity.ReduceBuffCount -= ReduceBuffCount;
 
-        CombatController.EndTurn -= FixBars;
-
-
-
-
+        CombatController._instance.EndTurn -= FixBars;
     }
 
     private void FixBars()
@@ -762,7 +764,7 @@ public class HealthBar : MonoBehaviour
     {
         displayCharacter = c;
         stats = c.GetComponent<Character>().GetStats();
-
+         
 
         // foreach (var i in stats)
         // {
@@ -790,7 +792,8 @@ public class HealthBar : MonoBehaviour
         if (c.isElite)
         {
             eliteFrame.gameObject.SetActive(true);
-        }else if (c.isDragon)
+        }
+        else if (c.isDragon)
         {
             dragonFrame.gameObject.SetActive(true);
         }
@@ -798,7 +801,6 @@ public class HealthBar : MonoBehaviour
         {
             normalFrame.gameObject.SetActive(true);
         }
-
     }
 
     public bool MakeNewOne(CombatEntity.BuffTypes buff, CombatEntity.DeBuffTypes debuff, CombatEntity.BlessingTypes blessing)

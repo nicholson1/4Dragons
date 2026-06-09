@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace ImportantStuff
 {
+    [System.Serializable]
     public class Equipment
     {
-
         private string _name;
         private Sprite _icon;
         private bool _isWeapon = false;
@@ -79,7 +80,10 @@ namespace ImportantStuff
             set => _icon = value;
         }
         
-
+        public bool IsGear()
+        {
+            return _slot >= Slot.Head && _slot <= Slot.Scroll;
+        }
         
 
         // private int _level;
@@ -324,12 +328,9 @@ namespace ImportantStuff
         public enum Slot
         {
             Head,
-
-            //Neck,
             Shoulders,
             Chest,
             Gloves,
-            //Belt,
             Legs,
             Boots,
 
@@ -345,7 +346,7 @@ namespace ImportantStuff
             Sell,
             Upgrade,
             Relic,
-            Sold,
+            Merchant,
         }
     }
     public enum Stats
