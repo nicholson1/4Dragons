@@ -989,9 +989,15 @@ public class CombatController : MonoBehaviour
         
         StartCoroutine(waitTheStartCombat(Player, enemy));
     }
-    
-    public void StartCombatBossPhase1()
+
+    public void StartBossPhase1Coroutine()
     {
+        StartCoroutine(StartCombatBossPhase1());
+    }
+    public IEnumerator StartCombatBossPhase1()
+    {
+        Debug.Log("STARTing BOSS PHASE 1");
+        Debug.Log(entitiesInCombat.Count);
         for (int i = 1; i < entitiesInCombat.Count; i++)
         {
             GameObject.Destroy(entitiesInCombat[i].gameObject);
@@ -1000,7 +1006,11 @@ public class CombatController : MonoBehaviour
         UIController._instance.ToggleInventoryUI(0);
 
         NextCombatButton.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(5f);
         
+        Debug.Log("activate BOSS PHASE 1");
+        BossPhase1.InitializeBossPhase1();
         BossPhase1.gameObject.SetActive(true);
 
         Character enemy = BossPhase1.GetComponent<Character>();

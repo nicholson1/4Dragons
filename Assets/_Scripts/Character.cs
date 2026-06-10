@@ -139,6 +139,14 @@ public class Character : MonoBehaviour
                     _maxEnergy = 3 + CombatController._instance.TrialCounter;
                 }
             }
+            else if( isBossPhase1)
+            {
+                //elite
+                if (CombatController._instance.Difficulty >= 10)
+                {
+                    _maxEnergy = 4 + CombatController._instance.TrialCounter;
+                }
+            }
             else
             {
                 Random.InitState(CombatController._instance.LastNodeClicked.nodeSeed);
@@ -200,7 +208,7 @@ public class Character : MonoBehaviour
 
         }
 
-        if (!isDragon && !isElite)
+        if (!isDragon && !isElite && !isBossPhase1)
         {
             foreach (var eq in _equipment)
             {
@@ -212,7 +220,7 @@ public class Character : MonoBehaviour
             _equipment.AddRange(_spellScrolls);
             EqMM.FixHead();
         }
-        
+
         UpdateStats();
         _currentHealth = _maxHealth;
         StartRun = true;
@@ -697,6 +705,11 @@ public class Character : MonoBehaviour
         {
             _currentHealth = _maxHealth;
         }
+
+        if (c.isBossPhase1)
+        {
+            c._combatEntity._bossPhase1.TakeBossHeal(healAmount);
+        }
     }
 
     public void GetGold(int amount)
@@ -735,6 +748,16 @@ public class Character : MonoBehaviour
         }
 
         _currentHealth -= amountAndReduction.Item1;
+
+        if (isBossPhase1)
+        {
+            this.GetComponent<BossPhase1>().TakeBossDamage(amountAndReduction.Item1);
+            // if current head health == 0 
+            // switch head
+            // switch intentions
+            // switch 
+
+        }
 
         if(_currentHealth < _maxHealth / 2f && isPlayerCharacter)
         {
@@ -800,6 +823,9 @@ public class Character : MonoBehaviour
                 if (CombatController._instance.entitiesInCombat.Count == 1)
                 {
                     ToolTipManager._instance.HideToolTipAll();
+
+                    
+                    
                     if (isBossPhase1)
                     {
                         Debug.Log("PHASE 2 START");
@@ -816,18 +842,25 @@ public class Character : MonoBehaviour
                         CombatController._instance.EndCombat();
                         return;
                     }
-                    else if (CombatController._instance.Player._level == 30)
+                    //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
+                    //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
+                    //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
+                    else if (CombatController._instance.Player._level < 40)
                     {
+                        Debug.Log("START BOSS PHASE 1");
+                        CombatController._instance.StartBossPhase1Coroutine();
+                        EndCombatForBossPhase1();
+
+                        
                         //todo This is where we start a new combat with the final boss?
                         
                         //todo spawn boss p1
                         // victory
                         
-                        UIController._instance.ActivateVictoryScreen();
-                        //UIController._instance.ToggleInventoryUI(0); 
-                        PlayFabManager._instance.SubmitRunData(true);
-                        UIController._instance.PlayVictorySound();
-                        CombatController._instance.EndCombat();
+                        // UIController._instance.ActivateVictoryScreen();
+                        // //UIController._instance.ToggleInventoryUI(0); 
+                        // PlayFabManager._instance.SubmitRunData(true);
+                        // UIController._instance.PlayVictorySound();
                         return;
                     }
                     else
@@ -984,6 +1017,16 @@ public class Character : MonoBehaviour
         SelectionManager._instance.RandomSelectionFromEquipment(this);
         UIController._instance.DeactivateCombatScreen();
         UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
+    }
+    private void EndCombatForBossPhase1()
+    {
+        LootButtonManager._instance.SkipButton.gameObject.SetActive(false);
+
+        //SelectionManager._instance.RandomSelectionFromEquipment(this);
+        UIController._instance.DeactivateCombatScreen();
+        CombatController._instance.EndCombat();
+        Destroy(this._combatEntity.gameObject);
+        //UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
     }
 
 
@@ -1156,6 +1199,10 @@ public class Character : MonoBehaviour
                 hp = 65 * _level;
             else
                 hp = 75 * _level;
+        }
+        else if(isBossPhase1)
+        {
+            hp = 400 * _level;
         }
         else
         {

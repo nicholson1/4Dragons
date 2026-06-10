@@ -20,6 +20,7 @@ public class BossPhase1 : MonoBehaviour
     public SpellSchool currentHead;
     public int currentHeadHealth;
     public int currentHeadTurnCount = 0;
+    private int headIndex = 0;
     private List<(SpellSchool, int)> headsLeftWithHealth = new List<(SpellSchool, int)>();
 
     private Dictionary<SpellSchool, List<List<(SpellTypes, Weapon)>>> moves = new Dictionary<SpellSchool, List<List<(SpellTypes, Weapon)>>>();
@@ -29,10 +30,96 @@ public class BossPhase1 : MonoBehaviour
     public void InitializeBossPhase1()
     {
         c._equipment = CreateAllBossEquipment(31, 4);
+        c.UpdateStats();
         SelectRandomHeadOrder();
         currentHead = headsLeftWithHealth[0].Item1;
         currentHeadHealth = headsLeftWithHealth[0].Item2;
         currentHeadTurnCount = 0;
+        
+        Debug.Log("Current head: " + currentHead);
+        
+    }
+
+    public void GoToNextHead()
+    {
+        headIndex += 1;
+        if (headIndex > headsLeftWithHealth.Count-1)
+        {
+            headIndex = 0;
+        }
+        currentHead = headsLeftWithHealth[headIndex].Item1;
+        currentHeadHealth = headsLeftWithHealth[headIndex].Item2;
+        currentHeadTurnCount = 0;
+        Debug.Log("Changing head from turn counter " + currentHead.ToString());
+
+        c._combatEntity.SetMyIntentions();
+
+    }
+
+    private void KillCurrentHead()
+    {
+        Debug.Log("Killing " + currentHead.ToString());
+        headsLeftWithHealth.RemoveAt(headIndex);
+        if (headIndex > headsLeftWithHealth.Count - 1)
+            headIndex = 0;
+        currentHead = headsLeftWithHealth[headIndex].Item1;
+        currentHeadHealth = headsLeftWithHealth[headIndex].Item2;
+        currentHeadTurnCount = 0;
+        Debug.Log("new Head " + currentHead.ToString());
+
+        c._combatEntity.SetMyIntentions();
+        
+    }
+    public void TakeBossDamage(int amount)
+    {
+        Debug.Log("Current head health = " + currentHeadHealth);
+        Debug.Log("Taking " + amount);
+        if (amount < currentHeadHealth)
+        {
+            currentHeadHealth -= amount;
+            headsLeftWithHealth[headIndex] = (currentHead,currentHeadHealth);
+        }
+        else
+        {
+            amount -= currentHeadHealth;
+            KillCurrentHead();
+            TakeBossDamage(amount);
+        }
+    }
+    public void TakeBossHeal(int amount)
+    {
+        if ((currentHeadHealth + amount) > c._maxHealth / 5)
+        {
+            // heal to full, heal other head
+            headsLeftWithHealth[headIndex] = (currentHead,c._maxHealth / 5);
+            amount -= ((c._maxHealth / 5) - currentHeadHealth);
+            Debug.Log("healing left over");
+            for(int i = 0; i < headsLeftWithHealth.Count; i ++)
+            {
+                if (amount <= 0)
+                    return;
+                if (headsLeftWithHealth[i].Item2 < c._maxHealth / 5)
+                {
+                    if ((headsLeftWithHealth[i].Item2 + amount) > c._maxHealth / 5)
+                    {
+                        headsLeftWithHealth[headIndex] = (headsLeftWithHealth[i].Item1,c._maxHealth / 5);
+                        amount -= ((c._maxHealth / 5) - currentHeadHealth);
+                        Debug.Log("healing left over" + headsLeftWithHealth[i].Item1 + " heal to full");
+                    }
+                    else
+                    {
+                        headsLeftWithHealth[headIndex] = (headsLeftWithHealth[i].Item1,headsLeftWithHealth[i].Item2 + amount);
+                        amount = 0;
+                        Debug.Log("healing left over" + headsLeftWithHealth[i].Item1 + amount);
+                    }
+                }
+            }
+        }
+        else
+        {
+            currentHeadHealth += amount;
+            headsLeftWithHealth[headIndex] = (currentHead,currentHeadHealth);
+        }
     }
 
     private void SelectRandomHeadOrder()
@@ -54,6 +141,7 @@ public class BossPhase1 : MonoBehaviour
         foreach (int i in list)
         {
             headsLeftWithHealth.Add(((SpellSchool)i, c._maxHealth/5));
+            Debug.Log(((SpellSchool)i).ToString());
         }
     }
 
@@ -159,7 +247,6 @@ public class BossPhase1 : MonoBehaviour
         moves[SpellSchool.Shadow] = new List<List<(SpellTypes, Weapon)>> {
             new List<(SpellTypes, Weapon)>()
             {
-                (SpellTypes.Shadow2, wep1),
                 (SpellTypes.Shadow2, wep1),
                 (SpellTypes.Shadow2, wep1),
             },
