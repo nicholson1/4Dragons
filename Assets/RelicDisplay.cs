@@ -5,13 +5,37 @@ using Map;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RelicDisplay : MonoBehaviour
+public class RelicDisplay : MonoBehaviour, IInspectableElement
 {
     [SerializeField]private ToolTip toolTip;
     [SerializeField]private Image icon;
     [SerializeField]private UIHoverEffect UIHoverEffect;
 
     public Relic Relic;
+
+    private Button gamepadButton;
+
+    public Button GetGamepadButton()
+    {
+        gamepadButton ??= GetComponentInChildren<Button>();
+        return gamepadButton;
+    }
+
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        toolTip.CloseTip();
+    }
+
+
+    private void Awake()
+    {
+        gamepadButton = GetComponentInChildren<Button>();
+    }
 
     private void Start()
     {
@@ -126,4 +150,6 @@ public class RelicDisplay : MonoBehaviour
             }
         }
     }
+
+
 }

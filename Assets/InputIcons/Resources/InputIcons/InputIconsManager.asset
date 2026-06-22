@@ -1,0 +1,1046 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab8ee0d4f7f91a4ca569ef0eacc2738, type: 3}
+  m_Name: InputIconsManager
+  m_EditorClassIdentifier: 
+  isActualManager: 1
+  iconSetConfiguratorSO: {fileID: 11400000, guid: d9f6a2d5fd0df16419a30f0ab431893f, type: 2}
+  usedActionAssets:
+  - {fileID: -944628639613478452, guid: e71992ea7f34c6445be4499f2be343a2, type: 3}
+  controlSchemeNames_Keyboard:
+  - Keyboard and Mouse
+  controlSchemeNames_Gamepad:
+  - Gamepad
+  autoShowAndHideCursor: 0
+  showAllInputOptionsInStyles: 0
+  tintingEnabled: 0
+  openingTag: 
+  closingTag: 
+  multipleInputsDelimiter: ' <size=80%>or</size> '
+  compositeInputDelimiter: ', '
+  textDisplayForUnboundActions: Undefined
+  displayType: 0
+  textDisplayLanguage: 1
+  saveAndLoadSelectedTextDisplayLanguage: 1
+  actionNameRenamings:
+  - originalString: delta
+    outputString: Mouse
+  - originalString: position
+    outputString: Mouse
+  - originalString: leftbutton
+    outputString: Left Mouse Button
+  - originalString: rightButton
+    outputString: Right  Mouse Button
+  defaultStartDeviceType: 0
+  gamepadIconDisplaySetting: 0
+  deviceChangeDelay: 0.2
+  minGamepadStickMagnitudeForChange: 0.25
+  showFallbackSpritesOnJoystick: 0
+  textUpdateOptions: 0
+  automaticStyleSheetUpdatingEnabled: 1
+  rebindBehaviour: 0
+  checkOnlySameActionMapsOnBindingRebound: 1
+  loadAndSaveInputBindingOverrides: 1
+  rebindStorageMethod: 0
+  enableMultiPlayerProfiles: 1
+  currentPlayerProfile: 0
+  maxPlayerProfiles: 4
+  isUsingFonts: 1
+  TEXTMESHPRO_SPRITEASSET_FOLDERPATH: Assets/TextMesh Pro/Resources/Sprite Assets/
+  TEXTMESHPRO_FONTASSET_FOLDERPATH: Assets/TextMesh Pro/Resources/Fonts & Materials/
+  useCompressionForCreatedAssets: 0
+  loggingEnabled: 0
+  inputStyleKeyboardDataList:
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Move>
+    bindingName: Combat/Move
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="W"><sprite="Keyboard
+      and Mouse_Grey" name="A"><sprite="Keyboard and Mouse_Grey" name="S"><sprite="Keyboard
+      and Mouse_Grey" name="D"> <size=80%>or</size> <sprite="Keyboard and Mouse_Grey"
+      name="UPARROW"><sprite="Keyboard and Mouse_Grey" name="LEFTARROW"><sprite="Keyboard
+      and Mouse_Grey" name="DOWNARROW"><sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="W"><sprite="Keyboard
+      and Mouse_Grey" name="A"><sprite="Keyboard and Mouse_Grey" name="S"><sprite="Keyboard
+      and Mouse_Grey" name="D">
+    humanReadableString: W, A, S, D <size=80%>or</size> upArrow, leftArrow, downArrow,
+      rightArrow
+    humanReadableString_singleInput: W, A, S, D
+    fontReferenceText: <style=font/Combat/Move>
+    fontCode: \uE970\uE90A\uE962\uE91A <size=80%>or</size> \uE90F\uE90D\uE90C\uE90E
+    fontCode_singleInput: \uE970\uE90A\uE962\uE91A
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/up>
+    bindingName: Combat/Move/up
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="W"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="UPARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="W">
+    humanReadableString: W <size=80%>or</size> upArrow
+    humanReadableString_singleInput: W
+    fontReferenceText: <style=font/Combat/Move/up>
+    fontCode: \uE970 <size=80%>or</size> \uE90F
+    fontCode_singleInput: \uE970
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/left>
+    bindingName: Combat/Move/left
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="A"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="LEFTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="A">
+    humanReadableString: A <size=80%>or</size> leftArrow
+    humanReadableString_singleInput: A
+    fontReferenceText: <style=font/Combat/Move/left>
+    fontCode: \uE90A <size=80%>or</size> \uE90D
+    fontCode_singleInput: \uE90A
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/down>
+    bindingName: Combat/Move/down
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="S"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="DOWNARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="S">
+    humanReadableString: S <size=80%>or</size> downArrow
+    humanReadableString_singleInput: S
+    fontReferenceText: <style=font/Combat/Move/down>
+    fontCode: \uE962 <size=80%>or</size> \uE90C
+    fontCode_singleInput: \uE962
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/right>
+    bindingName: Combat/Move/right
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="D"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="D">
+    humanReadableString: D <size=80%>or</size> rightArrow
+    humanReadableString_singleInput: D
+    fontReferenceText: <style=font/Combat/Move/right>
+    fontCode: \uE91A <size=80%>or</size> \uE90E
+    fontCode_singleInput: \uE91A
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Move/2>
+    bindingName: Combat/Move/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="UPARROW"><sprite="Keyboard
+      and Mouse_Grey" name="LEFTARROW"><sprite="Keyboard and Mouse_Grey" name="DOWNARROW"><sprite="Keyboard
+      and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="UPARROW"><sprite="Keyboard
+      and Mouse_Grey" name="LEFTARROW"><sprite="Keyboard and Mouse_Grey" name="DOWNARROW"><sprite="Keyboard
+      and Mouse_Grey" name="RIGHTARROW">
+    humanReadableString: UPARROW, LEFTARROW, DOWNARROW, RIGHTARROW
+    humanReadableString_singleInput: UPARROW, LEFTARROW, DOWNARROW, RIGHTARROW
+    fontReferenceText: <style=font/Combat/Move/2>
+    fontCode: \uE90F\uE90D\uE90C\uE90E
+    fontCode_singleInput: \uE90F\uE90D\uE90C\uE90E
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/up/2>
+    bindingName: Combat/Move/up/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="UPARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="UPARROW">
+    humanReadableString: UPARROW
+    humanReadableString_singleInput: UPARROW
+    fontReferenceText: <style=font/Combat/Move/up/2>
+    fontCode: \uE90F
+    fontCode_singleInput: \uE90F
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/left/2>
+    bindingName: Combat/Move/left/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="LEFTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="LEFTARROW">
+    humanReadableString: LEFTARROW
+    humanReadableString_singleInput: LEFTARROW
+    fontReferenceText: <style=font/Combat/Move/left/2>
+    fontCode: \uE90D
+    fontCode_singleInput: \uE90D
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/down/2>
+    bindingName: Combat/Move/down/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="DOWNARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="DOWNARROW">
+    humanReadableString: DOWNARROW
+    humanReadableString_singleInput: DOWNARROW
+    fontReferenceText: <style=font/Combat/Move/down/2>
+    fontCode: \uE90C
+    fontCode_singleInput: \uE90C
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/right/2>
+    bindingName: Combat/Move/right/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    humanReadableString: RIGHTARROW
+    humanReadableString_singleInput: RIGHTARROW
+    fontReferenceText: <style=font/Combat/Move/right/2>
+    fontCode: \uE90E
+    fontCode_singleInput: \uE90E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Pause>
+    bindingName: Combat/Pause
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="ESCAPE"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="ESCAPE">
+    humanReadableString: ESCAPE <size=80%>or</size> start
+    humanReadableString_singleInput: ESCAPE
+    fontReferenceText: <style=font/Combat/Pause>
+    fontCode: \uE920 <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE920
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Pause/2>
+    bindingName: Combat/Pause/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: START
+    humanReadableString_singleInput: START
+    fontReferenceText: <style=font/Combat/Pause/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/InspectToggleOn>
+    bindingName: Combat/InspectToggleOn
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: LEFTTRIGGER
+    humanReadableString_singleInput: LEFTTRIGGER
+    fontReferenceText: <style=font/Combat/InspectToggleOn>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action0>
+    bindingName: Combat/Action0
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="DIGIT1"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="DIGIT1">
+    humanReadableString: DIGIT1 <size=80%>or</size> buttonWest
+    humanReadableString_singleInput: DIGIT1
+    fontReferenceText: <style=font/Combat/Action0>
+    fontCode: \uE901 <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE901
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action0/2>
+    bindingName: Combat/Action0/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONWEST
+    humanReadableString_singleInput: BUTTONWEST
+    fontReferenceText: <style=font/Combat/Action0/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action1>
+    bindingName: Combat/Action1
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="DIGIT2"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="DIGIT2">
+    humanReadableString: DIGIT2 <size=80%>or</size> buttonNorth
+    humanReadableString_singleInput: DIGIT2
+    fontReferenceText: <style=font/Combat/Action1>
+    fontCode: \uE902 <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE902
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action1/2>
+    bindingName: Combat/Action1/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONNORTH
+    humanReadableString_singleInput: BUTTONNORTH
+    fontReferenceText: <style=font/Combat/Action1/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action2>
+    bindingName: Combat/Action2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="DIGIT3"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="DIGIT3">
+    humanReadableString: DIGIT3 <size=80%>or</size> buttonEast
+    humanReadableString_singleInput: DIGIT3
+    fontReferenceText: <style=font/Combat/Action2>
+    fontCode: \uE903 <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE903
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action2/2>
+    bindingName: Combat/Action2/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONEAST
+    humanReadableString_singleInput: BUTTONEAST
+    fontReferenceText: <style=font/Combat/Action2/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action3>
+    bindingName: Combat/Action3
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="DIGIT4"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="DIGIT4">
+    humanReadableString: DIGIT4 <size=80%>or</size> buttonSouth
+    humanReadableString_singleInput: DIGIT4
+    fontReferenceText: <style=font/Combat/Action3>
+    fontCode: \uE904 <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE904
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action3/2>
+    bindingName: Combat/Action3/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONSOUTH
+    humanReadableString_singleInput: BUTTONSOUTH
+    fontReferenceText: <style=font/Combat/Action3/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Navigate>
+    bindingName: Menu/Navigate
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="W"><sprite="Keyboard
+      and Mouse_Grey" name="A"><sprite="Keyboard and Mouse_Grey" name="S"><sprite="Keyboard
+      and Mouse_Grey" name="D"> <size=80%>or</size> <sprite="Keyboard and Mouse_Grey"
+      name="UPARROW"><sprite="Keyboard and Mouse_Grey" name="DOWNARROW"><sprite="Keyboard
+      and Mouse_Grey" name="LEFTARROW"><sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="W"><sprite="Keyboard
+      and Mouse_Grey" name="A"><sprite="Keyboard and Mouse_Grey" name="S"><sprite="Keyboard
+      and Mouse_Grey" name="D">
+    humanReadableString: W, A, S, D <size=80%>or</size> upArrow, downArrow, leftArrow,
+      rightArrow
+    humanReadableString_singleInput: W, A, S, D
+    fontReferenceText: <style=font/Menu/Navigate>
+    fontCode: \uE970\uE90A\uE962\uE91A <size=80%>or</size> \uE90F\uE90C\uE90D\uE90E
+    fontCode_singleInput: \uE970\uE90A\uE962\uE91A
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/up>
+    bindingName: Menu/Navigate/up
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="W"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="UPARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="W">
+    humanReadableString: W <size=80%>or</size> upArrow
+    humanReadableString_singleInput: W
+    fontReferenceText: <style=font/Menu/Navigate/up>
+    fontCode: \uE970 <size=80%>or</size> \uE90F
+    fontCode_singleInput: \uE970
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/left>
+    bindingName: Menu/Navigate/left
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="A"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="LEFTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="A">
+    humanReadableString: A <size=80%>or</size> leftArrow
+    humanReadableString_singleInput: A
+    fontReferenceText: <style=font/Menu/Navigate/left>
+    fontCode: \uE90A <size=80%>or</size> \uE90D
+    fontCode_singleInput: \uE90A
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/down>
+    bindingName: Menu/Navigate/down
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="S"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="DOWNARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="S">
+    humanReadableString: S <size=80%>or</size> downArrow
+    humanReadableString_singleInput: S
+    fontReferenceText: <style=font/Menu/Navigate/down>
+    fontCode: \uE962 <size=80%>or</size> \uE90C
+    fontCode_singleInput: \uE962
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/right>
+    bindingName: Menu/Navigate/right
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="D"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="D">
+    humanReadableString: D <size=80%>or</size> rightArrow
+    humanReadableString_singleInput: D
+    fontReferenceText: <style=font/Menu/Navigate/right>
+    fontCode: \uE91A <size=80%>or</size> \uE90E
+    fontCode_singleInput: \uE91A
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Navigate/2>
+    bindingName: Menu/Navigate/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="UPARROW"><sprite="Keyboard
+      and Mouse_Grey" name="DOWNARROW"><sprite="Keyboard and Mouse_Grey" name="LEFTARROW"><sprite="Keyboard
+      and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="UPARROW"><sprite="Keyboard
+      and Mouse_Grey" name="DOWNARROW"><sprite="Keyboard and Mouse_Grey" name="LEFTARROW"><sprite="Keyboard
+      and Mouse_Grey" name="RIGHTARROW">
+    humanReadableString: UPARROW, DOWNARROW, LEFTARROW, RIGHTARROW
+    humanReadableString_singleInput: UPARROW, DOWNARROW, LEFTARROW, RIGHTARROW
+    fontReferenceText: <style=font/Menu/Navigate/2>
+    fontCode: \uE90F\uE90C\uE90D\uE90E
+    fontCode_singleInput: \uE90F\uE90C\uE90D\uE90E
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/up/2>
+    bindingName: Menu/Navigate/up/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="UPARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="UPARROW">
+    humanReadableString: UPARROW
+    humanReadableString_singleInput: UPARROW
+    fontReferenceText: <style=font/Menu/Navigate/up/2>
+    fontCode: \uE90F
+    fontCode_singleInput: \uE90F
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/down/2>
+    bindingName: Menu/Navigate/down/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="DOWNARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="DOWNARROW">
+    humanReadableString: DOWNARROW
+    humanReadableString_singleInput: DOWNARROW
+    fontReferenceText: <style=font/Menu/Navigate/down/2>
+    fontCode: \uE90C
+    fontCode_singleInput: \uE90C
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/left/2>
+    bindingName: Menu/Navigate/left/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="LEFTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="LEFTARROW">
+    humanReadableString: LEFTARROW
+    humanReadableString_singleInput: LEFTARROW
+    fontReferenceText: <style=font/Menu/Navigate/left/2>
+    fontCode: \uE90D
+    fontCode_singleInput: \uE90D
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/right/2>
+    bindingName: Menu/Navigate/right/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="RIGHTARROW">
+    humanReadableString: RIGHTARROW
+    humanReadableString_singleInput: RIGHTARROW
+    fontReferenceText: <style=font/Menu/Navigate/right/2>
+    fontCode: \uE90E
+    fontCode_singleInput: \uE90E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Yes>
+    bindingName: Menu/Yes
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="ENTER"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="ENTER">
+    humanReadableString: ENTER <size=80%>or</size> buttonSouth
+    humanReadableString_singleInput: ENTER
+    fontReferenceText: <style=font/Menu/Yes>
+    fontCode: \uE91E <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE91E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Yes/2>
+    bindingName: Menu/Yes/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONSOUTH
+    humanReadableString_singleInput: BUTTONSOUTH
+    fontReferenceText: <style=font/Menu/Yes/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/No>
+    bindingName: Menu/No
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="ESCAPE"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="ESCAPE">
+    humanReadableString: ESCAPE <size=80%>or</size> buttonEast
+    humanReadableString_singleInput: ESCAPE
+    fontReferenceText: <style=font/Menu/No>
+    fontCode: \uE920 <size=80%>or</size> \uE96E
+    fontCode_singleInput: \uE920
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/No/2>
+    bindingName: Menu/No/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONEAST
+    humanReadableString_singleInput: BUTTONEAST
+    fontReferenceText: <style=font/Menu/No/2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Extra1>
+    bindingName: Menu/Extra1
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONWEST
+    humanReadableString_singleInput: BUTTONWEST
+    fontReferenceText: <style=font/Menu/Extra1>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Extra2>
+    bindingName: Menu/Extra2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: BUTTONNORTH
+    humanReadableString_singleInput: BUTTONNORTH
+    fontReferenceText: <style=font/Menu/Extra2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/Start>
+    bindingName: Global/Start
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: START
+    humanReadableString_singleInput: START
+    fontReferenceText: <style=font/Global/Start>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/R2>
+    bindingName: Global/R2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE"> <size=80%>or</size>
+      <sprite="Keyboard and Mouse_Grey" name="SPACE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: RIGHTTRIGGER <size=80%>or</size> space
+    humanReadableString_singleInput: RIGHTTRIGGER
+    fontReferenceText: <style=font/Global/R2>
+    fontCode: \uE96E <size=80%>or</size> \uE967
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/R2/2>
+    bindingName: Global/R2/2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="SPACE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="SPACE">
+    humanReadableString: SPACE
+    humanReadableString_singleInput: SPACE
+    fontReferenceText: <style=font/Global/R2/2>
+    fontCode: \uE967
+    fontCode_singleInput: \uE967
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/R1>
+    bindingName: Global/R1
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: RIGHTSHOULDER
+    humanReadableString_singleInput: RIGHTSHOULDER
+    fontReferenceText: <style=font/Global/R1>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/L2>
+    bindingName: Global/L2
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: LEFTTRIGGER
+    humanReadableString_singleInput: LEFTTRIGGER
+    fontReferenceText: <style=font/Global/L2>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/L1>
+    bindingName: Global/L1
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: LEFTSHOULDER
+    humanReadableString_singleInput: LEFTSHOULDER
+    fontReferenceText: <style=font/Global/L1>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/Select>
+    bindingName: Global/Select
+    inputStyleString: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    inputStyleString_singleInput: <sprite="Keyboard and Mouse_Grey" name="FALLBACKSPRITE">
+    humanReadableString: SELECT
+    humanReadableString_singleInput: SELECT
+    fontReferenceText: <style=font/Global/Select>
+    fontCode: \uE96E
+    fontCode_singleInput: \uE96E
+  inputStyleGamepadDataList:
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Move>
+    bindingName: Combat/Move
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD/UP"><sprite="Nintendo
+      Switch" name="D-PAD/LEFT"><sprite="Nintendo Switch" name="D-PAD/DOWN"><sprite="Nintendo
+      Switch" name="D-PAD/RIGHT"> <size=80%>or</size> <sprite="Nintendo Switch" name="LEFT
+      STICK">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD/UP"><sprite="Nintendo
+      Switch" name="D-PAD/LEFT"><sprite="Nintendo Switch" name="D-PAD/DOWN"><sprite="Nintendo
+      Switch" name="D-PAD/RIGHT">
+    humanReadableString: DPAD/UP, DPAD/LEFT, DPAD/DOWN, DPAD/RIGHT <size=80%>or</size>
+      leftStick
+    humanReadableString_singleInput: DPAD/UP, DPAD/LEFT, DPAD/DOWN, DPAD/RIGHT
+    fontReferenceText: <style=font/Combat/Move>
+    fontCode: \uE908\uE906\uE905\uE907 <size=80%>or</size> \uE90B
+    fontCode_singleInput: \uE908\uE906\uE905\uE907
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/up>
+    bindingName: Combat/Move/up
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD/UP">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD/UP">
+    humanReadableString: DPAD/UP
+    humanReadableString_singleInput: DPAD/UP
+    fontReferenceText: <style=font/Combat/Move/up>
+    fontCode: \uE908
+    fontCode_singleInput: \uE908
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/left>
+    bindingName: Combat/Move/left
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD/LEFT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD/LEFT">
+    humanReadableString: DPAD/LEFT
+    humanReadableString_singleInput: DPAD/LEFT
+    fontReferenceText: <style=font/Combat/Move/left>
+    fontCode: \uE906
+    fontCode_singleInput: \uE906
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/down>
+    bindingName: Combat/Move/down
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD/DOWN">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD/DOWN">
+    humanReadableString: DPAD/DOWN
+    humanReadableString_singleInput: DPAD/DOWN
+    fontReferenceText: <style=font/Combat/Move/down>
+    fontCode: \uE905
+    fontCode_singleInput: \uE905
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Combat/Move/right>
+    bindingName: Combat/Move/right
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD/RIGHT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD/RIGHT">
+    humanReadableString: DPAD/RIGHT
+    humanReadableString_singleInput: DPAD/RIGHT
+    fontReferenceText: <style=font/Combat/Move/right>
+    fontCode: \uE907
+    fontCode_singleInput: \uE907
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Move/2>
+    bindingName: Combat/Move/2
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK">
+    humanReadableString: LEFTSTICK
+    humanReadableString_singleInput: LEFTSTICK
+    fontReferenceText: <style=font/Combat/Move/2>
+    fontCode: \uE90B
+    fontCode_singleInput: \uE90B
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Pause>
+    bindingName: Combat/Pause
+    inputStyleString: <sprite="Nintendo Switch" name="START">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="START">
+    humanReadableString: START
+    humanReadableString_singleInput: START
+    fontReferenceText: <style=font/Combat/Pause>
+    fontCode: \uE91E
+    fontCode_singleInput: \uE91E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/InspectToggleOn>
+    bindingName: Combat/InspectToggleOn
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT TRIGGER">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT TRIGGER">
+    humanReadableString: LEFTTRIGGER
+    humanReadableString_singleInput: LEFTTRIGGER
+    fontReferenceText: <style=font/Combat/InspectToggleOn>
+    fontCode: \uE90A
+    fontCode_singleInput: \uE90A
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action0>
+    bindingName: Combat/Action0
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON WEST">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON WEST">
+    humanReadableString: BUTTONWEST
+    humanReadableString_singleInput: BUTTONWEST
+    fontReferenceText: <style=font/Combat/Action0>
+    fontCode: \uE903
+    fontCode_singleInput: \uE903
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action1>
+    bindingName: Combat/Action1
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON NORTH">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON NORTH">
+    humanReadableString: BUTTONNORTH
+    humanReadableString_singleInput: BUTTONNORTH
+    fontReferenceText: <style=font/Combat/Action1>
+    fontCode: \uE901
+    fontCode_singleInput: \uE901
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action2>
+    bindingName: Combat/Action2
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON EAST">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON EAST">
+    humanReadableString: BUTTONEAST
+    humanReadableString_singleInput: BUTTONEAST
+    fontReferenceText: <style=font/Combat/Action2>
+    fontCode: \uE900
+    fontCode_singleInput: \uE900
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Combat/Action3>
+    bindingName: Combat/Action3
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON SOUTH">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON SOUTH">
+    humanReadableString: BUTTONSOUTH
+    humanReadableString_singleInput: BUTTONSOUTH
+    fontReferenceText: <style=font/Combat/Action3>
+    fontCode: \uE902
+    fontCode_singleInput: \uE902
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Navigate>
+    bindingName: Menu/Navigate
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD"> <size=80%>or</size>
+      <sprite="Nintendo Switch" name="LEFT STICK/UP"><sprite="Nintendo Switch" name="LEFT
+      STICK/DOWN"><sprite="Nintendo Switch" name="LEFT STICK/LEFT"><sprite="Nintendo
+      Switch" name="LEFT STICK/RIGHT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD">
+    humanReadableString: DPAD <size=80%>or</size> leftStick/up, leftStick/down, leftStick/left,
+      leftStick/right
+    humanReadableString_singleInput: DPAD
+    fontReferenceText: <style=font/Menu/Navigate>
+    fontCode: \uE904 <size=80%>or</size> \uE910\uE90D\uE90E\uE90F
+    fontCode_singleInput: \uE904
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Navigate/2>
+    bindingName: Menu/Navigate/2
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/UP"><sprite="Nintendo
+      Switch" name="LEFT STICK/DOWN"><sprite="Nintendo Switch" name="LEFT STICK/LEFT"><sprite="Nintendo
+      Switch" name="LEFT STICK/RIGHT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/UP"><sprite="Nintendo
+      Switch" name="LEFT STICK/DOWN"><sprite="Nintendo Switch" name="LEFT STICK/LEFT"><sprite="Nintendo
+      Switch" name="LEFT STICK/RIGHT">
+    humanReadableString: LEFTSTICK/UP, LEFTSTICK/DOWN, LEFTSTICK/LEFT, LEFTSTICK/RIGHT
+    humanReadableString_singleInput: LEFTSTICK/UP, LEFTSTICK/DOWN, LEFTSTICK/LEFT,
+      LEFTSTICK/RIGHT
+    fontReferenceText: <style=font/Menu/Navigate/2>
+    fontCode: \uE910\uE90D\uE90E\uE90F
+    fontCode_singleInput: \uE910\uE90D\uE90E\uE90F
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/up>
+    bindingName: Menu/Navigate/up
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/UP">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/UP">
+    humanReadableString: LEFTSTICK/UP
+    humanReadableString_singleInput: LEFTSTICK/UP
+    fontReferenceText: <style=font/Menu/Navigate/up>
+    fontCode: \uE910
+    fontCode_singleInput: \uE910
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/down>
+    bindingName: Menu/Navigate/down
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/DOWN">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/DOWN">
+    humanReadableString: LEFTSTICK/DOWN
+    humanReadableString_singleInput: LEFTSTICK/DOWN
+    fontReferenceText: <style=font/Menu/Navigate/down>
+    fontCode: \uE90D
+    fontCode_singleInput: \uE90D
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/left>
+    bindingName: Menu/Navigate/left
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/LEFT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/LEFT">
+    humanReadableString: LEFTSTICK/LEFT
+    humanReadableString_singleInput: LEFTSTICK/LEFT
+    fontReferenceText: <style=font/Menu/Navigate/left>
+    fontCode: \uE90E
+    fontCode_singleInput: \uE90E
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=Menu/Navigate/right>
+    bindingName: Menu/Navigate/right
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/RIGHT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/RIGHT">
+    humanReadableString: LEFTSTICK/RIGHT
+    humanReadableString_singleInput: LEFTSTICK/RIGHT
+    fontReferenceText: <style=font/Menu/Navigate/right>
+    fontCode: \uE90F
+    fontCode_singleInput: \uE90F
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Yes>
+    bindingName: Menu/Yes
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON SOUTH">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON SOUTH">
+    humanReadableString: BUTTONSOUTH
+    humanReadableString_singleInput: BUTTONSOUTH
+    fontReferenceText: <style=font/Menu/Yes>
+    fontCode: \uE902
+    fontCode_singleInput: \uE902
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/No>
+    bindingName: Menu/No
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON EAST">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON EAST">
+    humanReadableString: BUTTONEAST
+    humanReadableString_singleInput: BUTTONEAST
+    fontReferenceText: <style=font/Menu/No>
+    fontCode: \uE900
+    fontCode_singleInput: \uE900
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Extra1>
+    bindingName: Menu/Extra1
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON WEST">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON WEST">
+    humanReadableString: BUTTONWEST
+    humanReadableString_singleInput: BUTTONWEST
+    fontReferenceText: <style=font/Menu/Extra1>
+    fontCode: \uE903
+    fontCode_singleInput: \uE903
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Menu/Extra2>
+    bindingName: Menu/Extra2
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON NORTH">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON NORTH">
+    humanReadableString: BUTTONNORTH
+    humanReadableString_singleInput: BUTTONNORTH
+    fontReferenceText: <style=font/Menu/Extra2>
+    fontCode: \uE901
+    fontCode_singleInput: \uE901
+  - isComposite: 1
+    isPartOfComposite: 0
+    tmproReferenceText: <style=EventSystem/Navigate>
+    bindingName: EventSystem/Navigate
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/UP"><sprite="Nintendo
+      Switch" name="RIGHT STICK/UP"><sprite="Nintendo Switch" name="LEFT STICK/DOWN"><sprite="Nintendo
+      Switch" name="RIGHT STICK/DOWN"><sprite="Nintendo Switch" name="LEFT STICK/LEFT"><sprite="Nintendo
+      Switch" name="RIGHT STICK/LEFT"><sprite="Nintendo Switch" name="LEFT STICK/RIGHT"><sprite="Nintendo
+      Switch" name="RIGHT STICK/RIGHT"> <size=80%>or</size> <sprite="Nintendo Switch"
+      name="D-PAD">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/UP"><sprite="Nintendo
+      Switch" name="RIGHT STICK/UP"><sprite="Nintendo Switch" name="LEFT STICK/DOWN"><sprite="Nintendo
+      Switch" name="RIGHT STICK/DOWN"><sprite="Nintendo Switch" name="LEFT STICK/LEFT"><sprite="Nintendo
+      Switch" name="RIGHT STICK/LEFT"><sprite="Nintendo Switch" name="LEFT STICK/RIGHT"><sprite="Nintendo
+      Switch" name="RIGHT STICK/RIGHT">
+    humanReadableString: LEFTSTICK/UP, RIGHTSTICK/UP, LEFTSTICK/DOWN, RIGHTSTICK/DOWN,
+      LEFTSTICK/LEFT, RIGHTSTICK/LEFT, LEFTSTICK/RIGHT, RIGHTSTICK/RIGHT <size=80%>or</size>
+      dpad
+    humanReadableString_singleInput: LEFTSTICK/UP, RIGHTSTICK/UP, LEFTSTICK/DOWN,
+      RIGHTSTICK/DOWN, LEFTSTICK/LEFT, RIGHTSTICK/LEFT, LEFTSTICK/RIGHT, RIGHTSTICK/RIGHT
+    fontReferenceText: <style=font/EventSystem/Navigate>
+    fontCode: \uE910\uE918\uE90D\uE915\uE90E\uE916\uE90F\uE917 <size=80%>or</size>
+      \uE904
+    fontCode_singleInput: \uE910\uE918\uE90D\uE915\uE90E\uE916\uE90F\uE917
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/up>
+    bindingName: EventSystem/Navigate/up
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/UP"> <size=80%>or</size>
+      <sprite="Nintendo Switch" name="RIGHT STICK/UP">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/UP">
+    humanReadableString: LEFTSTICK/UP <size=80%>or</size> rightStick/up
+    humanReadableString_singleInput: LEFTSTICK/UP
+    fontReferenceText: <style=font/EventSystem/Navigate/up>
+    fontCode: \uE910 <size=80%>or</size> \uE918
+    fontCode_singleInput: \uE910
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/up/2>
+    bindingName: EventSystem/Navigate/up/2
+    inputStyleString: <sprite="Nintendo Switch" name="RIGHT STICK/UP">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="RIGHT STICK/UP">
+    humanReadableString: RIGHTSTICK/UP
+    humanReadableString_singleInput: RIGHTSTICK/UP
+    fontReferenceText: <style=font/EventSystem/Navigate/up/2>
+    fontCode: \uE918
+    fontCode_singleInput: \uE918
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/down>
+    bindingName: EventSystem/Navigate/down
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/DOWN"> <size=80%>or</size>
+      <sprite="Nintendo Switch" name="RIGHT STICK/DOWN">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/DOWN">
+    humanReadableString: LEFTSTICK/DOWN <size=80%>or</size> rightStick/down
+    humanReadableString_singleInput: LEFTSTICK/DOWN
+    fontReferenceText: <style=font/EventSystem/Navigate/down>
+    fontCode: \uE90D <size=80%>or</size> \uE915
+    fontCode_singleInput: \uE90D
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/down/2>
+    bindingName: EventSystem/Navigate/down/2
+    inputStyleString: <sprite="Nintendo Switch" name="RIGHT STICK/DOWN">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="RIGHT STICK/DOWN">
+    humanReadableString: RIGHTSTICK/DOWN
+    humanReadableString_singleInput: RIGHTSTICK/DOWN
+    fontReferenceText: <style=font/EventSystem/Navigate/down/2>
+    fontCode: \uE915
+    fontCode_singleInput: \uE915
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/left>
+    bindingName: EventSystem/Navigate/left
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/LEFT"> <size=80%>or</size>
+      <sprite="Nintendo Switch" name="RIGHT STICK/LEFT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/LEFT">
+    humanReadableString: LEFTSTICK/LEFT <size=80%>or</size> rightStick/left
+    humanReadableString_singleInput: LEFTSTICK/LEFT
+    fontReferenceText: <style=font/EventSystem/Navigate/left>
+    fontCode: \uE90E <size=80%>or</size> \uE916
+    fontCode_singleInput: \uE90E
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/left/2>
+    bindingName: EventSystem/Navigate/left/2
+    inputStyleString: <sprite="Nintendo Switch" name="RIGHT STICK/LEFT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="RIGHT STICK/LEFT">
+    humanReadableString: RIGHTSTICK/LEFT
+    humanReadableString_singleInput: RIGHTSTICK/LEFT
+    fontReferenceText: <style=font/EventSystem/Navigate/left/2>
+    fontCode: \uE916
+    fontCode_singleInput: \uE916
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/right>
+    bindingName: EventSystem/Navigate/right
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT STICK/RIGHT"> <size=80%>or</size>
+      <sprite="Nintendo Switch" name="RIGHT STICK/RIGHT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT STICK/RIGHT">
+    humanReadableString: LEFTSTICK/RIGHT <size=80%>or</size> rightStick/right
+    humanReadableString_singleInput: LEFTSTICK/RIGHT
+    fontReferenceText: <style=font/EventSystem/Navigate/right>
+    fontCode: \uE90F <size=80%>or</size> \uE917
+    fontCode_singleInput: \uE90F
+  - isComposite: 0
+    isPartOfComposite: 1
+    tmproReferenceText: <style=EventSystem/Navigate/right/2>
+    bindingName: EventSystem/Navigate/right/2
+    inputStyleString: <sprite="Nintendo Switch" name="RIGHT STICK/RIGHT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="RIGHT STICK/RIGHT">
+    humanReadableString: RIGHTSTICK/RIGHT
+    humanReadableString_singleInput: RIGHTSTICK/RIGHT
+    fontReferenceText: <style=font/EventSystem/Navigate/right/2>
+    fontCode: \uE917
+    fontCode_singleInput: \uE917
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=EventSystem/Navigate/2>
+    bindingName: EventSystem/Navigate/2
+    inputStyleString: <sprite="Nintendo Switch" name="D-PAD">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="D-PAD">
+    humanReadableString: DPAD
+    humanReadableString_singleInput: DPAD
+    fontReferenceText: <style=font/EventSystem/Navigate/2>
+    fontCode: \uE904
+    fontCode_singleInput: \uE904
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=EventSystem/Cancel>
+    bindingName: EventSystem/Cancel
+    inputStyleString: <sprite="Nintendo Switch" name="BUTTON EAST">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="BUTTON EAST">
+    humanReadableString: BUTTONEAST
+    humanReadableString_singleInput: BUTTONEAST
+    fontReferenceText: <style=font/EventSystem/Cancel>
+    fontCode: \uE900
+    fontCode_singleInput: \uE900
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/Start>
+    bindingName: Global/Start
+    inputStyleString: <sprite="Nintendo Switch" name="START">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="START">
+    humanReadableString: START
+    humanReadableString_singleInput: START
+    fontReferenceText: <style=font/Global/Start>
+    fontCode: \uE91E
+    fontCode_singleInput: \uE91E
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/R2>
+    bindingName: Global/R2
+    inputStyleString: <sprite="Nintendo Switch" name="RIGHT TRIGGER">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="RIGHT TRIGGER">
+    humanReadableString: RIGHTTRIGGER
+    humanReadableString_singleInput: RIGHTTRIGGER
+    fontReferenceText: <style=font/Global/R2>
+    fontCode: \uE912
+    fontCode_singleInput: \uE912
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/R1>
+    bindingName: Global/R1
+    inputStyleString: <sprite="Nintendo Switch" name="RIGHT SHOULDER">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="RIGHT SHOULDER">
+    humanReadableString: RIGHTSHOULDER
+    humanReadableString_singleInput: RIGHTSHOULDER
+    fontReferenceText: <style=font/Global/R1>
+    fontCode: \uE911
+    fontCode_singleInput: \uE911
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/L2>
+    bindingName: Global/L2
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT TRIGGER">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT TRIGGER">
+    humanReadableString: LEFTTRIGGER
+    humanReadableString_singleInput: LEFTTRIGGER
+    fontReferenceText: <style=font/Global/L2>
+    fontCode: \uE90A
+    fontCode_singleInput: \uE90A
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/L1>
+    bindingName: Global/L1
+    inputStyleString: <sprite="Nintendo Switch" name="LEFT SHOULDER">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="LEFT SHOULDER">
+    humanReadableString: LEFTSHOULDER
+    humanReadableString_singleInput: LEFTSHOULDER
+    fontReferenceText: <style=font/Global/L1>
+    fontCode: \uE909
+    fontCode_singleInput: \uE909
+  - isComposite: 0
+    isPartOfComposite: 0
+    tmproReferenceText: <style=Global/Select>
+    bindingName: Global/Select
+    inputStyleString: <sprite="Nintendo Switch" name="SELECT">
+    inputStyleString_singleInput: <sprite="Nintendo Switch" name="SELECT">
+    humanReadableString: SELECT
+    humanReadableString_singleInput: SELECT
+    fontReferenceText: <style=font/Global/Select>
+    fontCode: \uE91D
+    fontCode_singleInput: \uE91D

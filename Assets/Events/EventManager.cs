@@ -109,6 +109,7 @@ public class EventManager : MonoBehaviour
         //Debug.Log("Selected Event: " + selectedEvent.eEvent);
         _pastEvents.Add(selectedEvent.eEvent);
         onLoop = false;
+
         return selectedEvent;
     }
 

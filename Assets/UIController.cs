@@ -1,17 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    public static UIController _instance;
+
+    public UIStateMonitor StateMonitor => stateMonitor;
+    private UIStateMonitor stateMonitor = null;
+        
+    [SerializeField] private UIScreen titleScreen;
+    [SerializeField] private UIScreenInventory inventoryScreen;
+    [SerializeField] private UIScreen settingsScreen;
+    [SerializeField] private UIScreen startingTreasureScreen;
+    [SerializeField] private UIScreenMap mapScreen;
+    [SerializeField] private UIScreenCombat combatScreen;
+    [SerializeField] private BlacksmithController blacksmithScreen;
+    [SerializeField] private EventUI eventUI;
+    [SerializeField] private UIScreenDefeated defeatedScreen;
+    [SerializeField] private UIScreenDailyChallenge dailyChallengeScreen;
+    [SerializeField] private UIScreen creditScreen;
+    [SerializeField] private UIScreen customizeScreen;
+    [SerializeField] private UIScreen victoryScreen;
+
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject CombatUI;
     [SerializeField] private GameObject ShopUI;
@@ -51,18 +70,23 @@ public class UIController : MonoBehaviour
 
     [SerializeField] public GameObject[] KeybindVisuals;
     private bool showKeybinds = true;
-    private bool spinfinity = false;
-
-    
+        
     [FormerlySerializedAs("RestartButton")] public GameObject EndOfGameScreen;
     [SerializeField] private GameObject retryCombatButton;
     private bool haveInitializedEquipmentItems = false;
     private bool moving;
-
+    [SerializeField] private float panelMoveDuration = 0.5f;
+    [SerializeField] private AnimationCurve panelMoveCurve;
 
     private bool InventoryOn = false;
-    public static UIController _instance;
-    
+
+    private List<GameObject> movingPanels = new List<GameObject>();
+
+    [SerializeField] private Button globalSettingsButton;
+    private int settingsButtonDefaultSiblingIndex = 0;
+
+
+    #region Audio Variables
     //========= Sound Fx ===========
     public AudioClip _hoverSFX;
     [SerializeField] private float hoverVol;
@@ -105,13 +129,329 @@ public class UIController : MonoBehaviour
     [SerializeField] private AudioClip UpgradeSound;
     [SerializeField] private float UpgradeSoundVol;
 
+    [SerializeField] private AudioClip pickUp;
+    [SerializeField] private float pickUpVol;
+    [SerializeField] private float pickUpPitch;
+
+    [SerializeField] private AudioClip discardItem;
+    [SerializeField] private float discardItemVol;
+
+    [SerializeField] private AudioClip usePotion;
+    [SerializeField] private float usePotionVol;
+    #endregion
+
+
+    public void ActivateTitleScreen()
+    {
+        titleScreen.Activate();
+        //TitleScreen.SetActive(true);
+    }
+
+    public void HideTitleScreen()
+    {
+        TitleScreen.SetActive(false);
+    }
+
+    public void ActivateCreditScreen()
+    {
+        creditScreen.Activate();
+    }
+
+    public void ActivateCombatScreen()
+    {
+        combatScreen.Activate();
+    }
+
+    public void DeactivateCombatScreen()
+    {
+        combatScreen.Deactivate();
+    }
+    
+    public void ActivateTreasureScreen()
+    {
+        startingTreasureScreen.Activate();
+    }
+
+    public void OpenDailyChallenge()
+    {
+        dailyChallengeScreen.Activate();
+    }
+
+    public void CloseDailyChallenge()
+    {
+        dailyChallengeScreen.Deactivate();
+    }
+
+    public void ActivateDeathScreen()
+    {
+        ToolTipManager._instance.HideToolTipAll();
+        StartCoroutine(MovePanel(defeatedScreen.DefaultMainPanel, PanelMoveDirection.Vertical, true, DeathScreenPanelOpenedCallback));
+        defeatedScreen.DefaultRaycastBlocker.SetActive(true);
+    }    
+
+    public void DeactivateDeathScreen()
+    {
+        StartCoroutine(MovePanel(defeatedScreen.DefaultMainPanel, PanelMoveDirection.Vertical, false, DeathScreenPanelOpenedCallback));
+    }
+
+    private void DeathScreenPanelOpenedCallback(bool toOpen)
+    {
+        if (toOpen)
+            defeatedScreen.Activate();
+        else
+            defeatedScreen.Deactivate();
+    }
+
+
+    public void InitiateAndActivateMysteryScreen()
+    {
+        eventUI.RandomEvent();
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, true, EventUIFinishedMoveCallback));
+    }
+
+    public void CloseMysteryScreenAndOpenMap()
+    {
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, false, EventUIFinishedMoveCallback));
+    }
+
+    public void CloseMysteryScreenAndOpenLoot()
+    {
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, false, OpenLootOnEventUIMoveFinished));
+    }
+
+    public void CloseMysteryAndOpenRelicSelection()
+    {
+        inventoryScreen.ChangeInventoryState(InventoryState.MysteryRelic);
+        inventoryScreen.Activate();
+
+        SelectionManager._instance.OnSelectionFinished += RelicSelectionFinishedCallback;
+        SelectionManager._instance.OpenMysteryRelicSelection();
+    }
+
+    private void EventUIFinishedMoveCallback(bool toOpen)
+    {
+        if (toOpen)
+            eventUI.Activate();
+        else
+            ToggleMapNew(true, true);
+    }
+
+    private void RelicSelectionFinishedCallback()
+    {
+        SelectionManager._instance.OnSelectionFinished -= RelicSelectionFinishedCallback;
+        StartCoroutine(MovePanel(eventUI.DefaultMainPanel, PanelMoveDirection.Horizontal, false, (_) => ToggleMapNew(true, true)));
+    }
+
+    private void OpenLootOnEventUIMoveFinished(bool _)
+    {
+        ToggleInventoryUINew(true, InventoryState.Loot);
+    }
+
+    public IEnumerator AwaitScreenTransition(UIScreen oldScreen, UIScreen newScreen, Action<UIScreen, UIScreen> onFinishTransition = null)
+    {
+        while (oldScreen.IsScreenActive)
+            yield return null;
+
+        while (!newScreen.IsScreenActive)
+            yield return null;
+
+        onFinishTransition?.Invoke(oldScreen, newScreen);
+    }
+
+    #region InventoryUI Related
+
+    private void UpdateCombatStatsAndUI()
+    {
+        EquipmentManager._instance.c.UpdateStats();
+
+        if (!haveInitializedEquipmentItems)
+        {
+            EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+            haveInitializedEquipmentItems = true;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+        }
+    }
+
+    //make an overload for toggling InventoryUI+Loot and other similar behaviour
+    public void ToggleInventoryUINew(bool toOpen)
+    {
+        UpdateCombatStatsAndUI();
+
+        PlayOpenInventory();
+
+        inventoryScreen.ChangeInventoryState(InventoryState.Base);
+
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen, InventoryScreenToggleMoveFinishedCallback));
+    }
+
+    public void ToggleInventoryUINew(bool toOpen, InventoryState targetInventoryState)
+    {
+        EquipmentManager._instance.c.UpdateStats();
+
+        if (!haveInitializedEquipmentItems)
+        {
+            EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+            haveInitializedEquipmentItems = true;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+        }
+
+        PlayOpenInventory();
+
+        switch (targetInventoryState)
+        {
+            case InventoryState.Loot:
+                inventoryScreen.ChangeInventoryState(InventoryState.Loot);
+                StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, toOpen));
+                break;
+            case InventoryState.Merchant:
+                inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, toOpen));
+                break;
+            case InventoryState.Forge:
+                inventoryScreen.ChangeInventoryState(InventoryState.Forge);
+                StartCoroutine(MovePanel(inventoryScreen.ForgePanel, PanelMoveDirection.Horizontal, toOpen));
+                break;
+        }
+
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, toOpen,  InventoryScreenToggleMoveFinishedCallback));
+    }
+
+    private void InventoryScreenToggleMoveFinishedCallback(bool toOpen)
+    {
+        if (toOpen)
+        {
+            inventoryScreen.Activate();
+        }
+        else
+        {
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            //inventoryScreen.Deactivate();
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
+        }
+
+        //stateMonitor.HandleToggleTransition(false);
+    }
+
+    public void CloseInventoryWithExtraPanel(InventoryState lastInventoryState)
+    {
+        EquipmentManager._instance.c.UpdateStats();
+
+        if (!haveInitializedEquipmentItems)
+        {
+            EquipmentManager._instance.InitializeEquipmentAndInventoryItems();
+            haveInitializedEquipmentItems = true;
+        }
+
+        if (CombatController._instance.entitiesInCombat.Count > 1)
+        {
+            CombatController._instance.UpdateUiButtons();
+        }
+
+        PlayOpenInventory();
+                       
+
+        switch (lastInventoryState)
+        {
+            case InventoryState.Loot:
+                //inventoryScreen.ChangeInventoryState(InventoryState.Loot);
+                StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false));
+                break;
+            case InventoryState.Merchant:
+                //inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, false));
+                break;
+            case InventoryState.Forge:
+                //inventoryScreen.ChangeInventoryState(InventoryState.Merchant);
+                StartCoroutine(MovePanel(inventoryScreen.ForgePanel, PanelMoveDirection.Horizontal, false));
+                break;
+        }
+
+        StartCoroutine(MovePanel(inventoryScreen.InventoryPanel, PanelMoveDirection.Horizontal, false, CloseInventoryScreenWithExtraPanelCallback));
+    }
+
+    private void CloseInventoryScreenWithExtraPanelCallback(bool _)
+    {
+        //inventoryScreen.Deactivate();
+    }
+    #endregion
+
+    #region MapUI Related
+    public void ToggleMapFromMapButton()
+    {
+        if (stateMonitor.PanelCurrentlyMove) return;
+
+        bool isOpen = stateMonitor.CurrentActiveScreen == mapScreen;
+        ToggleMapNew(!isOpen, false);
+    }
+
+    public void ToggleMapNew(bool toOpen = false, bool areNodesClickable = false)
+    {
+        PlayOpenMap();
+
+        mapScreen.SetNodesClickable(areNodesClickable);
+        bool activatePreviousScene = !areNodesClickable;
+        StartCoroutine(MovePanel(mapScreen.gameObject, PanelMoveDirection.Vertical, toOpen, toOpen => MapMoveCompletedCallback(toOpen, activatePreviousScene)));
+    }
+        
+
+    private void MapMoveCompletedCallback(bool toOpen, bool shouldActivatePreviousScene)
+    {
+        if (toOpen)
+        {
+            mapScreen.Activate();
+        }
+        else if(!toOpen && shouldActivatePreviousScene)
+        {
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            //mapScreen.Deactivate();
+            screenToReturnTo.Activate();            
+        }
+
+    }
+    #endregion
+
+    #region SettingsUI related
     public void ToggleSettings()
     {
-        SettingUI.gameObject.SetActive(!SettingUI.activeSelf);
+        if (stateMonitor.PanelCurrentlyMove) return;
+
+        bool toOpen = !settingsScreen.IsScreenActive;     
+        if(toOpen)
+            settingsScreen.DefaultRaycastBlocker.SetActive(true);
+
+        StartCoroutine(MovePanel(settingsScreen.DefaultMainPanel, PanelMoveDirection.Horizontal, toOpen, SettingsMoveCompletedCallback));
     }
+
+    private void SettingsMoveCompletedCallback(bool toOpen)
+    {
+        if(toOpen)
+        {
+            settingsScreen.Activate(true);
+            globalSettingsButton.transform.SetSiblingIndex(settingsScreen.transform.GetSiblingIndex() + 1);
+        }
+        else
+        {
+            globalSettingsButton.transform.SetSiblingIndex(settingsButtonDefaultSiblingIndex);
+            var screenToReturnTo = stateMonitor.PreviousActiveScreen;
+            settingsScreen.Deactivate();
+            screenToReturnTo.Activate(screenToReturnTo.NavigatableByDefault);
+            settingsScreen.DefaultRaycastBlocker.SetActive(false);
+        }
+    }
+    #endregion
+
     public void RestartGame(bool victory = false)
     {
-        PlayFabManager._instance.SubmitRunData(victory);
+        //we submitted run ddata in Character.GetHitWithAttack(), so do we need to call it again here?
+        //PlayFabManager._instance.SubmitRunData(victory);
         SceneManager.LoadScene(0);
     }
     public void RestartGameAfterDeath()
@@ -119,12 +459,15 @@ public class UIController : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void LeaveMainMenu()
+    /// <summary>
+    /// On clicking Adventure Button
+    /// </summary>
+    public void StartAdventure()
     {
         TitleScreen.SetActive(false);
-        InventoryButton.SetActive(true);
+        //InventoryButton.SetActive(true);
         MapButton.SetActive(true);
-        DailyChallengeUI.gameObject.SetActive(false);
+
     }
 
     private bool uiOn = true;
@@ -167,7 +510,7 @@ public class UIController : MonoBehaviour
         {
             TextMeshProUGUI mod = Instantiate(ModDisplay, ModScroll.transform);
             mod.gameObject.SetActive(true);
-            mod.text = CamelCaseToSpaced(((Descriptors)i).ToString());
+            mod.text = ParseHelper.CamelCaseToSpaced(((Descriptors)i).ToString());
         }
         // load name
         DailyChallengeTitle.text = (string)dailyChallenges[challengeID][1];
@@ -176,6 +519,7 @@ public class UIController : MonoBehaviour
         DailyChallengeDescription.text = (string)dailyChallenges[challengeID][2];
 
     }
+
     public void CloseDailyChallengeUI()
     {
         DailyChallengeUI.gameObject.SetActive(false);
@@ -186,9 +530,31 @@ public class UIController : MonoBehaviour
 
     public void ActivateCustomizeUI()
     {
-        StartCoroutine(TransitionToUiCamera(1, 1));
+        Action onFinished = () => TransitionToCustomizeMenuFinishedCallback();
+        StartCoroutine(TransitionToUiCamera(1, 1, onFinished));
+
+        titleScreen.gameObject.SetActive(false);
     }
-    
+
+    private void TransitionToCustomizeMenuFinishedCallback()
+    {
+        customizeScreen.Activate();
+    }
+
+    public void ReturnToTitleScreen()
+    {
+        Action onFinished = () => TransitionToTitleScreenFinishedCallback();
+
+        StartCoroutine(TransitionToMainCamera(1, 1, onFinished));
+        customizeScreen.gameObject.SetActive(false);
+    }
+
+    private void TransitionToTitleScreenFinishedCallback()
+    {
+        ActivateTitleScreen();
+    }
+
+
     public void ActivateGemStoreUI()
     {
         GemStoreUI.gameObject.SetActive(true);
@@ -204,22 +570,23 @@ public class UIController : MonoBehaviour
     {
         StartCoroutine(TransitionToMainCameraFromVictory(1, 1));
     }
+
     public void ActivateVictoryScreen()
     {
-        StartCoroutine(TransitionToVictoryUiCamera(1, 1));
-        VictorySequence.StartVictorySequence();
+        Action onFinishTransition = () => victoryScreen.Activate();
+        StartCoroutine(TransitionToVictoryUiCamera(1, 1, onFinishTransition));
+        //VictorySequence.StartVictorySequence();
     }
     
 
     public void ActivateMainMenu()
     {
-        StartCoroutine(TransitionToMainCamera(1, 1));
+        Action onFinished = () => Debug.Log("Do nothing");
+        StartCoroutine(TransitionToMainCamera(1, 1, onFinished));
     }
 
-    private IEnumerator TransitionToUiCamera(float moveTime, float rotateTime)
-    {
-        TitleScreen.SetActive(false);
-            
+    private IEnumerator TransitionToUiCamera(float moveTime, float rotateTime, Action onFinishedTransition)
+    {           
 
         //deactivate main camera
         MainCamera.gameObject.SetActive(false);
@@ -241,20 +608,20 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         UiCamera.gameObject.SetActive(true);
-        CustomizeUI.SetActive(true);
+        //CustomizeUI.SetActive(true);
         
         //stop walking, stop spinning
         CombatController._instance.Player._am.SetBool("Walk", false);
         RotateAroundMap._instance.ToggleRotate(false);
 
 
-
+        onFinishedTransition?.Invoke();
     }
-    private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime)
+
+    private IEnumerator TransitionToVictoryUiCamera(float moveTime, float rotateTime, Action onFinishTransition)
     {
         CombatController._instance.NextCombatButton.gameObject.SetActive(false);
-
-        
+              
 
         //deactivate main camera
         MainCamera.gameObject.SetActive(false);
@@ -276,10 +643,12 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         UiCamera.gameObject.SetActive(true);
-        VictoryUI.SetActive(true);
+        //VictoryUI.SetActive(true);
         CombatController._instance.Player._am.SetTrigger("Victory");
 
+        onFinishTransition?.Invoke();
     }
+
     private IEnumerator TransitionToMainCameraFromVictory(float moveTime, float rotateTime)
     {
         VictoryUI.SetActive(false);
@@ -311,7 +680,7 @@ public class UIController : MonoBehaviour
 
 
     }
-    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime)
+    private IEnumerator TransitionToMainCamera(float moveTime, float rotateTime, Action onFinished)
     {
         CustomizeUI.SetActive(false);
 
@@ -336,25 +705,16 @@ public class UIController : MonoBehaviour
 
         TransitionCamera.gameObject.SetActive(false);
         MainCamera.gameObject.SetActive(true);
-        TitleScreen.SetActive(true);
+        //TitleScreen.SetActive(true);
         
         //stop walking, stop spinning
         CombatController._instance.Player._am.SetBool("Walk", true);
         RotateAroundMap._instance.ToggleRotate(true);
+
+        onFinished?.Invoke();
     }
 
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
     public void ToggleInventoryUI(int force = -1)
     {
         EquipmentManager._instance.c.UpdateStats();
@@ -378,7 +738,7 @@ public class UIController : MonoBehaviour
         if (!moving)
         {
             InventoryOn = !InventoryOn;
-            StartCoroutine(MoveObject(inventoryUI));
+            StartCoroutine(MoveInventoryUI(inventoryUI));
             //Debug.Log("starting coroutine " + InventoryOn);
 
         }
@@ -395,12 +755,13 @@ public class UIController : MonoBehaviour
         if (CombatController._instance.entitiesInCombat.Count > 1)
         {
             CombatController._instance.UpdateUiButtons();
-
         }
         PlayOpenInventory();
         //ToggleShopUI();
         
     }
+
+
     bool mapMoving = false;
     private bool MapOn;
 
@@ -428,9 +789,36 @@ public class UIController : MonoBehaviour
         }
         //ToggleShopUI();
         PlayOpenMap();
+    }
 
+    IEnumerator MoveMapObject(GameObject moveObj, Action onMapMoveFinished = null)
+    {
+        mapMoving = true;
+        RectTransform rt = moveObj.GetComponent<RectTransform>();
+        Vector2 startpos = rt.anchoredPosition;
+        Vector2 endpos = new Vector2(startpos.x, -startpos.y);
+
+        //Debug.Log(startpos.y + " == " + endpos.y);
+
+        float t = 0;
+        while (t < 1)
+        {
+            rt.anchoredPosition = Vector2.Lerp(startpos, endpos, t);
+            t = t + Time.deltaTime / .75f;
+            yield return new WaitForEndOfFrame();
+        }
+
+        rt.anchoredPosition = endpos;
+        mapMoving = false;
+
+        onMapMoveFinished?.Invoke();
+    }
+
+    private void MapMoveCallback()
+    {
 
     }
+
     bool shopMoving = false;
     private bool shopOn = false;
     public void ToggleShopUI(int force = -1)
@@ -514,11 +902,10 @@ public class UIController : MonoBehaviour
         }
         
     }
-    bool blackSmithMoving = false;
-    private bool blackSmithOn = false;
 
-    public void ToggleBlackSmithUI(int force = -1)
+    public void OpenBlacksmith()
     {
+        /*
         if (force == 0)
         {
             if (blackSmithOn == false)
@@ -539,7 +926,47 @@ public class UIController : MonoBehaviour
             blackSmithOn = !blackSmithOn;
             StartCoroutine(MoveBlacksmithObject(BlackSmithUI));
         }
-        
+        */
+        StartCoroutine(MovePanel(blacksmithScreen.TitlePanel, PanelMoveDirection.Vertical, true));
+        StartCoroutine(MovePanel(blacksmithScreen.SelectionPanel, PanelMoveDirection.Vertical, true, BlacksmithOpenedCallback));
+    }
+
+    private void BlacksmithOpenedCallback(bool toOpen)
+    {
+        blacksmithScreen.Activate();
+    }
+
+    public void CloseBlacksmith(BlacksmithMode mode)
+    {
+        StartCoroutine(MovePanel(blacksmithScreen.TitlePanel, PanelMoveDirection.Vertical, false));
+        StartCoroutine(MovePanel(blacksmithScreen.SelectionPanel, PanelMoveDirection.Vertical, false, _ => BlacksmithClosedCallback(mode)));
+    }
+
+    private void BlacksmithClosedCallback(BlacksmithMode mode)
+    {
+        switch (mode)
+        {
+            case BlacksmithMode.Forge:
+                //open inventory+forge menu
+                ToggleInventoryUINew(true, InventoryState.Forge);
+                break;
+            case BlacksmithMode.Shop:
+                //open inventory+shop menu
+                //might call the same one with the one on click shop on map
+                ShopManager._instance.BlacksmithShop();
+                break;
+
+            case BlacksmithMode.Duel:
+                //Open combat, start combat blacksmith
+                //check if this need special handling
+                CombatController._instance.StartCombatBlacksmith();
+                break;
+
+            case BlacksmithMode.Leave:
+                //check the click node function see if we can utilize this
+                ToggleMapNew(true, true);
+                break;
+        }
     }
     
     bool forgeMoving = false;
@@ -571,7 +998,69 @@ public class UIController : MonoBehaviour
 
     }
 
-    IEnumerator MoveObject(GameObject moveObj)
+
+
+    private Vector2 GetPanelTargetPosition(PanelMoveDirection direction, Vector2 startPos)
+    {
+        switch (direction)
+        {
+            case PanelMoveDirection.Horizontal:
+                return new Vector2(startPos.x * -1, startPos.y);
+
+            case PanelMoveDirection.Vertical:
+                return new Vector2(startPos.x, startPos.y * -1);
+            default:
+                Debug.LogError($"Error: PanelMoveDirection for panel you want to move is not set!");
+                return startPos;
+
+        }
+    }
+
+    private void UpdateToggleTransitionState(bool transitioning, GameObject targetPanel)
+    {
+        if (transitioning)
+            movingPanels.Add(targetPanel);
+        else
+            movingPanels.Remove(targetPanel);
+
+        stateMonitor.HandleToggleTransition(movingPanels.Count != 0);
+    }
+
+    public bool IsAnyPanelTransitioning()
+    {
+        return movingPanels.Count > 0;
+    }
+
+    private IEnumerator MovePanel(GameObject targetPanel, PanelMoveDirection moveDirection, bool toOpen, Action<bool> OnFinished = null)
+    {
+        UpdateToggleTransitionState(true, targetPanel);
+        //movingPanels.Add(targetPanel);
+
+        //Disable input before move        
+        RectTransform rt = targetPanel.GetComponent<RectTransform>();
+
+        Vector2 startPos = rt.anchoredPosition;
+        Vector2 endPos = GetPanelTargetPosition(moveDirection, startPos);
+
+        float t = 0;
+        while (t < 1)
+        {
+            t = t + Time.deltaTime / panelMoveDuration;
+            float curvedT = panelMoveCurve.Evaluate(t);
+            rt.anchoredPosition = Vector2.Lerp(startPos, endPos, curvedT);
+            yield return null;
+        }
+
+        rt.anchoredPosition = endPos;
+
+        //movingPanels.Remove(targetPanel);
+
+        UpdateToggleTransitionState(false, targetPanel);
+
+        OnFinished?.Invoke(toOpen);
+    }
+
+    IEnumerator MoveInventoryUI(GameObject moveObj)
     { 
         moving = true;
         
@@ -591,27 +1080,9 @@ public class UIController : MonoBehaviour
 
         moving = false;
     }
-    IEnumerator MoveMapObject(GameObject moveObj)
-    { 
-        mapMoving = true;
-        RectTransform rt = moveObj.GetComponent<RectTransform>();
-        Vector2 startpos = rt.anchoredPosition;
-        Vector2 endpos = new Vector2(startpos.x, -startpos.y);
-        
-        //Debug.Log(startpos.y + " == " + endpos.y);
-            
-        float t = 0;
-        while (t < 1)
-        {
-            rt.anchoredPosition = Vector2.Lerp(startpos, endpos, t);
-            t = t + Time.deltaTime / .75f;
-            yield return new WaitForEndOfFrame();
-        }
 
-        rt.anchoredPosition = endpos;
 
-        mapMoving = false;
-    }
+
     IEnumerator MoveShopObject(GameObject moveObj)
     {
         
@@ -707,7 +1178,7 @@ public class UIController : MonoBehaviour
     IEnumerator MoveBlacksmithObject(GameObject moveObj)
     {
         
-        blackSmithMoving = true;
+        //blackSmithMoving = true;
         
         Vector2 startpos = moveObj.GetComponent<RectTransform>().anchoredPosition;
         Vector2 endpos = new Vector2(-startpos.x, startpos.y);
@@ -725,31 +1196,10 @@ public class UIController : MonoBehaviour
 
         moveObj.GetComponent<RectTransform>().anchoredPosition = endpos;
 
-        blackSmithMoving = false;
+        //blackSmithMoving = false;
     }
 
-    public void ActivateDeathScreen()
-    {
-        EndOfGameScreen.SetActive(true);
 
-        if (CombatController._instance.retryAvailable >= 1)
-        {
-            retryCombatButton.SetActive(true);
-            TutorialManager.Instance.QueueTip(TutorialNames.Retry);
-        }
-        else
-        {
-            retryCombatButton.SetActive(false);
-        }
-    }
-
-    private void Start()
-    {
-        if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
-        {
-            ToggleKeyBindVisual();
-        }
-    }
 
     public void ToggleKeyBindVisual()
     {
@@ -758,37 +1208,53 @@ public class UIController : MonoBehaviour
         {
             keybind.SetActive(showKeybinds);
         }
-        
-        if(showKeybinds)
+
+        if (showKeybinds)
             PlayerPrefsManager.SetKeyBindEnabled(1);
         else
             PlayerPrefsManager.SetKeyBindEnabled(0);
     }
-    
-    public void ToggleSpinfinity()
+
+    private void Awake()
     {
-        spinfinity = !spinfinity;
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
 
-        CombatController._instance.Player._am.SetBool("INFINITESPIN", spinfinity);
+        stateMonitor = GetComponent<UIStateMonitor>();
+
     }
-
+    private void Start()
+    {
+        settingsButtonDefaultSiblingIndex = globalSettingsButton.transform.GetSiblingIndex();
+        if (PlayerPrefsManager.GetKeyBindEnabled() == 0)
+        {
+            ToggleKeyBindVisual();
+        }
+    }
 
     private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.R))
-        {
-            RelicTester.gameObject.SetActive(true);
-        }
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
-        {
-            ModTester.gameObject.SetActive(true);
-        }
+        //old input system cheats
+        //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.R))
+        //{
+        //    RelicTester.gameObject.SetActive(true);
+        //}
+        //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
+        //{
+        //    ModTester.gameObject.SetActive(true);
+        //}
     }
-    public static string CamelCaseToSpaced(string camelCaseString)
-    {
-        // Add spaces before each uppercase letter and capitalize the first letter
-        return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
-    }
+    //public static string CamelCaseToSpaced(string camelCaseString)
+    //{
+    //    // Add spaces before each uppercase letter and capitalize the first letter
+    //    return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
+    //}
     public void CloseApplication()
     {
 #if UNITY_EDITOR
@@ -800,6 +1266,9 @@ public class UIController : MonoBehaviour
 #endif
     }
 
+
+    #region Audio Related
+
     public void OpenQuitConfirmation()
     {
         ConfirmationManager._instance.OpenConfirmation(ConfirmationType.Quit);
@@ -809,7 +1278,6 @@ public class UIController : MonoBehaviour
         ConfirmationManager._instance.OpenConfirmation(ConfirmationType.Restart);
 
     }
-    
 
     public void PlayUIHover()
     {
@@ -849,6 +1317,14 @@ public class UIController : MonoBehaviour
     {
         SoundManager.Instance.Play2DSFX(placeItem, placeItemVol, 1, .05f);
     }
+    public void PlayStartDragItem()
+    {
+        SoundManager.Instance.Play2DSFX(pickUp, pickUpVol, pickUpPitch, .05f);
+    }
+    public void PlayDiscardItem()
+    {
+        SoundManager.Instance.Play2DSFX(discardItem, discardItemVol, 1, .05f);
+    }
     public void PlayGetRelic()
     {
         SoundManager.Instance.Play2DSFX(GetRelic, GetRelicVol, 1, .05f);
@@ -882,7 +1358,13 @@ public class UIController : MonoBehaviour
     {
         SoundManager.Instance.Play2DSFX(UpgradeSound,UpgradeSoundVol, 1, .05f);
     }
+
+    public void PlayPotionSound()
+    {
+        SoundManager.Instance.Play2DSFX(usePotion, usePotionVol, 1, 0.05f);
+    }
     
+    #endregion
     public void OpenDiscordLink()
     {
         Application.OpenURL("https://discord.gg/8rNMwuhpkp");
@@ -891,4 +1373,11 @@ public class UIController : MonoBehaviour
     {
         Application.OpenURL("https://store.steampowered.com/app/3327710/For_Dragons/");
     }
+}
+
+public enum PanelMoveDirection
+{
+    Horizontal,
+    Vertical,
+    None
 }

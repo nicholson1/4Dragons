@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ImportantStuff;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatDisplay : MonoBehaviour
+public class StatDisplay : MonoBehaviour, IInspectableElement
 {
     [SerializeField]private Image icon;
     [SerializeField] private TextMeshProUGUI text;
@@ -19,8 +18,30 @@ public class StatDisplay : MonoBehaviour
     [SerializeField] private ToolTip toolTip;
     public bool charStats = false;
 
+    private Button gamepadButton;
+
+    public Button GetGamepadButton()
+    {
+        gamepadButton ??= GetComponentInChildren<Button>();
+        return gamepadButton;
+    }
+ 
+    public void HandleGamepadButtonSelected(Selectable selectable)
+    {
+        //OnGamepadButtonSelected?.Invoke();
+        toolTip.ShowTipFromGamepadNavi(selectable.GetComponent<RectTransform>());
+    }
+
+    public void HandleGamepadButtonDeselected(Selectable selectable)
+    {
+        //OnGamepadButtonDeselected?.Invoke();
+        toolTip.CloseTip();
+    }
+
+
     private void Awake()
     {
+
         icon = GetComponentInChildren<Image>();
         text = GetComponentInChildren<TextMeshProUGUI>();
         toolTip = GetComponent<ToolTip>();
@@ -28,6 +49,9 @@ public class StatDisplay : MonoBehaviour
         // {
         //     UpdateValues(stat, value);
         // }
+
+        gamepadButton = GetComponentInChildren<Button>();
+
     }
 
     public void UpdateValues(Stats s, int v, int LossOrGain = 0)
@@ -41,15 +65,17 @@ public class StatDisplay : MonoBehaviour
 
         icon.sprite = info.Item2;
         icon.color = info.Item3;
+        value = v;
+
         if (LossOrGain == 1)
         {
             //text.text = info.Item1 + ": +" + v;
-            text.text ="+" + v;
+            text.text = $"+ {v}";
 
         }
         else
         {
-            text.text = info.Item1 + ": " + v;
+            text.text = v.ToString();
         }
         text.color = info.Item3;
         
@@ -62,7 +88,7 @@ public class StatDisplay : MonoBehaviour
             float crit = TheSpellBook._instance.FigureOutHowMuchCrit(
                 player);
             v = Mathf.RoundToInt(crit * 100);
-            text.text = info.Item1 + ": " + v + "%";
+            text.text = $"{v}%";            
             //Debug.Log("update crit: " + text.text + " :" +v);
         }
         //Debug.Log(toolTip);
@@ -122,4 +148,6 @@ public class StatDisplay : MonoBehaviour
         // Add spaces before each uppercase letter and capitalize the first letter
         return Regex.Replace(camelCaseString, "(\\B[A-Z])", " $1");
     }
+
+
 }

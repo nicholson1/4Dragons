@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Toggle = UnityEngine.UI.Toggle;
 
 public class Modifiers : MonoBehaviour
