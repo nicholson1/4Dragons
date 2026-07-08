@@ -248,11 +248,11 @@ public class Dragon : MonoBehaviour
 }
 public enum SpellSchool
 {
-   Nature,
-   Ice,
-   Fire,
-   Blood,
-   Shadow,
+   Nature =0,
+   Ice =1,
+   Fire =2,
+   Blood = 3,
+   Shadow =4,
    
    Dagger,
    Shield,

@@ -36,6 +36,9 @@ public class BossPhase1 : MonoBehaviour
         currentHeadHealth = headsLeftWithHealth[0].Item2;
         currentHeadTurnCount = 0;
         
+        c._am.SetInteger("CurrentHead",(int)currentHead);
+        c._am.SetTrigger("EnterCurrent");
+        
         Debug.Log("Current head: " + currentHead);
         
     }
@@ -53,12 +56,19 @@ public class BossPhase1 : MonoBehaviour
         Debug.Log("Changing head from turn counter " + currentHead.ToString());
 
         c._combatEntity.SetMyIntentions();
+        
+        c._am.SetInteger("CurrentHead",(int)currentHead);
+        c._am.SetTrigger("EnterCurrent");
 
     }
 
     private void KillCurrentHead()
     {
         Debug.Log("Killing " + currentHead.ToString());
+        
+        c._am.SetTrigger("KillCurrent");
+
+        
         headsLeftWithHealth.RemoveAt(headIndex);
         if (headIndex > headsLeftWithHealth.Count - 1)
             headIndex = 0;
@@ -69,9 +79,14 @@ public class BossPhase1 : MonoBehaviour
 
         c._combatEntity.SetMyIntentions();
         
+        c._am.SetInteger("CurrentHead",(int)currentHead);
+        c._am.SetTrigger("EnterCurrent");
+
     }
     public void TakeBossDamage(int amount)
     {
+        c._am.SetTrigger("DamageCurrent");
+
         Debug.Log("Current head health = " + currentHeadHealth);
         Debug.Log("Taking " + amount);
         if (amount < currentHeadHealth)
