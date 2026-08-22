@@ -1315,23 +1315,27 @@ public class TheSpellBook : MonoBehaviour
         string s = "";
         if (IsSpellType(SpellClass.SpellAttack, spell))
         {
-            s += "Attack \n & \n";
+            s += "Attack \\ ";
+        }
+        if (IsSpellType(SpellClass.PhysicalAttack, spell))
+        {
+            s += "Attack \\ ";
         }
         if (IsSpellType(SpellClass.Defensive, spell))
         {
-            s += "Defensive \n & \n";
+            s += "Defensive \\ ";
         }
         if (IsSpellType(SpellClass.Heal, spell))
         {
-            s += "Heal \n & \n";
+            s += "Heal \\ ";
         }
         if (IsSpellType(SpellClass.Buff, spell))
         {
-            s += "Buff \n & \n";
+            s += "Buff \\ ";
         }
         if (IsSpellType(SpellClass.Debuff, spell))
         {
-            s += "Debuff \n&\n";
+            s += "Debuff \\ ";
         }
 
         return s.Remove(s.Length - 3, 3);

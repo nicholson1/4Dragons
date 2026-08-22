@@ -888,8 +888,27 @@ public class CombatEntity : MonoBehaviour
         TheSpellBook._instance.CastAbility(spell,weapon, this, Target);
         //Debug.Log(spell);
         List<int> powerValues = TheSpellBook._instance.GetPowerValues(spell, weapon, this);
-        string trigger = ((TheSpellBook.AnimationTriggerNames)powerValues[2]).ToString();
-        myCharacter._am.SetTrigger(trigger);
+        if(!myCharacter.isBossPhase1)
+        {
+            string trigger = ((TheSpellBook.AnimationTriggerNames)powerValues[2]).ToString();
+            myCharacter._am.SetTrigger(trigger);
+        }
+        else
+        {
+            if(spell == SpellTypes.Shield1) //physicall attack
+            {
+                myCharacter._am.SetTrigger("PhysicalCurrent"); 
+            }
+            else if(spell == SpellTypes.Shield2) // block
+            {
+                myCharacter._am.SetTrigger("Block");
+                
+            }
+            else // all else
+            {
+                myCharacter._am.SetTrigger("AttackCurrent");
+            }
+        }
         
         ParticleManager._instance.SpawnParticle(this, Target, spell);
         

@@ -551,6 +551,8 @@ public class UIController : MonoBehaviour
 
     private void TransitionToTitleScreenFinishedCallback()
     {
+        Debug.Log("we are activating here?");
+
         ActivateTitleScreen();
     }
 

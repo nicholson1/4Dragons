@@ -72,9 +72,9 @@ public class SelectionItem : MonoBehaviour
 
         SetCardBack();
 
-        SetPanelMainProperties(equipmentToSet);
-
         SetTexts(equipmentToSet);
+
+        SetPanelMainProperties(equipmentToSet);
 
         //statsTutorial.SetActive(false); identify tutorial related calls later
         //at this point, statsTutorial and abilityTutorial was set to false
@@ -113,7 +113,7 @@ public class SelectionItem : MonoBehaviour
         isEquipment = equipmentToSet is not Relic or Consumable;
         RelicDescription.gameObject.SetActive(equipmentToSet is Relic);
         _spellDisplay.gameObject.SetActive(equipmentToSet is Weapon);
-        ScrollDescription.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll);
+        ScrollDescription.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll || equipmentToSet.slot == Equipment.Slot.OneHander);
         ScrollEnergyDescription.transform.parent.gameObject.SetActive(equipmentToSet.slot == Equipment.Slot.Scroll || equipmentToSet is Weapon); //parent is the EnergyDisplay content holder
     }
 
@@ -182,10 +182,13 @@ public class SelectionItem : MonoBehaviour
         item = equipmentToSet;
 
         icon.sprite = equipmentToSet.icon;
+
+        rarity.color =
+        
         title.color = rarity.color;
 
-        if (equipmentToSet.stats[Stats.Rarity] != 0)
-            CardFront.color = title.color;
+        if (equipmentToSet.stats[Stats.Rarity] != 0){
+            CardFront.color = title.color;}
     }
 
     private bool HasSpell(Equipment equipmentToSet)
@@ -258,7 +261,7 @@ public class SelectionItem : MonoBehaviour
         ScrollEnergyDescription.text = GetEnergyCost(weaponToSet);
         _spellDisplay.UpdateValues(weaponToSet.spellType1, weaponToSet, myCharacter);
 
-        if (equipmentToSet.slot == Equipment.Slot.Scroll)       
+        if (equipmentToSet.slot == Equipment.Slot.Scroll || equipmentToSet.slot == Equipment.Slot.OneHander )       
             ScrollDescription.text = TheSpellBook._instance.GetScrollDescription(weaponToSet.spellType1);
     }
 

@@ -46,6 +46,8 @@ public class UIScreenDailyChallenge : UIScreen
         Modifiers._instance.ClearMods();
 
         UIController._instance.ActivateTitleScreen();
+            Debug.Log("we are activating here?");
+
     }
 
     private void ActivateDailyChallenge()

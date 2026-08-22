@@ -91,7 +91,7 @@ public class WorkInProgress : MonoBehaviour
         {
             uiScreen.Deactivate();
             canvasGroup.gameObject.SetActive(false);
-            UIController._instance.ActivateTitleScreen();
+            //UIController._instance.ActivateTitleScreen();
         }
     }
 }

@@ -1157,6 +1157,15 @@ public class CombatController : MonoBehaviour
                 return;
             Tie();
         }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.L))
+        {
+            Player._currentHealth = 999999;
+            Player._maxHealth = 999999;
+        }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.E))
+        {
+            Player.UpdateEnergyCount(10);
+        }
         
     }
 

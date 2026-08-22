@@ -485,7 +485,7 @@ public class ToolTipManager : MonoBehaviour
       if (itemLvl != "")
       {
          current.iLvl.text = "Lvl: " + itemLvl;
-         current.iLvl.color = current.rarity.color = rarityColors[0];
+         current.iLvl.color = current.rarity.color;
 
       }
       

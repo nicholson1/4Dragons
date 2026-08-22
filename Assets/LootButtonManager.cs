@@ -359,6 +359,7 @@ public class LootButtonManager : UIInventorySubPanel
         leaveButton.interactable = false;
         var equipmentButton = EquipmentButtons[i];
         SelectionManager._instance.SelectionsFromList(EquipmentLists[i]);
+        Debug.Log("we should deactivate");
         equipmentButton.DeactivateButton();
         if (EquipmentLists[i].Count == 1)
         {

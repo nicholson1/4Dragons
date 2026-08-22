@@ -26,6 +26,7 @@ public class EquipmentButton : MonoBehaviour
 
     public void DeactivateButton()
     {
+        Debug.Log("Deactivate button");
         button.interactable = false;
         hoverEffect.SetTweening(false);
         hoverEffect.SetShake(false);

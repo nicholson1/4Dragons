@@ -39,12 +39,13 @@ public class BossPhase1 : MonoBehaviour
         c._am.SetInteger("CurrentHead",(int)currentHead);
         c._am.SetTrigger("EnterCurrent");
         
-        Debug.Log("Current head: " + currentHead);
+        Debug.Log("Current head: " + currentHead + " " + (int)currentHead + " butactually " + c._am.GetInteger("CurrentHead"));
         
     }
 
     public void GoToNextHead()
     {
+        Debug.Log("THIS RAN");
         headIndex += 1;
         if (headIndex > headsLeftWithHealth.Count-1)
         {
@@ -59,6 +60,9 @@ public class BossPhase1 : MonoBehaviour
         
         c._am.SetInteger("CurrentHead",(int)currentHead);
         c._am.SetTrigger("EnterCurrent");
+        
+        Debug.Log("Current head: " + currentHead + " " + (int)currentHead + " butactually " + c._am.GetInteger("CurrentHead"));
+
 
     }
 

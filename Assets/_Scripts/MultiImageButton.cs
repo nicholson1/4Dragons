@@ -1,30 +1,38 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
- 
 public class MultiImageButton : Button
 {
+    private Graphic[] graphics;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        // Cache all child graphics, including this button's target graphic.
+        graphics = GetComponentsInChildren<Graphic>(true);
+    }
+
     protected override void DoStateTransition(SelectionState state, bool instant)
     {
         base.DoStateTransition(state, instant);
-        //var targetColor =
-        //    state == SelectionState.Disabled ? colors.disabledColor :
-        //    state == SelectionState.Highlighted ? colors.highlightedColor :
-        //    state == SelectionState.Normal ? colors.normalColor :
-        //    state == SelectionState.Pressed ? colors.pressedColor :
-        //    state == SelectionState.Selected ? colors.selectedColor : Color.white;
 
-        
+        Color targetColor = state switch
+        {
+            SelectionState.Normal    => colors.normalColor,
+            SelectionState.Highlighted => colors.highlightedColor,
+            SelectionState.Pressed   => colors.pressedColor,
+            SelectionState.Selected  => colors.selectedColor,
+            SelectionState.Disabled  => colors.disabledColor,
+            _ => colors.normalColor
+        };
 
- 
-        //foreach (var graphic in GetComponentsInChildren<Graphic>())
-        //{
-        //    graphic.CrossFadeColor(targetColor, instant ? 0f : colors.fadeDuration, true, true);
-        //}
+        float duration = instant ? 0f : colors.fadeDuration;
+
+        foreach (Graphic graphic in graphics)
+        {
+            if (graphic != null)
+                graphic.CrossFadeColor(targetColor, duration, true, true);
+        }
     }
 }
-
