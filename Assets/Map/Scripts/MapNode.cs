@@ -225,7 +225,7 @@ namespace Map
             //DEBUG MAP CLICKABLE ANYWHERE - uncomment these
             //if (!mapScreen.AreNodesClickable) return;
             //if (Node.State != NodeStates.Attainable) return;
-            Debug.LogError($"DEBUG MAP CAN BE CLICKED HERE");
+            if(this.Node.State != NodeStates.Attainable) return;
 
             SelectNode();
         }
@@ -387,6 +387,8 @@ namespace Map
         {
             if (toolTip == null)
                 toolTip = GetComponent<ToolTip>();
+            
+            toolTip.icon = image.sprite;
 
             toolTip.rarity = -1;
             switch (n.nodeType)

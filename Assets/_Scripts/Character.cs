@@ -842,10 +842,10 @@ public class Character : MonoBehaviour
                         CombatController._instance.EndCombat();
                         return;
                     }
+                    //TODO: MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
                     //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
                     //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
-                    //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
-                    else if (CombatController._instance.Player._level < 40)
+                    else if (CombatController._instance.Player._level > 30)
                     {
                         Debug.Log("START BOSS PHASE 1");
                         CombatController._instance.StartBossPhase1Coroutine();
@@ -862,6 +862,9 @@ public class Character : MonoBehaviour
                         // PlayFabManager._instance.SubmitRunData(true);
                         // UIController._instance.PlayVictorySound();
                         return;
+                        //TODO: MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
+                    //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
+                    //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
                     }
                     else
                     {

@@ -37,6 +37,8 @@ public class ConfirmationManager : MonoBehaviour
         }  
         Background.SetActive(true);
     }
+    
+    
 
     public void CloseConfirmation()
     {

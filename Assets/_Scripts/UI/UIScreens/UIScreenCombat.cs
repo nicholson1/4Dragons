@@ -465,10 +465,12 @@ public class UIScreenCombat : UIScreen
 
     private void EndTurn()
     {
+        Debug.Log(currentCombatNavigationMode.ToString());
+    
         if (currentCombatNavigationMode != CombatUINavigationMode.Combat)
             return;
 
-        endTurn.onClick.Invoke();
+        //endTurn.onClick.Invoke();
     }
 
     private void BindGamepadListener()

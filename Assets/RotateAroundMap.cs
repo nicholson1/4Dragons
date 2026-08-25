@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.iOS;
 using Random = UnityEngine.Random;
 
 public class RotateAroundMap : MonoBehaviour
@@ -37,7 +38,7 @@ public class RotateAroundMap : MonoBehaviour
             onStart = false;
         }
     }
-    
+
     public void ToggleRotate(bool isRotating)
     {
         SlowRotate = isRotating;

@@ -39,7 +39,7 @@ public class CinematicController : MonoBehaviour
     void Update()
     {
         // Check for Ctrl + Shift + R key press
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.H))
         {
             if (canActivate)
             {

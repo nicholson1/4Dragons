@@ -96,24 +96,24 @@ namespace Map
         private void Update()
         {
             //old input system cheats
-            //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
-            //{
-            //    foreach (var node in CurrentMap.nodes)
-            //    {
-            //        node.SetState(NodeStates.Attainable);
-            //    }
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.T))
+            {
+               foreach (var node in CurrentMap.nodes)
+               {
+                   node.SetState(NodeStates.Attainable);
+               }
 
-            //    CombatController._instance.MapCanBeClicked = true;
-            //}
-            //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.J))
-            //{
-            //    if(MapGenTimer <= 0)
-            //    {
-            //        GenerateNewMap();
-            //        CombatController._instance.MapCanBeClicked = true;
-            //        MapGenTimer = .25f;
-            //    }
-            //}
+            CombatController._instance.MapCanBeClicked = true;
+            }
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.J))
+            {
+               if(MapGenTimer <= 0)
+               {
+                   GenerateNewMap();
+                   CombatController._instance.MapCanBeClicked = true;
+                   MapGenTimer = .25f;
+               }
+            }
 
             if (MapGenTimer > 0)
             {

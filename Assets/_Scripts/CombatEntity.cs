@@ -254,8 +254,11 @@ public class CombatEntity : MonoBehaviour
     
     public void EndTurn()
     {
+        Debug.Log("enfing turn");
+
         if (disableDoubleClick)
         {
+            Debug.Log("PReventing double click");
             return;
         }
 

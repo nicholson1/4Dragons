@@ -263,6 +263,11 @@ public class CombatController : MonoBehaviour
 
     public void MapNodeClicked(Node node, bool retry = false)
     {
+        StartCoroutine(MapNodeClickedCoCourtine(node, retry));
+    }
+
+    public IEnumerator MapNodeClickedCoCourtine(Node node, bool retry = false)
+    {
         Debug.Log("Node seed:" + node.nodeSeed);
         LastNodeClicked = node;
         currentSeed = node.nodeSeed;
@@ -273,8 +278,7 @@ public class CombatController : MonoBehaviour
 
         BlacksmithToggle(false);
         //Debug.Log("Current Node Seed: " + currentSeed);
-        if(!retry)
-            RotateAroundMap._instance.StopRandomRotate();
+        
         //unless its first node
         if(ClickedFirstNode)
         {
@@ -285,8 +289,18 @@ public class CombatController : MonoBehaviour
         }
         else
         {
+           
             StartChest.gameObject.SetActive(false);
             ClickedFirstNode = true;
+        }
+        if(!retry)
+        {
+             RotateAroundMap._instance.ToggleRotate(true);
+            Player._am.SetBool("Walk", true);  
+            CameraTransitionController._instance.TransitionCamera(3f);
+            yield return new WaitForSeconds(3f);
+            RotateAroundMap._instance.StopRandomRotate();
+            Player._am.SetBool("Walk", false);  
         }
 
         
@@ -1157,7 +1171,7 @@ public class CombatController : MonoBehaviour
                 return;
             Tie();
         }
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.L))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.H))
         {
             Player._currentHealth = 999999;
             Player._maxHealth = 999999;
@@ -1165,6 +1179,10 @@ public class CombatController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.E))
         {
             Player.UpdateEnergyCount(10);
+        }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.M))
+        {
+            RotateAroundMap._instance.ToggleRotate(!RotateAroundMap._instance.SlowRotate);
         }
         
     }
