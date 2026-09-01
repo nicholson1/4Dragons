@@ -37,7 +37,7 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
         //}
     }
 
-    private void BindInput()
+    private void BindCombatInput()
     {
         inputHandler.OnAttackButtonPressed.AddListener(HandleAttackPressed);
     }
@@ -51,12 +51,13 @@ public class CombatActionButtonBindingHandler : MonoBehaviour
     { 
         if(mode == CombatUINavigationMode.Combat)
         {
-            BindInput();
+            BindCombatInput();
         }
-        else
+        else 
         {
             UnbindInput();
         }
+
     }
 
     private void Awake()

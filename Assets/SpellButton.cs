@@ -27,8 +27,9 @@ public class SpellButton : MonoBehaviour, IButtonListener
     private Button button;
     private ButtonGlow buttonGlow;
     private RectTransform rt;
+    private UIScreenCombat combatScreen;
 
-    private bool isSpellReady = false;
+    private bool isInspectMode = false;
 
     public event Action OnGamepadButtonSelected;
     public event Action OnGamepadButtonDeselected;
@@ -46,45 +47,52 @@ public class SpellButton : MonoBehaviour, IButtonListener
             return;
         }
 
-        if (source == InputSource.Gamepad && !isSpellReady)
+        if(isInspectMode)
         {
-            EventSystem.current.SetSelectedGameObject(this.gameObject);
-
+            Debug.Log($"Cannot perform spell during inspect mode!");
             return;
-        }           
+        }
+
+        //if (source == InputSource.Gamepad && !isInspectMode)
+        //{
+        //    EventSystem.current.SetSelectedGameObject(this.gameObject);
+
+        //    return;
+        //}           
 
         InitiateCastSpell();
     }
 
     public void OnButtonSelected(Selectable selectable)
     {
-        ReadyCastingSpell();
+        _toolTip.ShowTipFromGamepadNavi(rt);
+
     }
 
     public void OnButtonDeselected(Selectable selectable)
     {
-        CancelCastingSpell();
+        _toolTip.CloseTip();
     }
 
-    public void HandleGamepadButtonSelected(Selectable selectable)
-    {
-        if (!isSpellUsable)
-        {
-            //Handle spell cannot be used
-            return;
-        }
+    //public void HandleGamepadButtonSelected(Selectable selectable)
+    //{
+    //    if (!isSpellUsable)
+    //    {
+    //        //Handle spell cannot be used
+    //        return;
+    //    }
 
-        ReadyCastingSpell();
-    }
+    //    ReadyCastingSpell();
+    //}
 
-    public void HandleGamepadButtonDeselected(Selectable selectable)
-    {
-        CancelCastingSpell();
-    }
+    //public void HandleGamepadButtonDeselected(Selectable selectable)
+    //{
+    //    CancelCastingSpell();
+    //}
 
     public void HandleGamepadButtonPressed(Selectable selectable, InputSource source)
     {
-        if (!isSpellReady) return;
+        if (isInspectMode) return;
             
         InitiateCastSpell();
     }
@@ -96,35 +104,26 @@ public class SpellButton : MonoBehaviour, IButtonListener
 
     private void ReadyCastingSpell()
     {
-        if (isSpellReady) return;
+        if (isInspectMode) return;
 
         _toolTip.ShowTipFromGamepadNavi(rt);
-        isSpellReady = true;
+        isInspectMode = true;
     }
 
-    private void CancelCastingSpell()
-    {
-        if (!isSpellReady) return;
+    //private void CancelCastingSpell()
+    //{
+    //    if (!inspectMode) return;
                 
-        _toolTip.CloseTip();
-        isSpellReady = false;
-    }
+    //    _toolTip.CloseTip();
+    //    inspectMode = false;
+    //}
 
     private void InitiateCastSpell()
     {
-        //close tip
-        if (!isSpellReady)
-        {
-            Debug.LogError($"Spell not ready!");
-            isSpellReady = true;
-            return;
-        }
-
         _toolTip.CloseTip();
         character._combatEntity.CastTheAbility(spell, weapon);
         buttonGlow.TriggerEffect(_toolTip.IconColor);
         EventSystem.current.SetSelectedGameObject(null);
-        isSpellReady = false;
     }
 
 
@@ -255,6 +254,10 @@ public class SpellButton : MonoBehaviour, IButtonListener
                weapon.stats[Stats.ItemLevel] + "\n Rarity:" + weapon.stats[Stats.Rarity];
     }
 
+    private void ToggleInspectMode(CombatUINavigationMode combatUIMode)
+    {
+        isInspectMode = combatUIMode != CombatUINavigationMode.Combat;
+    }
 
     private void ActivateButton()
     {
@@ -313,9 +316,11 @@ public class SpellButton : MonoBehaviour, IButtonListener
         button = GetComponent<Button>();
         buttonGlow = GetComponentInChildren<ButtonGlow>();
         rt = GetComponent<RectTransform>();
-
+        combatScreen = GetComponentInParent<UIScreenCombat>();
         character = CombatController._instance.Player;
         character.UpdateEnergy += SetUsability;
+
+        combatScreen.OnCombatUINavigationChanged += ToggleInspectMode;
     }
 
     
@@ -323,6 +328,8 @@ public class SpellButton : MonoBehaviour, IButtonListener
 
     private void OnDestroy()
     {
+        combatScreen.OnCombatUINavigationChanged -= ToggleInspectMode;
+
         character.UpdateEnergy -= SetUsability;
     }
 

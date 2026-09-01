@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -30,6 +30,7 @@ public class UIScreenCombat : UIScreen
     [SerializeField] private Button skipButton;
     [SerializeField] private Transform playerStatsParent, enemyStatsParent, enemyIntentsParent, relicHolder;
 
+    [SerializeField] private List<Button> playerActionButtons = new List<Button>();
     private List<IInspectableElement> playerStats = new List<IInspectableElement>();
     private List<IInspectableElement> enemyStats = new List<IInspectableElement>();
     private List<IInspectableElement> enemyIntents = new List<IInspectableElement>();
@@ -39,6 +40,9 @@ public class UIScreenCombat : UIScreen
     //hook this to inspectmode button, make inspect mode button only visible when last input detected = gamepad
     public void ToggleInspectMode()
     {
+        if (!player._combatEntity.isMyTurn)
+            return;
+
         //only go to inspect mode from and to combat
         if (currentCombatNavigationMode == CombatUINavigationMode.Combat)
         {            
@@ -64,22 +68,21 @@ public class UIScreenCombat : UIScreen
     }
 
     private void SetupInspectModeNavigation()
-    {
-        
+    {        
         //Populate inspectable elements
         playerStats = GetInspectableElements(playerStatsParent);
         enemyStats = GetInspectableElements(enemyStatsParent);
         enemyIntents = GetInspectableElements(enemyIntentsParent);
         relicDisplays = GetInspectableElements(relicHolder);
-
+        
         //connect each group
         var lastButtonTargetRight = FirstButton(enemyStats) ?? (FirstButton(enemyIntents) ?? FirstButton(relicDisplays));
         if(lastButtonTargetRight != null)
             LinkGroupLastButton(LastButton(playerStats), lastButtonTargetRight);
 
-        var firstButtonTargetLeft = LastButton(playerStats);
-        if(firstButtonTargetLeft != null)
-            LinkGroupFirstButton(FirstButton(enemyStats), firstButtonTargetLeft);
+        var firstButtonTargetLeft = LastButton(playerStats) ?? playerActionButtons[0];
+        LinkGroupFirstButton(FirstButton(enemyIntents), firstButtonTargetLeft);
+        LinkGroupFirstButton(FirstButton(enemyStats), firstButtonTargetLeft);
      
 
         var statsTargetUp = FirstButton(enemyIntents) ?? FirstButton(relicDisplays);
@@ -106,7 +109,8 @@ public class UIScreenCombat : UIScreen
         return FirstButton(relicDisplays)
             ?? FirstButton(playerStats)
             ?? FirstButton(enemyStats)
-            ?? FirstButton(enemyIntents);
+            ?? FirstButton(enemyIntents)
+            ?? playerActionButtons[0];
     }
 
     private Selectable FirstButton(List<IInspectableElement> group)
@@ -121,11 +125,27 @@ public class UIScreenCombat : UIScreen
 
     private void LinkGroupFirstButton(Selectable buttonToLink, Selectable targetLink)
     {
-        if (buttonToLink == null) return;
+        if (buttonToLink == null) 
+            return;
 
         var navi = buttonToLink.navigation;
         navi.selectOnLeft = targetLink;
         buttonToLink.navigation = navi;
+
+        if(targetLink == playerActionButtons[0])
+        {
+            LinkActionButtonsToLeftMostInspectable(buttonToLink);
+        }
+    }
+
+    private void LinkActionButtonsToLeftMostInspectable(Selectable selectable)
+    {
+        foreach(var actionButton in playerActionButtons)
+        {
+            var actionButtonNavi = actionButton.navigation;
+            actionButtonNavi.selectOnRight = selectable;
+            actionButton.navigation = actionButtonNavi;
+        }
     }
 
     private void LinkGroupLastButton(Selectable buttonToLink, Selectable targetLink)
@@ -173,6 +193,8 @@ public class UIScreenCombat : UIScreen
             button.navigation = navi;
         }
     }
+
+
     #endregion
 
     public void SetCombatUINavigationMode(CombatUINavigationMode mode)
@@ -213,13 +235,12 @@ public class UIScreenCombat : UIScreen
 
         }
 
-        EventSystem.current.sendNavigationEvents = currentCombatNavigationMode != CombatUINavigationMode.Combat;
+        //EventSystem.current.sendNavigationEvents = currentCombatNavigationMode != CombatUINavigationMode.Combat;
         OnCombatUINavigationChanged?.Invoke(currentCombatNavigationMode);
     }
 
 
     #region Potion Mode Related
-
 
 
     private void TogglePotionMode()
@@ -229,6 +250,9 @@ public class UIScreenCombat : UIScreen
             Debug.LogError($"Error Toggling to PotionMode: Player NOT found!");
             return;
         }
+
+        if (!player._combatEntity.isMyTurn)
+            return;
 
         //can only switch between combat and potion!
         if (currentCombatNavigationMode == CombatUINavigationMode.Potion)
@@ -477,14 +501,16 @@ public class UIScreenCombat : UIScreen
     {
         inputHandler.OnL1.AddListener(TogglePotionMode);
         inputHandler.OnR1.AddListener(ToggleInspectMode);
-        inputHandler.OnR2.AddListener(EndTurn);
+        inputHandler.OnR2.AddListener(PressEndTurnButton);
+        endTurn.onClick.AddListener(InitiateEndTurn);
     }
 
     private void UnbindGamepadListener()
     {
         inputHandler.OnL1.RemoveListener(TogglePotionMode);
         inputHandler.OnR1.RemoveListener(ToggleInspectMode);
-        inputHandler.OnR2.RemoveListener(EndTurn);
+        inputHandler.OnR2.RemoveListener(PressEndTurnButton);
+        endTurn.onClick.RemoveListener(InitiateEndTurn);
     }
 
     public override void Activate(bool navigatableOnActivated = true)
