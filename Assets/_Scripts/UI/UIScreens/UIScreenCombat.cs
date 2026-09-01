@@ -488,14 +488,17 @@ public class UIScreenCombat : UIScreen
 
     private void InitiateEndTurn()
     {
+        //edited
         if (!player._combatEntity.isMyTurn)
             return;
 
         player._combatEntity.EndTurn();
+        //editied
     }
 
     private void PressEndTurnButton()
     {
+        //edited
         if (currentCombatNavigationMode != CombatUINavigationMode.Combat)
             return;
 
