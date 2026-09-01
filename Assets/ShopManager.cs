@@ -269,11 +269,12 @@ public class ShopManager : UIInventorySubPanel
     public void InitializeShop(int i)
     {
         //DEBUG always relic shop
-        InitializeShop(InventorySlot.SellShopType.Relics);
-        Debug.LogError($"DEBUG!!! always initialize relic here!!!");
-        return;
+        //InitializeShop(InventorySlot.SellShopType.Relics);
+        //Debug.LogError($"DEBUG!!! always initialize relic here!!!");
+        
 
         InitializeShop((InventorySlot.SellShopType) i);
+        return;
     }
 
     public void ReRollShop()
@@ -537,7 +538,18 @@ public class ShopManager : UIInventorySubPanel
 
         CleanupToggle();
         Debug.LogError($"ShopManager Leave was triggered!");
-        UIController._instance.CloseInventoryWithExtraPanel(InventoryState.Merchant);
+        // if(UIController._instance.StateMonitor.CurrentActiveScreen.)
+        // {
+        //     UIController._instance.stateMonitor.ClearItemOnGamepad();
+        // }
+        //UIController._instance.CloseInventoryWithExtraPanel(InventoryState.Loot);
+
+
+        //need to check wich InventoryState is active and close the correct one
+        
+        
+
+       UIController._instance.CloseInventoryWithExtraPanel(UIController._instance.inventoryScreen.CurrentInventoryState);
         //UIController._instance.ToggleMapUI(1);
         foreach (InventorySlot slot in EquipmentManager._instance.InventorySlotsRef)
         {
@@ -547,7 +559,7 @@ public class ShopManager : UIInventorySubPanel
 
         UnbindLeaveAndRerollButtons();
         UIController._instance.ToggleMapNew(true, true);
-
+    
     }
 
     public void BuyRelic(int index)

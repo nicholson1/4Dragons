@@ -845,7 +845,7 @@ public class Character : MonoBehaviour
                     //TODO: MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
                     //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
                     //todo MAKE THIS TRIGGER AFTER FINAL DRAGON ====================================================
-                    else if (CombatController._instance.Player._level > 30)
+                    else if (CombatController._instance.Player._level == 30)
                     {
                         Debug.Log("START BOSS PHASE 1");
                         CombatController._instance.StartBossPhase1Coroutine();

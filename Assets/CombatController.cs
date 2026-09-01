@@ -299,7 +299,16 @@ public class CombatController : MonoBehaviour
             Player._am.SetBool("Walk", true);  
             CameraTransitionController._instance.TransitionCamera(3f);
             yield return new WaitForSeconds(3f);
-            RotateAroundMap._instance.StopRandomRotate();
+            Debug.Log(node.nodeType + " node type" + " level " + Player._level);
+            if (node.nodeType == NodeType.Boss && Player._level == 30)
+            {
+                Debug.Log("forcing positiono");
+                RotateAroundMap._instance.StopRandomRotate(true);
+            }
+            else
+            {
+                RotateAroundMap._instance.StopRandomRotate();
+            }
             Player._am.SetBool("Walk", false);  
         }
 
@@ -404,8 +413,8 @@ public class CombatController : MonoBehaviour
         }
 
         //DEBUG always mystery
-        Debug.LogError($"DEBUG [?] ALWAYS MYSTERY HERE");
-        nt = NodeType.Mystery;
+        // Debug.LogError($"DEBUG [?] ALWAYS MYSTERY HERE");
+        // nt = NodeType.Mystery;
         //END DEBUG
 
         if (nt == NodeType.MinorEnemy)

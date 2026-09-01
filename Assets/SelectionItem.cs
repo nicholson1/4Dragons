@@ -87,7 +87,7 @@ public class SelectionItem : MonoBehaviour
 
         if (equipmentToSet is Relic or Consumable)
         {
-            SetExtraDescription(equipmentToSet as Relic);
+            SetExtraDescription(equipmentToSet);
             statsTutorial.SetActive(false);
         }
         else
@@ -291,10 +291,12 @@ public class SelectionItem : MonoBehaviour
         else if(equipmentToSet is Consumable)
         {
             description = (equipmentToSet as Consumable).description;
+            
         }
 
         _toolTip.Message = description;
-        RelicDescription.text = description;        
+        RelicDescription.text = description; 
+        RelicDescription.gameObject.SetActive(equipmentToSet is Relic or Consumable);       
     }
 
     private void ClearLastActiveGamepadButtons()

@@ -374,13 +374,13 @@ public class EquipmentManager : MonoBehaviour
 
     public bool TryCreateItemInInventory(Equipment e)
     {
-        Debug.LogError($"TryCreateItemToInventory");
+        //Debug.LogError($"TryCreateItemToInventory");
         InventorySlot slot = null;
 
         // check if we have an empty, if we do save that one - Inventory start from 10
         for (int i = 10; i < InventorySlots.Length; i++)
         {
-            Debug.LogError($"index: {i} - {InventorySlots[i].gameObject.name} - item = null? {InventorySlots[i].Item == null}");
+            //Debug.LogError($"index: {i} - {InventorySlots[i].gameObject.name} - item = null? {InventorySlots[i].Item == null}");
             if (InventorySlots[i].Item == null)
             {
                 slot = InventorySlots[i];

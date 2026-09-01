@@ -18,7 +18,7 @@ public class UIController : MonoBehaviour
     private UIStateMonitor stateMonitor = null;
         
     [SerializeField] private UIScreen titleScreen;
-    [SerializeField] private UIScreenInventory inventoryScreen;
+    [SerializeField] public UIScreenInventory inventoryScreen;
     [SerializeField] private UIScreen settingsScreen;
     [SerializeField] private UIScreen startingTreasureScreen;
     [SerializeField] private UIScreenMap mapScreen;
@@ -356,7 +356,12 @@ public class UIController : MonoBehaviour
         }
 
         PlayOpenInventory();
-                       
+
+        // StartCoroutine(MovePanel(inventoryScreen.LootPanel, PanelMoveDirection.Horizontal, false));
+        // StartCoroutine(MovePanel(inventoryScreen.ShopPanel, PanelMoveDirection.Horizontal, false));
+        // StartCoroutine(MovePanel(inventoryScreen.ForgePanel, PanelMoveDirection.Horizontal, false));
+        //return;
+
 
         switch (lastInventoryState)
         {

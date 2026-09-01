@@ -411,6 +411,7 @@ public class ToolTipManager : MonoBehaviour
       //Debug.Log("Updating spell tip");
       Consumable c = (Consumable) e;
 
+      //Debug.Log(c.description);  
       current.tiptext.text = c.description;
         
       current.tiptitle.text = c.name;

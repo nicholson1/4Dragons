@@ -334,6 +334,7 @@ MonoBehaviour:
   defaultRaycastBlocker: {fileID: 0}
   defaultSelectable: {fileID: 642365658090193602}
   canAccessSettingsButton: 1
+  screenType: 0
   accessibleGlobalButtons: 
   defaultActionMap: 0
   startDisabled: 0
@@ -1221,7 +1222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontSize
-      value: 32
+      value: 37.5
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontAsset
@@ -1261,7 +1262,7 @@ PrefabInstance:
       objectReference: {fileID: -7004525115007894535, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_enableAutoSizing
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontColor32.rgba
@@ -1286,6 +1287,10 @@ PrefabInstance:
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_SizeDelta.x
       value: 550
+      objectReference: {fileID: 0}
+    - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1352,6 +1357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreButtonSound: 0
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
@@ -1628,7 +1634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontSize
-      value: 32
+      value: 37.5
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontAsset
@@ -1668,7 +1674,7 @@ PrefabInstance:
       objectReference: {fileID: -7004525115007894535, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_enableAutoSizing
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontColor32.rgba
@@ -1693,6 +1699,10 @@ PrefabInstance:
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_SizeDelta.x
       value: 550
+      objectReference: {fileID: 0}
+    - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1759,6 +1769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreButtonSound: 0
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
@@ -2033,7 +2044,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontSize
-      value: 32
+      value: 37.5
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontAsset
@@ -2073,7 +2084,7 @@ PrefabInstance:
       objectReference: {fileID: -7004525115007894535, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_enableAutoSizing
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontColor32.rgba
@@ -2098,6 +2109,10 @@ PrefabInstance:
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_SizeDelta.x
       value: 550
+      objectReference: {fileID: 0}
+    - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2159,6 +2174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreButtonSound: 0
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1
@@ -2736,7 +2752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontSize
-      value: 32
+      value: 37.5
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontAsset
@@ -2776,7 +2792,7 @@ PrefabInstance:
       objectReference: {fileID: -7004525115007894535, guid: e28d09fc135806d4993aec4bfe71107c, type: 2}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_enableAutoSizing
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353362, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_fontColor32.rgba
@@ -2801,6 +2817,10 @@ PrefabInstance:
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_SizeDelta.x
       value: 550
+      objectReference: {fileID: 0}
+    - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8974233434912353363, guid: ce66926fbee764449a9784a32e1d5033, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2851,6 +2871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392e512e440a7514e9b1aa7786f61ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreButtonSound: 0
   extraButtonToUse: 2
   clickableWithYes: 1
   shouldHaveClickableButton: 1

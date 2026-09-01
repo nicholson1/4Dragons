@@ -10,6 +10,8 @@ public class UIScreen : MonoBehaviour
     public event Action<UIScreen, bool> OnNewScreenActive;
     public event Action<UIScreen> OnScreenDeactivated;
 
+    public UIScreenType ScreenType => screenType;
+
     public Selectable CurrentSelectable => currentSelectable;
     public Selectable SelectableToSelectOnActivated => selectableToSelectOnActivated;
     public bool Navigatable => navigatable;
@@ -31,6 +33,8 @@ public class UIScreen : MonoBehaviour
     protected List<Selectable> selectables = new List<Selectable>();
 
     [SerializeField] protected bool canAccessSettingsButton = true;
+    [SerializeField] protected UIScreenType screenType = UIScreenType.none;
+
     [SerializeField] protected List<GlobalButton> accessibleGlobalButtons= new List<GlobalButton>();
 
     [SerializeField] protected ActionMaps defaultActionMap = ActionMaps.Menu;
@@ -219,6 +223,17 @@ public class UIScreen : MonoBehaviour
     }
 
 
+}
+public enum UIScreenType
+{
+    none,
+    Blacksmith,
+    Combat,
+    Inventory,
+    Map,
+    Shop,
+    Settings,
+    Tutorial
 }
 
 public enum GlobalButton
