@@ -46,6 +46,8 @@ public class WorkInProgress : MonoBehaviour
     {
         _canvasGroup.blocksRaycasts = false;
         StartCoroutine(FadeCanvasGroup(_canvasGroup, 0, 1));
+        UIController._instance.ActivateTitleScreen();
+
     }
 
     public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration)
@@ -91,6 +93,7 @@ public class WorkInProgress : MonoBehaviour
         {
             uiScreen.Deactivate();
             canvasGroup.gameObject.SetActive(false);
+
             //UIController._instance.ActivateTitleScreen();
         }
     }
