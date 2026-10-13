@@ -10,6 +10,7 @@ public class TutorialManager : MonoBehaviour
 
     public event Action<TutorialNames> TriggerTutorial;
     public event Action<TutorialNames> CloseTutorial;
+    public event Action<TutorialNames> CloseAll;
     
     public List<TutorialTip> TutorialTips;   // List of all tutorial tips
     public bool TutorialsEnabled = true;    // Toggle for tutorials
@@ -48,6 +49,10 @@ public class TutorialManager : MonoBehaviour
         TutorialsEnabled = PlayerPrefsManager.GetTutorialEnabled() == 1;
     }
 
+    public void TriggerCloseAll(TutorialNames id)
+    {
+        CloseAll?.Invoke(id);
+    }
     private float timer = 3f;
     
     public void InitializeTooltipStates()

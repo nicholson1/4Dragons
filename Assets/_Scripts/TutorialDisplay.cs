@@ -13,7 +13,7 @@ public class TutorialDisplay : MonoBehaviour
     public GameObject textBox;
     public TextMeshProUGUI Text;
     [SerializeField] private TutorialNames _tutorialID;
-    public event Action<TutorialNames> CloseAll;
+    
 
     [SerializeField] private CanvasGroup _canvasGroup;
 
@@ -30,7 +30,7 @@ public class TutorialDisplay : MonoBehaviour
 
         TutorialManager.Instance.TriggerTutorial += ShowTutorial;
         TutorialManager.Instance.CloseTutorial += CloseOverride;
-        CloseAll += CloseAllTutorial;
+        TutorialManager.Instance.CloseAll += CloseAllTutorial;
 
         inputHandler.OnNo.AddListener(CloseButtonClickThroughInput);
        
@@ -64,7 +64,8 @@ public class TutorialDisplay : MonoBehaviour
 
         if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity || _tutorialID == TutorialNames.Stats)
         {
-            CloseAll?.Invoke(_tutorialID);
+            TutorialManager.Instance.TriggerCloseAll(_tutorialID);
+            Debug.Log($"TutorialDisplay of {gameObject.name} calling CloseTip() for {_tutorialID}");
         }
         //PlayUIClick();
 
@@ -77,11 +78,18 @@ public class TutorialDisplay : MonoBehaviour
 
     public void CloseAllTutorial(TutorialNames id)
     {
+        Debug.Log($"my of {_tutorialID} == {id}");
         if(id != _tutorialID)
             return;
         
+        Debug.Log($"TutorialDisplay of {gameObject.name} calling CloseAllTutorial() for {id}");
         BackgroundGlow.SetActive(false);
         textBox.SetActive(false);
+        if (_tutorialID == TutorialNames.Abilities || _tutorialID == TutorialNames.EquipmentRarity || _tutorialID == TutorialNames.Stats)
+        {
+            this.gameObject.SetActive(false);
+        }
+        
     }
 
     public void ShowTutorial(TutorialNames id)
@@ -107,6 +115,13 @@ public class TutorialDisplay : MonoBehaviour
 
         TutorialManager.Instance.CheckAndSaveTooltipShown(id);
 
+        Debug.Log($"TutorialDisplay of {gameObject.name} calling ShowTutorial() for {id}");
+        //if  EquipmentLevel, EquipmentRarity, Relics, Stats, abilities, then move the tutorial display to the top of the hierarchy so it is not blocked by other UI elements
+        if(id == TutorialNames.EquipmentLevel || id == TutorialNames.EquipmentRarity || id == TutorialNames.Relics || id == TutorialNames.Stats || id == TutorialNames.Abilities)
+        {
+            this.transform.SetParent(transform.parent.parent.parent);
+        }
+        
 
         /*if(gameObject.activeInHierarchy)
         {
@@ -129,8 +144,7 @@ public class TutorialDisplay : MonoBehaviour
     {
         TutorialManager.Instance.TriggerTutorial -= ShowTutorial;
         TutorialManager.Instance.CloseTutorial -= CloseOverride;
-
-        CloseAll -= CloseAllTutorial;
+        TutorialManager.Instance.CloseAll -= CloseAllTutorial;
     }
     
     public IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float targetAlpha, float duration)
