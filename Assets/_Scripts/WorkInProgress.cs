@@ -28,6 +28,7 @@ public class WorkInProgress : MonoBehaviour
 
     public void OpenWorkInProgress()
     {
+        return;
         if(hasDisplayed)
         {
             //_canvasGroup.gameObject.SetActive(false);

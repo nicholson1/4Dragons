@@ -439,8 +439,14 @@ MonoBehaviour:
   isPlayerCharacter: 1
   isDragon: 0
   isElite: 0
+  isBossPhase1: 0
+  isBossPhase2: 0
   isBlacksmith: 0
   inventorySize: 6
+  _equipment: []
+  equipmentArray: []
+  _inventory: []
+  _Relics: []
   showHelm: 1
   _combatEntity: {fileID: 1887791476}
   EqMM: {fileID: 0}
@@ -467,6 +473,7 @@ MonoBehaviour:
   attacker: {fileID: 0}
   lastSpellCastTargeted: 40
   IntentionsRunning: 0
+  _bossPhase1: {fileID: 0}
 --- !u!114 &5583783645349465511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,14 +633,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3946359818273263709}
     m_Modifications:
-    - target: {fileID: 310089799809782502, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
-      propertyPath: LeftHandWep.Array.data[32]
-      value: 
-      objectReference: {fileID: 581026660057487578}
-    - target: {fileID: 310089799809782502, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
-      propertyPath: LeftHandWep.Array.data[33]
-      value: 
-      objectReference: {fileID: 6620326512061580031}
     - target: {fileID: 1394585723079213296, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -683,11 +682,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
---- !u!1 &581026660057487578 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 581026659022393281, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
-  m_PrefabInstance: {fileID: 1036900123}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &1394585723821758442 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1394585723079213297, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
@@ -696,10 +690,5 @@ Animator:
 --- !u!4 &1394585723821758443 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1394585723079213296, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
-  m_PrefabInstance: {fileID: 1036900123}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6620326512061580031 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6620326513080653284, guid: fd61d790259cf9746a7fbe63f3b70d98, type: 3}
   m_PrefabInstance: {fileID: 1036900123}
   m_PrefabAsset: {fileID: 0}

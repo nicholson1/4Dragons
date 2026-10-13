@@ -74,6 +74,12 @@ public class BossPhase1 : MonoBehaviour
 
         
         headsLeftWithHealth.RemoveAt(headIndex);
+        if(headsLeftWithHealth.Count == 0)
+        {
+            Debug.Log("Boss is dead");
+            c._am.SetTrigger("Defeat");
+            return;
+        }
         if (headIndex > headsLeftWithHealth.Count - 1)
             headIndex = 0;
         currentHead = headsLeftWithHealth[headIndex].Item1;
@@ -102,6 +108,10 @@ public class BossPhase1 : MonoBehaviour
         {
             amount -= currentHeadHealth;
             KillCurrentHead();
+            if(headsLeftWithHealth.Count == 0)
+            {
+                return;
+            }
             TakeBossDamage(amount);
         }
     }
