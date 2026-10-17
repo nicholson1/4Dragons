@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,14 +7,16 @@ using UnityEngine.UI;
 
 public class VictorySequence : MonoBehaviour
 {
-
+    [SerializeField] private Button continueButton;
     [SerializeField] private CanvasGroup victoryImage;
     [SerializeField] private CanvasGroup background;
 
     [SerializeField] private TextMeshProUGUI victoryText;
     [SerializeField] private CanvasGroup darkness;
     [SerializeField] private TextMeshProUGUI darknessText;
-    [SerializeField] private CreditsRoller credits ;
+    //[SerializeField] private CreditsRoller credits ;
+    [SerializeField] private float panelMoveDuration = 0.5f;
+    [SerializeField] private AnimationCurve panelMoveCurve;
 
 
     public void StartStringAnimation()
@@ -37,24 +40,34 @@ public class VictorySequence : MonoBehaviour
 
     public void StartVictorySequence()
     {
+        if (continueButton.interactable)
+            continueButton.interactable = false;
         StartCoroutine(Sequence());
     }
     
     public IEnumerator Sequence()
     {
-        StartCoroutine(FadeCanvasGroup(victoryImage, 1, 3));
+        //StartCoroutine(FadeCanvasGroup(victoryImage, 1, 3));
+        StartCoroutine(MovePanel(victoryImage.gameObject, PanelMoveDirection.Vertical, true));
         yield return new WaitForSeconds(2);
+        Debug.LogError($"Play victory music");
         MusicManager.Instance.PlayVictoryMusic();
+
         StartCoroutine(FadeCanvasGroup(background, 1, 3));
         StartCoroutine(AnimateString("Victory!", "Victory!...?", 3, UpdateVictoryText));
         yield return new WaitForSeconds(3);
-        StartCoroutine(FadeCanvasGroup(victoryImage, 0, 2));
+        //StartCoroutine(FadeCanvasGroup(victoryImage, 0, 2));
+        StartCoroutine(MovePanel(victoryImage.gameObject, PanelMoveDirection.Vertical, false));
         yield return new WaitForSeconds(2);
+
         StartCoroutine(FadeCanvasGroup(darkness, 1, 2));
         StartCoroutine(AnimateString("", "The Shadows Still Loom in Wyrmwood....", 5, UpdateDarknessText));
         yield return new WaitForSeconds(7);
+
+        Action<bool> OnButtonMoved = (_) => continueButton.interactable = true;
+        StartCoroutine(MovePanel(continueButton.gameObject, PanelMoveDirection.Vertical, true, OnButtonMoved));
         StartCoroutine(FadeCanvasGroup(darkness, 0, 2));
-        credits.StartScroll();
+        //UIController._instance.ActivateTitleScreen();
 
     }
 
@@ -95,7 +108,28 @@ public class VictorySequence : MonoBehaviour
             canvasGroup.gameObject.SetActive(false);
 
     }
-    
+
+    private IEnumerator MovePanel(GameObject targetPanel, PanelMoveDirection moveDirection, bool toOpen, Action<bool> OnFinished = null)
+    {      
+        RectTransform rt = targetPanel.GetComponent<RectTransform>();
+
+        Vector2 startPos = rt.anchoredPosition;
+        Vector2 endPos = GetPanelTargetPosition(moveDirection, startPos);
+
+        float t = 0;
+        while (t < 1)
+        {
+            t = t + Time.deltaTime / panelMoveDuration;
+            float curvedT = panelMoveCurve.Evaluate(t);
+            rt.anchoredPosition = Vector2.Lerp(startPos, endPos, curvedT);
+            yield return null;
+        }
+
+        rt.anchoredPosition = endPos;
+
+        OnFinished?.Invoke(toOpen);
+    }
+
     public IEnumerator AnimateString(string startString, string endString, float duration, System.Action<string> onUpdate)
     {
         // Ensure the end string is at least as long as the start string
@@ -132,5 +166,21 @@ public class VictorySequence : MonoBehaviour
 
         // Ensure the final string matches the end string
         onUpdate?.Invoke(endString);
+    }
+
+    private Vector2 GetPanelTargetPosition(PanelMoveDirection direction, Vector2 startPos)
+    {
+        switch (direction)
+        {
+            case PanelMoveDirection.Horizontal:
+                return new Vector2(startPos.x * -1, startPos.y);
+
+            case PanelMoveDirection.Vertical:
+                return new Vector2(startPos.x, startPos.y * -1);
+            default:
+                Debug.LogError($"Error: PanelMoveDirection for panel you want to move is not set!");
+                return startPos;
+
+        }
     }
 }

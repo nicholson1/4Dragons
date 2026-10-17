@@ -18,8 +18,8 @@ public class ErrorMessageManager : MonoBehaviour
         CombatController.CombatNotifications += Notification;
 
         DragItem.CombatMove += Notification;
-        InventorySlot.CombatMove += Notification;
-        InventorySlot.SellItem += Notification;
+        InventorySlot.OnCannotDragItemOnCombat += Notification;
+        InventorySlot.OnBoughtItem += Notification;
         InventorySlot.NotEnoughGold += Notification;
 
     }
@@ -31,8 +31,8 @@ public class ErrorMessageManager : MonoBehaviour
         CombatController.CombatNotifications -= Notification;
         Character.Notification -= Notification;
         DragItem.CombatMove -= Notification;
-        InventorySlot.CombatMove -= Notification;
-        InventorySlot.SellItem -= Notification;
+        InventorySlot.OnCannotDragItemOnCombat -= Notification;
+        InventorySlot.OnBoughtItem -= Notification;
 
         Character.NotificationGold -= Notification;
         InventorySlot.NotEnoughGold -= Notification;

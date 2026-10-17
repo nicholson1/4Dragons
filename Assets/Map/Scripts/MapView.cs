@@ -135,10 +135,13 @@ namespace Map
 
         protected void CreateNodes(IEnumerable<Node> nodes)
         {
+            int index = 0;
             foreach (var node in nodes)
             {
                 var mapNode = CreateMapNode(node);
+                mapNode.gameObject.name = $"UINodes-{index}";
                 MapNodes.Add(mapNode);
+                index++;
             }
         }
 
@@ -149,6 +152,7 @@ namespace Map
             var blueprint = GetBlueprint(node.blueprintName);
             mapNode.SetUp(node, blueprint);
             mapNode.transform.localPosition = node.position;
+            
             return mapNode;
         }
 

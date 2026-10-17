@@ -1,20 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ImportantStuff;
+//using PlayFab.EconomyModels;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class SelectionManager : MonoBehaviour
+public class SelectionManager : UIInventorySubPanel
 {
+    public event Action OnSelectionFinished;
+
     [SerializeField] private SelectionItem selectionItemPrefab;
 
-    
     public int selectionsLeft = 2;
     public static SelectionManager _instance;
-    public Button SkipButton;
+    [SerializeField] private Button SkipButton;
 
     private bool startingSelections = true;
 
@@ -25,48 +29,191 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI selectionText;
     [SerializeField] public Image Background;
 
+    private HorizontalLayoutGroup selectionParentLayoutGroup;
+
     private float potionChance = .5f;
     private int combatSincePotions = 0;
     private int forcePotionAfter = 3;
 
     [SerializeField] private TutorialDisplay skipSelectionTutorial;
 
+    private List<SelectionItem> currentActiveSelectionItems = new List<SelectionItem>();
+    private SelectionItem currentSelectedItem = null;
+    
+    private List<List<Equipment>> cachedRelics = new List<List<Equipment>>();
 
-    private void Awake()
+    public override void SetSkipButtonInteractable(bool isInteractable)
     {
-        if (_instance != null && _instance != this)
+        SkipButton.gameObject.SetActive(isInteractable);
+    }
+
+    public override Selectable GetFirstInteractableSelectable()
+    {
+        return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault().MainButton;
+    }
+
+    private void SetRightMostInventoryButtonsNavigation()
+    {
+        
+        var leftMostItem = GetLeftMostAvailableSelectionItem();
+        foreach (var selectable in cachedRightmostInventoryButtons)
         {
-            Destroy(this.gameObject);
+            float selectableY = selectable.transform.position.y;
+            Navigation navi = selectable.navigation;
+
+            Selectable closestSelectionItemSelectable = leftMostItem.CurrentActiveGamepadButtons.
+                                                            OrderBy(s => Mathf.Abs(s.transform.position.y - selectableY)).FirstOrDefault();
+
+            navi.selectOnRight = closestSelectionItemSelectable;
+
+            selectable.navigation = navi;
+        }
+    }
+
+
+    private void UpdateLeftNavigationToMainPanel()
+    {
+        SelectionItem item = GetLeftMostAvailableSelectionItem();
+
+        foreach (var button in item.CurrentActiveGamepadButtons)
+        {
+            float buttonY = button.transform.position.y;
+            Navigation navi = button.navigation;
+
+            Selectable closestInventoryButton = cachedRightmostInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - buttonY)).FirstOrDefault();
+
+            navi.selectOnLeft = closestInventoryButton;
+
+            button.navigation = navi;
+        }
+
+        SetRightMostInventoryButtonsNavigation();
+    }
+
+    public override void SetupLeftNavigationToMainPanel(List<Selectable> selectables)
+    {
+        cachedRightmostInventoryButtons = selectables;
+
+        UpdateLeftNavigationToMainPanel();
+    }
+
+    private SelectionItem GetLeftMostAvailableSelectionItem()
+    {
+        return currentActiveSelectionItems.Where(i => i.isAvailable).FirstOrDefault();
+    }
+
+    private void SelectLeftMostAvailableSelectionItem()
+    {
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+
+        if(cachedRightmostInventoryButtons != null)
+            UpdateLeftNavigationToMainPanel();        
+
+    }
+
+    private void RefreshSelectionManagerHorizontalNavigation()
+    {
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+        UpdateLeftNavigationToMainPanel();
+    }
+      
+
+
+    private void SetIndividualSelectionItemHorizontalNavigation(SelectionItem item, Selectable targetLeft, Selectable targetRight)
+    {
+        var leftMostItem = GetLeftMostAvailableSelectionItem();
+
+        foreach(var selectable in item.CurrentActiveGamepadButtons)
+        {
+            Navigation navi = selectable.navigation;
+            if(item != leftMostItem)
+                navi.selectOnLeft = targetLeft;
+            
+            navi.selectOnRight = targetRight;
+
+            selectable.navigation = navi;
+        }
+    }
+
+
+    private void SetupGamepadHorizontalNavigationForCurrentSelections()
+    {
+        var availableSelectionItems = currentActiveSelectionItems.Where(i => i.isAvailable).ToList();
+
+        for (int i = 0; i < availableSelectionItems.Count; i++)
+        {
+            var selectionItem = availableSelectionItems[i];
+
+            var targetLeftSelectable = i - 1 >= 0 ? availableSelectionItems[i - 1].MainButton : null;
+            var targetRightSelectable = i + 1 < availableSelectionItems.Count ? availableSelectionItems[i + 1].MainButton : null;
+
+            SetIndividualSelectionItemHorizontalNavigation(selectionItem, targetLeftSelectable, targetRightSelectable);
+             
+        }
+
+        var firstTargetSelected = GetLeftMostAvailableSelectionItem();
+        EventSystem.current.SetSelectedGameObject(firstTargetSelected.MainButton.gameObject);
+    }
+
+    private void SetupSkipButtonNavigation()
+    {
+        Navigation navi = SkipButton.navigation;
+        if (navi.mode != Navigation.Mode.Explicit)
+            navi.mode = Navigation.Mode.Explicit;
+
+        var selectionItem = GetLeftMostAvailableSelectionItem();
+        var targetSelectable = selectionItem.CurrentActiveGamepadButtons.LastOrDefault();
+        var targetInventoryButton = cachedRightmostInventoryButtons.OrderBy(b => Mathf.Abs(b.transform.position.y - SkipButton.transform.position.y)).FirstOrDefault();
+        navi.selectOnUp = targetSelectable;
+        navi.selectOnLeft = targetInventoryButton;
+        SkipButton.navigation = navi;
+
+    }
+
+    public void SkipSelectionButton()
+    {
+        if (TutorialManager.Instance.TutorialsEnabled && !TutorialManager.Instance.CheckIsShown(TutorialNames.SkipSelection))
+        {
+            TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
         }
         else
         {
-            _instance = this;
+            InitiateClosingSelectionManagerUI();
         }
+
     }
-    
+
+    private void FinalizeAndCloseSelectionPanel()
+    {
+        //give access back to Loot Panel
+        currentSelectedItem = null;
+        OnSelectionFinished?.Invoke();
+        BroadcastPanelClose();
+    }
+
     public void RandomSelectionFromEquipment(Character c)
     {
         Random.InitState(CombatController._instance.CurrentSeed);
-        
+
         //SkipButton.gameObject.SetActive(true);
         // get 4 random ints 0-c.equip.count
-        List<List<Equipment>> EquipmentSelection = new List<List<Equipment>>();
-        List<Equipment> equipments = new List<Equipment>();
+        List<List<ImportantStuff.Equipment>> EquipmentSelection = new List<List<ImportantStuff.Equipment>>();
+        List<ImportantStuff.Equipment> equipments = new List<ImportantStuff.Equipment>();
         // force a spell or weapon that has not been selected
-        Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
+        ImportantStuff.Equipment forcedWep = c._equipment[Random.Range(c._equipment.Count - 4, c._equipment.Count)];
 
         equipments.Add(forcedWep);
-        
+
         // fill the rest with 3 random
         while (equipments.Count < 4)
         {
-            Equipment temp = c._equipment[Random.Range(0, c._equipment.Count)];
+            ImportantStuff.Equipment temp = c._equipment[Random.Range(0, c._equipment.Count)];
 
             if (temp.canBeLoot == false)
             {
                 continue;
             }
-            
+
             if (!equipments.Contains(temp))
             {
                 equipments.Add(temp);
@@ -77,7 +224,7 @@ public class SelectionManager : MonoBehaviour
         if (RelicManager._instance.CheckRelic(RelicType.DragonRelic6))
         {
 
-            List<Equipment> possible = new List<Equipment>();
+            List<ImportantStuff.Equipment> possible = new List<ImportantStuff.Equipment>();
             foreach (var e in c._equipment)
             {
                 if (!equipments.Contains(e) && e.canBeLoot)
@@ -85,22 +232,22 @@ public class SelectionManager : MonoBehaviour
                     possible.Add(e);
                 }
             }
-            if(possible.Count > 4)
+            if (possible.Count > 4)
             {
                 while (possible.Count > 4)
                 {
                     possible.RemoveAt(Random.Range(0, possible.Count));
                 }
             }
-            
+
             EquipmentSelection.Add(possible);
-            
+
         }
 
-        List<List<Equipment>> RelicSelections = new List<List<Equipment>>();
+        List<List<ImportantStuff.Equipment>> RelicSelections = new List<List<ImportantStuff.Equipment>>();
         if (c.isElite)
         {
-            List<Equipment> relics = new List<Equipment>();
+            List<ImportantStuff.Equipment> relics = new List<ImportantStuff.Equipment>();
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
@@ -108,7 +255,7 @@ public class SelectionManager : MonoBehaviour
 
             if (RelicManager._instance.CheckRelic(RelicType.DragonRelic5))
             {
-                relics = new List<Equipment>();
+                relics = new List<ImportantStuff.Equipment>();
                 relics.Add(RelicManager._instance.GetCommonRelic());
                 relics.Add(RelicManager._instance.GetCommonRelic());
                 relics.Add(RelicManager._instance.GetCommonRelic());
@@ -117,7 +264,7 @@ public class SelectionManager : MonoBehaviour
         }
         if (c.isDragon)
         {
-            List<Equipment> relics = new List<Equipment>();
+            List<ImportantStuff.Equipment> relics = new List<ImportantStuff.Equipment>();
             relics.Add(RelicManager._instance.GetDragonRelic());
             relics.Add(RelicManager._instance.GetDragonRelic());
             relics.Add(RelicManager._instance.GetDragonRelic());
@@ -134,8 +281,8 @@ public class SelectionManager : MonoBehaviour
 
         if (Modifiers._instance.CurrentMods.Contains(Mods.AlwaysPotion))
             potionRoll = true;
-        
-        
+
+
         if (potionRoll || combatSincePotions >= forcePotionAfter)
         {
             List<Equipment> potions = new List<Equipment>();
@@ -165,18 +312,18 @@ public class SelectionManager : MonoBehaviour
         {
             c._gold += Mathf.RoundToInt(c._gold * .25f);
         }
-        
+
         GoldSelections.Add(c._gold);
-        
+
         if (RelicManager._instance.CheckRelic(RelicType.Relic25))
         {
-            GoldSelections.Add(Mathf.Max(1,Mathf.RoundToInt(CombatController._instance.Player._gold * .05f)));
+            GoldSelections.Add(Mathf.Max(1, Mathf.RoundToInt(CombatController._instance.Player._gold * .05f)));
         }
 
         LootButtonManager._instance.SetLootButtons(EquipmentSelection, GoldSelections, RelicSelections);
-        UIController._instance.ToggleLootUI(1);
-        UIController._instance.ToggleInventoryUI(1);
-        
+        //UIController._instance.ToggleLootUI(1);
+        //UIController._instance.ToggleInventoryUI(1);
+
         // foreach (var i in equipments)
         // {
         //     SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
@@ -186,66 +333,119 @@ public class SelectionManager : MonoBehaviour
         // StartCoroutine(FadeImage(.75f));
     }
 
+
     public void SelectionsFromList(List<Equipment> equipments)
-    {
-        SkipButton.gameObject.SetActive(true);
+    {        
+        currentActiveSelectionItems.Clear();
+        
         foreach (var i in equipments)
         {
-            SelectionItem item = Instantiate(selectionItemPrefab, this.transform);
+            SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
+            item.SetSkipButton(SkipButton); //should be set before initializing the SelectionItem
             item.InitializeSelectionItem(i);
-        }
-        StartCoroutine(FadeImage(1,.75f));
-
-    }
-
-    public void SelectionMade(SelectionItem si)
-    {
-        //todo pool these
+            currentActiveSelectionItems.Add(item);
+            item.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
+            item.OnSelectionItemPanelSelected += SelectionItemPanelSelectedCallback;
+        }          
         
-        si.DisableButtons();
-        selectionsLeft -= 1;
-        if (selectionsLeft <= 0)
-        {
-            SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
-            foreach (var i in selectionItems)
-            {
-                i.DisableButtons();
-            }
-        }
+        StartCoroutine(FadeImage(0.8f,.75f, SelectionItemsCreatedCallback));
     }
 
-    public void SkipSelectionButton()
+    private void RelicSelectionForMysteryUI(Equipment relic)
     {
-        if(TutorialManager.Instance.TutorialsEnabled && !TutorialManager.Instance.CheckIsShown(TutorialNames.SkipSelection))
-            TutorialManager.Instance.QueueTip(TutorialNames.SkipSelection);
-        else
-        {
-            ClearSelections();
-        }
+        currentActiveSelectionItems.Clear();
 
+        SelectionItem item = Instantiate(selectionItemPrefab, selectionParentLayoutGroup.transform);
+        item.SetSkipButton(SkipButton); //should be set before initializing the SelectionItem
+        item.InitializeSelectionItem(relic);
+        currentActiveSelectionItems.Add(item);
+        item.OnSelectionItemPanelClosed += SelectionItemPanelClosedCallback;
+        item.OnSelectionItemPanelSelected += SelectionItemPanelSelectedCallback;
+
+        StartCoroutine(FadeImage(0.8f, .75f, MysteryRelicItemCreatedCallback));
     }
 
+    private void SelectionItemsCreatedCallback()
+    {
+        BroadcastPanelOpen();
+        SetupGamepadHorizontalNavigationForCurrentSelections();
+        SetSkipButtonInteractable(true);
+        SetupSkipButtonNavigation();
+    }
+
+    private void MysteryRelicItemCreatedCallback()
+    {
+        BroadcastPanelOpen();
+
+        var firstTargetSelected = GetLeftMostAvailableSelectionItem();
+        EventSystem.current.SetSelectedGameObject(firstTargetSelected.MainButton.gameObject);
+
+        SetSkipButtonInteractable(true);
+        SetupSkipButtonNavigation();
+    }
+
+    private void InitiateClosingSelectionManagerUI()
+    {
+        foreach (var selectionItem in currentActiveSelectionItems)
+        {
+            selectionItem.DisableButtons();
+        }
+
+        SetSkipButtonInteractable(false);
+        ClearSelections();
+    }
+
+    private void SelectionItemPanelClosedCallback(SelectionItem selectedItem)
+    {
+        selectedItem.OnSelectionItemPanelClosed -= SelectionItemPanelClosedCallback;
+        
+        selectionsLeft -= 1;
+
+
+        if (selectionsLeft <= 0 || selectedItem.item.isRelic)
+            InitiateClosingSelectionManagerUI();
+        else
+            RefreshSelectionManagerHorizontalNavigation();
+    }
+
+    private void SelectionItemPanelSelectedCallback(SelectionItem selectionItem)
+    {
+        if (currentSelectedItem == selectionItem) return;
+
+        currentSelectedItem ??= selectionItem;
+                
+        currentSelectedItem.DeselectPanel();
+        currentSelectedItem = selectionItem;
+        currentSelectedItem.SelectPanel();
+
+        SetupSkipButtonNavigation();
+    }
+
+    //Closing selection screen
     public void ClearSelections()
     {
-        SelectionItem[] selectionItems = GetComponentsInChildren<SelectionItem>();
-        foreach (var si in selectionItems)
+        foreach (var si in currentActiveSelectionItems)
         {
-            if (si.isFlipping)
+            if (si.isFlipping) //we don't need this anymore, handled in coroutine callbacks
             {
                 return;
             }
 
-            if (si.item.isRelic && si.available)
+            if (si.item.isRelic && si.isAvailable)
             {
                 StatsTracker.Instance.TrackUnSelected(si.item);
             }
         }
         //selectionsLeft = 10;
-        for (int i = selectionItems.Length -1; i >= 0; i--)
+
+        for (int i = currentActiveSelectionItems.Count -1; i >= 0; i--)
         {
-            Destroy(selectionItems[i].gameObject);
+            currentActiveSelectionItems[i].OnSelectionItemPanelClosed -= SelectionItemPanelClosedCallback;
+            currentActiveSelectionItems[i].OnSelectionItemPanelSelected -= SelectionItemPanelSelectedCallback;
+            currentActiveSelectionItems[i].DeinitializeSelectionItem();
         }
 
+        //what's this?
         if (RelicManager._instance.CheckRelic(RelicType.DragonRelic8))
         {
             selectionsLeft = 1;
@@ -254,19 +454,19 @@ public class SelectionManager : MonoBehaviour
         {
             selectionsLeft = 2;
         }
-        SkipButton.gameObject.SetActive(false);
 
-
-        //UIController._instance.ToggleLootUI();
-        selectionScreen.SetActive(false);
-        //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
-        StartCoroutine(FadeImage(.5f,0f));
         
-        TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);
+        //UIController._instance.ToggleLootUI();
+        //selectionScreen.SetActive(false);
+        //CombatController._instance.NextCombatButton.gameObject.SetActive(true);
+        StartCoroutine(FadeImage(.5f,0f, FinalizeAndCloseSelectionPanel));
+        
+        TutorialManager.Instance.CloseTip(TutorialNames.SkipSelection);        
     }
 
-    public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random,  ChestType type2 = ChestType.Random)
+    public void CreateChestReward(bool forceRelic = false, ChestType type1 = ChestType.Random, ChestType type2 = ChestType.Random, bool forMystery = false)
     {
+        cachedRelics.Clear();
         List<List<Equipment>> relics = new List<List<Equipment>>();
         List<List<Equipment>> equipments = new List<List<Equipment>>();
         List<int> golds = new List<int>();
@@ -297,7 +497,8 @@ public class SelectionManager : MonoBehaviour
         switch (selectionType.Item1)
         {
             case ChestType.Relic:
-                relics.Add(new List<Equipment> {RelicManager._instance.GetCommonRelic()});
+                relics.Add(new List<Equipment> { RelicManager._instance.GetCommonRelic()});
+                cachedRelics = relics;
                 break;
             case ChestType.Gold:
                 int gold = Random.Range(-10, 10) + 100 * CombatController._instance.TrialCounter;
@@ -308,15 +509,15 @@ public class SelectionManager : MonoBehaviour
                 golds.Add(gold);
                 break;
             case ChestType.Equipment:
-                selection = new List<Equipment>();
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection = new List<ImportantStuff.Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
                 equipments.Add(selection);
                 break;
             case ChestType.Weapon:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
@@ -324,7 +525,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Scroll:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
@@ -332,7 +533,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Potion:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
@@ -340,19 +541,19 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.BlackSmith:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 equipments.Add(selection);
-                selection = new List<Equipment>();
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection = new List<ImportantStuff.Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
                 equipments.Add(selection);
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 equipments.Add(selection);
                 break;
@@ -369,15 +570,15 @@ public class SelectionManager : MonoBehaviour
                 golds.Add(gold);
                 break;
             case ChestType.Equipment:
-                selection = new List<Equipment>();
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
-                selection.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+                selection = new List<ImportantStuff.Equipment>();
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
+                selection.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
                 equipments.Add(selection);
                 break;
             case ChestType.Weapon:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
                 selection.Add(EquipmentCreator._instance.CreateRandomWeapon(level, false));
@@ -385,7 +586,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Scroll:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomSpellScroll(level));
@@ -393,7 +594,7 @@ public class SelectionManager : MonoBehaviour
                 equipments.Add(selection);
                 break;
             case ChestType.Potion:
-                selection = new List<Equipment>();
+                selection = new List<ImportantStuff.Equipment>();
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
                 selection.Add(EquipmentCreator._instance.CreateRandomPotion(level));
@@ -413,13 +614,14 @@ public class SelectionManager : MonoBehaviour
                 gold1 = Mathf.RoundToInt(gold1 * .5f);
             golds.Add(gold1);
         }
-
-        
+              
 
         if (relics.Count == 0)
             relics = null;
 
-        LootButtonManager._instance.SetLootButtons(equipments, golds, relics);
+        if(!forMystery)
+            LootButtonManager._instance.SetLootButtons(equipments, golds, relics);
+
     }
 
     public void CreateEquipmentListsStart()
@@ -429,14 +631,14 @@ public class SelectionManager : MonoBehaviour
         //     Rand._i.SetSeedForRun();
         // }
         Random.InitState(Rand._i.Random.Next());
-        
-        List<List<Equipment>> equipments = new List<List<Equipment>>();
 
-        List<Equipment> selection1 = new List<Equipment>();
-        List<Equipment> selection2 = new List<Equipment>();
+        List<List<ImportantStuff.Equipment>> equipments = new List<List<ImportantStuff.Equipment>>();
 
-        List<Equipment> selection3 = new List<Equipment>();
-        List<Equipment> selection4 = new List<Equipment>();
+        List<ImportantStuff.Equipment> selection1 = new List<ImportantStuff.Equipment>();
+        List<ImportantStuff.Equipment> selection2 = new List<ImportantStuff.Equipment>();
+
+        List<ImportantStuff.Equipment> selection3 = new List<ImportantStuff.Equipment>();
+        List<ImportantStuff.Equipment> selection4 = new List<ImportantStuff.Equipment>();
 
         int level = CombatController._instance.Player._level;
         
@@ -450,13 +652,13 @@ public class SelectionManager : MonoBehaviour
         int loopEnd = 10; // if we miss 10 times, just take that spell
         while (spellCount < 4)
         {
-            Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
+            ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
 
             if (spellCount == 3)
             {
                 if (!HasDamageSpell(selection1))
                 {
-                    eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,
+                    eq = EquipmentCreator._instance.CreateWeapon(level, 0, ImportantStuff.Equipment.Slot.OneHander,
                         (SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
 
                 }
@@ -498,7 +700,7 @@ public class SelectionManager : MonoBehaviour
             selectionText.text = "Selection (2/4)";
             while (spellCount < 4)
             {
-                Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
+            ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
 
                 if (spellCount == 3)
                 {
@@ -533,35 +735,35 @@ public class SelectionManager : MonoBehaviour
 
             equipments.Add(selection2);
             ///////////////////////////////////////////////////////////////////////////////////
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Head));
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Shoulders));
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Chest));
-            selection3.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Head));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Shoulders));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Chest));
+            selection3.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection3);
             
             ///////////////////////////////////////////////////////////////////////////////////
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Gloves));
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Legs));
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Boots));
-            selection4.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0, 6)));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Gloves));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Legs));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Boots));
+            selection4.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0, 6)));
             equipments.Add(selection4);
-            
-            // List<Equipment> selection5 = new List<Equipment>();
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
-            // equipments.Add(selection5);
-            
 
-            // foreach (var VARIABLE in equipments)
-            // {
-            //     foreach (var v in VARIABLE)
-            //     {
-            //         Debug.Log(v.name);
-            //     }
-            // }
-            List<Equipment> relics = new List<Equipment>();
+        // List<Equipment> selection5 = new List<Equipment>();
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // selection5.Add(EquipmentCreator._instance.CreateRandomPotion(level));
+        // equipments.Add(selection5);
+
+
+        // foreach (var VARIABLE in equipments)
+        // {
+        //     foreach (var v in VARIABLE)
+        //     {
+        //         Debug.Log(v.name);
+        //     }
+        // }
+        List<ImportantStuff.Equipment> relics = new List<ImportantStuff.Equipment>();
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
             relics.Add(RelicManager._instance.GetCommonRelic());
@@ -572,10 +774,22 @@ public class SelectionManager : MonoBehaviour
             if (Modifiers._instance.CurrentMods.Contains(Mods.HalfGold))
                 gold = Mathf.RoundToInt(gold * .5f);
 
-            LootButtonManager._instance.SetLootButtons(equipments, new List<int>(){gold}, new List<List<Equipment>>(){relics});
+        LootButtonManager._instance.SetLootButtons(equipments, new List<int>() { gold }, new List<List<ImportantStuff.Equipment>>() { relics });
     }
 
-    
+    public void OpenMysteryRelicSelection()
+    {
+        if (cachedRelics.Count <= 0)
+        {
+            Debug.LogError($"Error: no relic on the cache!");
+            return;
+        }
+
+        var mysteryRelic = cachedRelics[0][0]; //there's only 1 anyway
+        RelicSelectionForMysteryUI(mysteryRelic);
+    }
+
+
     public void RandomSelectionBegging()
     {
         //get level from character
@@ -584,16 +798,16 @@ public class SelectionManager : MonoBehaviour
         {
             return;
         }
-        List<Equipment> equipments = new List<Equipment>();
+        List<ImportantStuff.Equipment> equipments = new List<ImportantStuff.Equipment>();
 
         if (startingSelectionCount == 4)
         {
             // present 4 weapons, 1 must be a blocking shield
             UIController._instance.ToggleInventoryUI(1);
-            selectionScreen.gameObject.SetActive(true);
+            //selectionScreen.gameObject.SetActive(true);
             selectionText.text = "Selection (1/4)";
-            inventoryButton.gameObject.SetActive(true);
-            BeginAdventureButton.SetActive(false);
+            //inventoryButton.gameObject.SetActive(true);
+            //BeginAdventureButton.SetActive(false);
             // present 4 spells
             int spellCount = 1;
             
@@ -601,13 +815,13 @@ public class SelectionManager : MonoBehaviour
 
             while (spellCount < 4)
             {
-                Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
+                ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomWeapon(level, false);
 
                 if (spellCount == 3)
                 {
                     if (!HasDamageSpell(equipments))
                     {
-                        eq = EquipmentCreator._instance.CreateWeapon(level, 0, Equipment.Slot.OneHander,(SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
+                        eq = EquipmentCreator._instance.CreateWeapon(level, 0, ImportantStuff.Equipment.Slot.OneHander,(SpellTypes)EquipmentCreator._instance.GetRandomDamagePhysicalSpellInt());
                     }
                 }
                 
@@ -641,7 +855,7 @@ public class SelectionManager : MonoBehaviour
             selectionText.text = "Selection (2/4)";
             while (spellCount < 4)
             {
-                Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
+                ImportantStuff.Equipment eq = EquipmentCreator._instance.CreateRandomSpellScroll(level);
 
                 if (spellCount == 3)
                 {
@@ -678,10 +892,10 @@ public class SelectionManager : MonoBehaviour
         {
             //head, shoulder, chest, random
             selectionText.text = "Selection (3/4)";
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Head));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Shoulders));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Chest));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0,6)));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Head));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Shoulders));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Chest));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0,6)));
 
 
         }
@@ -689,10 +903,10 @@ public class SelectionManager : MonoBehaviour
         {
             //gloves, legs, boots, random
             selectionText.text = "Selection (4/4)";
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Gloves));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Legs));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, Equipment.Slot.Boots));
-            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (Equipment.Slot)Random.Range(0,6)));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Gloves));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Legs));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, ImportantStuff.Equipment.Slot.Boots));
+            equipments.Add(EquipmentCreator._instance.CreateArmor(level, (ImportantStuff.Equipment.Slot)Random.Range(0,6)));
         }
         
         //SkipButton.gameObject.SetActive(true);
@@ -717,7 +931,7 @@ public class SelectionManager : MonoBehaviour
 
     }
     
-    IEnumerator FadeImage(float fadeDuration, float targetAlpha)
+    IEnumerator FadeImage(float fadeDuration, float targetAlpha, Action onFadeFinished = null)
     {
             
         Background.gameObject.SetActive(true);
@@ -752,6 +966,8 @@ public class SelectionManager : MonoBehaviour
         {
             Background.gameObject.SetActive(false);
         }
+
+        onFadeFinished?.Invoke();
     }
 
     bool HasDamageSpell(List<Equipment> equipments)
@@ -785,6 +1001,27 @@ public class SelectionManager : MonoBehaviour
     //     int[] damageSpells = new[] { 0,1,2,3,6,7,8,9,10,11,12,13,14 };
     //     return damageSpells[Random.Range(0, damageSpells.Length)];
     // }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+        }
+
+        selectionParentLayoutGroup = GetComponentInChildren<HorizontalLayoutGroup>();
+
+    }
+
+    private void Start()
+    {
+        SetSkipButtonInteractable(false);
+    }
 
     private (ChestType, ChestType) SelectChestType()
     {

@@ -15,6 +15,7 @@ public class ButtonGlow : MonoBehaviour
     private Color initialColor;
 
     private Coroutine co = null;
+
     private void Start()
     {
         if (targetImage == null)

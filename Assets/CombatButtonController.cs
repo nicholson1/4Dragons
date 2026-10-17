@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CombatButtonController : MonoBehaviour
-{
+{   
+
     [SerializeField] private SpellButton weapon1;
     [SerializeField] private SpellButton weapon2;
     [SerializeField] private SpellButton scroll1;
@@ -16,33 +16,42 @@ public class CombatButtonController : MonoBehaviour
     [SerializeField] private Button endTurn;
 
 
-    [SerializeField] private TextMeshProUGUI energyText;
-    
+    [SerializeField] private TextMeshProUGUI energyText;    
 
     [SerializeField] private DataReader _dataReader;
     private List<List<object>> DataTable;
     private int currentEnergy = 0;
 
-    private CombatEntity character = null;
-    
+    private Character character = null;
+    private CombatEntity combatEntity => character != null ? character._combatEntity : null;
+
+    public void CastAbility(int abilityIndex)
+    {
+        combatEntity.CastAbility(abilityIndex);
+    }
+
+        
     private void Start()
     {
         //CombatTrigger.TriggerCombat += UpdateCombatUI;
-        Character.UpdateEnergy += UpdateEnergy;
-        CombatController.UpdateUIButtons += UpdateCombatUI;
-        
-        DataTable = _dataReader.GetWeaponScalingTable();
-        if(weapon1 != null)
-            weapon1.SetDataTable(DataTable);
-        if(weapon2 != null)
-            weapon2.SetDataTable(DataTable);
-        if(scroll1 != null)
-            scroll1.SetDataTable(DataTable);
-        if(scroll2 != null)
-            scroll2.SetDataTable(DataTable);
+        //BindGamepadToCombatButton();
 
-        if (character == null)
-            character = CombatController._instance.Player._combatEntity;
+        
+        CombatController.UpdateUIButtons += UpdateCombatUI;    
+
+        character ??= CombatController._instance.Player;
+        
+        character.UpdateEnergy += UpdateEnergy;
+
+        DataTable = _dataReader.GetWeaponScalingTable();
+        if (weapon1 != null)
+            weapon1.SetDataTable(DataTable);
+        if (weapon2 != null)
+            weapon2.SetDataTable(DataTable);
+        if (scroll1 != null)
+            scroll1.SetDataTable(DataTable);
+        if (scroll2 != null)
+            scroll2.SetDataTable(DataTable);
     }
 
     private void OnDestroy()
@@ -50,56 +59,58 @@ public class CombatButtonController : MonoBehaviour
         //CombatTrigger.TriggerCombat -= UpdateCombatUI;
         CombatController.UpdateUIButtons -= UpdateCombatUI;
 
-        Character.UpdateEnergy -= UpdateEnergy;
+        character.UpdateEnergy -= UpdateEnergy;
     }
 
-    private void Update()
-    {
+    /*
+    //private void Update()
+    //{
         
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (weapon1.interactable)
-            {
-                character.CastAbility(0);
-                weapon1.TriggerButtonGlow();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (weapon2.interactable)
-            {
-                character.CastAbility(1);
-                weapon2.TriggerButtonGlow();
+    //    if (Input.GetKeyDown(KeyCode.Alpha1))
+    //    {
+    //        if (weapon1.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(0);
+    //            //weapon1.TriggerButtonGlow();
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Alpha2))
+    //    {
+    //        if (weapon2.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(1);
+    //            //weapon2.TriggerButtonGlow();
 
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            if (scroll1.interactable)
-            {
-                character.CastAbility(2);
-                scroll1.TriggerButtonGlow();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            if (scroll2.interactable)
-            {
-                character.CastAbility(3);
-                scroll2.TriggerButtonGlow();
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Alpha3))
+    //    {
+    //        if (scroll1.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(2);
+    //            //scroll1.TriggerButtonGlow();
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Alpha4))
+    //    {
+    //        if (scroll2.isSpellUsable)
+    //        {
+    //            combatEntity.CastAbility(3);
+    //            //scroll2.TriggerButtonGlow();
 
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (endTurn.isActiveAndEnabled && endTurn.interactable)
-            {
-                character.EndTurn();
-            }
-        }
-    }
+    //        }
+    //    }
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        if (endTurn.isActiveAndEnabled && endTurn.interactable)
+    //        {
+    //            combatEntity.EndTurn();
+    //        }
+    //    }
+    //}
+    */
 
-    private void UpdateEnergy(Character c, int current, int max, int change)
+    private void UpdateEnergy(Character c, int current)
     {
         //Debug.Log("This is called twice");
         if (!c.isPlayerCharacter)
@@ -112,7 +123,7 @@ public class CombatButtonController : MonoBehaviour
         energyText.text = current.ToString();
         //Debug.Log("2nd here here");
 
-        UpdateSpellButtons(c);
+        //SetupSpellButtons(c);
         // if change is > 0 flash the numbers or something
 
 
@@ -125,16 +136,17 @@ public class CombatButtonController : MonoBehaviour
     {
         //adjust spell names based on the weapons in the players inventory
         //Debug.Log("one here");
-        UpdateSpellButtons(player);
+        SetupSpellButtons(player);
     }
 
-    private void UpdateSpellButtons(Character player)
+    private void SetupSpellButtons(Character player)
     {
         List<(SpellTypes, Weapon)> weaponSpells = player.GetWeaponSpells();
-        //(SpellTypes, SpellTypes, Weapon, Weapon) spellScolls = player.GetScollSpells();
 
         List<(SpellTypes, Weapon)> spellScrolls = player.GetSpells();
         // refence the datatable with these spells as int
+        
+        /*
         //Debug.Log(weaponSpells.Item1 + "    " + weaponSpells.Item2);
 
         // Debug.Log(player._weapons.Count);
@@ -147,6 +159,7 @@ public class CombatButtonController : MonoBehaviour
         // {
         //     Debug.Log(VARIABLE.spellType1);
         // }
+        */
 
         switch (spellScrolls.Count)
         {
@@ -188,14 +201,17 @@ public class CombatButtonController : MonoBehaviour
                 Debug.LogWarning("WE HAVE weird number of weapon SPELLS");
                 break;
         }
-        
 
-        CheckIfSpellCanBeUsed(weapon1, player);
-        CheckIfSpellCanBeUsed(weapon2, player);
-        CheckIfSpellCanBeUsed(scroll1, player);
-        CheckIfSpellCanBeUsed(scroll2, player);
+        weapon1.SetUsability(player, currentEnergy);
+        weapon2.SetUsability(player, currentEnergy);
+        scroll1.SetUsability(player, currentEnergy);
+        scroll2.SetUsability(player, currentEnergy);
+        //CheckIfSpellCanBeUsed(weapon1, player);
+        //CheckIfSpellCanBeUsed(weapon2, player);
+        //CheckIfSpellCanBeUsed(scroll1, player);
+        //CheckIfSpellCanBeUsed(scroll2, player);
         
-        //check if all spells are in different spell schools
+        //check if all spells are in different spell schools (for specific relic check)
         if (CheckForUniqueSpellSchools(new[] { weapon1.spell, weapon2.spell, scroll1.spell, scroll2.spell }))
         {
             if(!RelicManager._instance.HasRelic4Buff && RelicManager._instance.CheckRelic(RelicType.Relic4))
@@ -229,7 +245,7 @@ public class CombatButtonController : MonoBehaviour
         {
             //Debug.Log(" spell is false");
             b.interactable = false;
-            button.interactable = false;
+            button.isSpellUsable = false;
             return;
         }
         int energyAmount = int.Parse(DataTable[(int)button.spell][2].ToString());
@@ -242,23 +258,20 @@ public class CombatButtonController : MonoBehaviour
             if(TheSpellBook._instance.IsSpellType(TheSpellBook.SpellClass.Buff, button.spell) && !RelicManager._instance.UsedRelic23 && RelicManager._instance.CheckRelic(RelicType.Relic23))
             {
                 b.interactable = true;
-                button.interactable = true;
-
+                button.isSpellUsable = true;
             }
                 
             else
             {
                 b.interactable = false;
-                button.interactable = false;
-
+                button.isSpellUsable = false;
             }
         }
 
         else
         {
             b.interactable = true;
-            button.interactable = true;
-
+            button.isSpellUsable = true;
         }
         
         if (b.interactable && energyAmount == 1)
@@ -266,8 +279,7 @@ public class CombatButtonController : MonoBehaviour
             if(RelicManager._instance.CheckRelic(RelicType.DragonRelic10))
             {
                 b.interactable = false;
-                button.interactable = false;
-
+                button.isSpellUsable = false;
             }
         }
     }

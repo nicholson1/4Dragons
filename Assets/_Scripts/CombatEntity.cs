@@ -44,6 +44,7 @@ public class CombatEntity : MonoBehaviour
     public CombatEntity attacker = null;
     public SpellTypes lastSpellCastTargeted = SpellTypes.None;
     public bool IntentionsRunning = false;
+    public BossPhase1 _bossPhase1;
 
 
     private void Start()
@@ -184,6 +185,16 @@ public class CombatEntity : MonoBehaviour
             Intentions.RemoveAt(Intentions.Count -1);
             yield return new WaitForSeconds(1f);
             
+        }
+
+        if (myCharacter.isBossPhase1)
+        {
+            _bossPhase1.currentHeadTurnCount += 1;
+            if (_bossPhase1.currentHeadTurnCount > 2)
+            {
+                _bossPhase1.currentHeadTurnCount = 0;
+                _bossPhase1.GoToNextHead();
+            }
         }
         EndTurn();
     }
@@ -693,101 +704,116 @@ public class CombatEntity : MonoBehaviour
                 Spells.RemoveAt(i);
             }
         }
+        
+        if(!myCharacter.isBossPhase1)
 
-        int bloodpactcount = 0;
-        int immortalcount = 0;
-        int tapcount = 0;
-        int infiniteStop = 0;
-        while (energy > 0 && infiniteStop < 100)
         {
-            // roll random 0-3
-            //make sure energy is <= energy
-            // add spell + wep to intention
-            // subtract energy
-            int roll = Random.Range(0, Spells.Count);
-            
-            // we need spell energy;
-            int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
-
-            if (Spells[roll].Item1 == SpellTypes.Shadow1)
+            int bloodpactcount = 0;
+            int immortalcount = 0;
+            int tapcount = 0;
+            int infiniteStop = 0;
+            while (energy > 0 && infiniteStop < 100)
             {
-                if ((energy != myCharacter._maxEnergy ||  (chilled != -1 && energy != myCharacter._maxEnergy -1)) && myCharacter._currentHealth > myCharacter._maxHealth * .25f && tapcount < 2)
-                {
-                    //todo keep an eye on this
-                    tapcount += 1;
+                // roll random 0-3
+                //make sure energy is <= energy
+                // add spell + wep to intention
+                // subtract energy
+                int roll = Random.Range(0, Spells.Count);
 
-                }
-                else
-                {
-                    infiniteStop += 1;
-                    continue;
-                }
-            }
-            if (Spells[roll].Item1 == SpellTypes.Blood3)
-            {
-                // can cast spell if i already have it
-                int bloodpact = myCharacter.GetIndexOfBuff(BuffTypes.Invulnerable);
-                if (bloodpact != -1)
-                {
-                    infiniteStop += 1;
-                    continue;
-                }
-                
-                if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && bloodpactcount < 2) 
-                {
-                    //todo keep an eye on this
-                    bloodpactcount += 1;
-
-                }
-                else
-                {
-                    infiniteStop += 1;
-                    continue;
-
-                }
-            }
-            if (Spells[roll].Item1 == SpellTypes.Shadow5)
-            {
-                // // can cast spell if i already have it
-                // int immortal = myCharacter.GetIndexOfBuff(BuffTypes.Immortal);
-                // if (immortal != -1)
-                // {
-                //     infiniteStop += 1;
-                //     continue;
-                // }
-                
-                if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && immortalcount < 2) 
-                {
-                    //todo keep an eye on this
-                    immortalcount += 1;
-
-                }
-                else
-                {
-                    infiniteStop += 1;
-                    continue;
-
-                }
-            }
-            
-
-            if ( spellE <= energy)
-            {
-                //Debug.Log(roll + " " + Spells[roll].Item1);
-
-                intent.Add((Spells[roll].Item1, Spells[roll].Item2));
-                energy -= spellE;
+                // we need spell energy;
+                int spellE = TheSpellBook._instance.GetEnergy(Spells[roll].Item1);
 
                 if (Spells[roll].Item1 == SpellTypes.Shadow1)
                 {
-                    energy += 1;
+                    if ((energy != myCharacter._maxEnergy || (chilled != -1 && energy != myCharacter._maxEnergy - 1)) &&
+                        myCharacter._currentHealth > myCharacter._maxHealth * .25f && tapcount < 2)
+                    {
+                        //todo keep an eye on this
+                        tapcount += 1;
+
+                    }
+                    else
+                    {
+                        infiniteStop += 1;
+                        continue;
+                    }
                 }
+
+                if (Spells[roll].Item1 == SpellTypes.Blood3)
+                {
+                    // can cast spell if i already have it
+                    int bloodpact = myCharacter.GetIndexOfBuff(BuffTypes.Invulnerable);
+                    if (bloodpact != -1)
+                    {
+                        infiniteStop += 1;
+                        continue;
+                    }
+
+                    if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && bloodpactcount < 2)
+                    {
+                        //todo keep an eye on this
+                        bloodpactcount += 1;
+
+                    }
+                    else
+                    {
+                        infiniteStop += 1;
+                        continue;
+
+                    }
+                }
+
+                if (Spells[roll].Item1 == SpellTypes.Shadow5)
+                {
+                    // // can cast spell if i already have it
+                    // int immortal = myCharacter.GetIndexOfBuff(BuffTypes.Immortal);
+                    // if (immortal != -1)
+                    // {
+                    //     infiniteStop += 1;
+                    //     continue;
+                    // }
+
+                    if (myCharacter._currentHealth > myCharacter._maxHealth * .3f && immortalcount < 2)
+                    {
+                        //todo keep an eye on this
+                        immortalcount += 1;
+
+                    }
+                    else
+                    {
+                        infiniteStop += 1;
+                        continue;
+
+                    }
+                }
+
+
+                if (spellE <= energy)
+                {
+                    //Debug.Log(roll + " " + Spells[roll].Item1);
+
+                    intent.Add((Spells[roll].Item1, Spells[roll].Item2));
+                    energy -= spellE;
+
+                    if (Spells[roll].Item1 == SpellTypes.Shadow1)
+                    {
+                        energy += 1;
+                    }
+                }
+                // do the life tap first, hmmmmm
+                // maybe cant select shadow1 if you have more than 2 energy?
+
+
+                infiniteStop += 1;
             }
-            // do the life tap first, hmmmmm
-            // maybe cant select shadow1 if you have more than 2 energy?
-
-
-            infiniteStop += 1;
+        }
+        else
+        {
+            //if bossphase1
+            //RemoveAllIntent(myCharacter);
+            if(Intentions.Count >0)
+                RemoveAllIntent(myCharacter);
+            intent = _bossPhase1.SetBossIntentions();
         }
         
         Intentions = intent;

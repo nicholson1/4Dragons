@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TreasureChest : MonoBehaviour
 {
+    public Button TreasureButton => button;
+
     public Transform Lid;
     private bool isOpen = false;
     public float targetRotation = -140f;
@@ -17,12 +19,16 @@ public class TreasureChest : MonoBehaviour
     public bool startingChest;
     public int force;
     public bool forceRelic = false;
+
+    [SerializeField] private Button button;
+    [SerializeField] private InputHandler inputHandler;
     
     [SerializeField] private AudioClip openChest;
     [SerializeField] private float openChestVol;
     [SerializeField] private AudioClip chestAmbiance;
     [SerializeField] private float chestAmbianceVol;
 
+   
     public bool testRun = false;
 
     private void  OnMouseDown()
@@ -39,7 +45,7 @@ public class TreasureChest : MonoBehaviour
                 return;
             }
                 
-        }
+        }        
         
         if(!testRun)
         {
@@ -60,9 +66,11 @@ public class TreasureChest : MonoBehaviour
             {
                 return;
             }
-            
-            UIController._instance.ToggleLootUI(1);
-            UIController._instance.ToggleInventoryUI(1);
+
+            //UIController._instance.ToggleLootUI(1);
+
+            UIController._instance.ToggleInventoryUINew(true, InventoryState.Loot);
+            button.interactable = false;
         }
         
         if (!isOpen)
@@ -76,19 +84,46 @@ public class TreasureChest : MonoBehaviour
         //StartCoroutine(WaitThenDisable());
     }
     
-    void Start()
+    private void HandleClickThroughInput()
     {
+        if (!isActiveAndEnabled) return;
+
+        if (!button.interactable) return;
+
+        ClickOnTreaure(true);
+    }
+
+    private void HandleClickThroughClick()
+    {
+        ClickOnTreaure(true);
+    }
+
+    private void Awake()
+    {      
+        inputHandler = EventSystem.current.GetComponent<InputHandler>();       
+
+        button = GetComponentInChildren<Button>();        
+    }
+
+    void Start()
+    {        
+
         initialRotation = Lid.transform.localRotation;
         GetComponent<Rigidbody>().AddForce(Vector3.down * force,ForceMode.Impulse);
         
         ambience = SoundManager.Instance.PlayAmbience(chestAmbiance, true);
-        //add focre down to rigdid body
+        //add focre down to rigdid body      
+        button.interactable = true;
+        inputHandler.OnYes.AddListener(HandleClickThroughInput);
+        button.onClick.AddListener(HandleClickThroughClick);
     }
 
     private AudioSource ambience;
 
+
     private void OnDisable()
-    {
+    {       
+
         if(SoundManager.Instance != null)
             SoundManager.Instance.StopAmbience(ambience, 2);
     }
@@ -103,18 +138,20 @@ public class TreasureChest : MonoBehaviour
                 isRotating = false;
         }
 
-        if (isActiveAndEnabled)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Log("hello?");
-                ClickOnTreaure(true);
-            }
-        }
+        //if (isActiveAndEnabled)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Space))
+        //    {
+        //        Debug.Log("hello?");
+        //        ClickOnTreaure(true);
+        //    }
+        //}
     }
 
     public void Reset()
     {
+        inputHandler.OnYes.RemoveListener(HandleClickThroughInput);
+        button.onClick.RemoveListener(HandleClickThroughClick);
         Lid.transform.SetLocalPositionAndRotation(Lid.transform.localPosition , initialRotation);
         isOpen = false;
         isRotating = false;
